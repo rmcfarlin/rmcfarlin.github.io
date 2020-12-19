@@ -9,6 +9,7 @@ import Education from '~/components/Education.vue'
 import Skills from '~/components/Skills.vue'
 import Values from '~/components/Values.vue'
 import About from '~/components/About.vue'
+import Footer from '~/components/Footer.vue'
 
 export default function (Vue, { router, head, isClient }) {
   // Set default layout as a global component
@@ -20,6 +21,7 @@ export default function (Vue, { router, head, isClient }) {
   Vue.component('Skills', Skills)
   Vue.component('Values', Values)
   Vue.component('About', About)
+  Vue.component('Footer', Footer)
 
   head.link.push({
     rel: 'stylesheet',

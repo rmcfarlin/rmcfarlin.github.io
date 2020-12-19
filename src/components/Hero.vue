@@ -1,13 +1,13 @@
 <template>
-    <div id="item">
+    <div id="item" class="item">
         <div id="hero" class="item carousel carousel-dark slide" data-bs-ride="carousel">
             <ol class="carousel-indicators">
                 <li data-bs-target="#hero" data-bs-slide-to="0" class="active"></li>
                 <li data-bs-target="#hero" data-bs-slide-to="1"></li>
                 <li data-bs-target="#hero" data-bs-slide-to="2"></li>
             </ol>
-            <div class="carousel-inner">
-                <div class="carousel-item active" data-bs-interval="3000">
+            <div class="carousel-inner" style="height: 85vh">
+                <div class="carousel-item active" style="height: 85vh" data-bs-interval="3000">
                     <g-image src="https://i.imgur.com/2xIvCzj.jpg" class="d-block w-100" alt="Accounting Image" />
                     <div class="carousel-caption d-none d-md-block">
                         <h5 class="text-white fs-1 text-center">Accountant</h5>
