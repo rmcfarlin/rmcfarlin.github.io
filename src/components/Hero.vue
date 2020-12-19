@@ -6,30 +6,30 @@
             <li data-bs-target="#hero" data-bs-slide-to="2"></li>
             <li data-bs-target="#hero" data-bs-slide-to="3"></li>
         </ol>
-        <div class="carousel-inner" style="height: 85vh">
-            <div class="carousel-item active" style="height: 85vh" data-bs-interval="3000">
-                <g-image src="https://i.imgur.com/2xIvCzj.jpg" class="d-block w-100 item-1" style="height: 85vh" alt="Business Image" />
+        <div class="carousel-inner" style="height: 80vh">
+            <div class="carousel-item active" style="height: 80vh" data-bs-interval="3000">
+                <g-image src="https://i.imgur.com/2xIvCzj.jpg" class="d-block w-100 item-1" style="height: 80vh" alt="Business Image" />
                 <div class="carousel-caption d-none d-md-block">
                     <h5 class="text-white fs-1 text-center pb-5">Accountant</h5>
                 </div>
             </div>
 
-            <div class="carousel-item" style="height: 85vh" data-bs-interval="3000">
-                <g-image src="https://i.imgur.com/aUdNIKM.jpg" class="d-block w-100 item" style="height: 85vh" alt="Airplane Image" />
+            <div class="carousel-item" style="height: 80vh" data-bs-interval="3000">
+                <g-image src="https://i.imgur.com/aUdNIKM.jpg" class="d-block w-100 item" style="height: 80vh" alt="Airplane Image" />
                 <div class="carousel-caption d-none d-md-block">
                     <h5 class="text-white fs-1 text-center pb-5">Airplane Enthusiast</h5>
                 </div>
             </div>
 
-            <div class="carousel-item" style="height: 85vh" data-bs-interval="3000">
-                <g-image src="https://i.imgur.com/ET6N4ec.jpg" class="d-block w-100 item" style="height: 85vh" alt="Airplane Image" />
+            <div class="carousel-item" style="height: 80vh" data-bs-interval="3000">
+                <g-image src="https://i.imgur.com/ET6N4ec.jpg" class="d-block w-100 item" style="height: 80vh" alt="Airplane Image" />
                 <div class="carousel-caption d-none d-md-block">
                     <h5 class="text-white fs-1 text-center pb-5">Computer Programmer</h5>
                 </div>
             </div>
 
-            <div class="carousel-item" style="height: 85vh" data-bs-interval="3000">
-                <g-image src="https://i.imgur.com/p2ncO1v.jpg" class="d-block w-100 item" style="height: 85vh" alt="Airplane Image" />
+            <div class="carousel-item" style="height: 80vh" data-bs-interval="3000">
+                <g-image src="https://i.imgur.com/p2ncO1v.jpg" class="d-block w-100 item" style="height: 80vh" alt="Airplane Image" />
                 <div class="carousel-caption d-none d-md-block">
                     <h5 class="text-white fs-1 text-center pb-5">Nature Lover</h5>
                 </div>
@@ -49,7 +49,7 @@
 <style scoped>
 
 div #hero {
-    height: 85vh;
+    height: 80vh;
     width: 100vw;
     background: black;
     overflow: hidden;

@@ -1,5 +1,5 @@
 <template>
-    <nav class="header navbar navbar-expand-lg navbar-dark bg-dark px-5 fixed-top">
+    <nav class="header navbar navbar-expand-lg navbar-dark bg-dark px-5 fixed-top" id="navbar">
       <div class="container-fluid">
         <g-link to="/" class="navbar-brand fs-4">Robert McFarlin</g-link>
         <button class="col-link navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
