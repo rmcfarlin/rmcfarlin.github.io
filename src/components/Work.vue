@@ -45,6 +45,26 @@
                             </div>
                             </div>
                         </div>
+
+                        <!-- Work Item -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="HeadingThree">
+                            <button class="accordion-button collapsed fs-2 fs-bold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                <div class="col text-start">
+                                    <h3>Bi-Lo</h3>
+                                </div>
+                                <div class="col">
+                                    <span class="fs-5 fst-italic text-end align-top">June 2007 - May 2011</span>
+                                </div>
+                            </button>
+                            </h2>
+                            <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="HeadingThree" data-bs-parent="#WorkAccordion">
+                            <div class="accordion-body">
+                                <BiLo />
+                            </div>
+                            </div>
+                        </div>
+
                     </div>
 
 
@@ -57,11 +77,13 @@
 <script>
 import RCM from './Work/RCM.vue'
 import ScanSource from './Work/ScanSource.vue'
+import BiLo from './Work/BiLo.vue'
 
 export default {
     components: {
         RCM: RCM,
-        SS: ScanSource
+        SS: ScanSource,
+        BiLo: BiLo
     }
 }
 </script>
