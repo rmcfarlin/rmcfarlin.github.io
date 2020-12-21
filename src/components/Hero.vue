@@ -1,5 +1,5 @@
 <template>
-    <div id="hero" class="carousel slide" data-bs-ride="carousel">
+    <div id="hero" class="carousel slide border-bottom border-dark border-2" data-bs-ride="carousel">
         <ol class="carousel-indicators">
             <li data-bs-target="#hero" data-bs-slide-to="0" class="active"></li>
             <li data-bs-target="#hero" data-bs-slide-to="1"></li>

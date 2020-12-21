@@ -1,5 +1,5 @@
 <template>
-    <div id="work" class="bg-blue py-5 border-top border-bottom border-dark border-2">
+    <div id="work" class="bg-grey py-5 border-top border-bottom border-dark border-2">
         <div class="row">
             <div class="col-sm-12 col-xl-6 offset-xl-3">
                 <div class="card-body">
@@ -89,7 +89,7 @@ export default {
 </script>
 
 <style scoped>
-.bg-blue {
+.bg-grey {
     background-color: rgba(212,212,212,1);
 }
 </style>
