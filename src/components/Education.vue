@@ -9,7 +9,7 @@
 
             <div class="card text-center col-sm-12 col-xl-6 offset-xl-3 text-white bg-grey border border-dark border-2 pb-2 rounded-0">
                 <div class="card-header text-white bg-grey pb-1">
-                    <ul class="nav nav-tabs card-header-tabs">
+                    <ul class="nav nav-tabs nav-fill card-header-tabs">
                         <li class="nav-item border border-dark" data-bs-toggle="collapse" href="#CMA" role="button" aria-expanded="false" aria-controls="CMA" @click="ifClicked">
                             <a class="nav-link text-dark" :class="CMAa" aria-current="true" href="#">CMA</a>
                         </li>
