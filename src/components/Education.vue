@@ -14,7 +14,7 @@
                             <a class="nav-link text-dark" :class="CMAa" aria-current="true" href="#">CMA</a>
                         </li>
                         <li class="nav-item border border-dark" data-bs-toggle="collapse" href="#MBA" role="button" aria-expanded="false" aria-controls="MBA" @click="ifClicked">
-                            <a class="nav-link text-dark" :class="MBAa" aria-current="true" href="#">MBA</a>
+                            <a class="nav-link text-dark" :class="MBAa" aria-current="true" href="#">MBA <span class="fst-italic">(In Progress)</span></a>
                         </li>
                         <li class="nav-item border border-dark" data-bs-toggle="collapse" href="#MACC" role="button" aria-expanded="false" aria-controls="MACC" @click="ifClicked">
                             <a class="nav-link text-dark" :class="MACCa" aria-current="true" href="#">MAcc</a>
@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="collapse card bg-dark text-white rounded-0 border border-dark border-2" :class="CMA" id="CMA">
-                    <img src="https://i.imgur.com/eHiK7X6.jpg" alt="IMA Logo" class="card-img">
+                    <g-image src="https://i.imgur.com/eHiK7X6.jpg" alt="IMA Logo" class="card-img" />
                     <div class="card-img-overlay">
                         <h4 class="card-title pt-5 fw-bolder">Institute of Management Accountants</h4>
                         <p class="card-text fw-bolder">Certified Management Accountant (CMA)</p>
@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="collapse card bg-dark text-white rounded-0 border border-dark border-2" :class="MBA" id="MBA">
-                    <img src="https://i.imgur.com/YkTKi6m.jpg" alt="LSUS Campus" class="card-img">
+                    <g-image src="https://i.imgur.com/YkTKi6m.jpg" alt="LSUS Campus" class="card-img" />
                     <div class="card-img-overlay">
                         <h4 class="card-title pt-5 fw-bolder">Louisiana State University - Shreveport</h4>
                         <p class="card-text fw-bolder">Masters of Business Administration with a Concentration in Data Analytics</p>
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="collapse card bg-dark text-white rounded-0 border border-dark border-2" :class="MACC" id="MACC">
-                    <img src="https://i.imgur.com/wcyqzaF.jpg" alt="Stetson Campus" class="card-img">
+                    <g-image src="https://i.imgur.com/wcyqzaF.jpg" alt="Stetson Campus" class="card-img" />
                     <div class="card-img-overlay">
                         <h4 class="card-title pt-5 fw-bolder">Stetson University</h4>
                         <p class="card-text fw-bolder">Masters of Accountancy</p>
@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="collapse card bg-dark text-white rounded-0 border border-dark border-2" :class="BSBA" id="BSBA">
-                    <img src="https://i.imgur.com/Piql21l.jpg" alt="USCU Campus" class="card-img">
+                    <g-image src="https://i.imgur.com/Piql21l.jpg" alt="USCU Campus" class="card-img" />
                     <div class="card-img-overlay">
                         <h4 class="card-title pt-5 fw-bolder">University of South Carolina - Upstate</h4>
                         <p class="card-text fw-bolder">Bachelor of Science in Business Administration with a Concentration in Accounting</p>
