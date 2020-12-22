@@ -1,5 +1,5 @@
 <template>
-    <div id="work" class="bg-white py-5 border-top border-bottom border-dark border-2">
+    <div id="education" class="bg-white py-5 border-top border-bottom border-dark border-2">
         <div class="row">
             <div class="col-sm-12 col-xl-6 offset-xl-3">
                 <div class="card-body">
@@ -84,6 +84,7 @@ export default {
     methods: {
         ifClicked(e) {
             var ele = e.target.innerHTML
+            console.log(ele)
 
             if (ele == "CMA") {
                 if (this.CMA == "show") {
@@ -103,7 +104,24 @@ export default {
                 this.BSBAa = ""
             }
 
-            if (ele == "MBA") {
+            if (ele == 'MBA <span data-v-2a424ba8="" class="fst-italic">(In Progress)</span>') {
+                if (this.MBA == "show") {
+                    this.MBA = ""
+                    this.MBAa = ""
+                } else {
+                    this.MBA = "show"
+                    this.MBAa = "active"
+                }
+
+                this.CMA = ""
+                this.MACC = ""
+                this.BSBA = ""
+                this.CMAa = ""
+                this.MACCa = ""
+                this.BSBAa = ""
+            }
+
+            if (ele == '(In Progress)') {
                 if (this.MBA == "show") {
                     this.MBA = ""
                     this.MBAa = ""

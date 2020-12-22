@@ -8,76 +8,29 @@
             </div>
 
             <!-- Start of Skill Card Layout -->
-            <div class="card text-center col-sm-12 col-xl-6 offset-xl-3 text-white bg-white border border-dark border-2 pb-2 rounded-0">
-                <div class="card-header text-dark bg-white pb-1">
-                    <ul class="nav nav-tabs nav-fill card-header-tabs">
-                        <li class="nav-item border border-dark bg-dark" data-bs-toggle="collapse" href="#Accounting" role="button" aria-expanded="false" aria-controls="Accounting" @click="ifClicked">
-                            <a class="nav-link text-white fw-bolder" :class="Accountinga" aria-current="true" href="#">Accounting / Reporting</a>
-                        </li>
-                        <li class="nav-item border border-dark" data-bs-toggle="collapse" href="#Software" role="button" aria-expanded="false" aria-controls="Software" @click="ifClicked">
-                            <a class="nav-link text-dark" :class="MACCa" aria-current="true" href="#">Software / Systems</a>
-                        </li>
-                        <li class="nav-item border border-dark" data-bs-toggle="collapse" href="#Programming" role="button" aria-expanded="false" aria-controls="Programming" @click="ifClicked">
-                            <a class="nav-link text-dark" :class="MACCa" aria-current="true" href="#">Programming Lanugages</a>
+            <div class="card text-center col-sm-12 col-xl-6 offset-xl-3 text-white border border-dark border-2 pb-2 rounded-0">
+                <div class="card-header text-dark pb-1">
+                    <ul class="nav nav-tabs nav-fill card-header-tabs border border-dark">
+                        <li v-for="item in items" v-bind:key="item" class="nav-item border border-dark bg-grey" data-bs-toggle="collapse" :href="item.href" role="button" aria-expanded="false" :aria-controls="item.name" @click="ifClicked">
+                            <a class="nav-link text-dark fw-bolder" :class="item.class" aria-current="true" href="#">{{item.name}}</a>
                         </li>
                     </ul>
                 </div>
 
                 <!-- ACCOUNTING SKILLS SECTION -->
-                <div class="collapse card bg-dark text-white rounded-0 border-none" :class="Accounting" id="Accounting">                    
+                <div v-for="item in items" v-bind:key="item"  class="collapse card bg-grey rounded-0 border border-dark" :class="item.name" :id="item.id">                    
 
-                    <table class="table table-dark mb-0 mt-1">
-                        <tbody>
-                            <tr v-for="item in skills" v-bind:key="item.name">
-                                <td class="fs-3 w-40 ps-3 text-start">{{item.name}}</td>
-                                <td colspan="2" class="w-60 pe-3">
-                                    <div class="progress rounded-0 pb">
-                                        <div class="progress-bar pb progress-bar-striped progress-bar-animated rounded-0 text-center" role="progressbar" :style="item.width" :aria-valuenow="item.score" aria-valuemin="0" aria-valuemax="100">
-                                            <h3 class="align-middle">{{item.score}}%</h3>
-                                        </div>
-                                    </div>
-                                </td>
+                    <table class="table bg-grey table striped table-hover text-start mb-0 border border-dark">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="ps-3">Strategic Skill</th>
+                                <th scope="col" class="pe-3">Description</th>
                             </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-
-
-                <!-- Software SKILLS SECTION -->
-                <div class="collapse card bg-dark text-white rounded-0 border-none" :class="Software" id="Software">                    
-
-                    <table class="table table-dark mb-0 mt-1">
+                        </thead>
                         <tbody>
-                            <tr v-for="item in software" v-bind:key="item.name">
-                                <td class="fs-3 w-40 ps-3 text-start">{{item.name}}</td>
-                                <td colspan="2" class="w-60 pe-3">
-                                    <div class="progress rounded-0 pb">
-                                        <div class="progress-bar pb progress-bar-striped progress-bar-animated rounded-0 text-center" role="progressbar" :style="item.width" :aria-valuenow="item.score" aria-valuemin="0" aria-valuemax="100">
-                                            <h3 class="align-middle">{{item.score}}%</h3>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Programming SKILLS SECTION -->
-                <div class="collapse card bg-dark text-white rounded-0 border-none" :class="Programming" id="Programming">                    
-
-                    <table class="table table-dark mb-0 mt-1">
-                        <tbody>
-                            <tr v-for="item in programming" v-bind:key="item.name">
-                                <td class="fs-3 w-40 ps-3 text-start">{{item.name}}</td>
-                                <td colspan="2" class="w-60 pe-3">
-                                    <div class="progress rounded-0 pb">
-                                        <div class="progress-bar pb progress-bar-striped progress-bar-animated rounded-0 text-center" role="progressbar" :style="item.width" :aria-valuenow="item.score" aria-valuemin="0" aria-valuemax="100">
-                                            <h3 class="align-middle">{{item.score}}%</h3>
-                                        </div>
-                                    </div>
-                                </td>
+                            <tr v-for="item in item.skills" v-bind:key="item.name" class="align-middle">
+                                <td class="w-40 ps-3 text-start">{{item.name}}</td>
+                                <td colspan="2" class="w-60 pe-3">{{item.description}}</td>
                             </tr>
 
                         </tbody>
@@ -95,174 +48,158 @@
 export default {
     data() {
         return {
-            skills: [
-                {
-                    name: "Financial Statements",
-                    score: 99,
-                    width: "width: 99%"
+            items: {
+                skills: {
+                    name: "Accounting",
+                    id: "Accounting",
+                    href: "#Accounting",
+                    class: "Aa",
+                    skills: [
+                        {
+                            name: "Financial Statements",
+                            description: "Preparation, creation, and analysis of financial statements."
+                        },
+                        {
+                            name: "Data Modeling",
+                            description: "Creation, connecting, templating of data to be used in business reporting and decision making."
+                        },
+                        {
+                            name: "Data Analysis",
+                            description: "Ability to strategically mold and view data in a way that enhances the ability to make educated business decisions."
+                        },
+                        {
+                            name: "Budgeting",
+                            description: "Preparation and maintenance of business planning data to be used while aiding and controlling business operations"
+                        },
+                        {
+                            name: "Cash Flow Management",
+                            description: "Ability to prepare and consolidate multiple steams of receivables and payables into a consolidated and accurate forecast of cash."
+                        },
+                        {
+                            name: "Inventory Management",
+                            description: "Experience managing monthly inventory counts."
+                        }
+                    ],
                 },
-                {
-                    name: "Data Modeling",
-                    score: 95,
-                    width: "width: 95%"
+                software: {
+                    name: "Software / Systems",
+                    id: "Software",
+                    href: "#Software",
+                    class: "Sa",
+                    skills: [
+                        {
+                            name: "Excel",
+                            description: "Highly proficient writing VBA code from scratch to automate processes. Ability to perform and use v-lookups, sum-ifs, pivot tables, etc."
+                        },
+                        {
+                            name: "Power BI",
+                            description: "Experience managing monthly inventory counts."
+                        },
+                        {
+                            name: "Microsoft Office",
+                            description: "Experience managing monthly inventory counts."
+                        },
+                        {
+                            name: "SAP",
+                            description: "Experience managing monthly inventory counts."
+                        },
+                        {
+                            name: "ADP Payroll",
+                            description: "Experience managing monthly inventory counts."
+                        }
+                    ],
                 },
-                {
-                    name: "Data Analysis",
-                    score: 95,
-                    width: "width: 95%"
+                programming: {
+                    name: "Programming Languages",
+                    id: "Programming",
+                    href: "#Programming",
+                    class: "Pa",
+                    skills: [
+                        {
+                            name: "VBA",
+                            score: 95,
+                            width: "width: 95%"
+                        },
+                        {
+                            name: "Python",
+                            score: 90,
+                            width: "width: 90%"
+                        },
+                        {
+                            name: "JavaScript",
+                            score: 70,
+                            width: "width: 70%"
+                        },
+                        {
+                            name: "C++",
+                            score: 50,
+                            width: "width: 50%"
+                        },
+                        {
+                            name: "Haskell",
+                            score: 50,
+                            width: "width: 50%"
+                        }
+                    ],
                 },
-                {
-                    name: "Budgeting",
-                    score: 95,
-                    width: "width: 95%"
-                },
-                {
-                    name: "Cash Flow Management",
-                    score: 90,
-                    width: "width: 90%"
-                },
-                {
-                    name: "Inventory Management",
-                    score: 80,
-                    width: "width: 80%"
-                }
-            ],
-            software: [
-                {
-                    name: "Excel (VBA, Vlookup, etc)",
-                    score: 95,
-                    width: "width: 95%"
-                },
-                {
-                    name: "Power BI",
-                    score: 90,
-                    width: "width: 90%"
-                },
-                {
-                    name: "Microsoft Office",
-                    score: 90,
-                    width: "width: 90%"
-                },
-                {
-                    name: "SAP",
-                    score: 90,
-                    width: "width: 90%"
-                },
-                {
-                    name: "ADP Payroll",
-                    score: 90,
-                    width: "width: 90%"
-                }
-            ],
-            programming: [
-                {
-                    name: "VBA",
-                    score: 95,
-                    width: "width: 95%"
-                },
-                {
-                    name: "Python",
-                    score: 90,
-                    width: "width: 90%"
-                },
-                {
-                    name: "JavaScript",
-                    score: 70,
-                    width: "width: 70%"
-                },
-                {
-                    name: "C++",
-                    score: 50,
-                    width: "width: 50%"
-                },
-                {
-                    name: "Haskell",
-                    score: 50,
-                    width: "width: 50%"
-                }
-            ],
+            },
 
-            CMA: "show",
-            MBA: "",
-            MACC: "",
-            BSBA: "",
-            CMAa: "active",
-            MBAa: "",
-            MACCa: "",
-            BSBAa: ""
+            A: "show",
+            S: "",
+            P: "",
+            Aa: "active",
+            Sa: "",
+            Pa: "",
         }
     },
     methods: {
         ifClicked(e) {
             var ele = e.target.innerHTML
 
-            if (ele == "CMA") {
-                if (this.CMA == "show") {
-                    this.CMA = ""
-                    this.CMAa = ""
+            if (ele == "Accounting") {
+                if (this.A == "show") {
+                    this.A = ""
+                    this.Aa = ""
 
                 } else {
-                    this.CMA = "show"
-                    this.CMAa = "active"
+                    this.A = "show"
+                    this.Aa = "active"
                 }
 
-                this.MBA = ""
-                this.MACC = ""
-                this.BSBA = ""
-                this.MBAa = ""
-                this.MACCa = ""
-                this.BSBAa = ""
+                this.S = ""
+                this.P = ""
+                this.Sa = ""
+                this.Pa = ""
             }
 
-            if (ele == "MBA") {
-                if (this.MBA == "show") {
-                    this.MBA = ""
-                    this.MBAa = ""
+            if (ele == "Software / Systems") {
+                if (this.S == "show") {
+                    this.S = ""
+                    this.Sa = ""
                 } else {
-                    this.MBA = "show"
-                    this.MBAa = "active"
+                    this.S = "show"
+                    this.Sa = "active"
                 }
 
-                this.CMA = ""
-                this.MACC = ""
-                this.BSBA = ""
-                this.CMAa = ""
-                this.MACCa = ""
-                this.BSBAa = ""
+                this.A = ""
+                this.P = ""
+                this.Aa = ""
+                this.Pa = ""
             }
 
-            if (ele == "MAcc") {
-                if (this.MACC == "show") {
-                    this.MACC = ""
-                    this.MACCa = ""
+            if (ele == "Programming Languages") {
+                if (this.P == "show") {
+                    this.P = ""
+                    this.Pa = ""
                 } else {
-                    this.MACC = "show"
-                    this.MACCa = "active"
+                    this.P = "show"
+                    this.Pa = "active"
                 }
 
-                this.CMA = ""
-                this.MBA = ""
-                this.BSBA = ""
-                this.CMAa = ""
-                this.MBAa = ""
-                this.BSBAa = ""
-            }
-
-            if (ele == "BS B.A.") {
-                if (this.BSBA == "show") {
-                    this.BSBA = ""
-                    this.BSBAa = ""
-                } else {
-                    this.BSBA = "show"
-                    this.BSBAa = "active"
-                }
-
-                this.CMA = ""
-                this.MACC = ""
-                this.MBA = ""
-                this.CMAa = ""
-                this.MACCa = ""
-                this.MBAa = ""
+                this.A = ""
+                this.S = ""
+                this.Aa = ""
+                this.Sa = ""
             }
         }
     }
