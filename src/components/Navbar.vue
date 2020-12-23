@@ -6,7 +6,7 @@
           <span class="col-link navbar-toggler-icon"></span>
         </button>
         <div class="px-4 collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav nav-pills me-auto nav mb-2 mb-lg-0">
+          <ul class="navbar-nav me-auto nav mb-2 mb-lg-0">
 
             <!-- Loop through array data to create menu -->
             <li class="nav-item my-2 mx-1" v-for="item in headerList" v-bind:key="item[0]">
@@ -15,7 +15,25 @@
               </a>
             </li>
 
+            <li class="hide-me nav-item my-2 mx-1">
+              <div class="nav-link">|</div>
+            </li>
+            <li class="nav-item my-2 mx-1">
+              <a class="nav-link" role="button" href="https://github.com/rmcfarlin" aria-expanded="false" target="_blank">
+                Portfolio
+              </a>
+            </li>
+            <li class="nav-item my-2 mx-1">
+              <a class="nav-link" role="button" href="https://www.linkedin.com/in/rdmcfarlin/" aria-expanded="false" target="_blank">
+                LinkedIn
+              </a>
+            </li>
+
           </ul>
+
+          <!-- <ul class="navbar-nav nav mb-2 mb-lg-0 d-flex">
+            
+          </ul> -->
         </div>
       </div> 
     </nav>
@@ -36,3 +54,15 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.hide-me {
+  visibility: hidden;
+}
+
+@media only screen and (min-width: 1000px) {
+  .hide-me {
+      visibility: visible;
+  }
+}
+</style>
