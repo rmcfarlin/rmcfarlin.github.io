@@ -5,7 +5,7 @@
             <thead>
                 <tr>
                     <th scope="col" class="ps-3">Programming Language</th>
-                    <th scope="col" class="pe-3">Description</th>
+                    <th scope="col" class="pe-3">Experience</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,23 +28,15 @@ export default {
             skills: [
                         {
                             name: "VBA",
-                            description: "description: 95%"
+                            description: "File system maniupulation, classes, loops, conditionals, PDF conversion"
                         },
                         {
                             name: "Python",
-                            description: "description: 90%"
+                            description: "Django, Pandas, tkinter, Selenium, classes, loops, conditionals"
                         },
                         {
                             name: "JavaScript",
-                            description: "description: 70%"
-                        },
-                        {
-                            name: "C++",
-                            description: "description: 50%"
-                        },
-                        {
-                            name: "Haskell",
-                            description: "description: 50%"
+                            description: "Vue, node, classes, loops, conditionals"
                         }
                     ]
         }
