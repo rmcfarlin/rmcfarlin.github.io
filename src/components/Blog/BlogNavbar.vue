@@ -15,23 +15,10 @@
               </a>
             </li>
 
-            <!-- <li class="hide-me nav-item my-2 mx-1">
-              <div class="nav-link">|</div>
-            </li>
-            <li class="nav-item my-2 mx-1">
-              <a class="nav-link" role="button" href="https://github.com/rmcfarlin" aria-expanded="false" target="_blank">
-                Portfolio
-              </a>
-            </li>
-            <li class="nav-item my-2 mx-1">
-              <a class="nav-link" role="button" href="https://www.linkedin.com/in/rdmcfarlin/" aria-expanded="false" target="_blank">
-                LinkedIn
-              </a>
-            </li> -->
-
           </ul>
 
-          <!-- <ul class="navbar-nav nav-pills nav mb-2 mb-lg-0 d-flex">
+          <!-- <ul class="navbar-nav nav mb-2 mb-lg-0 d-flex">
+            
           </ul> -->
         </div>
       </div> 
@@ -43,25 +30,11 @@ export default {
   data() {
     return {
       headerList: [
-        ['About Me', '#about'],
-        ['Work History', '#work'],
-        ['Education', '#education'],
-        ['Skills', '#skills'],
-        ['Values', '#values'],
+        ['Home', '/'],
+        ['Portfolio', 'https://github.com/rmcfarlin'],
+        ['LinkedIn', 'https://www.linkedin.com/in/rdmcfarlin/']
       ]
     }
   }
 }
 </script>
-
-<style scoped>
-.hide-me {
-  visibility: hidden;
-}
-
-@media only screen and (min-width: 1000px) {
-  .hide-me {
-      visibility: visible;
-  }
-}
-</style>
