@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <Navbar />
+    <BNav />
 
     <div class="container mt-5" style="height: 100vh">
       <div class="pt-3">
@@ -21,4 +21,19 @@ query Post ($path: String!) {
         content
     }
 }
-</ page-query>
+</page-query>
+
+<script>
+import BlogNavbar from '../components/Blog/BlogNavbar'
+
+export default {
+    components: {
+        BNav: BlogNavbar
+    },
+    data() {
+        return {
+
+        }
+    }
+}
+</script>
