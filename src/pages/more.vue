@@ -25,7 +25,7 @@
                                     <div class="card-body">
                                         <h4 class="card-header bg-white mb-3">Resources</h4>
                                         <ul class="list-group">
-                                            <li v-for="item in $page.allPost.edges" v-bind:key="item.node.path" class="list-group-item border-0">
+                                            <li v-for="item in $page.allResource.edges" v-bind:key="item.node.path" class="list-group-item border-0">
                                                 <g-link v-if="item.node.tag == 'resources' || 'books'" :to="item.node.path" class="card-text bg-white fs-6 text-dark">{{item.node.title}}</g-link>
                                             </li>
                                         </ul>
@@ -36,7 +36,7 @@
                                         <h4 class="card-header bg-white mb-3">Blog</h4>
                                         <ul class="list-group">
                                             <li v-for="item in $page.allPost.edges" v-bind:key="item.node.path" class="list-group-item border-0">
-                                                <g-link v-if="item.node.tag == 'blog'" :to="item.node.path" class="card-text bg-white fs-6 text-dark">{{item.node.title}} on {{item.node.date}}</g-link>
+                                                <g-link :to="item.node.path" class="card-text bg-white fs-6 text-dark">{{item.node.title}} on {{item.node.date}}</g-link>
                                             </li>
                                         </ul>                                        
                                     </div>
@@ -55,6 +55,17 @@
 <page-query>
 query Home {
     allPost {
+        edges {
+            node {
+                path
+                title
+                tag
+                date
+            }
+        }
+    }
+
+    allResource {
         edges {
             node {
                 path

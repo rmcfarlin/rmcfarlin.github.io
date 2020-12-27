@@ -1,5 +1,5 @@
 ---
-title: "Useful Resources"
+title: "My Favorite Websites"
 path: '/resources/list'
 date: '2020-12-27'
 tag: 'resources'

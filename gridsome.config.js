@@ -6,17 +6,25 @@
 
 module.exports = {
   siteName: 'Robert McFarlin',
-  plugins: [
-    {
+  plugins: [{
+    use: '@gridsome/source-filesystem',
+    options: {
+      typeName: 'Resource',
+      path: './Content/Resources/**/*.md',
+      remark: {
+        
+        }
+    }
+  },
+  {
     use: '@gridsome/source-filesystem',
     options: {
       typeName: 'Post',
-      path: 'src/content/Blog/**/*.md',
+      path: './Content/Blog/**/*.md',
       remark: {
         
-      }
-      }
+        }
     }
-  ],
+  }],
   siteUrl: 'https://rmcfarlin.github.io',
 }
