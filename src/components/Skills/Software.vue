@@ -32,19 +32,19 @@ export default {
                         },
                         {
                             name: "Power BI",
-                            description: "Experience managing monthly inventory counts."
+                            description: "Years of experience building powerful custom dashboards to enhance data visibility and aid in decision making."
                         },
                         {
                             name: "Microsoft Office",
-                            description: "Experience managing monthly inventory counts."
-                        },
-                        {
-                            name: "SAP",
-                            description: "Experience managing monthly inventory counts."
+                            description: "Experienced with all office products."
                         },
                         {
                             name: "ADP Payroll",
-                            description: "Experience managing monthly inventory counts."
+                            description: "Experience running/approving payroll and creating custom reports."
+                        },
+                        {
+                            name: "SAP",
+                            description: "Subject Matter Expert during SAP implementation. Years of experience in ERP systems that operate in a similar manner."
                         }
                     ]
         }
