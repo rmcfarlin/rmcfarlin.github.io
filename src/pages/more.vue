@@ -35,8 +35,8 @@
                                     <div class="card-body">
                                         <h4 class="card-header bg-white mb-3">Blog</h4>
                                         <ul class="list-group">
-                                            <li v-for="item in $page.allPost.edges" v-bind:key="item.node.path" class="list-group-item border-0">
-                                                <g-link :to="item.node.path" class="card-text bg-white fs-6 text-dark">{{item.node.title}} on {{item.node.date}}</g-link>
+                                            <li v-for="edge in $page.allContentfulBlog.edges" v-bind:key="edge.node.path" class="list-group-item border-0">
+                                                <g-link :to="'blog/'+edge.node.slug" class="card-text bg-white fs-6 text-dark">{{edge.node.title}}</g-link>
                                             </li>
                                         </ul>                                        
                                     </div>
@@ -60,6 +60,17 @@ query Home {
                 path
                 title
                 tag
+                date
+            }
+        }
+    }
+
+    allContentfulBlog {
+        edges {
+            node {
+                id
+                title
+                slug
                 date
             }
         }

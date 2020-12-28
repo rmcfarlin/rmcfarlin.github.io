@@ -25,6 +25,19 @@ module.exports = {
         
         }
     }
+  },
+  {
+    use: '@gridsome/source-contentful',
+    options: {
+      space: process.env.SPACEID, // required
+      accessToken: process.env.TOKEN, // required
+      host: 'cdn.contentful.com',
+      environment: 'master',
+      typeName: 'Contentful'
+    }
   }],
   siteUrl: 'https://rmcfarlin.github.io',
+  templates: {
+    ContentfulBlog: '/blog/:slug'
+  }
 }
