@@ -38,6 +38,8 @@ module.exports = {
   }],
   siteUrl: 'https://rmcfarlin.github.io',
   templates: {
-    ContentfulBlog: '/blog/:slug'
+    ContentfulBlog: '/blog/:slug',
+    ContentfulBook: '/book/:slug',
+    ContentfulValuation: '/valuation/:slug'
   }
 }
