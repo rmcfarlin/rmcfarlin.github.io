@@ -5,7 +5,12 @@
     <div class="container mt-5" style="height: 100vh">
       <div class="row">
         <div class="pt-3 col-sm-12 col-lg-8">
-          <h1 class="pt-5">{{$page.contentfulBook.title}}</h1>
+          <div class="row mt-5 text-light bg-dark">
+            <div class="col d-flex py-2">
+              <h1 class="">{{$page.contentfulBook.title}}</h1>
+              <a href="/book" class="rounded-0 btn btn-primary btn-lg ms-auto">Back</a>
+            </div>
+          </div>
           <hr>
 
           <div class="pt-4" v-html="$page.contentfulBook.author" />

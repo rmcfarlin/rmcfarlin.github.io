@@ -7,19 +7,17 @@
                     <div class="card bg-light rounded-0">
                         <div class="card-body">
                             <div class="row card-header text-light bg-dark">
-                                <div class="col-sm-12 d-flex py-2 justify-content-center">
-                                    <h2 class="justify-content-center me-auto">Valuations</h2>
-                                    <a href="/more" class="rounded-0 btn btn-primary btn-lg">Back</a>
-                                    
+                                <div class="col-sm-12 d-flex justify-content-center">
+                                    <a href="/more" class="rounded-0 btn btn-primary btn-lg me-auto">Back</a>
+                                    <h2 class="justify-content-center me-auto">Books</h2>
                                     <span> </span>
                                 </div>
                             </div>
-                                <div class="card col-sm-12 col-lg-12 mx-auto text-center mt-5">
+                                <div class="card offset-sm-1 offset-lg-1 col-sm-11 col-lg-5 mx-auto text-center mt-5">
                                     <div class="card-body">
                                         <ul class="list-group">
-                                            <li v-for="edge in $page.allContentfulValuation.edges" v-bind:key="edge.node.id" class="list-group-item border-0">
-                                                <g-link :to="'valuation/'+edge.node.slug" class="card-text bg-white fs-6 text-dark">{{edge.node.companyName}}</g-link>
-                                                 on {{edge.node.date}}
+                                            <li v-for="edge in $page.allContentfulBook.edges" v-bind:key="edge.node.id" class="list-group-item border-0">
+                                                <g-link :to="'book/'+edge.node.slug" class="card-text bg-white fs-6 text-dark">{{edge.node.title}} by {{edge.node.author}}</g-link>
                                             </li>
                                         </ul>                                        
                                     </div>
@@ -36,21 +34,16 @@
 </template>
 
 <page-query>
-query Valuation { 
-  allContentfulValuation(sortBy: "updatedAt", order: DESC) {
+query Book { 
+  allContentfulBook(sortBy: "updatedAt", order: DESC) {
     edges {
       node {
         updatedAt
         id
+        title
+        author
         slug
-        ticker
-        companyName
         date
-        valuationWorkbook {
-          file {
-            url
-          }
-        }
       }
     }
   }

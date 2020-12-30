@@ -17,23 +17,23 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
-                                    <h2 class="card-header bg-light text-center">About Me</h2>
+                                    <h2 class="card-header bg-dark text-light py-3 text-center">More Things About Me</h2>
                                 </div>
                             </div>
                             <div class="row py-4 px-4">
                                 <div class="card col-sm-12 col-lg-5 mx-auto text-center">
                                     <div class="card-body">
-                                        <h4 class="card-header bg-white mb-3">Resources</h4>
+                                        <h4 class="card-header bg-white mb-2 pb-3">Resources</h4>
                                         <ul class="list-group">
-                                            <li v-for="item in $page.allResource.edges" v-bind:key="item.node.path" class="list-group-item border-0">
-                                                <g-link v-if="item.node.tag == 'resources' || 'books'" :to="item.node.path" class="card-text bg-white fs-6 text-dark">{{item.node.title}}</g-link>
+                                            <li v-for="item in $page.allContentfulLink.edges" v-bind:key="item.node.slug" class="list-group-item border-0">
+                                                <g-link :to="'/'+item.node.slug" class="card-text bg-white fs-6 text-dark text-capitalize">{{item.node.name}}</g-link>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="card col-sm-12 col-lg-5 mx-auto text-center">
                                     <div class="card-body">
-                                        <h4 class="card-header bg-white mb-3">Blog</h4>
+                                        <h4 class="card-header bg-white mb-2 pb-3">Blog</h4>
                                         <ul class="list-group">
                                             <li v-for="edge in $page.allContentfulBlog.edges" v-bind:key="edge.node.path" class="list-group-item border-0">
                                                 <g-link :to="'blog/'+edge.node.slug" class="card-text bg-white fs-6 text-dark">{{edge.node.title}}</g-link>
@@ -54,13 +54,11 @@
 
 <page-query>
 query Home {
-    allPost {
+    allContentfulLink {
         edges {
             node {
-                path
-                title
-                tag
-                date
+                name
+                slug
             }
         }
     }
