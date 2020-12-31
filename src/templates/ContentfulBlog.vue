@@ -40,14 +40,16 @@ query Blog($id: ID) {
     title
     content(html: true)
     id
+    updatedAt
   }
 
-  allContentfulBlog {
+  allContentfulBlog(sortBy: "updatedAt", order: DESC) {
     edges {
       node {
         id
         title
         slug
+        updatedAt
       }
     }
   }

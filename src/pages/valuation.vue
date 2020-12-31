@@ -7,11 +7,10 @@
                     <div class="card bg-light rounded-0">
                         <div class="card-body">
                             <div class="row card-header text-light bg-dark">
-                                <div class="col-sm-12 d-flex py-2 justify-content-center">
-                                    <h2 class="justify-content-center me-auto">Valuations</h2>
-                                    <a href="/more" class="rounded-0 btn btn-primary btn-lg">Back</a>
-                                    
-                                    <span> </span>
+                                <div class="col-sm-12 d-flex justify-content-between">
+                                    <a href="/portfolio" class="rounded-0 btn btn-primary btn-lg">Back</a>
+                                    <h2 class="pe-5">Business Valuations</h2>
+                                    <h2 class="ps-4"></h2>
                                 </div>
                             </div>
                                 <div class="card col-sm-12 col-lg-12 mx-auto text-center mt-5">

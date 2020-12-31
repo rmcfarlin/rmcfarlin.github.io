@@ -17,7 +17,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
-                                    <h2 class="card-header bg-dark text-light py-3 text-center">More Things About Me</h2>
+                                    <h2 class="card-header bg-dark text-light py-3 text-center">What I'm Working On...</h2>
                                 </div>
                             </div>
                             <div class="row py-4 px-4">
@@ -63,13 +63,14 @@ query Home {
         }
     }
 
-    allContentfulBlog {
+    allContentfulBlog(sortBy: "updatedAt", order: DESC) {
         edges {
             node {
                 id
                 title
                 slug
                 date
+                updatedAt
             }
         }
     }

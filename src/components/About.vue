@@ -18,7 +18,7 @@
                         <div class="mx-auto">
                             <ul class="navbar-nav mb-2 mb-lg-0">
                                 <li class="nav-item mx-3">
-                                    <g-link class="nav-link" to="/more">More About Me</g-link>
+                                    <g-link class="nav-link" to="/portfolio">My Work</g-link>
                                 </li>
                                 <li class="nav-item mx-3">
                                     <g-link class="nav-link" to="https://www.linkedin.com/in/rdmcfarlin/">LinkedIn</g-link>
