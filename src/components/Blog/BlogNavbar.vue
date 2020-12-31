@@ -10,7 +10,7 @@
 
             <!-- Loop through array data to create menu -->
             <li class="nav-item my-2 mx-1" v-for="item in headerList" v-bind:key="item[0]">
-              <a class="nav-link" role="button" :href="item[1]" aria-expanded="false">
+              <a class="nav-link" role="button" :href="item[1]" aria-expanded="false" target="__blank">
                 {{item[0]}}
               </a>
             </li>
