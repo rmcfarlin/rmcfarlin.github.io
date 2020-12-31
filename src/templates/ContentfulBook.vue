@@ -2,19 +2,8 @@
   <Layout>
     <BNav />
 
-    <div class="container mt-5" style="height: 100vh">
-      <div class="row">
-        <div class="pt-3 col-sm-12 col-lg-8">
-          <div class="row mt-5 text-light bg-dark">
-            <div class="col d-flex py-2">
-              <h1 class="">{{$page.contentfulBook.title}}</h1>
-              <a href="/book" class="rounded-0 btn btn-primary btn-lg ms-auto">Back</a>
-            </div>
-          </div>
-          <hr>
-
-          <div class="pt-4" v-html="$page.contentfulBook.author" />
-        </div>
+    <PB>
+      <PH back="book" :title="$page.contentfulBook.title" />
 
 <!-- SIDEBAR -->
         <!-- <div class="pt-3 col-sm-12 col-lg-4">
@@ -32,8 +21,7 @@
             </div>
           </div>
         </div> -->
-      </div>
-    </div>
+    </PB>
 
     <Footer />
   </Layout>
@@ -62,10 +50,14 @@ query Book($id: ID) {
 
 <script>
 import BlogNavbar from '../components/Blog/BlogNavbar'
+import PageHeader from '../components/PageHeader'
+import PageBody from '../components/PageBody'
 
 export default {
     components: {
-        BNav: BlogNavbar
+        BNav: BlogNavbar,
+        PH: PageHeader,
+        PB: PageBody
     },
     data() {
         return {
