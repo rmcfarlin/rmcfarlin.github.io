@@ -4,7 +4,7 @@
         <PB>
             <PH title="Business Valuation" />
 
-            <div class="card col-sm-12 col-lg-10 mx-auto mt-5">
+            <div class="card col-sm-12 col-lg-10 mx-auto mt-4">
                 <div class="card-body table-responsive px-4">
                     <table class="table table-hover table-striped">
                         <thead class="table-dark">
@@ -90,7 +90,6 @@ export default {
                 console.log(m)
                 let y = da.getFullYear()
                 let nd = m+"/"+d+"/"+y
-                console.log(nd)
                 return nd
             }
         }

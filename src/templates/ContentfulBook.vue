@@ -3,24 +3,37 @@
     <BNav back="book" />
 
     <PB>
-      <PH :title="$page.contentfulBook.title" />
+
+      <div class="row">
+        <div class="card col-sm-12 col-lg-8 bg-light border-0">            
+          <div class="card-body">
+            <div class="card-header text-light bg-dark mb-3 rounded-0">
+              <div class="col-sm-12 text-center py-1">
+                  <h2 class="px-5">{{$page.book.title}}</h2>
+              </div>
+            </div>
+            <div>
+              <img :v-show="$page.book.image.file.url != null" :src="$page.book.image.file.url" :alt="$page.book.title+' Book Cover'" class="float-sm-start pe-3" height="300px" width="200px">
+              <div class="card-text mx-3" v-html="$page.book.summary" />
+            </div>
+              
+          </div>
+        </div>
 
 <!-- SIDEBAR -->
-        <!-- <div class="pt-3 col-sm-12 col-lg-4">
-          <div class="card pt-5" style="height: 100vh">
-            <div class="card-body">
-              <div class="h4 card-title text-center">Previous Posts</div>
-              <hr>
-              <ul>
-                <li v-for="edge in $page.allContentfulBlog.edges" :key="edge.node.id">
-                  <g-link :to="'blog/'+edge.node.slug">{{edge.node.title}}</g-link>
+        <div class="ms-2 card col-sm-12 offset-lg-1 col-lg-3 bg-light border-0">
+          <div class="card-body">
+            <h2 class="card-header text-light bg-dark rounded-0 text-center py-3 mb-3">Previous Posts</h2>
+            <ul class="list-group list-group-flush">
+              <g-link v-for="edge in $page.books.edges" :key="edge.node.id" :to="'book/'+edge.node.slug" class="text-dark text-decoration-none">
+                <li class="list-group-item list-group-item-action bg-light">
+                  {{edge.node.title}}
                 </li>
-              </ul>
-
-
-            </div>
+              </g-link>
+            </ul>
           </div>
-        </div> -->
+        </div>
+      </div>
     </PB>
 
     <Footer />
@@ -29,19 +42,27 @@
 
 <page-query>
 query Book($id: ID) {
-  contentfulBook(id: $id) {
+  book: contentfulBook(id: $id) {
     title
     author
     id
+    summary(html: true)
+    updatedAt
+    image {
+      file {
+        url
+      }
+    }
   }
 
-  allContentfulBook {
+  books: allContentfulBook {
     edges {
       node {
         id
         title
         author
         slug
+        updatedAt
       }
     }
   }
