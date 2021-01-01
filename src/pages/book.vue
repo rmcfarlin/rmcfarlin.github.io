@@ -1,8 +1,8 @@
 <template>
   <Layout>
-    <BNav />
+    <BNav back="portfolio" />
     <PB>
-        <PH back="portfolio" title="My Favorite Books" />
+        <PH title="My Favorite Books" />
         
         <div class="card col-sm-12 col-lg-10 mx-auto mt-5">
             <div class="card-body table-responsive px-4">

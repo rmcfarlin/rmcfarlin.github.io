@@ -1,32 +1,14 @@
 <template>
   <Layout>
-    <BNav />
+    <BNav back="valuation" />
     <PB>
-      <PH back="valuation" :title="$page.contentfulValuation.companyName+' Valuation'" />
+      <PH :title="$page.contentfulValuation.companyName+' Valuation'" />
       <div class="pt-4">
         <p>Ticker: {{$page.contentfulValuation.ticker}}</p>
       
-        <a class="link" :href="$page.contentfulValuation.valuationWorkbook.file.url" download>Download Valuation</a> 
+        <a class="link" :href="$page.contentfulValuation.valuationWorkbook.file.url" download>Download Workbook</a> 
       </div>
     </PB>
-
-<!-- SIDEBAR -->
-        <!-- <div class="pt-3 col-sm-12 col-lg-4">
-          <div class="card pt-5" style="height: 100vh">
-            <div class="card-body">
-              <div class="h4 card-title text-center">Previous Posts</div>
-              <hr>
-              <ul>
-                <li v-for="edge in $page.allContentfulBlog.edges" :key="edge.node.id">
-                  <g-link :to="'blog/'+edge.node.slug">{{edge.node.title}}</g-link>
-                </li>
-              </ul>
-
-
-            </div>
-          </div>
-        </div> -->
-
     <Footer />
   </Layout>
 </template>

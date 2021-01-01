@@ -1,9 +1,9 @@
 <template>
   <Layout>
-    <BNav />
+    <BNav back="book" />
 
     <PB>
-      <PH back="book" :title="$page.contentfulBook.title" />
+      <PH :title="$page.contentfulBook.title" />
 
 <!-- SIDEBAR -->
         <!-- <div class="pt-3 col-sm-12 col-lg-4">

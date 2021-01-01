@@ -17,9 +17,9 @@
 
           </ul>
 
-          <!-- <ul class="navbar-nav nav mb-2 mb-lg-0 d-flex">
-            
-          </ul> -->
+          <ul class="navbar-nav nav mb-2 mb-lg-0 d-flex">
+            <a v-show="!showBack" :href="'/'+back" class="rounded-0 btn btn-primary btn-lg">Back</a>
+          </ul>
         </div>
       </div> 
     </nav>
@@ -36,6 +36,7 @@ export default {
         ['GitHub', 'https://github.com/rmcfarlin']
       ]
     }
-  }
+  },
+  props: ['back', 'showBack']
 }
 </script>

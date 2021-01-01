@@ -1,5 +1,5 @@
 <template>
-  <div class="layout bg-light">
+  <div class="layout bg-over">
     <slot/>
   </div>
 </template>

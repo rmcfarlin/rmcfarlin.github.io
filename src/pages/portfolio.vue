@@ -1,8 +1,8 @@
 <template>
   <Layout>
-    <BNav />
+    <BNav showBack="true" />
         <PB>
-            <PH noBack=true title="What I'm Working On..." />
+            <PH title="What I'm Working On..." />
 
             <div class="row py-4 px-4">
                 <div class="card col-sm-12 col-lg-5 mx-auto text-center">
