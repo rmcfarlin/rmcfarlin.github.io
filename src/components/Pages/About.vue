@@ -13,7 +13,7 @@
                 <p class="row justify-content-center px-5">When I am not engrossed in a report or automating a process, you can find me spending time with my wife and children 
                     or camping at a local state park.</p>   
 
-                <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+                <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-2">
                     <div class="container-fluid max-auto">
                         <div class="mx-auto">
                             <ul class="navbar-nav mb-2 mb-lg-0">
