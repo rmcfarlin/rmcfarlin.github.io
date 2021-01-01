@@ -1,5 +1,5 @@
 <template>
-    <div class="row card-header text-light bg-dark">
+    <div class="row card-header rounded-0 text-light bg-dark">
         <div v-if="!noBack" class="col-sm-12 d-flex justify-content-between">
             <a :href="'/'+back" class="rounded-0 btn btn-primary btn-lg">Back</a>
             <h2 class="pe-5">{{title}}</h2>

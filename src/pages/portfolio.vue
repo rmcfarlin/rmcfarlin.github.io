@@ -9,7 +9,7 @@
                     <div class="card-body">
                         <h4 class="card-header bg-white mb-2 pb-3">Resources</h4>
                         <ul class="list-group">
-                            <li v-for="item in $page.allContentfulLink.edges" v-bind:key="item.node.slug" class="list-group-item border-0">
+                            <li v-for="item in $page.links.edges" v-bind:key="item.node.slug" class="list-group-item border-0">
                                 <g-link :to="'/'+item.node.slug" class="card-text bg-white fs-6 text-dark text-capitalize">{{item.node.name}}</g-link>
                             </li>
                         </ul>
@@ -18,11 +18,14 @@
                 <div class="card col-sm-12 col-lg-5 mx-auto text-center">
                     <div class="card-body">
                         <h4 class="card-header bg-white mb-2 pb-3">Blog</h4>
+                        <!-- <div class="mb-3">
+                            <input type="text" class="form-control bg-dark rounded-0 text-white text-center" id="blogSearch" placeholder="Search Blog Posts">
+                        </div> -->
                         <ul class="list-group">
-                            <li v-for="edge in $page.allContentfulBlog.edges" v-bind:key="edge.node.path" class="list-group-item border-0">
+                            <li v-for="edge in $page.posts.edges" v-bind:key="edge.node.path" class="list-group-item border-0">
                                 <g-link :to="'blog/'+edge.node.slug" class="card-text bg-white fs-6 text-dark">{{edge.node.title}}</g-link>
                             </li>
-                        </ul>                                        
+                        </ul>                                    
                     </div>
                 </div>
             </div>
@@ -32,8 +35,8 @@
 </template>
 
 <page-query>
-query Home {
-    allContentfulLink {
+query {
+    links: allContentfulLink {
         edges {
             node {
                 name
@@ -42,7 +45,7 @@ query Home {
         }
     }
 
-    allContentfulBlog(sortBy: "updatedAt", order: DESC) {
+    posts: allContentfulBlog(sortBy: "updatedAt", order: DESC) {
         edges {
             node {
                 id
@@ -69,7 +72,7 @@ export default {
     },
     data() {
         return {
-
+            
         }
     }
 }

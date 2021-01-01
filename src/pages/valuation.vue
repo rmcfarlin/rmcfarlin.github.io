@@ -12,7 +12,7 @@
                                 <th scope="col">Company Name</th>
                                 <th scope="col">Ticker</th>
                                 <th scope="col">Last Updated</th>
-                                <th scope="col">Valuation</th>
+                                <th scope="col" class="text-center">Valuation</th>
                             </tr>
                         </thead>
                         <tbody>

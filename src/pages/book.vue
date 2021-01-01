@@ -11,7 +11,7 @@
                         <tr>
                             <th scope="col">Title</th>
                             <th scope="col">Author</th>
-                            <th scope="col">Summary</th>
+                            <th scope="col" class="text-center">Summary</th>
                         </tr>
                     </thead>
                     <tbody>
