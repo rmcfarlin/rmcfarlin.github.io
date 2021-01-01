@@ -31,7 +31,7 @@ export default {
     return {
       headerList: [
         ['Home', '/'],
-        ['Portfolio', '/portfolio'],        
+        ['My Work', '/portfolio'],        
         ['LinkedIn', 'https://www.linkedin.com/in/rdmcfarlin/'],
         ['GitHub', 'https://github.com/rmcfarlin']
       ]

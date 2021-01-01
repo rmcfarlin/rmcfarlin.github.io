@@ -7,26 +7,16 @@
 module.exports = {
   siteName: 'Robert McFarlin',
   plugins: [{
-    use: '@gridsome/source-filesystem',
-    options: {
-      typeName: 'Resource',
-      path: './Content/Resources/**/*.md',
-      remark: {
+  //   use: '@gridsome/source-filesystem',
+  //   options: {
+  //     typeName: 'Resource',
+  //     path: './Content/Resources/**/*.md',
+  //     remark: {
         
-        }
-    }
-  },
-  {
-    use: '@gridsome/source-filesystem',
-    options: {
-      typeName: 'Post',
-      path: './Content/Blog/**/*.md',
-      remark: {
-        
-        }
-    }
-  },
-  {
+  //       }
+  //   }
+  // },
+  // {  {
     use: '@gridsome/source-contentful',
     options: {
       space: process.env.SPACEID, // required

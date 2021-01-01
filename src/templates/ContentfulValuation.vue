@@ -1,19 +1,14 @@
 <template>
   <Layout>
     <BNav />
-
-    <div class="container mt-5" style="height: 100vh">
-      <div class="row">
-        <div class="pt-3 col-sm-12 col-lg-8">
-          <h1 class="pt-5">{{$page.contentfulValuation.companyName}} Valuation</h1>
-          <hr>
-
-          <div class="pt-4">
-            <p>Ticker: {{$page.contentfulValuation.ticker}}</p>
-          
-            <a class="link" :href="$page.contentfulValuation.valuationWorkbook.file.url" download>Download Valuation</a> 
-          </div>
-        </div>
+    <PB>
+      <PH back="valuation" :title="$page.contentfulValuation.companyName+' Valuation'" />
+      <div class="pt-4">
+        <p>Ticker: {{$page.contentfulValuation.ticker}}</p>
+      
+        <a class="link" :href="$page.contentfulValuation.valuationWorkbook.file.url" download>Download Valuation</a> 
+      </div>
+    </PB>
 
 <!-- SIDEBAR -->
         <!-- <div class="pt-3 col-sm-12 col-lg-4">
@@ -31,8 +26,6 @@
             </div>
           </div>
         </div> -->
-      </div>
-    </div>
 
     <Footer />
   </Layout>
@@ -72,10 +65,14 @@ query Valuation($id: ID) {
 
 <script>
 import BlogNavbar from '../components/Blog/BlogNavbar'
+import PageBody from '../components/PageBody'
+import PageHeader from '../components/PageHeader'
 
 export default {
     components: {
-        BNav: BlogNavbar
+        BNav: BlogNavbar,
+        PB: PageBody,
+        PH: PageHeader
     },
     data() {
         return {

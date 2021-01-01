@@ -3,12 +3,12 @@
 
 import DefaultLayout from '~/layouts/Default.vue'
 import Navbar from '~/components/Navbar.vue'
-import Hero from '~/components/Hero.vue'
-import Work from '~/components/Work.vue'
-import Education from '~/components/Education.vue'
-import Skills from '~/components/Skills.vue'
-import Values from '~/components/Values.vue'
-import About from '~/components/About.vue'
+import Hero from '~/components/Pages/Hero.vue'
+import Work from '~/components/Pages/Work.vue'
+import Education from '~/components/Pages/Education.vue'
+import Skills from '~/components/Pages/Skills.vue'
+import Values from '~/components/Pages/Values.vue'
+import About from '~/components/Pages/About.vue'
 import Footer from '~/components/Footer.vue'
 
 export default function (Vue, { router, head, isClient }) {
