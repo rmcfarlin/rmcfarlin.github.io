@@ -72,9 +72,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.bg-over {
-    height: 100vh !important;
-}
-</style>

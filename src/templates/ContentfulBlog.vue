@@ -72,9 +72,3 @@ export default {
     }
 }
 </script>
-
-<style>
-.bg-white{
-  background-color: #fff;
-}
-</style>
