@@ -23,7 +23,7 @@
 <!-- SIDEBAR -->
         <div class="ms-2 card col-sm-12 offset-lg-1 col-lg-3 bg-light border-0">
           <div class="card-body">
-            <h2 class="card-header text-light bg-dark rounded-0 text-center py-3 mb-3">Previous Posts</h2>
+            <h2 class="card-header text-light bg-dark rounded-0 text-center py-3 mb-3">Other Books</h2>
             <ul class="list-group list-group-flush">
               <g-link v-for="edge in $page.books.edges" :key="edge.node.id" :to="'book/'+edge.node.slug" class="text-dark text-decoration-none">
                 <li class="list-group-item list-group-item-action bg-light">
