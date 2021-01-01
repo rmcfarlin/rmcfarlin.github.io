@@ -5,7 +5,7 @@
 </template>
 
 <style>
-/* body {
+body {
   font-family: 'Libre Baskerville', serif;
-} */
+}
 </style>
