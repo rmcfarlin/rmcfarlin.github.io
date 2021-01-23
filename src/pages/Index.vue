@@ -4,7 +4,7 @@
     <Hero />
     <About />
     <Work />
-    <Education />
+    <Education :certs="$page.certs.edges"/>
     <Skills />
     <Values />
     <Footer />
@@ -14,6 +14,22 @@
 
   </Layout>
 </template>
+
+<page-query>
+query {
+  certs: allContentfulCertification(sortBy: "completedOn", order: DESC) {
+        edges {
+        node {
+            title
+            id
+            completedOn
+            slug
+            url
+        }
+        }
+    }
+}
+</page-query>
 
 <script>
 export default {

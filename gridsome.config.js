@@ -30,6 +30,7 @@ module.exports = {
   templates: {
     ContentfulBlog: '/blog/:slug',
     ContentfulBook: '/book/:slug',
-    ContentfulValuation: '/valuation/:slug'
+    ContentfulValuation: '/valuation/:slug',
+    ContentfulCertification: '/certification/:slug'
   }
 }

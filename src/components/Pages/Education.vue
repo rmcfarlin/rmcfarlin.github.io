@@ -13,14 +13,14 @@
                         <li class="nav-item border border-dark" data-bs-toggle="collapse" href="#CMA" role="button" aria-expanded="false" aria-controls="CMA" @click="ifClicked">
                             <a class="nav-link text-dark" :class="CMAa" aria-current="true" href="#">CMA</a>
                         </li>
-                        <li class="nav-item border border-dark" data-bs-toggle="collapse" href="#MBA" role="button" aria-expanded="false" aria-controls="MBA" @click="ifClicked">
-                            <a class="nav-link text-dark" :class="MBAa" aria-current="true" href="#">MBA <span class="fst-italic">(In Progress)</span></a>
-                        </li>
                         <li class="nav-item border border-dark" data-bs-toggle="collapse" href="#MACC" role="button" aria-expanded="false" aria-controls="MACC" @click="ifClicked">
                             <a class="nav-link text-dark" :class="MACCa" aria-current="true" href="#">MAcc</a>
                         </li>
                         <li class="nav-item border border-dark" data-bs-toggle="collapse" href="#BSBA" role="button" aria-expanded="false" aria-controls="BSBA" @click="ifClicked">
                             <a class="nav-link text-dark" :class="BSBAa" aria-current="true" href="#">BS B.A.</a>
+                        </li>
+                        <li class="nav-item border border-dark" data-bs-toggle="collapse" href="#MBA" role="button" aria-expanded="false" aria-controls="MBA" @click="ifClicked">
+                            <a class="nav-link text-dark" :class="MBAa" aria-current="true" href="#">Continuing Education</a>
                         </li>
                     </ul>
                 </div>
@@ -31,15 +31,6 @@
                         <h4 class="card-title pt-5 fw-bolder">Institute of Management Accountants</h4>
                         <p class="card-text fw-bolder">Certified Management Accountant (CMA)</p>
                         <a href="https://www.imanet.org/cma-certification?ssopc=1" target="_blank" class="btn bg-blue border border-dark border-2 rounded-0 fw-bolder text-white">Certification Details</a>
-                    </div>
-                </div>
-
-                <div class="collapse card bg-dark text-white rounded-0 border border-dark border-2" :class="MBA" id="MBA">
-                    <g-image src="https://i.imgur.com/YkTKi6m.jpg" alt="LSUS Campus" class="card-img" />
-                    <div class="card-img-overlay">
-                        <h4 class="card-title pt-5 fw-bolder">Louisiana State University - Shreveport</h4>
-                        <p class="card-text fw-bolder">Masters of Business Administration with a Concentration in Data Analytics</p>
-                        <a href="https://online.lsus.edu/online/pages/bus/?lsid=bing&lssid=lsus_bus_mba_m_sr_gen&utm_source=bing&utm_medium=cpc&utm_term=mba%20lsu&utm_content=Lsu%20Mba&utm_campaign=lsus_bus_mba_m_sr_gen-B-X-E-N-ALL-LSUBP&campid=73053480&groupid=2720960977&type=be&network=o&device=c&adid=13762561346&fdid=&tgid=kwd-27019475161:loc-4123&lphys=80997&linst=&msclkid=68e4ef603354171ef1eab080b02ff400" target="_blank" class="btn bg-blue border border-dark border-2 rounded-0 fw-bolder text-white">Degree Details</a>
                     </div>
                 </div>
 
@@ -60,6 +51,34 @@
                         <a href="https://www.uscupstate.edu/academics/majors-programs/undergraduate-programs/business-administration-and-economics/" target="_blank" class="btn bg-blue border border-dark border-2 rounded-0 fw-bolder text-white">Degree Details</a>
                     </div>
                 </div>
+
+                <div class="collapse card rounded-0 border border-dark border-2" :class="MBA" id="MBA">
+                    <table class="table table-striped table-hover">
+                        <thead class="card-title">
+                            <tr>
+                                <th scope="col">Course Title</th>
+                                <th scope="col">Date Completed</th>
+                                <th scope="col">View Certificate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="edge in $page.certs.edges" v-bind:key="edge.node.id" >
+                                <th>{{edge.node.title}}</th>
+                                <th>{{edge.node.completedOn}}</th>
+                                <th>
+                                    <g-link :to="'certification/' + edge.node.slug" class="text-dark">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-binoculars-fill" viewBox="0 0 16 16">
+                                            <path d="M4.5 1A1.5 1.5 0 0 0 3 2.5V3h4v-.5A1.5 1.5 0 0 0 5.5 1h-1zM7 4v1h2V4h4v.882a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V13H9v-1.5a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5V13H1V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V4h4zM1 14v.5A1.5 1.5 0 0 0 2.5 16h3A1.5 1.5 0 0 0 7 14.5V14H1zm8 0v.5a1.5 1.5 0 0 0 1.5 1.5h3a1.5 1.5 0 0 0 1.5-1.5V14H9zm4-11H9v-.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5V3z"/>
+                                        </svg>
+                                    </g-link>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+
             </div>
 
 
@@ -104,24 +123,7 @@ export default {
                 this.BSBAa = ""
             }
 
-            if (ele == 'MBA <span data-v-2a424ba8="" class="fst-italic">(In Progress)</span>') {
-                if (this.MBA == "show") {
-                    this.MBA = ""
-                    this.MBAa = ""
-                } else {
-                    this.MBA = "show"
-                    this.MBAa = "active"
-                }
-
-                this.CMA = ""
-                this.MACC = ""
-                this.BSBA = ""
-                this.CMAa = ""
-                this.MACCa = ""
-                this.BSBAa = ""
-            }
-
-            if (ele == '(In Progress)') {
+            if (ele == "Continuing Education") {
                 if (this.MBA == "show") {
                     this.MBA = ""
                     this.MBAa = ""
