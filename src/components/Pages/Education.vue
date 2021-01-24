@@ -56,15 +56,15 @@
                     <table class="table table-striped table-hover">
                         <thead class="card-title">
                             <tr>
-                                <th scope="col">Course Title</th>
+                                <th scope="col" class="text-start ps-4">Course Title</th>
                                 <th scope="col">Date Completed</th>
                                 <th scope="col">View Certificate</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="edge in $page.certs.edges" v-bind:key="edge.node.id" >
-                                <th>{{edge.node.title}}</th>
-                                <th>{{edge.node.completedOn}}</th>
+                                <th class="text-start ps-4">{{edge.node.title}}</th>
+                                <th>{{format_date(edge.node.completedOn)}}</th>
                                 <th>
                                     <g-link :to="'certification/' + edge.node.slug" class="text-dark">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-binoculars-fill" viewBox="0 0 16 16">
@@ -172,6 +172,23 @@ export default {
                 this.CMAa = ""
                 this.MACCa = ""
                 this.MBAa = ""
+            }
+        },
+        appendZero(n){
+            if(n<=9){
+                return "0"+n
+            } 
+            return n
+        },
+        format_date(dt){
+            if (dt) {
+                let da = new Date(dt)
+                let d = this.appendZero(da.getDate())
+                let m = this.appendZero(da.getMonth()+1)
+                console.log(m)
+                let y = da.getFullYear()
+                let nd = m+"/"+d+"/"+y
+                return nd
             }
         }
     }
