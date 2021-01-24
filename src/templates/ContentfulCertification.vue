@@ -4,7 +4,7 @@
 
     <PB>
 
-      <div class="row">
+      <div class="row mb-5">
 
         <div class="card col-sm-12 col-lg-8 bg-light border-0">            
           <div class="card-body">
