@@ -4,6 +4,26 @@
             <!-- Job Title -->
             <div class="row">
                 <h5>
+                    <span class="text-decoration-underline fw-bolder pt-2 fs-5">Chief Financial Officer</span>
+                    <span class="fst-italic pt-2 ms-4">(2017-Present)</span>
+                </h5>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <ul>
+                        <li>Implemented an HRIS system to revolutionize payroll and learning management for the company</li>
+                        <li>Overhauled reporting system using Microsoft Fabric for a single source of truth</li>
+                        <li>Reduced budgeting complexity to streamline the completion timeline</li>
+                        <li>Created Graphical Query Interface in Excel for easy ERP data retrieval</li>
+                        <li>Partially automated GL account reconciliations to simplfying processing</li>
+                        <li>Created internal audit function to ensure reliability of data and reconciliations</li>
+                    </ul>   
+                </div>
+            </div>
+            
+            <!-- Job Title -->
+            <div class="row">
+                <h5>
                     <span class="text-decoration-underline fw-bolder pt-2 fs-5">Corporate Controller</span>
                     <span class="fst-italic pt-2 ms-4">(2017-Present)</span>
                 </h5>
