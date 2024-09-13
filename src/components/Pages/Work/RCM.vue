@@ -5,7 +5,7 @@
             <div class="row">
                 <h5>
                     <span class="text-decoration-underline fw-bolder pt-2 fs-5">Chief Financial Officer</span>
-                    <span class="fst-italic pt-2 ms-4">(2017-Present)</span>
+                    <span class="fst-italic pt-2 ms-4">(2023-Present)</span>
                 </h5>
             </div>
             <div class="container">
@@ -25,7 +25,7 @@
             <div class="row">
                 <h5>
                     <span class="text-decoration-underline fw-bolder pt-2 fs-5">Corporate Controller</span>
-                    <span class="fst-italic pt-2 ms-4">(2017-Present)</span>
+                    <span class="fst-italic pt-2 ms-4">(2017-2022)</span>
                 </h5>
             </div>
             <div class="container">
