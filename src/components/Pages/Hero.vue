@@ -10,7 +10,7 @@
             <div class="carousel-item active" style="height: 80vh" data-bs-interval="3000">
                 <g-image src="https://i.imgur.com/2xIvCzj.jpg" class="d-block w-100 item-1" style="height: 80vh" alt="Business Image" />
                 <div class="carousel-caption">
-                    <h5 class="text-white fs-1 text-center pb-5">Accountant</h5>
+                    <h5 class="text-white fs-1 text-center pb-5">Chief Financial Officer</h5>
                 </div>
             </div>
 
