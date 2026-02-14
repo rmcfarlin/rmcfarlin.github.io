@@ -1,5 +1,5 @@
 <script>
-	import { personal } from '$lib/data/content.js';
+	import { personal, social } from '$lib/data/content.js';
 </script>
 
 <section class="hero" id="top">
@@ -10,8 +10,8 @@
 			<p class="hero-location hero-animate hero-animate-delay-3">{personal.location}</p>
 			<p class="hero-tagline hero-animate hero-animate-delay-4">{personal.tagline}</p>
 			<div class="hero-actions hero-animate hero-animate-delay-5">
-				<a href="#about" class="btn btn-primary">Learn More</a>
-				<a href="#experience" class="btn btn-outline">Experience</a>
+				<a href={social.linkedin} target="_blank" rel="noopener noreferrer" class="btn btn-primary">Connect on LinkedIn</a>
+				<a href="#about" class="btn btn-outline">Learn More</a>
 			</div>
 		</div>
 		<div class="hero-photo-wrapper hero-animate hero-animate-delay-3">

@@ -3,9 +3,10 @@
 	import ScrollReveal from './ScrollReveal.svelte';
 
 	const categories = [
-		{ key: 'accounting', label: 'Accounting', icon: '📊' },
-		{ key: 'software', label: 'Software', icon: '💻' },
-		{ key: 'programming', label: 'Programming', icon: '⚡' }
+		{ key: 'leadership', label: 'Leadership & Strategy' },
+		{ key: 'accounting', label: 'Accounting' },
+		{ key: 'software', label: 'Software' },
+		{ key: 'programming', label: 'Programming' }
 	];
 </script>
 
@@ -46,8 +47,8 @@
 <style>
 	.skills-grid {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: var(--space-8);
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--space-6);
 	}
 
 	.skill-category {
@@ -114,6 +115,12 @@
 	.skill-tag:hover {
 		background: rgba(0, 212, 170, 0.25);
 		transform: translateY(-1px);
+	}
+
+	@media (max-width: 1024px) {
+		.skills-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
 	}
 
 	@media (max-width: 768px) {

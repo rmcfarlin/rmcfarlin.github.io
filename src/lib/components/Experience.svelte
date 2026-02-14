@@ -14,7 +14,12 @@
 			{#each experience as company, ci}
 				<div class="timeline-company">
 					<ScrollReveal delay={ci * 100}>
-						<h3 class="company-name">{company.company}</h3>
+						<div class="company-header">
+							<h3 class="company-name">{company.company}</h3>
+							{#if company.industry}
+								<span class="company-industry">{company.industry}</span>
+							{/if}
+						</div>
 					</ScrollReveal>
 
 					{#each company.roles as role, ri}
@@ -26,8 +31,12 @@
 										<h4 class="role-title">{role.title}</h4>
 										<span class="role-period">{role.period}</span>
 									</div>
-									{#if role.highlights}
-										<p class="role-highlights">{role.highlights}</p>
+									{#if role.highlights && role.highlights.length > 0}
+										<ul class="role-highlights">
+											{#each role.highlights as highlight}
+												<li>{highlight}</li>
+											{/each}
+										</ul>
 									{/if}
 								</div>
 							</div>
@@ -59,12 +68,23 @@
 		margin-bottom: var(--space-10);
 	}
 
+	.company-header {
+		padding-left: var(--space-4);
+		margin-bottom: var(--space-4);
+	}
+
 	.company-name {
 		font-size: var(--text-xl);
 		font-weight: 600;
 		color: var(--text-primary);
-		margin-bottom: var(--space-4);
-		padding-left: var(--space-4);
+	}
+
+	.company-industry {
+		font-family: var(--font-mono);
+		font-size: var(--text-xs);
+		color: var(--accent-primary);
+		letter-spacing: var(--tracking-wide);
+		text-transform: uppercase;
 	}
 
 	.timeline-entry {
@@ -129,10 +149,27 @@
 	}
 
 	.role-highlights {
+		list-style: none;
+		margin-top: var(--space-3);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.role-highlights li {
 		font-size: var(--text-sm);
 		color: var(--text-secondary);
-		margin-top: var(--space-2);
 		line-height: var(--leading-normal);
+		padding-left: var(--space-4);
+		position: relative;
+	}
+
+	.role-highlights li::before {
+		content: '—';
+		position: absolute;
+		left: 0;
+		color: var(--accent-primary);
+		font-weight: 600;
 	}
 
 	@media (max-width: 768px) {

@@ -13,6 +13,15 @@
 	let activeSection = $state("");
 	let menuOpen = $state(false);
 
+	// Lock body scroll when menu is open
+	$effect(() => {
+		if (menuOpen) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "";
+		}
+	});
+
 	$effect(() => {
 		const onScroll = () => {
 			scrolled = window.scrollY > 20;
@@ -30,7 +39,14 @@
 			});
 		}, observerOptions);
 
+		const onKeydown = (e) => {
+			if (e.key === "Escape" && menuOpen) {
+				menuOpen = false;
+			}
+		};
+
 		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("keydown", onKeydown);
 		onScroll();
 
 		sections.forEach(({ id }) => {
@@ -40,7 +56,9 @@
 
 		return () => {
 			window.removeEventListener("scroll", onScroll);
+			window.removeEventListener("keydown", onKeydown);
 			observer.disconnect();
+			document.body.style.overflow = "";
 		};
 	});
 
@@ -48,6 +66,12 @@
 		menuOpen = false;
 		const el = document.getElementById(id);
 		if (el) el.scrollIntoView({ behavior: "smooth" });
+	}
+
+	function handleOverlayClick(e) {
+		if (e.target === e.currentTarget) {
+			menuOpen = false;
+		}
 	}
 </script>
 
@@ -73,7 +97,7 @@
 			<span class="hamburger" class:open={menuOpen}></span>
 		</button>
 
-		<ul class="nav-links" class:open={menuOpen}>
+		<ul class="nav-links-desktop">
 			{#each sections as { id, label }}
 				<li>
 					<button
@@ -88,6 +112,24 @@
 		</ul>
 	</div>
 </nav>
+
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div class="mobile-menu-overlay" class:open={menuOpen} onclick={handleOverlayClick}>
+	<ul class="mobile-menu-links">
+		{#each sections as { id, label }}
+			<li>
+				<button
+					class="nav-link"
+					class:active={activeSection === id}
+					onclick={() => handleNavClick(id)}
+				>
+					{label}
+				</button>
+			</li>
+		{/each}
+	</ul>
+</div>
 
 <style>
 	.nav {
@@ -134,7 +176,7 @@
 		color: var(--accent-primary);
 	}
 
-	.nav-links {
+	.nav-links-desktop {
 		display: flex;
 		list-style: none;
 		gap: var(--space-1);
@@ -178,6 +220,10 @@
 		height: 40px;
 		align-items: center;
 		justify-content: center;
+	}
+
+	.mobile-menu-overlay {
+		display: none;
 	}
 
 	.hamburger {
@@ -225,32 +271,67 @@
 			display: flex;
 		}
 
-		.nav-links {
+		.nav-links-desktop {
+			display: none;
+		}
+
+		.mobile-menu-overlay {
+			display: block;
 			position: fixed;
 			top: var(--nav-height);
 			left: 0;
 			right: 0;
 			bottom: 0;
+			z-index: 99;
 			background: rgba(10, 10, 15, 0.98);
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			gap: var(--space-4);
 			opacity: 0;
 			visibility: hidden;
 			transition:
 				opacity 0.3s ease,
 				visibility 0.3s ease;
+			overscroll-behavior: contain;
 		}
 
-		.nav-links.open {
+		.mobile-menu-overlay.open {
 			opacity: 1;
 			visibility: visible;
 		}
 
-		.nav-link {
+		.mobile-menu-links {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			list-style: none;
+			gap: var(--space-4);
+			height: 100%;
+		}
+
+		.mobile-menu-overlay.open li {
+			animation: menuFadeIn 0.3s ease forwards;
+			opacity: 0;
+		}
+
+		.mobile-menu-overlay.open li:nth-child(1) { animation-delay: 0.05s; }
+		.mobile-menu-overlay.open li:nth-child(2) { animation-delay: 0.1s; }
+		.mobile-menu-overlay.open li:nth-child(3) { animation-delay: 0.15s; }
+		.mobile-menu-overlay.open li:nth-child(4) { animation-delay: 0.2s; }
+		.mobile-menu-overlay.open li:nth-child(5) { animation-delay: 0.25s; }
+
+		.mobile-menu-overlay .nav-link {
 			font-size: var(--text-xl);
 			padding: var(--space-3) var(--space-6);
+		}
+	}
+
+	@keyframes menuFadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
 		}
 	}
 </style>

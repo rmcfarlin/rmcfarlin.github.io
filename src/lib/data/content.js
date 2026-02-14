@@ -2,15 +2,15 @@ export const personal = {
 	name: 'Robert McFarlin',
 	title: 'CFO & Automation Lover',
 	location: 'Greenville, SC',
-	tagline: 'Bridging finance and technology to drive purposeful progress.',
+	tagline: 'Manufacturing CFO bridging finance and technology to drive purposeful progress.',
 	photo: 'https://i.imgur.com/MFwSmEd.jpg',
 	certifications: ['Certified Management Accountant (CMA)']
 };
 
 export const about = {
 	paragraphs: [
-		"I'm a Certified Management Accountant and Chief Financial Officer with a passion for technology. My career has been defined by the intersection of financial strategy and technical innovation — from automating general ledger processes to building custom analytics dashboards and full-stack applications.",
-		"I believe the best finance leaders don't just manage numbers — they build systems that make numbers meaningful. Whether it's implementing HRIS platforms, designing Power BI reporting suites, or writing Python scripts to streamline workflows, I'm always looking for a better way.",
+		"I'm a Certified Management Accountant and Chief Financial Officer in the manufacturing industry with a passion for technology. Over the past decade, I've grown from Accounting Manager to CFO at a multi-plant manufacturing company — building systems that turn financial data into strategic advantage along the way.",
+		"I believe the best finance leaders don't just manage numbers — they build systems that make numbers meaningful. Whether it's implementing HRIS platforms, designing Microsoft Fabric reporting suites, or writing Python scripts to automate manual workflows, I'm always looking for a better way.",
 		"Outside of work, I'm a lifelong learner, a family man, and a camping enthusiast who finds clarity in the mountains of the Carolinas."
 	]
 };
@@ -18,48 +18,77 @@ export const about = {
 export const experience = [
 	{
 		company: 'RCM Industries, Inc.',
+		industry: 'Manufacturing',
 		roles: [
 			{
 				title: 'Chief Financial Officer',
 				period: '2023 – Present',
 				current: true,
-				highlights: 'HRIS implementation, Microsoft Fabric reporting overhaul, GL automation, internal audit creation'
+				highlights: [
+					'Led company-wide HRIS implementation, consolidating payroll and HR processes across 4 locations',
+					'Overhauled enterprise reporting with Microsoft Fabric, reducing report generation time and increasing data accessibility',
+					'Automated general ledger reconciliation processes, saving 20 hours per month',
+					'Established internal audit function from the ground up, strengthening compliance and controls'
+				]
 			},
 			{
 				title: 'Corporate Controller',
 				period: '2017 – 2022',
-				highlights: 'Managed 3-5 day close cycles, supervised multiple departments, consolidated forecasts'
+				highlights: [
+					'Achieved consistent 3 day month-end close cycles across multiple business units',
+					'Supervised accounting, AP/AR, and payroll departments across 4 plants',
+					'Built consolidated forecasting models used by executive leadership for strategic planning',
+					'Managed financial reporting for 6 entity consolidated group'
+				]
 			},
 			{
 				title: 'Division Controller',
 				period: '2016 – 2017',
-				highlights: 'Plant-level operations, inventory management, KPI dashboards'
+				highlights: [
+					'Owned full P&L responsibility for plant-level operations',
+					'Implemented KPI dashboards that improved inventory visibility and reduced carrying costs',
+					'Partnered with plant managers to drive operational efficiency improvements'
+				]
 			},
 			{
 				title: 'Accounting Manager',
 				period: '2014 – 2016',
-				highlights: 'Multi-plant financial statement preparation'
+				highlights: [
+					'Prepared and analyzed financial statements across multiple manufacturing plants',
+					'Streamlined multi-plant reporting processes, reducing close cycle time'
+				]
 			}
 		]
 	},
 	{
 		company: 'ScanSource, Inc.',
+		industry: 'Technology Distribution',
 		roles: [
 			{
 				title: 'Staff Accountant',
 				period: '2012 – 2014',
-				highlights: 'Balance sheet reconciliations, revenue accounting, SAP implementation'
+				highlights: [
+					'Managed balance sheet reconciliations and revenue accounting for a publicly traded company',
+					'Served as SME during SAP implementation, ensuring accurate data migration and process continuity'
+				]
 			},
 			{
 				title: 'Accounts Payable Analyst',
 				period: '2011',
-				highlights: 'High-volume invoice processing'
+				highlights: [
+					'Processed high-volume invoices in a fast-paced distribution environment'
+				]
 			}
 		]
 	}
 ];
 
 export const education = [
+	{
+		degree: 'Certified Management Accountant (CMA)',
+		institution: 'Institute of Management Accountants',
+		logo: 'https://i.imgur.com/wcyqzaF.jpg'
+	},
 	{
 		degree: 'Masters of Accountancy',
 		institution: 'Stetson University',
@@ -73,7 +102,42 @@ export const education = [
 	}
 ];
 
+export const continuingEducation = [
+	{
+		title: 'Advanced Financial Modeling & Valuation',
+		source: 'CFI'
+	},
+	{
+		title: 'Business Valuation Modeling',
+		source: 'CFI'
+	},
+	{
+		title: 'Data Analytics & Visualization for Accounting Professionals',
+		source: 'IMA'
+	},
+	{
+		title: 'Strategy & Competitive Analysis',
+		source: 'IMA'
+	},
+	{
+		title: 'Sensitivity Analysis for Financial Modeling',
+		source: 'CFI'
+	},
+	{
+		title: 'Corporate & Business Strategy',
+		source: 'Coursera'
+	}
+];
+
 export const skills = {
+	leadership: [
+		'Strategic Planning & Execution',
+		'Financial Modeling & Valuation',
+		'Risk Management & Compliance',
+		'Stakeholder & Board Reporting',
+		'Team Leadership & Development',
+		'Process Improvement & Automation'
+	],
 	accounting: [
 		'Financial Statement Preparation & Analysis',
 		'Data Modeling & Analytics',
@@ -102,35 +166,11 @@ export const skills = {
 };
 
 export const values = [
-	'Relentless pursuit of purposeful progress',
+	'Relentlessly pursue purposeful progress',
 	'Give more in value than you receive in compensation',
 	'Everyone sweeps the floor',
-	'Share good news quick, and bad news quicker',
+	'Share good news quickly, and bad news even quicker',
 	'Treat every experience as an opportunity to learn'
-];
-
-export const portfolio = [
-	{
-		title: 'South Carolina Flight History',
-		type: 'Data Visualization',
-		description: 'Interactive Tableau dashboard analyzing flight patterns across South Carolina.',
-		link: 'https://public.tableau.com/views/SouthCarolinaFlightHistory/FlightHistory',
-		external: true
-	},
-	{
-		title: 'Business Valuations — The Graham Way',
-		type: 'Blog',
-		description: 'An exploration of investment valuation methodology inspired by Benjamin Graham.',
-		link: 'https://robertmcfarlin.com/portfolio',
-		external: true
-	},
-	{
-		title: 'The Power of Disconnection',
-		type: 'Blog',
-		description: 'Reflections on the benefits of stepping away from the digital world.',
-		link: 'https://robertmcfarlin.com/portfolio',
-		external: true
-	}
 ];
 
 export const social = {

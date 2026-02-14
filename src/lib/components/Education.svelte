@@ -1,5 +1,5 @@
 <script>
-	import { education } from '$lib/data/content.js';
+	import { education, continuingEducation } from '$lib/data/content.js';
 	import ScrollReveal from './ScrollReveal.svelte';
 </script>
 
@@ -26,6 +26,20 @@
 				</ScrollReveal>
 			{/each}
 		</div>
+
+		<ScrollReveal delay={200}>
+			<div class="continuing-ed">
+				<h3 class="continuing-ed-heading">Continuing Education</h3>
+				<div class="ce-grid">
+					{#each continuingEducation as course, i}
+						<div class="ce-item" style="transition-delay: {i * 60}ms">
+							<span class="ce-title">{course.title}</span>
+							<span class="ce-source">{course.source}</span>
+						</div>
+					{/each}
+				</div>
+			</div>
+		</ScrollReveal>
 	</div>
 </section>
 
@@ -84,8 +98,65 @@
 		color: var(--text-secondary);
 	}
 
+	.continuing-ed {
+		margin-top: var(--space-12);
+	}
+
+	.continuing-ed-heading {
+		font-size: var(--text-xl);
+		font-weight: 600;
+		color: var(--text-primary);
+		margin-bottom: var(--space-6);
+	}
+
+	.ce-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-3);
+	}
+
+	.ce-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-3);
+		padding: var(--space-3) var(--space-4);
+		background: var(--bg-tertiary);
+		border-radius: 8px;
+		border: 1px solid var(--border-subtle);
+		transition: border-color 0.2s ease;
+	}
+
+	.ce-item:hover {
+		border-color: var(--border-accent);
+	}
+
+	.ce-title {
+		font-size: var(--text-sm);
+		color: var(--text-secondary);
+		flex: 1;
+	}
+
+	.ce-source {
+		font-family: var(--font-mono);
+		font-size: var(--text-xs);
+		color: var(--accent-primary);
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+
+	@media (max-width: 1024px) {
+		.ce-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
 	@media (max-width: 768px) {
 		.education-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.ce-grid {
 			grid-template-columns: 1fr;
 		}
 	}
