@@ -1,6 +1,6 @@
 export const personal = {
 	name: 'Robert McFarlin',
-	title: 'CFO & Computer Programmer',
+	title: 'CFO & Automation Lover',
 	location: 'Greenville, SC',
 	tagline: 'Bridging finance and technology to drive purposeful progress.',
 	photo: 'https://i.imgur.com/MFwSmEd.jpg',
