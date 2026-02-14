@@ -1,0 +1,126 @@
+:root {
+	/* Backgrounds */
+	--bg-primary: #0a0a0f;
+	--bg-secondary: #12121a;
+	--bg-tertiary: #1a1a2e;
+
+	/* Accent */
+	--accent-primary: #00d4aa;
+	--accent-secondary: #00b894;
+	--accent-glow: rgba(0, 212, 170, 0.15);
+
+	/* Text */
+	--text-primary: #e8e8f0;
+	--text-secondary: #a0a0b8;
+	--text-muted: #6a6a80;
+
+	/* Borders */
+	--border-subtle: #1e1e30;
+	--border-accent: rgba(0, 212, 170, 0.3);
+
+	/* Spacing */
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-3: 0.75rem;
+	--space-4: 1rem;
+	--space-6: 1.5rem;
+	--space-8: 2rem;
+	--space-10: 2.5rem;
+	--space-12: 3rem;
+	--space-16: 4rem;
+	--space-20: 5rem;
+	--space-24: 6rem;
+
+	/* Layout */
+	--max-width: 1100px;
+	--nav-height: 64px;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: var(--nav-height);
+}
+
+body {
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	line-height: var(--leading-normal);
+	color: var(--text-primary);
+	background-color: var(--bg-primary);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+a {
+	color: var(--accent-primary);
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+a:hover {
+	color: var(--accent-secondary);
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+
+button {
+	font-family: inherit;
+	cursor: pointer;
+	border: none;
+	background: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 600;
+	line-height: var(--leading-tight);
+	letter-spacing: var(--tracking-tight);
+	color: var(--text-primary);
+}
+
+.section {
+	padding-block: var(--space-24);
+	padding-inline: var(--space-6);
+}
+
+.section-inner {
+	max-width: var(--max-width);
+	margin-inline: auto;
+}
+
+.section-label {
+	font-family: var(--font-mono);
+	font-size: var(--text-sm);
+	font-weight: 500;
+	letter-spacing: var(--tracking-wide);
+	text-transform: uppercase;
+	color: var(--accent-primary);
+	margin-bottom: var(--space-3);
+}
+
+.section-heading {
+	font-size: var(--text-3xl);
+	margin-bottom: var(--space-12);
+}
+
+@media (max-width: 768px) {
+	.section {
+		padding-block: var(--space-16);
+	}
+
+	.section-heading {
+		font-size: var(--text-2xl);
+		margin-bottom: var(--space-8);
+	}
+}
