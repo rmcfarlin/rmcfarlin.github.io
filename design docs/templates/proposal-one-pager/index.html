@@ -1,0 +1,138 @@
+<!-- @template name="Engagement Proposal" description="Printable one-page CFO advisory proposal — scope, investment table, target outcomes, acceptance." -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Engagement Proposal — Robert McFarlin</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="./ds-base.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--surface-muted); color: var(--ink); font-family: var(--font-sans); padding: 40px 20px; }
+  .page { width: 820px; margin: 0 auto; background: var(--surface); border: 1px solid var(--line);
+    box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; }
+  .pad { padding: 56px 60px; }
+  .masthead { display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 32px 60px; border-bottom: 1px solid var(--line); }
+  h1 { font-family: var(--font-sans); font-weight: 700; font-size: 34px; letter-spacing: -0.025em; margin: 0 0 6px; }
+  .eyebrow { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--moss); }
+  .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line);
+    border-radius: var(--radius-md); overflow: hidden; margin: 28px 0 36px; }
+  .meta-grid > div { padding: 14px 18px; border-right: 1px solid var(--line); }
+  .meta-grid > div:last-child { border-right: none; }
+  .meta-grid .k { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-tertiary); }
+  .meta-grid .v { font-size: 15px; font-weight: 600; color: var(--ink); margin-top: 5px; }
+  h2 { font-family: var(--font-sans); font-weight: 600; font-size: 14px; letter-spacing: 0.02em; color: var(--ink);
+    margin: 0 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--forest); display: inline-block; }
+  p.lede { font-size: 16px; line-height: 1.65; color: var(--ink-secondary); margin: 0 0 36px; }
+  ul.scope { list-style: none; padding: 0; margin: 0 0 36px; display: grid; gap: 12px; }
+  ul.scope li { display: flex; gap: 12px; font-size: 15px; line-height: 1.5; color: var(--ink-secondary); }
+  ul.scope li::before { content: ''; flex: 0 0 auto; width: 7px; height: 7px; margin-top: 7px; border-radius: 50%; background: var(--brass); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 36px; }
+  .sign { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 12px; }
+  .sign .row { border-top: 1px solid var(--ink); padding-top: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-tertiary); }
+  .foot { background: var(--ink); color: rgba(244,241,234,0.66); font-family: var(--font-mono); font-size: 11.5px;
+    letter-spacing: 0.04em; padding: 16px 60px; display: flex; justify-content: space-between; }
+  @media print { body { background: #fff; padding: 0; } .page { box-shadow: none; border: none; border-radius: 0; width: auto; } }
+</style>
+</head>
+<body>
+<div class="page" id="page"><div class="pad"><p style="color:var(--ink-tertiary)">Loading…</p></div></div>
+<script type="text/babel" data-presets="react">
+  const NS = 'McFarlinCFODesignSystem_e3e0bb';
+  function boot() {
+    let tries = 0;
+    (function poll() {
+      if (window[NS] && window.ReactDOM) { render(window[NS]); }
+      else if (tries++ < 240) { setTimeout(poll, 25); }
+      else { console.error('ds-base.js: design system bundle did not load'); }
+    })();
+  }
+
+  function render(C) {
+    const { Logo, Badge, Button, DataTable, StatCard } = C;
+    function Proposal() {
+      return (
+        <React.Fragment>
+          <div className="masthead">
+            <Logo markSrc="../../assets/mark.svg" size="md" />
+            <div style={{ textAlign: 'right' }}>
+              <Badge tone="info" variant="soft">Confidential</Badge>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11.5, color: 'var(--ink-tertiary)', marginTop: 10 }}>No. RM-2026-014</div>
+            </div>
+          </div>
+          <div className="pad">
+            <p className="eyebrow">Engagement Proposal</p>
+            <h1>Fractional CFO advisory</h1>
+
+            <div className="meta-grid">
+              <div><div className="k">Prepared for</div><div className="v">Acme Robotics, Inc.</div></div>
+              <div><div className="k">Attention</div><div className="v">J. Founder, CEO</div></div>
+              <div><div className="k">Date</div><div className="v">14 June 2026</div></div>
+            </div>
+
+            <p className="lede">
+              Thank you for the conversation last week. The following outlines a focused engagement to
+              bring senior financial leadership to Acme through your next funding milestone — beginning
+              with a 30-day diagnostic and a prioritized roadmap, then embedded execution alongside your team.
+            </p>
+
+            <h2>Scope of engagement</h2>
+            <ul className="scope">
+              <li>Rolling 13-week cash forecast and working-capital plan, refreshed weekly.</li>
+              <li>Driver-based operating model with board-ready quarterly scenarios.</li>
+              <li>Monthly close brought to a five-day cycle, with a standardized KPI pack.</li>
+              <li>Fundraising support: data room, model, and diligence readiness.</li>
+            </ul>
+
+            <h2>Target outcomes — first year</h2>
+            <div className="stats">
+              <StatCard label="Runway extended" value="+7 mo" accent />
+              <StatCard label="Close cycle" value="5 days" caption="from 9" />
+              <StatCard label="Gross margin" value="+11 pts" caption="target" />
+            </div>
+
+            <h2>Proposed investment</h2>
+            <DataTable
+              columns={[
+                { key: 'phase', header: 'Phase', strong: true, width: '46%' },
+                { key: 'term', header: 'Term', align: 'right' },
+                { key: 'fee', header: 'Monthly fee', numeric: true },
+              ]}
+              rows={[
+                { phase: 'Diagnostic & roadmap', term: '30 days', fee: '$12,000' },
+                { phase: 'Embedded engagement', term: 'Months 2–6', fee: '$16,000' },
+                { phase: 'Steady-state advisory', term: 'Month 7+', fee: '$9,500' },
+              ]}
+              totals={{ phase: 'Estimated first-quarter total', term: '', fee: '$44,000' }}
+              totalsLabel="Estimated first-quarter total"
+            />
+
+            <div style={{ height: 40 }} />
+            <h2>Acceptance</h2>
+            <div className="sign">
+              <div style={{ height: 36 }}><div className="row">Authorized signature · Acme Robotics</div></div>
+              <div style={{ height: 36 }}><div className="row">Robert McFarlin · Date</div></div>
+            </div>
+            <div style={{ marginTop: 32 }}>
+              <Button iconRight={<span>→</span>}>Accept &amp; schedule kickoff</Button>
+            </div>
+          </div>
+          <div className="foot">
+            <span>Robert McFarlin · Fractional CFO</span>
+            <span>robert@mcfarlin.cfo · +1 (415) 555-0142</span>
+          </div>
+        </React.Fragment>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('page')).render(<Proposal />);
+  }
+
+  document.addEventListener('DOMContentLoaded', boot);
+  if (document.readyState !== 'loading') boot();
+</script>
+</body>
+</html>

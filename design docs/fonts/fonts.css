@@ -1,0 +1,9 @@
+/* ============================================================
+   McFarlin — Webfonts
+   Primary: Hanken Grotesk (clean humanist grotesque, tabular figures)
+   Mono:    IBM Plex Mono   (data labels, eyebrows, figures)
+   Loaded via Google Fonts CDN. If you need self-hosted binaries,
+   drop the .woff2 files in this folder and replace the @import
+   with local @font-face rules.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');

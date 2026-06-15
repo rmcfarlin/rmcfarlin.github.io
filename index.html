@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Robert McFarlin — CFO • First Principles • Long Horizons</title>
+  <meta name="description" content="Chief Financial Officer building the measurement and control systems for organizations that must compound across decades. First-principles operator focused on AI leverage, frontier capital allocation, and the factories that will build the future." />
+  <link rel="stylesheet" href="css/ds.css" />
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
+  <style>
+    /* Ambitious page-specific layers */
+    .hero {
+      position: relative;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      background: #020202;
+      overflow: hidden;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      padding: 120px 0 80px;
+    }
+    .hero h1 {
+      font-size: 92px;
+      line-height: 0.96;
+      letter-spacing: -0.045em;
+      font-weight: 800;
+      margin: 12px 0 18px;
+      max-width: 18ch;
+    }
+    .hero .mission {
+      font-size: 21px;
+      line-height: 1.35;
+      color: var(--text-secondary);
+      max-width: 52ch;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: clamp(52px, 17vw, 72px);
+      }
+      .hero .mission {
+        font-size: 18px;
+      }
+    }
+    .state-vector {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 52px;
+    }
+    @media (max-width: 900px) { .state-vector { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .state-vector { grid-template-columns: 1fr; } }
+
+    .nav-mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      padding: 4px;
+      cursor: pointer;
+    }
+    @media (max-width: 720px) {
+      .site-header .container { flex-wrap: wrap; }
+      .site-header .nav { display: none; width: 100%; order: 3; }
+      .site-header .nav.open {
+        display: flex; flex-direction: column; align-items: flex-start;
+        gap: 10px; padding: 12px 0 4px; border-top: 1px solid var(--line); margin-top: 8px;
+      }
+      .nav-mobile-toggle { display: inline-flex; }
+    }
+
+    .section-head {
+      max-width: 720px;
+    }
+
+    .sim-note {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 18px;
+    }
+
+    .big-number {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brass);
+    }
+  </style>
+</head>
+<body>
+<div class="site-backdrop" aria-hidden="true"></div>
+<canvas id="deepfield" aria-hidden="true"></canvas>
+<div class="orbital-arc" aria-hidden="true"></div>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="container" style="padding-top:13px; padding-bottom:13px; display:flex; align-items:center; justify-content:space-between; gap:24px;">
+    <a href="#" class="logo" aria-label="Robert McFarlin">
+      <img src="assets/mark-light.svg" alt="" width="30" height="30" />
+      <span>
+        <span class="name">Robert McFarlin</span>
+        <span class="eyebrow-logo" style="display:block; margin-top:1px;">CFO • SYSTEMS</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="nav">
+      <a href="#principles">Principles</a>
+      <a href="#long-bets">Long Bets</a>
+      <a href="#systems">Systems</a>
+      <a href="#stack">Stack</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a class="btn btn--sm btn--secondary" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener">LinkedIn</a>
+      <button class="btn btn--sm btn--primary" onclick="document.getElementById('long-bets').scrollIntoView({behavior:'smooth'})">See the model</button>
+      <button class="nav-mobile-toggle" id="navToggle" aria-label="Toggle menu">
+        <i data-lucide="menu" style="width:20px;height:20px;"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="container hero-inner">
+    <div class="hero-layout">
+      <div class="hero-copy">
+        <div class="big-number" style="margin-bottom:8px;">Chief Financial Officer, RCM Industries</div>
+        <h1>Robert McFarlin</h1>
+        <p class="mission">
+          I build the measurement and control systems that let complex organizations compound across decades.
+        </p>
+        <div style="margin-top:6px; font-size:15px; color:var(--text-muted);">
+          Greenville, South Carolina — First-principles operator at the intersection of manufacturing, AI, and frontier capital.
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:32px; flex-wrap:wrap;">
+          <a href="#principles" class="btn btn--lg btn--primary">
+            Read the operating principles
+            <i data-lucide="arrow-right"></i>
+          </a>
+          <a href="#long-bets" class="btn btn--lg btn--horizon">
+            Run the leverage model
+          </a>
+          <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--lg btn--ghost">
+            Connect
+          </a>
+        </div>
+
+        <!-- State vector -->
+        <div class="state-vector">
+          <div class="stat">
+            <div class="label">Close cycle</div>
+            <div class="value">3 days</div>
+            <div class="meta">Consistent across 4 plants</div>
+          </div>
+          <div class="stat">
+            <div class="label">GL automation</div>
+            <div class="value">20 hrs</div>
+            <div class="meta">Reclaimed per month</div>
+          </div>
+          <div class="stat">
+            <div class="label">HRIS unification</div>
+            <div class="value">4 sites</div>
+            <div class="meta">Payroll &amp; HR consolidated</div>
+          </div>
+          <div class="stat">
+            <div class="label">Reporting platform</div>
+            <div class="value">Fabric</div>
+            <div class="meta">Enterprise visibility</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="mission-console" aria-label="Mission telemetry visual">
+        <div class="console-label">MISSION CONTROL / FINANCE SYSTEMS</div>
+        <div class="console-chips" aria-hidden="true">
+          <span class="console-chip">3-day close</span>
+          <span class="console-chip">4-plant signal</span>
+          <span class="console-chip">AI leverage</span>
+        </div>
+        <div class="console-orbit" aria-hidden="true"></div>
+        <div class="console-core" aria-hidden="true"></div>
+        <div class="console-panel" aria-hidden="true">
+          <div class="telemetry-row">
+            <span>Signal</span>
+            <span class="bar"><span style="width:92%;"></span></span>
+            <span>0.92</span>
+          </div>
+          <div class="telemetry-row">
+            <span>Latency</span>
+            <span class="bar"><span style="width:38%;"></span></span>
+            <span>-62%</span>
+          </div>
+          <div class="telemetry-row">
+            <span>Control</span>
+            <span class="bar"><span style="width:84%;"></span></span>
+            <span>0.84</span>
+          </div>
+          <div class="telemetry-row">
+            <span>Horizon</span>
+            <span class="bar"><span style="width:76%;"></span></span>
+            <span>2050</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Operating Principles -->
+<section id="principles" class="section section--elev">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Operating Principles</span>
+      <h2 style="margin:10px 0 14px;">Non-negotiables for high-stakes capital decisions.</h2>
+      <p style="color:var(--text-secondary); max-width:58ch;">
+        These are not aspirations. They are the constraints under which the best long-horizon decisions are made.
+      </p>
+    </div>
+
+    <div style="margin-top:42px; max-width:860px;">
+      <div class="principle">
+        <div class="principle-num mono">01</div>
+        <div class="principle-body">
+          <div class="title">Relentlessly pursue purposeful progress</div>
+          <p class="desc">Motion without direction is noise. Every system, report, or automation must earn its place by moving the business forward in a way that can be measured and defended at any time horizon.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="principle-num mono">02</div>
+        <div class="principle-body">
+          <div class="title">Give more in value than you receive in compensation</div>
+          <p class="desc">Trust compounds faster than capital. Deliver clarity early, surface problems before they become expensive, and make recommendations that serve the whole enterprise across multiple decades.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="principle-num mono">03</div>
+        <div class="principle-body">
+          <div class="title">Everyone sweeps the floor</div>
+          <p class="desc">No task is beneath the person accountable for the outcome. Titles are temporary. Standards are not. The leader who will not do the work cannot judge the work.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="principle-num mono">04</div>
+        <div class="principle-body">
+          <div class="title">Share good news quickly, and bad news even quicker</div>
+          <p class="desc">Surprises are the most expensive input in any system. The earlier the signal reaches those who can act, the smaller the correction required. This is respect for capital and for people.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="principle-num mono">05</div>
+        <div class="principle-body">
+          <div class="title">Treat every experience as an opportunity to learn</div>
+          <p class="desc">The best operators remain students. Whether the variance is favorable or unfavorable, the only useful question is: what did we see too late, and how do we see it sooner next time?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Long Bets + Simulator -->
+<section id="long-bets" class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Long Bets</span>
+      <h2 style="margin:10px 0 14px;">The disciplines that scale to civilizational problems.</h2>
+      <p style="color:var(--text-secondary); max-width:62ch;">
+        The same first-principles thinking required to run a multi-plant manufacturing company with 3-day closes applies to the largest, longest, hardest capital allocation problems humanity will face this century.
+      </p>
+    </div>
+
+    <div class="horizon-grid" style="margin-top:38px;">
+      <div class="horizon-card">
+        <div class="icon"><i data-lucide="cpu"></i></div>
+        <h3>Artificial intelligence as leverage</h3>
+        <p>AI is not a replacement for financial discipline. It is the ultimate sensor and actuator for it. The opportunity is to collapse the latency between signal and decision: variance surfaced while it is still small, forecasts that update with live operating data, and the removal of manual drudgery so that human judgment is spent only where it compounds.</p>
+        <p style="margin-top:14px; font-size:14px; color:var(--text-muted);">The CFO who treats AI as a force multiplier for existing controls and models will outpace the one waiting for perfect data or perfect tools.</p>
+      </div>
+      <div class="horizon-card">
+        <div class="icon"><i data-lucide="rocket"></i></div>
+        <h3>Space and the hardest capital problems</h3>
+        <p>Space is the longest-duration, highest-uncertainty capital allocation problem we have ever attempted at scale. The principles are identical to plant-level investment, only the consequences of being wrong are larger and the time constants are measured in decades. Patient capital, staged commitments tied to physics and milestones, ruthless revision when the data changes.</p>
+        <p style="margin-top:14px; font-size:14px; color:var(--text-muted);">The organizations that will still be relevant in 2050 are the ones applying this rigor today — only harder.</p>
+      </div>
+    </div>
+
+    <!-- The Simulator -->
+    <div style="margin-top:52px;">
+      <div class="simulator">
+        <div class="simulator-header">
+          <div>
+            <div class="eyebrow" style="margin-bottom:4px;">First Principles Simulator</div>
+            <div class="title">What does AI leverage actually buy you over a multi-decade horizon?</div>
+          </div>
+          <div class="subtitle mono">ADJUST THE INPUTS. WATCH THE COMPOUND.</div>
+        </div>
+
+        <div class="sim-controls">
+          <div class="sim-control">
+            <label>Monthly close effort (hours)</label>
+            <input type="range" id="effort" min="30" max="160" step="1" value="80">
+            <div class="value mono" id="effort-val">80 hrs</div>
+          </div>
+          <div class="sim-control">
+            <label>AI / automation coverage on finance ops</label>
+            <input type="range" id="coverage" min="0" max="92" step="1" value="38">
+            <div class="value mono" id="coverage-val">38%</div>
+          </div>
+          <div class="sim-control">
+            <label>Current decision latency (days)</label>
+            <input type="range" id="latency" min="3" max="18" step="0.5" value="9">
+            <div class="value mono" id="latency-val">9.0 days</div>
+          </div>
+          <div class="sim-control">
+            <label>Planning horizon (years)</label>
+            <input type="range" id="horizon" min="5" max="35" step="1" value="15">
+            <div class="value mono" id="horizon-val">15 years</div>
+          </div>
+        </div>
+
+        <div class="sim-outputs">
+          <div class="sim-output">
+            <div class="label">Hours reclaimed per year</div>
+            <div class="number mono" id="reclaimed">365</div>
+            <div class="unit">high-judgment hours returned to the org</div>
+          </div>
+          <div class="sim-output">
+            <div class="label">Decision cycles per year</div>
+            <div class="number mono" id="cycles">48</div>
+            <div class="unit">vs 40 without leverage (at current latency)</div>
+          </div>
+          <div class="sim-output">
+            <div class="label">Equivalent operator-years over horizon</div>
+            <div class="number mono" id="operator-years">3.0</div>
+            <div class="unit">full-time senior judgment capacity unlocked</div>
+          </div>
+        </div>
+
+        <div class="sim-note">
+          Model is illustrative. Real second-order effects (better capital decisions, faster iteration on the factory floor, earlier risk detection) are always larger than the direct hours calculation. The point is the direction and the compounding.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Systems Shipped -->
+<section id="systems" class="section section--elev">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Systems Shipped</span>
+      <h2 style="margin:10px 0 14px;">Flight log of delivered delta.</h2>
+      <p style="color:var(--text-secondary);">Every entry below changed the physics of the organization — how fast it could see, decide, and act.</p>
+    </div>
+
+    <div class="timeline" style="margin-top:42px; max-width:920px;">
+      <div class="role">
+        <div class="company">RCM Industries, Inc. — Manufacturing</div>
+        <div class="title">Chief Financial Officer</div>
+        <div class="period">2023 – Present</div>
+        <ul>
+          <li>Company-wide HRIS implementation consolidating payroll and HR across 4 locations — single source of truth for the first time.</li>
+          <li>Enterprise reporting rebuilt on Microsoft Fabric. Report generation time collapsed. Data accessibility increased for every leader who needed it.</li>
+          <li>General ledger reconciliation automated. 20 hours per month returned to higher-leverage work.</li>
+          <li>Internal audit function stood up from zero. Controls and compliance strengthened at the point where most mid-market companies still rely on hope.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <div class="company">RCM Industries, Inc.</div>
+        <div class="title">Corporate Controller</div>
+        <div class="period">2017 – 2022</div>
+        <ul>
+          <li>3-day month-end close achieved and sustained across multiple business units — a rate most public companies still dream about.</li>
+          <li>Full supervision of accounting, AP/AR, and payroll across 4 plants.</li>
+          <li>Consolidated forecasting models built and used by executive leadership for real strategic planning, not theater.</li>
+          <li>Financial reporting for a 6-entity consolidated group maintained with integrity.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <div class="company">RCM Industries, Inc.</div>
+        <div class="title">Division Controller</div>
+        <div class="period">2016 – 2017</div>
+        <ul>
+          <li>Full P&amp;L ownership for plant-level operations.</li>
+          <li>KPI dashboards implemented that gave plant managers real-time visibility into inventory and carrying costs.</li>
+          <li>Operational efficiency gains driven in direct partnership with the people who owned the processes.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <div class="company">RCM Industries, Inc.</div>
+        <div class="title">Accounting Manager</div>
+        <div class="period">2014 – 2016</div>
+        <ul>
+          <li>Financial statements prepared and analyzed across multiple manufacturing plants.</li>
+          <li>Multi-plant reporting processes streamlined — close cycle time reduced at the system level.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <div class="company">ScanSource, Inc. — Technology Distribution</div>
+        <div class="title">Staff Accountant → AP Analyst</div>
+        <div class="period">2011 – 2014</div>
+        <ul>
+          <li>Balance sheet reconciliations and revenue accounting for a publicly traded company.</li>
+          <li>Subject-matter expert during SAP implementation — accurate data migration and process continuity when it mattered most.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Capabilities / Stack -->
+<section id="stack" class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Stack</span>
+      <h2 style="margin:10px 0 14px;">What I actually run.</h2>
+    </div>
+
+    <div class="stack-grid">
+      <div>
+        <div style="font-weight:600; margin-bottom:10px; color:var(--brass); font-size:13px; letter-spacing:0.06em;">Leadership &amp; Strategy</div>
+        <span class="tag">Strategic Planning &amp; Execution</span>
+        <span class="tag">Financial Modeling &amp; Valuation</span>
+        <span class="tag">Risk Management &amp; Compliance</span>
+        <span class="tag">Board &amp; Stakeholder Reporting</span>
+        <span class="tag">Team Leadership</span>
+        <span class="tag">Process Automation at Scale</span>
+      </div>
+      <div>
+        <div style="font-weight:600; margin-bottom:10px; color:var(--brass); font-size:13px; letter-spacing:0.06em;">Accounting &amp; Control</div>
+        <span class="tag">Financial Statement Integrity</span>
+        <span class="tag">Data Modeling &amp; Analytics</span>
+        <span class="tag">Budgeting &amp; Forecasting Systems</span>
+        <span class="tag">Cash &amp; Working Capital Discipline</span>
+        <span class="tag">Inventory &amp; Supply Chain Finance</span>
+      </div>
+      <div>
+        <div style="font-weight:600; margin-bottom:10px; color:var(--brass); font-size:13px; letter-spacing:0.06em;">Platforms</div>
+        <span class="tag">Excel (VBA + Power Query)</span>
+        <span class="tag">Power BI + Microsoft Fabric</span>
+        <span class="tag">ADP Enterprise</span>
+        <span class="tag">SAP (SME-level)</span>
+        <span class="tag">HRIS Consolidation</span>
+      </div>
+      <div>
+        <div style="font-weight:600; margin-bottom:10px; color:var(--brass); font-size:13px; letter-spacing:0.06em;">Automation &amp; Code</div>
+        <span class="tag">Python + Pandas</span>
+        <span class="tag">SQL</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">VBA</span>
+        <span class="tag">Selenium for process extraction</span>
+      </div>
+    </div>
+
+    <div style="margin-top:48px; padding-top:28px; border-top:1px solid var(--line); font-size:13.5px; color:var(--text-secondary); max-width:68ch;">
+      Credentials: Certified Management Accountant (CMA). Master of Accountancy, Stetson University. B.S. Business Administration (Accounting), University of South Carolina Upstate. Continuous study in advanced financial modeling, data analytics, strategy, and valuation.
+    </div>
+  </div>
+</section>
+
+<!-- Final Signal -->
+<section class="section section--signal" style="border-top:1px solid var(--line); background:rgba(2,2,2,0.82);">
+  <div class="container">
+    <div class="signal">
+      <span class="eyebrow">Signal</span>
+      <h2 style="margin:14px 0 18px;">If you are allocating capital on 10- to 30-year horizons, or building the infrastructure layer that the next century will run on, the conversation is worth having.</h2>
+      <p style="color:var(--text-secondary); max-width:52ch; margin:0 auto;">
+        I reply to every high-signal note personally. No form. No gatekeeper.
+      </p>
+      <div style="margin-top:26px;">
+        <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--lg btn--brass">
+          Message on LinkedIn
+          <i data-lucide="arrow-right"></i>
+        </a>
+      </div>
+      <div style="margin-top:14px; font-size:12px; color:var(--text-muted);">Greenville, SC</div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="#" class="logo" style="gap:10px;" aria-label="Robert McFarlin">
+      <img src="assets/mark-light.svg" alt="" width="24" height="24" />
+      <span class="name" style="font-size:14px;">Robert McFarlin</span>
+    </a>
+    <div class="footer-meta">
+      © 2026 · Building the financial operating systems for the next industrial age
+    </div>
+    <div style="display:flex; gap:16px; font-size:12px;">
+      <a href="#principles">Principles</a>
+      <a href="#long-bets">Long Bets</a>
+      <a href="#systems">Systems</a>
+      <a href="#stack">Stack</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
+<script>
+// ============================================================
+// Mission-mode interactions. Engineered for clarity and delight.
+// ============================================================
+
+// Lucide
+function initIcons() {
+  if (window.lucide) {
+    window.lucide.createIcons({ attrs: { 'stroke-width': 1.75, width: 18, height: 18 } });
+  }
+}
+
+// Mobile nav
+function initMobileNav() {
+  const toggle = document.getElementById('navToggle');
+  const nav = document.getElementById('nav');
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener('click', () => {
+    const isOpen = nav.classList.toggle('open');
+    const icon = toggle.querySelector('i');
+    if (icon) {
+      icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+      if (window.lucide) window.lucide.createIcons({ attrs: { 'stroke-width': 1.75, width: 20, height: 20 } });
+    }
+  });
+
+  nav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      if (nav.classList.contains('open')) {
+        nav.classList.remove('open');
+        const icon = toggle.querySelector('i');
+        if (icon) {
+          icon.setAttribute('data-lucide', 'menu');
+          if (window.lucide) window.lucide.createIcons({ attrs: { 'stroke-width': 1.75, width: 20, height: 20 } });
+        }
+      }
+    });
+  });
+}
+
+// Keyboard: / focuses the simulator
+function initKeyboard() {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+      e.preventDefault();
+      const effort = document.getElementById('effort');
+      if (effort) {
+        effort.focus();
+        effort.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+    if (e.key === 'Escape') {
+      const nav = document.getElementById('nav');
+      if (nav && nav.classList.contains('open')) nav.classList.remove('open');
+    }
+  });
+}
+
+// Subtle global background parallax. CSS-only fallback still looks good.
+function initBackdrop() {
+  const backdrop = document.querySelector('.site-backdrop');
+  if (!backdrop) return;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+  let raf = null;
+
+  function tick() {
+    currentX += (targetX - currentX) * 0.08;
+    currentY += (targetY - currentY) * 0.08;
+    backdrop.style.setProperty('--mx', `${currentX.toFixed(2)}px`);
+    backdrop.style.setProperty('--my', `${currentY.toFixed(2)}px`);
+    if (Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
+      raf = requestAnimationFrame(tick);
+    } else {
+      raf = null;
+    }
+  }
+
+  window.addEventListener('pointermove', (e) => {
+    targetX = (e.clientX / window.innerWidth - 0.5) * 44;
+    targetY = (e.clientY / window.innerHeight - 0.5) * 34;
+    if (!raf) raf = requestAnimationFrame(tick);
+  }, { passive: true });
+}
+
+// Pronounced global starfield that runs behind every section.
+function initDeepfield() {
+  const canvas = document.getElementById('deepfield');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w = 0, h = 0, stars = [], bodies = [], rafId = null;
+
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    w = window.innerWidth;
+    h = window.innerHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function seed() {
+    const starCount = Math.min(420, Math.max(220, Math.round((w * h) / 4300)));
+    stars = Array.from({ length: starCount }, (_, i) => {
+      const bright = i % 19 === 0;
+      const warm = i % 7 === 0;
+      return {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        z: Math.random() * 0.8 + 0.2,
+        r: bright ? Math.random() * 1.8 + 1.1 : Math.random() * 0.9 + 0.35,
+        a: bright ? Math.random() * 0.45 + 0.55 : Math.random() * 0.34 + 0.28,
+        tw: Math.random() * Math.PI * 2,
+        drift: Math.random() * 0.05 + 0.012,
+        color: warm ? '201, 162, 110' : (i % 11 === 0 ? '95, 209, 198' : '245, 245, 245')
+      };
+    });
+
+    bodies = [
+      { x: w * 0.78, y: h * 0.18, r: Math.min(w, h) * 0.16, color: '95, 209, 198', a: 0.075 },
+      { x: w * 0.16, y: h * 0.72, r: Math.min(w, h) * 0.20, color: '201, 162, 110', a: 0.06 },
+      { x: w * 0.58, y: h * 0.48, r: Math.min(w, h) * 0.10, color: '96, 165, 250', a: 0.038 }
+    ];
+  }
+
+  function draw(ts = 0) {
+    ctx.clearRect(0, 0, w, h);
+
+    for (const b of bodies) {
+      const pulse = prefersReduced ? 1 : 0.88 + Math.sin(ts * 0.00035 + b.r) * 0.12;
+      const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * pulse);
+      g.addColorStop(0, `rgba(${b.color}, ${b.a})`);
+      g.addColorStop(0.45, `rgba(${b.color}, ${b.a * 0.35})`);
+      g.addColorStop(1, `rgba(${b.color}, 0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r * pulse, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    for (const s of stars) {
+      const twinkle = prefersReduced ? 1 : 0.7 + Math.sin(ts * 0.0012 + s.tw) * 0.3;
+      const alpha = s.a * twinkle;
+      ctx.fillStyle = `rgba(${s.color}, ${alpha})`;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (s.r > 1.7) {
+        ctx.strokeStyle = `rgba(${s.color}, ${alpha * 0.28})`;
+        ctx.lineWidth = 0.7;
+        ctx.beginPath();
+        ctx.moveTo(s.x - s.r * 3.2, s.y);
+        ctx.lineTo(s.x + s.r * 3.2, s.y);
+        ctx.moveTo(s.x, s.y - s.r * 3.2);
+        ctx.lineTo(s.x, s.y + s.r * 3.2);
+        ctx.stroke();
+      }
+
+      if (!prefersReduced) {
+        s.y += s.drift * s.z;
+        if (s.y > h + 4) {
+          s.y = -4;
+          s.x = Math.random() * w;
+        }
+      }
+    }
+
+    if (!prefersReduced) rafId = requestAnimationFrame(draw);
+  }
+
+  function init() {
+    resize();
+    seed();
+    draw();
+    window.addEventListener('resize', () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      resize();
+      seed();
+      draw();
+    }, { passive: true });
+  }
+
+  init();
+}
+
+// Lightweight, high-performance starfield + occasional trajectories
+function initStarfield() {
+  const canvas = document.getElementById('starfield');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+  let w, h, stars = [], lines = [];
+  let mx = 0.5, my = 0.5;
+  let initialized = false;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = rect.width;
+    h = rect.height;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function createStars(n) {
+    stars = [];
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.1 + 0.35,
+        a: Math.random() * 0.6 + 0.35,
+        vx: (Math.random() - 0.5) * 0.012,
+        vy: (Math.random() - 0.5) * 0.008
+      });
+    }
+  }
+
+  function createLines(n) {
+    lines = [];
+    for (let i = 0; i < n; i++) {
+      lines.push({
+        x: Math.random() * w,
+        y: Math.random() * h * 0.7,
+        len: 40 + Math.random() * 90,
+        a: 0.08 + Math.random() * 0.12,
+        vy: 0.12 + Math.random() * 0.18
+      });
+    }
+  }
+
+  let last = 0;
+  function draw(ts = 0) {
+    if (!last) last = ts;
+    const dt = Math.min(32, ts - last);
+    last = ts;
+
+    ctx.clearRect(0, 0, w, h);
+
+    const px = (mx - 0.5) * 18;
+    const py = (my - 0.5) * 10;
+
+    // stars
+    ctx.fillStyle = '#f5f5f5';
+    for (const s of stars) {
+      if (!prefersReduced) {
+        s.x += s.vx * (dt / 16);
+        s.y += s.vy * (dt / 16);
+        if (s.x < 0) s.x = w;
+        if (s.x > w) s.x = 0;
+        if (s.y < 0) s.y = h;
+        if (s.y > h) s.y = 0;
+      }
+      ctx.globalAlpha = s.a;
+      ctx.beginPath();
+      ctx.arc(s.x + px * 0.3, s.y + py * 0.3, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // slow trajectory lines (capital allocation paths)
+    ctx.strokeStyle = '#c9a26e';
+    ctx.lineWidth = 0.9;
+    for (const l of lines) {
+      if (!prefersReduced) {
+        l.y += l.vy * (dt / 16) * 0.6;
+        if (l.y > h + 20) {
+          l.y = -30;
+          l.x = Math.random() * w;
+        }
+      }
+      ctx.globalAlpha = l.a;
+      ctx.beginPath();
+      ctx.moveTo(l.x + px * 0.6, l.y + py * 0.6);
+      ctx.lineTo(l.x + px * 0.6, l.y + l.len + py * 0.6);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    if (!prefersReduced) requestAnimationFrame(draw);
+  }
+
+  function onMouse(e) {
+    const rect = canvas.getBoundingClientRect();
+    mx = (e.clientX - rect.left) / rect.width;
+    my = (e.clientY - rect.top) / rect.height;
+  }
+
+  function init() {
+    if (initialized) return;
+    initialized = true;
+    resize();
+    createStars(210);
+    createLines(7);
+    window.addEventListener('resize', () => { resize(); createStars(210); createLines(7); }, { passive: true });
+    canvas.addEventListener('mousemove', onMouse, { passive: true });
+    canvas.addEventListener('mouseleave', () => { mx = 0.5; my = 0.5; });
+    if (!prefersReduced) {
+      requestAnimationFrame(draw);
+    } else {
+      // static beautiful field for reduced motion
+      draw();
+    }
+  }
+
+  // Observe for performance — only run when hero is visible
+  const hero = canvas.closest('.hero');
+  if ('IntersectionObserver' in window && hero) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        init();
+        io.disconnect();
+      }
+    }, { threshold: 0.1 });
+    io.observe(hero);
+  } else {
+    init();
+  }
+}
+
+// Live First Principles Simulator
+function initSimulator() {
+  const ids = ['effort', 'coverage', 'latency', 'horizon'];
+  const vals = {
+    effort: document.getElementById('effort-val'),
+    coverage: document.getElementById('coverage-val'),
+    latency: document.getElementById('latency-val'),
+    horizon: document.getElementById('horizon-val')
+  };
+  const out = {
+    reclaimed: document.getElementById('reclaimed'),
+    cycles: document.getElementById('cycles'),
+    opYears: document.getElementById('operator-years')
+  };
+
+  function fmt(n, d = 0) {
+    return n.toLocaleString('en-US', { maximumFractionDigits: d, minimumFractionDigits: d });
+  }
+
+  function update() {
+    const effort = +document.getElementById('effort').value;
+    const coverage = +document.getElementById('coverage').value;
+    const latency = +document.getElementById('latency').value;
+    const horizon = +document.getElementById('horizon').value;
+
+    // live labels
+    vals.effort.textContent = `${effort} hrs`;
+    vals.coverage.textContent = `${coverage}%`;
+    vals.latency.textContent = `${latency.toFixed(1)} days`;
+    vals.horizon.textContent = `${horizon} years`;
+
+    // Model (transparent first-principles framing)
+    // Reclaimed hours/year = effort * (coverage/100) * 12
+    const reclaimed = Math.round(effort * (coverage / 100) * 12);
+
+    // New effective latency after leverage (coverage reduces latency, but with diminishing returns)
+    const latencyReduction = Math.min(0.78, coverage * 0.0082);
+    const newLatency = Math.max(1.2, latency * (1 - latencyReduction));
+    const cycles = Math.round(365 / newLatency);
+
+    // Equivalent senior operator years over horizon
+    // Assume 1,800 productive high-judgment hours per operator-year
+    // Plus a small compounding multiplier for faster cycles
+    const baseOpYears = reclaimed / 1800 * horizon;
+    const cycleMultiplier = (cycles / (365 / latency)) * 0.6; // modest credit for velocity
+    const opYears = Math.max(0.3, baseOpYears * (1 + cycleMultiplier * 0.35));
+
+    out.reclaimed.textContent = fmt(reclaimed);
+    out.cycles.textContent = fmt(cycles);
+    out.opYears.textContent = opYears.toFixed(1);
+  }
+
+  // wire inputs
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', update);
+      el.addEventListener('change', update);
+    }
+  });
+
+  // initial
+  update();
+
+  // Bonus: press "r" to randomize to interesting states (for demo / exploration)
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'r' && document.activeElement.tagName === 'BODY') {
+      const effort = document.getElementById('effort');
+      const coverage = document.getElementById('coverage');
+      const latency = document.getElementById('latency');
+      const horizon = document.getElementById('horizon');
+      if (effort) effort.value = String(Math.round(55 + Math.random() * 45));
+      if (coverage) coverage.value = String(Math.round(28 + Math.random() * 55));
+      if (latency) latency.value = String((4.5 + Math.random() * 7).toFixed(1));
+      if (horizon) horizon.value = String(Math.round(12 + Math.random() * 18));
+      update();
+    }
+  });
+}
+
+// Animated counters for the state vector (once)
+function initCounters() {
+  const stats = document.querySelectorAll('.state-vector .value');
+  if (!stats.length) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function animate(el, target, suffix = '') {
+    if (prefersReduced) {
+      el.textContent = target + suffix;
+      return;
+    }
+    const start = performance.now();
+    const dur = 920;
+    const from = 0;
+    function step(now) {
+      const p = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = Math.round(from + (target - from) * eased);
+      el.textContent = val + suffix;
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = target + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        stats.forEach(s => {
+          const raw = s.textContent.trim();
+          let num = parseFloat(raw);
+          let suffix = '';
+          if (raw.includes('days')) { num = 3; suffix = ' days'; }
+          else if (raw.includes('hrs')) { num = 20; suffix = ' hrs'; }
+          else if (raw.includes('sites')) { num = 4; suffix = ' sites'; }
+          else if (raw.toLowerCase().includes('fabric')) { return; } // leave as text
+          if (!isNaN(num)) animate(s, num, suffix);
+        });
+        io.disconnect();
+      }
+    });
+  }, { threshold: 0.4 });
+
+  const container = document.querySelector('.state-vector');
+  if (container) io.observe(container);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initIcons();
+  initMobileNav();
+  initKeyboard();
+  initBackdrop();
+  initDeepfield();
+  initStarfield();
+  initSimulator();
+  initCounters();
+});
+</script>
+
+</body>
+</html>

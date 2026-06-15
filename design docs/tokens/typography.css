@@ -1,0 +1,61 @@
+/* ============================================================
+   McFarlin — Typography tokens
+   All sans-serif. Hanken Grotesk for text, IBM Plex Mono for
+   figures/labels. Tabular figures on by default for data.
+   ============================================================ */
+:root {
+  /* ---- Families ---- */
+  --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ---- Weights ---- */
+  --w-regular: 400;  /* @kind font */
+  --w-medium:  500;  /* @kind font */
+  --w-semibold:600;  /* @kind font */
+  --w-bold:    700;  /* @kind font */
+  --w-black:   800;  /* @kind font */
+
+  /* ---- Type scale (px) ---- */
+  --fs-display-xl: 64px;
+  --fs-display-l:  48px;
+  --fs-display-m:  36px;
+  --fs-heading-l:  28px;
+  --fs-heading-m:  22px;
+  --fs-heading-s:  18px;
+  --fs-body-l:     18px;
+  --fs-body-m:     16px;
+  --fs-body-s:     14px;
+  --fs-caption:    13px;
+  --fs-eyebrow:    12px;
+
+  /* ---- Line heights ---- */
+  --lh-tight:   1.05;  /* @kind font */
+  --lh-snug:    1.2;   /* @kind font */
+  --lh-normal:  1.5;   /* @kind font */
+  --lh-relaxed: 1.65;  /* @kind font */
+
+  /* ---- Letter spacing ---- */
+  --tracking-tight:  -0.02em;  /* @kind font */
+  --tracking-snug:   -0.01em;  /* @kind font */
+  --tracking-normal: 0;        /* @kind font */
+  --tracking-wide:   0.04em;   /* @kind font */
+  --tracking-eyebrow:0.14em;   /* @kind font */
+
+  /* ---- Tabular figures (financial data) ---- */
+  --fnum-tabular: "tnum" 1, "lnum" 1;  /* @kind font */
+}
+
+/* Convenience utility classes (optional; components prefer vars) */
+.t-display-xl { font-family: var(--font-sans); font-weight: var(--w-bold); font-size: var(--fs-display-xl); line-height: var(--lh-tight); letter-spacing: var(--tracking-tight); }
+.t-display-l  { font-family: var(--font-sans); font-weight: var(--w-bold); font-size: var(--fs-display-l);  line-height: var(--lh-tight); letter-spacing: var(--tracking-tight); }
+.t-display-m  { font-family: var(--font-sans); font-weight: var(--w-semibold); font-size: var(--fs-display-m); line-height: var(--lh-snug); letter-spacing: var(--tracking-snug); }
+.t-heading-l  { font-family: var(--font-sans); font-weight: var(--w-semibold); font-size: var(--fs-heading-l); line-height: var(--lh-snug); letter-spacing: var(--tracking-snug); }
+.t-heading-m  { font-family: var(--font-sans); font-weight: var(--w-semibold); font-size: var(--fs-heading-m); line-height: var(--lh-snug); }
+.t-heading-s  { font-family: var(--font-sans); font-weight: var(--w-semibold); font-size: var(--fs-heading-s); line-height: var(--lh-normal); }
+.t-body-l     { font-family: var(--font-sans); font-weight: var(--w-regular); font-size: var(--fs-body-l); line-height: var(--lh-relaxed); }
+.t-body       { font-family: var(--font-sans); font-weight: var(--w-regular); font-size: var(--fs-body-m); line-height: var(--lh-normal); }
+.t-body-s     { font-family: var(--font-sans); font-weight: var(--w-regular); font-size: var(--fs-body-s); line-height: var(--lh-normal); }
+.t-caption    { font-family: var(--font-sans); font-weight: var(--w-medium); font-size: var(--fs-caption); line-height: var(--lh-normal); color: var(--text-muted); }
+.t-eyebrow    { font-family: var(--font-mono); font-weight: var(--w-medium); font-size: var(--fs-eyebrow); line-height: 1; letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--text-muted); }
+.t-mono       { font-family: var(--font-mono); font-variant-numeric: tabular-nums lining-nums; }
+.t-tabular    { font-variant-numeric: tabular-nums lining-nums; }

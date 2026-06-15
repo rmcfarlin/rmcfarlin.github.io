@@ -1,0 +1,77 @@
+<!-- @dsCard group="Components" viewport="700x620" name="Data — StatCard, DataTable, Delta, BarChart, Meter" subtitle="Financial data primitives" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-sans); padding: 28px; }
+  .grp { margin-bottom: 24px; }
+  .grp:last-child { margin-bottom: 0; }
+  .lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-tertiary); margin: 0 0 12px; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .meters { display: flex; flex-direction: column; gap: 16px; max-width: 460px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { StatCard, DataTable, DeltaIndicator, BarChart, ProgressMeter } = window.McFarlinCFODesignSystem_e3e0bb;
+  function Demo() {
+    return (
+      <div>
+        <div className="grp">
+          <p className="lbl">Stat cards</p>
+          <div className="stats">
+            <StatCard label="Net Revenue" value="$4.82M" delta={12.4} caption="vs. Q2" accent />
+            <StatCard label="Burn Rate" value="$310K" delta={-8.2} deltaProps={{ invert: true }} caption="mo/mo" />
+            <StatCard label="Runway" value="19 mo" tone="forest" />
+          </div>
+        </div>
+        <div className="grp">
+          <p className="lbl">Quarterly revenue ($M)</p>
+          <BarChart
+            height={130}
+            data={[
+              { label: 'Q1', value: 3.2 }, { label: 'Q2', value: 3.9 },
+              { label: 'Q3', value: 4.8 }, { label: 'Q4', value: 5.4 },
+            ]}
+            showValues highlightLast format={(v) => '$' + v + 'M'} />
+        </div>
+        <div className="grp">
+          <p className="lbl">Data table</p>
+          <DataTable
+            zebra
+            columns={[
+              { key: 'item', header: 'Line item', strong: true, width: '40%' },
+              { key: 'q2', header: 'Q2', numeric: true },
+              { key: 'q3', header: 'Q3', numeric: true },
+              { key: 'd', header: 'Change', align: 'right', render: (r) => <DeltaIndicator value={r.d} /> },
+            ]}
+            rows={[
+              { item: 'Revenue', q2: '$3.90M', q3: '$4.82M', d: 23.6 },
+              { item: 'Cost of revenue', q2: '$1.42M', q3: '$1.60M', d: 12.7 },
+              { item: 'Operating expense', q2: '$1.10M', q3: '$1.18M', d: 7.3 },
+            ]}
+            totals={{ item: 'Gross profit', q2: '$1.38M', q3: '$2.04M' }} />
+        </div>
+        <div className="grp">
+          <p className="lbl">Progress meters</p>
+          <div className="meters">
+            <ProgressMeter label="FY budget used" value={68} target={100} />
+            <ProgressMeter label="Marketing spend" value={112} target={100} valueText="112% · overrun" />
+            <ProgressMeter label="ARR goal" value={4.2} target={5} tone="positive" valueText="84%" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

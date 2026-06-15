@@ -1,0 +1,65 @@
+/* ============================================================
+   McFarlin — Color tokens
+   Warm advisory palette: forest green + warm neutrals.
+   Premium, discreet, trustworthy. Brass used sparingly.
+   ============================================================ */
+:root {
+  /* ---- Warm neutrals (paper & ink) ---- */
+  --paper:            #FBFAF7;   /* canvas / page background */
+  --paper-sunken:     #F4F2EC;   /* recessed wells, code, table zebra */
+  --surface:          #FFFFFF;   /* raised cards */
+  --surface-muted:    #F7F5F0;   /* secondary surface */
+
+  --ink:              #1C1B17;   /* primary text, warm near-black */
+  --ink-secondary:    #4A483F;   /* secondary text */
+  --ink-tertiary:     #6E6B5F;   /* muted captions, labels */
+  --ink-faint:        #9A9788;   /* placeholder, disabled */
+
+  --line:             #E5E1D8;   /* hairline borders */
+  --line-strong:      #D4CFC2;   /* stronger dividers */
+
+  /* ---- Forest green (brand primary) ---- */
+  --forest:           #1A3A2E;   /* primary brand */
+  --forest-strong:    #122A20;   /* hover / pressed */
+  --moss:             #2F5D50;   /* secondary green / links */
+  --sage:             #8C9A8E;   /* muted green-grey */
+  --sage-light:       #C0C7BF;   /* soft fills, tracks */
+  --forest-wash:      #ECF1EC;   /* tinted background wash */
+
+  /* ---- Brass accent (use sparingly) ---- */
+  --brass:            #B0843A;   /* accent, highlights */
+  --brass-strong:     #946C2C;
+  --brass-wash:       #F5EEDF;
+
+  /* ---- Semantic (warm-toned, financial) ---- */
+  --positive:         #2F6E4E;   /* gains, on-track */
+  --positive-wash:    #E6F0E8;
+  --negative:         #B23A33;   /* losses, over-budget */
+  --negative-wash:    #F6E7E5;
+  --caution:          #C08A2E;   /* watch, pending */
+  --caution-wash:     #F7EEDB;
+  --info:             #3E6E73;   /* neutral notes */
+  --info-wash:        #E5EEEE;
+
+  /* ---- Data-viz categorical (warm earthy series) ---- */
+  --viz-1:            #1A3A2E;   /* forest */
+  --viz-2:            #2F5D50;   /* moss */
+  --viz-3:            #B0843A;   /* brass */
+  --viz-4:            #3E6E73;   /* teal */
+  --viz-5:            #8C9A8E;   /* sage */
+  --viz-6:            #A8603F;   /* clay */
+
+  /* ---- Semantic aliases (use these in components) ---- */
+  --bg-page:          var(--paper);
+  --bg-card:          var(--surface);
+  --bg-sunken:        var(--paper-sunken);
+  --text-strong:      var(--ink);
+  --text-body:        var(--ink-secondary);
+  --text-muted:       var(--ink-tertiary);
+  --text-on-forest:   #F4F1EA;
+  --border-card:      var(--line);
+  --accent:           var(--forest);
+  --accent-hover:     var(--forest-strong);
+  --link:             var(--moss);
+  --focus-ring:       #2F5D50;
+}
