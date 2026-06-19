@@ -14,7 +14,7 @@
       min-height: 100dvh;
       display: flex;
       align-items: center;
-      background: #020202;
+      background: transparent;
       overflow: hidden;
     }
     .hero-inner {
@@ -110,8 +110,8 @@
 
     <nav class="nav" id="nav">
       <a href="#value-agenda">Value Agenda</a>
-      <a href="#long-bets">Future Thesis</a>
       <a href="#systems">Systems</a>
+      <a href="#long-bets">Future Thesis</a>
       <a href="#stack">Stack</a>
     </nav>
 
@@ -127,7 +127,6 @@
 
 <!-- Hero -->
 <section class="hero">
-  <canvas id="starfield" aria-hidden="true"></canvas>
   <div class="container hero-inner">
     <div class="hero-layout hero-layout--focused">
       <div class="hero-copy">
@@ -317,34 +316,6 @@
   </div>
 </section>
 
-<!-- Future Thesis + Simulator -->
-<section id="long-bets" class="section">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Future Thesis</span>
-      <h2 style="margin:10px 0 14px;">AI will change finance. Space will change the time horizon.</h2>
-      <p style="color:var(--text-secondary); max-width:62ch;">
-        I want to work where financial leadership is not just backward-looking stewardship, but the operating system for sharper strategic choices, faster learning, better automation, and disciplined investment in the next industrial frontier.
-      </p>
-    </div>
-
-    <div class="horizon-grid" style="margin-top:38px;">
-      <div class="horizon-card">
-        <div class="icon"><i data-lucide="cpu"></i></div>
-        <h3>AI-native finance leadership</h3>
-        <p>AI is not a replacement for financial discipline. It is the sensor layer, pattern engine, and automation layer that lets a finance team see earlier and act faster. The job is to pair models with controls, judgment, operating context, and the few use cases that actually create value.</p>
-        <p style="margin-top:14px; font-size:14px; color:var(--text-muted);">The future-ready CFO will know how to turn finance operations into an intelligence system without mistaking pilots for transformation.</p>
-      </div>
-      <div class="horizon-card">
-        <div class="icon"><i data-lucide="rocket"></i></div>
-        <h3>Space-era capital allocation</h3>
-        <p>A world that inhabits space will need CFOs who can reason across longer timelines, deeper technical uncertainty, and heavier infrastructure bets. The principles are familiar: clear strategic choice, staged commitments, rigorous milestones, fast learning loops, and humility when physics or economics change.</p>
-        <p style="margin-top:14px; font-size:14px; color:var(--text-muted);">The organizations that matter in 2050 will be the ones funding the right hard things now.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- Systems Shipped -->
 <section id="systems" class="section section--elev">
   <div class="container">
@@ -413,6 +384,34 @@
   </div>
 </section>
 
+<!-- Future Thesis -->
+<section id="long-bets" class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Future Thesis</span>
+      <h2 style="margin:10px 0 14px;">AI will change finance. Space will change the time horizon.</h2>
+      <p style="color:var(--text-secondary); max-width:62ch;">
+        I want to work where financial leadership is not just backward-looking stewardship, but the operating system for sharper strategic choices, faster learning, better automation, and disciplined investment in the next industrial frontier.
+      </p>
+    </div>
+
+    <div class="horizon-grid" style="margin-top:38px;">
+      <div class="horizon-card">
+        <div class="icon"><i data-lucide="cpu"></i></div>
+        <h3>AI-native finance leadership</h3>
+        <p>AI is not a replacement for financial discipline. It is the sensor layer, pattern engine, and automation layer that lets a finance team see earlier and act faster. The job is to pair models with controls, judgment, operating context, and the few use cases that actually create value.</p>
+        <p style="margin-top:14px; font-size:14px; color:var(--text-muted);">The future-ready CFO will know how to turn finance operations into an intelligence system without mistaking pilots for transformation.</p>
+      </div>
+      <div class="horizon-card">
+        <div class="icon"><i data-lucide="rocket"></i></div>
+        <h3>Space-era capital allocation</h3>
+        <p>A world that inhabits space will need CFOs who can reason across longer timelines, deeper technical uncertainty, and heavier infrastructure bets. The principles are familiar: clear strategic choice, staged commitments, rigorous milestones, fast learning loops, and humility when physics or economics change.</p>
+        <p style="margin-top:14px; font-size:14px; color:var(--text-muted);">The organizations that matter in 2050 will be the ones funding the right hard things now.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Capabilities / Stack -->
 <section id="stack" class="section">
   <div class="container">
@@ -473,7 +472,7 @@
 </section>
 
 <!-- Final Signal -->
-<section class="section section--signal" style="border-top:1px solid var(--line); background:rgba(2,2,2,0.82);">
+<section class="section section--signal" style="border-top:1px solid var(--line);">
   <div class="container">
     <div class="signal">
       <span class="eyebrow">Signal</span>
@@ -504,8 +503,8 @@
     </div>
     <div style="display:flex; gap:16px; font-size:12px;">
       <a href="#value-agenda">Value Agenda</a>
-      <a href="#long-bets">Future Thesis</a>
       <a href="#systems">Systems</a>
+      <a href="#long-bets">Future Thesis</a>
       <a href="#stack">Stack</a>
     </div>
   </div>
@@ -628,7 +627,7 @@ function initDeepfield() {
         y: Math.random() * h,
         z: Math.random() * 0.8 + 0.2,
         r: bright ? Math.random() * 2.2 + 1.2 : Math.random() * 1.15 + 0.45,
-        a: bright ? Math.random() * 0.34 + 0.66 : Math.random() * 0.38 + 0.34,
+        a: bright ? Math.random() * 0.38 + 0.72 : Math.random() * 0.42 + 0.42,
         tw: Math.random() * Math.PI * 2,
         drift: Math.random() * 0.05 + 0.012,
         color: warm ? '201, 162, 110' : (i % 11 === 0 ? '95, 209, 198' : '245, 245, 245')
@@ -701,142 +700,6 @@ function initDeepfield() {
   }
 
   init();
-}
-
-// Lightweight, high-performance starfield + occasional trajectories
-function initStarfield() {
-  const canvas = document.getElementById('starfield');
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d', { alpha: true });
-  let w, h, stars = [], lines = [];
-  let mx = 0.5, my = 0.5;
-  let initialized = false;
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function resize() {
-    const rect = canvas.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    w = rect.width;
-    h = rect.height;
-    canvas.width = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function createStars(n) {
-    stars = [];
-    for (let i = 0; i < n; i++) {
-      stars.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        r: Math.random() * 1.35 + 0.45,
-        a: Math.random() * 0.5 + 0.48,
-        vx: (Math.random() - 0.5) * 0.012,
-        vy: (Math.random() - 0.5) * 0.008
-      });
-    }
-  }
-
-  function createLines(n) {
-    lines = [];
-    for (let i = 0; i < n; i++) {
-      lines.push({
-        x: Math.random() * w,
-        y: Math.random() * h * 0.7,
-        len: 40 + Math.random() * 90,
-        a: 0.08 + Math.random() * 0.12,
-        vy: 0.12 + Math.random() * 0.18
-      });
-    }
-  }
-
-  let last = 0;
-  function draw(ts = 0) {
-    if (!last) last = ts;
-    const dt = Math.min(32, ts - last);
-    last = ts;
-
-    ctx.clearRect(0, 0, w, h);
-
-    const px = (mx - 0.5) * 18;
-    const py = (my - 0.5) * 10;
-
-    // stars
-    ctx.fillStyle = '#f5f5f5';
-    for (const s of stars) {
-      if (!prefersReduced) {
-        s.x += s.vx * (dt / 16);
-        s.y += s.vy * (dt / 16);
-        if (s.x < 0) s.x = w;
-        if (s.x > w) s.x = 0;
-        if (s.y < 0) s.y = h;
-        if (s.y > h) s.y = 0;
-      }
-      ctx.globalAlpha = s.a;
-      ctx.beginPath();
-      ctx.arc(s.x + px * 0.3, s.y + py * 0.3, s.r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // slow trajectory lines (capital allocation paths)
-    ctx.strokeStyle = '#c9a26e';
-    ctx.lineWidth = 0.9;
-    for (const l of lines) {
-      if (!prefersReduced) {
-        l.y += l.vy * (dt / 16) * 0.6;
-        if (l.y > h + 20) {
-          l.y = -30;
-          l.x = Math.random() * w;
-        }
-      }
-      ctx.globalAlpha = l.a;
-      ctx.beginPath();
-      ctx.moveTo(l.x + px * 0.6, l.y + py * 0.6);
-      ctx.lineTo(l.x + px * 0.6, l.y + l.len + py * 0.6);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-
-    if (!prefersReduced) requestAnimationFrame(draw);
-  }
-
-  function onMouse(e) {
-    const rect = canvas.getBoundingClientRect();
-    mx = (e.clientX - rect.left) / rect.width;
-    my = (e.clientY - rect.top) / rect.height;
-  }
-
-  function init() {
-    if (initialized) return;
-    initialized = true;
-    resize();
-    createStars(320);
-    createLines(12);
-    window.addEventListener('resize', () => { resize(); createStars(320); createLines(12); }, { passive: true });
-    canvas.addEventListener('mousemove', onMouse, { passive: true });
-    canvas.addEventListener('mouseleave', () => { mx = 0.5; my = 0.5; });
-    if (!prefersReduced) {
-      requestAnimationFrame(draw);
-    } else {
-      // static beautiful field for reduced motion
-      draw();
-    }
-  }
-
-  // Observe for performance — only run when hero is visible
-  const hero = canvas.closest('.hero');
-  if ('IntersectionObserver' in window && hero) {
-    const io = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        init();
-        io.disconnect();
-      }
-    }, { threshold: 0.1 });
-    io.observe(hero);
-  } else {
-    init();
-  }
 }
 
 // Live First Principles Simulator
@@ -973,7 +836,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initKeyboard();
   initBackdrop();
   initDeepfield();
-  initStarfield();
   initSimulator();
   initCounters();
 });

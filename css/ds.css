@@ -148,10 +148,7 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(201, 162, 110, 0.07), transparent 28%),
-    radial-gradient(circle at 82% 2%, rgba(95, 209, 198, 0.08), transparent 30%),
-    linear-gradient(180deg, #020202 0%, var(--bg) 42%, #030302 100%);
+  background: #020202;
   color: var(--text);
   font-family: var(--font-sans);
   font-size: var(--fs-body-m);
@@ -204,6 +201,7 @@ p:last-child { margin-bottom: 0; }
   position: relative;
   padding: var(--section-y) 0;
   overflow: hidden;
+  background: transparent;
 }
 .section > .container { position: relative; z-index: 2; }
 .section::before {
@@ -214,14 +212,11 @@ p:last-child { margin-bottom: 0; }
   pointer-events: none;
   background:
     radial-gradient(circle at 12% 20%, var(--section-glow), transparent 28%),
-    radial-gradient(circle at 88% 68%, rgba(var(--section-rgb), 0.18), transparent 30%),
-    linear-gradient(115deg, transparent 0 56%, rgba(var(--section-rgb), 0.07) 56.08%, transparent 56.22% 100%);
-  opacity: 0.74;
+    radial-gradient(circle at 88% 68%, rgba(var(--section-rgb), 0.12), transparent 30%),
+    linear-gradient(115deg, transparent 0 56%, rgba(var(--section-rgb), 0.05) 56.08%, transparent 56.22% 100%);
+  opacity: 0.55;
 }
 .section--elev {
-  background:
-    linear-gradient(180deg, rgba(10, 10, 10, 0.58), rgba(10, 10, 10, 0.72)),
-    radial-gradient(circle at 90% 15%, rgba(95, 209, 198, 0.07), transparent 30%);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
@@ -237,7 +232,7 @@ p:last-child { margin-bottom: 0; }
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(5,5,5,0.86);
+  background: rgba(5,5,5,0.72);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   backdrop-filter: blur(12px) saturate(140%);
   border-bottom: 1px solid var(--line);
@@ -586,7 +581,7 @@ p:last-child { margin-bottom: 0; }
 
 /* Footer */
 .site-footer {
-  background: #020202;
+  background: transparent;
   color: var(--text-muted);
   font-size: 13px;
   border-top: 1px solid var(--line);
@@ -615,18 +610,7 @@ p:last-child { margin-bottom: 0; }
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  mix-blend-mode: screen;
   opacity: 1;
-}
-#starfield {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  opacity: 0.88;
 }
 
 /* Global atmospheric system: grid, grain, orbital arcs */
@@ -637,9 +621,8 @@ p:last-child { margin-bottom: 0; }
   pointer-events: none;
   overflow: hidden;
   background:
-    radial-gradient(circle at calc(18% + var(--mx, 0px)) calc(16% + var(--my, 0px)), rgba(201,162,110,0.10), transparent 26%),
-    radial-gradient(circle at calc(78% - var(--mx, 0px)) calc(18% - var(--my, 0px)), rgba(95,209,198,0.10), transparent 28%),
-    linear-gradient(180deg, #020202 0%, #050505 48%, #020202 100%);
+    radial-gradient(circle at calc(18% + var(--mx, 0px)) calc(16% + var(--my, 0px)), rgba(201,162,110,0.06), transparent 26%),
+    radial-gradient(circle at calc(78% - var(--mx, 0px)) calc(18% - var(--my, 0px)), rgba(95,209,198,0.06), transparent 28%);
 }
 .site-backdrop::before {
   content: '';
@@ -653,7 +636,7 @@ p:last-child { margin-bottom: 0; }
   mask-image: radial-gradient(ellipse at 48% 18%, black 0%, rgba(0,0,0,0.62) 38%, transparent 74%);
   transform: perspective(900px) rotateX(62deg) translateY(-18%);
   transform-origin: 50% 0%;
-  opacity: 0.34;
+  opacity: 0.24;
 }
 .site-backdrop::after {
   content: '';
@@ -665,7 +648,7 @@ p:last-child { margin-bottom: 0; }
     radial-gradient(circle at 58% 74%, rgba(95,209,198,0.16) 0 1px, transparent 1px),
     linear-gradient(115deg, transparent 0 43%, rgba(201,162,110,0.08) 43.08%, transparent 43.2% 100%),
     linear-gradient(74deg, transparent 0 62%, rgba(95,209,198,0.07) 62.08%, transparent 62.2% 100%);
-  opacity: 0.48;
+  opacity: 0.32;
 }
 .orbital-arc {
   position: fixed;
@@ -1098,6 +1081,6 @@ body > *:not(.site-backdrop):not(.orbital-arc):not(#deepfield) {
 .cred .what .org { color: var(--text-muted); font-size: 13.5px; }
 
 @media print {
-  .site-header, .btn, .site-footer, #starfield, #deepfield, .site-backdrop, .orbital-arc { display: none !important; }
+  .site-header, .btn, .site-footer, #deepfield, .site-backdrop, .orbital-arc { display: none !important; }
   body { background: white; color: black; }
 }
