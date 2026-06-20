@@ -20,7 +20,7 @@
     .hero-inner {
       position: relative;
       z-index: 2;
-      padding: 120px 0 80px;
+      padding: 40px 0 40px;
     }
     .hero h1 {
       font-size: 92px;
@@ -43,6 +43,18 @@
       }
       .hero .mission {
         font-size: 18px;
+      }
+    }
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+    @media (max-width: 640px) {
+      .hero-cta {
+        flex-wrap: wrap;
       }
     }
     .state-vector {
@@ -109,15 +121,14 @@
     </a>
 
     <nav class="nav" id="nav">
-      <a href="#value-agenda">Value Agenda</a>
+      <a href="#principles">Principles</a>
       <a href="#systems">Systems</a>
       <a href="#long-bets">Future Thesis</a>
-      <a href="#stack">Stack</a>
+      <a href="#stack">Tools</a>
     </nav>
 
     <div class="nav-actions">
       <a class="btn btn--sm btn--secondary" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener">LinkedIn</a>
-      <button class="btn btn--sm btn--primary" onclick="document.getElementById('value-agenda').scrollIntoView({behavior:'smooth'})">Value agenda</button>
       <button class="nav-mobile-toggle" id="navToggle" aria-label="Toggle menu">
         <i data-lucide="menu" style="width:20px;height:20px;"></i>
       </button>
@@ -133,23 +144,20 @@
         <div class="hero-intro">
           <div class="hero-text">
             <div class="big-number" style="margin-bottom:8px;">Chief Financial Officer, Value Driver</div>
-            <h1>Value creating CFO for the AI age.</h1>
+            <h1>Creating Value in the age of AI</h1>
             <p class="mission">
               I build the capital allocation, data, automation, and control systems that help companies grow faster, govern smarter, and fund long-tail wins.
             </p>
-            <div style="margin-top:6px; font-size:15px; color:var(--text-muted);">
-              Robert McFarlin — Manufacturing CFO, systems builder, CMA, and systems automation expert ready for an AI-driven space age.
-            </div>
 
-            <div style="display:flex; gap:12px; margin-top:32px; flex-wrap:wrap;">
-              <a href="#value-agenda" class="btn btn--lg btn--primary">
-                View the value agenda
-                <i data-lucide="arrow-right"></i>
+            <div class="hero-cta">
+              <a href="#principles" class="btn btn--lg btn--primary">
+                My Principles
               </a>
               <a href="#long-bets" class="btn btn--lg btn--horizon">
-                See the future thesis
+                Future Thesis
               </a>
-              <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--lg btn--ghost">
+              <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--lg btn--secondary">
+                <i data-lucide="linkedin"></i>
                 Connect
               </a>
             </div>
@@ -159,10 +167,6 @@
             <div class="headshot-frame">
               <img src="assets/headshot.jpeg" alt="Robert McFarlin" loading="eager" decoding="async">
             </div>
-            <div class="headshot-meta">
-              <div class="mono">ROBERT MCFARLIN</div>
-              <span>CMA · Manufacturing CFO · Finance systems builder</span>
-            </div>
           </aside>
         </div>
 
@@ -170,8 +174,8 @@
           <div class="future-card">
             <div class="future-card__num mono">01</div>
             <div>
-              <h3>Strategic choice under uncertainty</h3>
-              <p>Decide where to compete, what not to fund, and which few activities must fit together to create durable advantage.</p>
+              <h3>Strategic choices in an uncertain world</h3>
+              <p>Decide where to compete, what not to fund, and which few activities must fit together to create durable competitive advantage.</p>
             </div>
           </div>
           <div class="future-card">
@@ -189,78 +193,8 @@
             </div>
           </div>
         </div>
-
-        <!-- State vector -->
-        <div class="state-vector">
-          <div class="stat">
-            <div class="label">Strategy</div>
-            <div class="value">Choose</div>
-            <div class="meta">Make trade-offs explicit before capital moves</div>
-          </div>
-          <div class="stat">
-            <div class="label">Value</div>
-            <div class="value">Focus</div>
-            <div class="meta">Concentrate resources on the vital few</div>
-          </div>
-          <div class="stat">
-            <div class="label">Operations</div>
-            <div class="value">Instrument</div>
-            <div class="meta">Connect plant economics to enterprise choices</div>
-          </div>
-          <div class="stat">
-            <div class="label">AI</div>
-            <div class="value">Scale</div>
-            <div class="meta">Move from pilots to governed finance systems</div>
-          </div>
-        </div>
       </div>
 
-    </div>
-  </div>
-</section>
-
-<!-- Value Creation Agenda -->
-<section id="value-agenda" class="section section--elev">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Value Creation Agenda</span>
-      <h2 style="margin:10px 0 14px;">The high-value CFO work I want to be measured against.</h2>
-      <p style="color:var(--text-secondary); max-width:64ch;">
-        The future CFO is not just the person who closes the books. The role is shifting toward enterprise value architecture: strategic choice, capital deployment, 80/20 focus, AI-enabled operating systems, risk governance, and market trust.
-      </p>
-    </div>
-
-    <div class="value-agenda-grid" style="margin-top:42px;">
-      <article class="agenda-card">
-        <div class="agenda-index mono">01</div>
-        <h3>Strategic choice and trade-off discipline</h3>
-        <p>Help leadership decide where to compete, what not to fund, and which activities must fit together to create durable advantage. Strategy becomes a capital allocation system with consequences.</p>
-      </article>
-      <article class="agenda-card">
-        <div class="agenda-index mono">02</div>
-        <h3>80/20 value concentration</h3>
-        <p>Locate the vital few customers, products, plants, constraints, suppliers, and workflows that drive disproportionate value. Move time, capital, and management attention toward the highest-yield levers.</p>
-      </article>
-      <article class="agenda-card">
-        <div class="agenda-index mono">03</div>
-        <h3>AI finance operating-system builder</h3>
-        <p>Turn experiments into production-ready finance patterns. Pay down workflow debt, clean the data foundation, and scale AI where the economics, controls, and adoption model are real.</p>
-      </article>
-      <article class="agenda-card">
-        <div class="agenda-index mono">04</div>
-        <h3>Manufacturing margin architect</h3>
-        <p>Make growth and cost discipline one agenda. Use cost-to-serve logic, pricing guardrails, mix, inventory, capacity, and plant economics to fund ambition without letting margin drift.</p>
-      </article>
-      <article class="agenda-card">
-        <div class="agenda-index mono">05</div>
-        <h3>Working capital and supply-chain intelligence</h3>
-        <p>Connect cash, inventory, supplier risk, tariffs, and demand signals into scenario cycles. The goal is not a prettier dashboard; it is earlier pricing, sourcing, and liquidity decisions.</p>
-      </article>
-      <article class="agenda-card">
-        <div class="agenda-index mono">06</div>
-        <h3>Risk, governance, and value narrative</h3>
-        <p>Protect the enterprise while it moves faster. Build data governance, AI use-case approval logic, control discipline, and a credible value-creation story for boards, lenders, investors, and operators.</p>
-      </article>
     </div>
   </div>
 </section>
@@ -270,7 +204,7 @@
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">Operating Principles</span>
-      <h2 style="margin:10px 0 14px;">Non-negotiables for high-stakes capital decisions.</h2>
+      <h2 style="margin:10px 0 14px;">Non-negotiable principles for myself and my team.</h2>
       <p style="color:var(--text-secondary); max-width:58ch;">
         These are not aspirations. They are the constraints under which the best long-horizon decisions are made.
       </p>
@@ -416,9 +350,9 @@
 <section id="stack" class="section">
   <div class="container">
     <div class="section-head">
-      <span class="eyebrow">Future CFO Stack</span>
-      <h2 style="margin:10px 0 14px;">The skill map behind the agenda.</h2>
-      <p style="color:var(--text-secondary); max-width:62ch;">A high-value manufacturing CFO needs technical finance depth, digital fluency, operating judgment, and the ability to turn strategic choice into a funded, measurable plan.</p>
+      <span class="eyebrow">Tools & Infrastructure</span>
+      <h2 style="margin:10px 0 14px;">What I bring to the CFO seat.</h2>
+      <p style="color:var(--text-secondary); max-width:62ch;">From data infrastructure to board narrative — the skills that turn manufacturing complexity into competitive advantage.</p>
     </div>
 
     <div class="stack-grid">
@@ -471,26 +405,6 @@
   </div>
 </section>
 
-<!-- Final Signal -->
-<section class="section section--signal" style="border-top:1px solid var(--line);">
-  <div class="container">
-    <div class="signal">
-      <span class="eyebrow">Signal</span>
-      <h2 style="margin:14px 0 18px;">If you are allocating capital on 10- to 30-year horizons, or building the infrastructure layer that the next century will run on, the conversation is worth having.</h2>
-      <p style="color:var(--text-secondary); max-width:52ch; margin:0 auto;">
-        I reply to every high-signal note personally. No form. No gatekeeper.
-      </p>
-      <div style="margin-top:26px;">
-        <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--lg btn--brass">
-          Message on LinkedIn
-          <i data-lucide="arrow-right"></i>
-        </a>
-      </div>
-      <div style="margin-top:14px; font-size:12px; color:var(--text-muted);">Greenville, SC</div>
-    </div>
-  </div>
-</section>
-
 <!-- Footer -->
 <footer class="site-footer">
   <div class="footer-inner">
@@ -500,12 +414,6 @@
     </a>
     <div class="footer-meta">
       © 2026 · Building the financial operating systems for the next industrial age
-    </div>
-    <div style="display:flex; gap:16px; font-size:12px;">
-      <a href="#value-agenda">Value Agenda</a>
-      <a href="#systems">Systems</a>
-      <a href="#long-bets">Future Thesis</a>
-      <a href="#stack">Stack</a>
     </div>
   </div>
 </footer>
