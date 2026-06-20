@@ -319,28 +319,89 @@
 </section>
 
 <!-- Future Thesis -->
-<section id="long-bets" class="section">
+<section id="long-bets" class="section thesis-section">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Future Thesis</span>
-      <h2 style="margin:10px 0 14px;">Where the Puck Is Going</h2>
-      <p style="color:var(--text-secondary); max-width:62ch;">
+    <div class="section-head thesis-head">
+      <span class="eyebrow thesis-eyebrow">The Future</span>
+      <h2 style="margin:10px 0 14px;">Building for what is coming.</h2>
+      <p class="thesis-intro">
         The CFOs who create the most value in the next ten years won't just read the forecast — they'll build the infrastructure that generates it. These are the forces I'm watching, building for, and betting on.
       </p>
     </div>
 
-    <div class="horizon-grid" style="margin-top:38px;">
-      <div class="horizon-card">
-        <div class="icon"><i data-lucide="cpu"></i></div>
-        <h3>AI-native finance leadership</h3>
-        <p>AI is not a replacement for financial discipline. It is the sensor layer, pattern engine, and automation layer that lets a finance team see earlier and act faster. The job is to pair models with controls, judgment, operating context, and the few use cases that actually create value.</p>
-        <p style="margin-top:14px; font-size:14px; color:var(--text-muted);">The future-ready CFO will know how to turn finance operations into an intelligence system without mistaking pilots for transformation.</p>
+    <div class="thesis-scape in-view" id="thesis-scape">
+      <div class="thesis-timeline" aria-hidden="true">
+        <svg class="thesis-timeline__svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="thesisArc" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="rgba(232,238,248,0.55)" />
+              <stop offset="45%" stop-color="rgba(91,156,245,0.85)" />
+              <stop offset="100%" stop-color="rgba(91,156,245,0.35)" />
+            </linearGradient>
+          </defs>
+          <path class="thesis-timeline__path" d="M 24 78 C 280 88, 420 72, 600 48 S 980 18, 1176 24" />
+        </svg>
+        <div class="thesis-timeline__nodes">
+          <div class="thesis-node thesis-node--present" style="left: 8%;">
+            <span class="thesis-node__ring"></span>
+            <span class="thesis-node__core"></span>
+          </div>
+          <div class="thesis-node thesis-node--building" style="left: 50%;">
+            <span class="thesis-node__ring"></span>
+            <span class="thesis-node__core"></span>
+          </div>
+          <div class="thesis-node thesis-node--watch" style="left: 92%;">
+            <span class="thesis-node__ring"></span>
+            <span class="thesis-node__core"></span>
+          </div>
+        </div>
+        <div class="thesis-timeline__labels mono">
+          <span>Now</span>
+          <span>2030+</span>
+        </div>
       </div>
-      <div class="horizon-card">
-        <div class="icon"><i data-lucide="rocket"></i></div>
-        <h3>Space-era capital allocation</h3>
-        <p>A world that inhabits space will need CFOs who can reason across longer timelines, deeper technical uncertainty, and heavier infrastructure bets. The principles are familiar: clear strategic choice, staged commitments, rigorous milestones, fast learning loops, and humility when physics or economics change.</p>
-        <p style="margin-top:14px; font-size:14px; color:var(--text-muted);">The organizations that matter in 2050 will be the ones funding the right hard things now.</p>
+
+      <div class="thesis-grid">
+        <article class="thesis-panel thesis-panel--forces">
+          <div class="thesis-panel__head">
+            <span class="thesis-badge thesis-badge--present mono">In motion</span>
+            <h3>Current Forces</h3>
+          </div>
+          <ul class="thesis-list">
+            <li class="thesis-item">AI agents transforming finance and accounting workflows</li>
+            <li class="thesis-item">Real-time operational data compressing the monthly close cycle</li>
+            <li class="thesis-item">Conversational AI agents embedding into operational workflows</li>
+            <li class="thesis-item">The spreadsheet demoted from system of record to consumption layer</li>
+            <li class="thesis-item">The CFO evolving from financial steward to infrastructure architect</li>
+          </ul>
+        </article>
+
+        <article class="thesis-panel thesis-panel--bets">
+          <div class="thesis-panel__head">
+            <span class="thesis-badge thesis-badge--building mono">Building</span>
+            <h3>Strategic Bets</h3>
+          </div>
+          <ul class="thesis-list">
+            <li class="thesis-item">Agentic financial and operational intelligence</li>
+            <li class="thesis-item">Ontology-driven data models over rigid ERP schemas</li>
+            <li class="thesis-item">Direct Lake semantic layers as the new general ledger interface</li>
+            <li class="thesis-item">Natural language as the query interface for operations</li>
+            <li class="thesis-item">Post-ERP modular architecture replacing monolithic financial systems</li>
+          </ul>
+        </article>
+
+        <article class="thesis-panel thesis-panel--watch">
+          <div class="thesis-panel__head">
+            <span class="thesis-badge thesis-badge--watch mono">Watching</span>
+            <h3>Coming Disruptors</h3>
+          </div>
+          <ul class="thesis-list">
+            <li class="thesis-item">Orbital compute constellations dramatically lowering AI infrastructure costs</li>
+            <li class="thesis-item">Quantum optimization delivering measurable gains in computing power</li>
+            <li class="thesis-item">Humanoid robotics entering manufacturing at pilot scale, changing the workforce</li>
+            <li class="thesis-item">Modular ERP architecture as the default financial backbone of next-generation manufacturers</li>
+          </ul>
+        </article>
       </div>
     </div>
   </div>
@@ -875,7 +936,37 @@ document.addEventListener('DOMContentLoaded', () => {
   initDeepfield();
   initSimulator();
   initCounters();
+  initThesis();
 });
+
+function initThesis() {
+  const scape = document.getElementById('thesis-scape');
+  if (!scape) return;
+
+  const reveal = () => scape.classList.add('in-view');
+
+  // Always show content if already on screen or motion is reduced
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rect = scape.getBoundingClientRect();
+  const inViewport = rect.top < window.innerHeight * 0.92 && rect.bottom > 0;
+  if (prefersReduced || inViewport) {
+    reveal();
+    return;
+  }
+
+  if (!('IntersectionObserver' in window)) {
+    reveal();
+    return;
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      reveal();
+      io.disconnect();
+    }
+  }, { threshold: 0.08, rootMargin: '0px 0px -5% 0px' });
+  io.observe(scape);
+}
 </script>
 
 </body>
