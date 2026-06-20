@@ -885,6 +885,7 @@ p:last-child { margin-bottom: 0; }
   pointer-events: none;
   overflow: hidden;
   background:
+    radial-gradient(circle at calc(92% + var(--mx, 0px)) calc(2% + var(--my, 0px)), rgba(255, 205, 110, 0.075), transparent 38%),
     radial-gradient(circle at calc(18% + var(--mx, 0px)) calc(16% + var(--my, 0px)), rgba(201,162,110,0.06), transparent 26%),
     radial-gradient(circle at calc(78% - var(--mx, 0px)) calc(18% - var(--my, 0px)), rgba(95,209,198,0.06), transparent 28%);
 }
@@ -914,22 +915,63 @@ p:last-child { margin-bottom: 0; }
     linear-gradient(74deg, transparent 0 62%, rgba(95,209,198,0.07) 62.08%, transparent 62.2% 100%);
   opacity: 0.32;
 }
+
+/* Solar light — diffuse rim sun and directional wash */
+.solar-light {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transform: translate(calc(var(--mx, 0px) * 0.22), calc(var(--my, 0px) * 0.22));
+}
+.solar-light::before {
+  content: '';
+  position: absolute;
+  top: calc(-22vh + var(--my, 0px) * 0.1);
+  right: calc(-18vw - var(--mx, 0px) * 0.12);
+  width: min(72vw, 680px);
+  height: min(72vw, 680px);
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 236, 200, 0.16) 0%,
+      rgba(255, 205, 120, 0.09) 22%,
+      rgba(201, 162, 110, 0.05) 42%,
+      transparent 68%
+    );
+  filter: blur(8px);
+}
+.solar-light::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    232deg,
+    rgba(255, 215, 130, 0.11) 0%,
+    rgba(255, 190, 100, 0.045) 18%,
+    rgba(201, 162, 110, 0.018) 34%,
+    transparent 52%
+  );
+}
+
 .orbital-arc {
   position: fixed;
   width: 720px;
   height: 720px;
-  right: -260px;
-  top: 14vh;
+  right: -300px;
+  top: -6vh;
   z-index: 0;
-  border: 1px solid rgba(201,162,110,0.12);
+  border: 1px solid rgba(255, 210, 130, 0.1);
   border-radius: 50%;
   box-shadow:
-    0 0 0 96px rgba(201,162,110,0.018),
-    0 0 0 192px rgba(95,209,198,0.012);
+    0 0 0 96px rgba(255, 205, 120, 0.014),
+    0 0 0 192px rgba(201, 162, 110, 0.01);
   pointer-events: none;
 }
 
-body > *:not(.site-backdrop):not(.orbital-arc):not(#deepfield):not(.site-header) {
+body > *:not(.site-backdrop):not(.solar-light):not(.orbital-arc):not(#deepfield):not(.site-header) {
   position: relative;
   z-index: 1;
 }
@@ -1496,6 +1538,7 @@ body > *:not(.site-backdrop):not(.orbital-arc):not(#deepfield):not(.site-header)
   .console-orbit { animation: orbitDrift 28s linear infinite; }
   .console-core::after { animation: satellitePulse 3.4s ease-in-out infinite; }
   .site-backdrop::before { animation: gridDrift 22s linear infinite; }
+  .solar-light::before { animation: solarPulse 9s ease-in-out infinite; }
 }
 
 @keyframes orbitDrift {
@@ -1510,6 +1553,10 @@ body > *:not(.site-backdrop):not(.orbital-arc):not(#deepfield):not(.site-header)
   from { background-position: 0 0, 0 0; }
   to { background-position: 72px 72px, 72px 72px; }
 }
+@keyframes solarPulse {
+  0%, 100% { transform: scale(1); opacity: 0.88; }
+  50% { transform: scale(1.02); opacity: 1; }
+}
 
 /* Misc */
 .lead { font-size: 19px; line-height: 1.55; color: var(--text-secondary); max-width: 58ch; }
@@ -1521,6 +1568,6 @@ body > *:not(.site-backdrop):not(.orbital-arc):not(#deepfield):not(.site-header)
 .cred .what .org { color: var(--text-muted); font-size: 13.5px; }
 
 @media print {
-  .site-header, .btn, .site-footer, #deepfield, .site-backdrop, .orbital-arc { display: none !important; }
+  .site-header, .btn, .site-footer, #deepfield, .site-backdrop, .solar-light, .orbital-arc { display: none !important; }
   body { background: white; color: black; }
 }

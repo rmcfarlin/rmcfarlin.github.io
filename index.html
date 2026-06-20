@@ -106,6 +106,7 @@
 </head>
 <body>
 <div class="site-backdrop" aria-hidden="true"></div>
+<div class="solar-light" aria-hidden="true"></div>
 <canvas id="deepfield" aria-hidden="true"></canvas>
 <div class="orbital-arc" aria-hidden="true"></div>
 
@@ -670,8 +671,11 @@ function initKeyboard() {
 
 // Subtle global background parallax. CSS-only fallback still looks good.
 function initBackdrop() {
-  const backdrop = document.querySelector('.site-backdrop');
-  if (!backdrop) return;
+  const layers = [
+    document.querySelector('.site-backdrop'),
+    document.querySelector('.solar-light')
+  ].filter(Boolean);
+  if (!layers.length) return;
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduced) return;
 
@@ -681,8 +685,10 @@ function initBackdrop() {
   function tick() {
     currentX += (targetX - currentX) * 0.08;
     currentY += (targetY - currentY) * 0.08;
-    backdrop.style.setProperty('--mx', `${currentX.toFixed(2)}px`);
-    backdrop.style.setProperty('--my', `${currentY.toFixed(2)}px`);
+    for (const layer of layers) {
+      layer.style.setProperty('--mx', `${currentX.toFixed(2)}px`);
+      layer.style.setProperty('--my', `${currentY.toFixed(2)}px`);
+    }
     if (Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
       raf = requestAnimationFrame(tick);
     } else {
@@ -716,10 +722,10 @@ function initDeepfield() {
   }
 
   function seed() {
-    const starCount = Math.min(760, Math.max(360, Math.round((w * h) / 2450)));
+    const starCount = Math.min(1100, Math.max(480, Math.round((w * h) / 1700)));
     stars = Array.from({ length: starCount }, (_, i) => {
-      const bright = i % 19 === 0;
-      const warm = i % 7 === 0;
+      const bright = i % 17 === 0;
+      const warm = i % 5 === 0;
       return {
         x: Math.random() * w,
         y: Math.random() * h,
@@ -733,14 +739,69 @@ function initDeepfield() {
     });
 
     bodies = [
-      { x: w * 0.78, y: h * 0.18, r: Math.min(w, h) * 0.18, color: '95, 209, 198', a: 0.105 },
-      { x: w * 0.16, y: h * 0.72, r: Math.min(w, h) * 0.22, color: '201, 162, 110', a: 0.082 },
-      { x: w * 0.58, y: h * 0.48, r: Math.min(w, h) * 0.13, color: '96, 165, 250', a: 0.058 }
+      { x: w * 0.68, y: h * 0.36, r: Math.min(w, h) * 0.16, color: '95, 209, 198', a: 0.065 },
+      { x: w * 0.14, y: h * 0.74, r: Math.min(w, h) * 0.22, color: '201, 162, 110', a: 0.088 },
+      { x: w * 0.52, y: h * 0.58, r: Math.min(w, h) * 0.11, color: '96, 165, 250', a: 0.048 }
     ];
+  }
+
+  function drawSun(ts = 0) {
+    const sx = w * 0.94;
+    const sy = h * -0.02;
+    const pulse = prefersReduced ? 1 : 0.96 + Math.sin(ts * 0.00035) * 0.04;
+    const coreR = Math.min(w, h) * 0.038 * pulse;
+    const coronaR = Math.min(w, h) * 0.36 * pulse;
+
+    if (!prefersReduced) {
+      const beams = [
+        { angle: 2.35, spread: 0.14, len: h * 1.05, a: 0.055 },
+        { angle: 2.48, spread: 0.09, len: h * 0.92, a: 0.038 },
+        { angle: 2.62, spread: 0.07, len: h * 0.84, a: 0.028 }
+      ];
+      for (const beam of beams) {
+        ctx.save();
+        ctx.translate(sx, sy);
+        ctx.rotate(beam.angle);
+        const gr = ctx.createLinearGradient(0, 0, 0, beam.len);
+        gr.addColorStop(0, `rgba(255, 224, 170, ${beam.a})`);
+        gr.addColorStop(0.28, `rgba(255, 200, 120, ${beam.a * 0.45})`);
+        gr.addColorStop(1, 'rgba(201, 162, 110, 0)');
+        ctx.fillStyle = gr;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-coronaR * beam.spread, beam.len);
+        ctx.lineTo(coronaR * beam.spread, beam.len);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    const corona = ctx.createRadialGradient(sx, sy, 0, sx, sy, coronaR);
+    corona.addColorStop(0, 'rgba(255, 236, 200, 0.32)');
+    corona.addColorStop(0.18, 'rgba(255, 205, 110, 0.16)');
+    corona.addColorStop(0.42, 'rgba(201, 162, 110, 0.07)');
+    corona.addColorStop(0.68, 'rgba(255, 150, 70, 0.02)');
+    corona.addColorStop(1, 'rgba(255, 150, 70, 0)');
+    ctx.fillStyle = corona;
+    ctx.beginPath();
+    ctx.arc(sx, sy, coronaR, 0, Math.PI * 2);
+    ctx.fill();
+
+    const core = ctx.createRadialGradient(sx, sy, 0, sx, sy, coreR);
+    core.addColorStop(0, 'rgba(255, 250, 235, 0.78)');
+    core.addColorStop(0.6, 'rgba(255, 210, 130, 0.42)');
+    core.addColorStop(1, 'rgba(245, 180, 80, 0)');
+    ctx.fillStyle = core;
+    ctx.beginPath();
+    ctx.arc(sx, sy, coreR, 0, Math.PI * 2);
+    ctx.fill();
   }
 
   function draw(ts = 0) {
     ctx.clearRect(0, 0, w, h);
+
+    drawSun(ts);
 
     for (const b of bodies) {
       const pulse = prefersReduced ? 1 : 0.88 + Math.sin(ts * 0.00035 + b.r) * 0.12;
