@@ -382,9 +382,10 @@ p:last-child { margin-bottom: 0; }
   display: flex;
   gap: var(--space-5);
   align-items: flex-start;
-  padding-bottom: var(--space-6);
+  padding: var(--space-6) 0;
   border-bottom: 1px solid var(--line);
 }
+.principle:first-child { padding-top: 0; }
 .principle:last-child { border-bottom: none; padding-bottom: 0; }
 .principle-num {
   font-family: var(--font-mono);
