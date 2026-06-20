@@ -1441,20 +1441,24 @@ body > *:not(.site-backdrop):not(.solar-light):not(.orbital-arc):not(#deepfield)
 .credentials-table {
   margin-top: 42px;
 }
+.credentials-table .skills-table__columns,
+.credentials-table__body .skills-row {
+  grid-template-columns: minmax(180px, 32%) minmax(0, 1fr);
+}
+.credentials-table .skills-table__col--skill,
+.credentials-table__body .skills-row__skill {
+  grid-column: 1;
+  text-align: left;
+}
+.credentials-table .skills-table__col--proof,
+.credentials-table__body .skills-row__proof {
+  grid-column: 2;
+}
 .credentials-table__body .skills-row:first-child {
   border-top: none;
 }
-@media (min-width: 760px) {
-  .credentials-table__body .skills-row {
-    grid-template-columns: 72px minmax(180px, 28%) minmax(0, 1fr);
-  }
-  .credentials-table__body .skills-row__skill {
-    grid-column: 2;
-  }
-  .credentials-table__body .skills-row__proof {
-    grid-column: 3;
-    border-left: 1px solid var(--line);
-  }
+.credentials-table__body .skills-row__proof {
+  border-left: 1px solid var(--line);
 }
 .skills-row {
   border-top: 1px solid var(--line);
