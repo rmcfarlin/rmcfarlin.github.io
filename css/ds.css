@@ -225,6 +225,7 @@ p:last-child { margin-bottom: 0; }
 #long-bets { --section-accent: var(--horizon); --section-rgb: 95, 209, 198; --section-glow: rgba(95, 209, 198, 0.13); }
 #systems { --section-accent: #88d0a0; --section-rgb: 74, 222, 128; --section-glow: rgba(74, 222, 128, 0.095); }
 #stack { --section-accent: #9bb7ff; --section-rgb: 96, 165, 250; --section-glow: rgba(96, 165, 250, 0.09); }
+#credentials { --section-accent: #d4b896; --section-rgb: 212, 184, 150; --section-glow: rgba(212, 184, 150, 0.10); }
 .section--signal { --section-accent: #f3d19c; --section-rgb: 201, 162, 110; --section-glow: rgba(201, 162, 110, 0.15); }
 
 /* Header */
@@ -1032,17 +1033,209 @@ body > *:not(.site-backdrop):not(.orbital-arc):not(#deepfield):not(.site-header)
   .telemetry-row { grid-template-columns: 70px 1fr 42px; font-size: 10px; }
 }
 
-.stack-grid {
+.skills-table {
+  margin-top: 42px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.008)),
+    rgba(6,6,6,0.72);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.skills-table__columns,
+.skills-row,
+.skills-section__summary {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 32px 24px;
-  margin-top: 32px;
+  grid-template-columns: minmax(180px, 28%) minmax(0, 1fr) auto;
+  gap: 0;
+  align-items: stretch;
 }
-@media (max-width: 980px) {
-  .stack-grid { grid-template-columns: repeat(2, 1fr); }
+.skills-table__columns {
+  border-bottom: 1px solid var(--line-strong);
+  background: rgba(201,162,110,0.06);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brass);
 }
-@media (max-width: 620px) {
-  .stack-grid { grid-template-columns: 1fr; }
+.skills-table__col {
+  padding: 12px 18px;
+}
+.skills-table__col--proof {
+  border-left: 1px solid var(--line);
+}
+.skills-section {
+  border-top: 1px solid var(--line);
+}
+.skills-section:first-of-type {
+  border-top: none;
+}
+.skills-section__summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 0;
+  background: rgba(255,255,255,0.02);
+  transition: background var(--dur-fast) var(--ease-standard);
+}
+.skills-section__summary::-webkit-details-marker { display: none; }
+.skills-section__summary:hover {
+  background: rgba(201,162,110,0.05);
+}
+.skills-section[open] > .skills-section__summary {
+  background: rgba(95,209,198,0.05);
+  border-bottom: 1px solid var(--line);
+}
+.skills-section__code {
+  padding: 14px 18px;
+  color: var(--brass);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  border-right: 1px solid var(--line);
+}
+.skills-section__title {
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: var(--w-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.skills-section__meta {
+  display: none;
+  padding: 14px 12px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.skills-section__chev {
+  width: 18px;
+  height: 18px;
+  margin: auto 16px auto 0;
+  color: var(--text-muted);
+  transition: transform var(--dur-base) var(--ease-out), color var(--dur-fast) var(--ease-standard);
+}
+.skills-section[open] .skills-section__chev {
+  transform: rotate(180deg);
+  color: var(--horizon);
+}
+.skills-section__body {
+  border-top: 1px solid rgba(255,255,255,0.03);
+}
+.skills-section__tags {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255,255,255,0.012);
+}
+.skills-section__tags .tag {
+  margin-bottom: 6px;
+}
+.skills-section__proof-label {
+  padding: 10px 18px 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.01);
+}
+.credentials-table {
+  margin-top: 42px;
+}
+.credentials-table__body .skills-row:first-child {
+  border-top: none;
+}
+@media (min-width: 760px) {
+  .credentials-table__body .skills-row {
+    grid-template-columns: 72px minmax(180px, 28%) minmax(0, 1fr);
+  }
+  .credentials-table__body .skills-row__skill {
+    grid-column: 2;
+  }
+  .credentials-table__body .skills-row__proof {
+    grid-column: 3;
+    border-left: 1px solid var(--line);
+  }
+}
+.skills-row {
+  border-top: 1px solid var(--line);
+}
+.skills-row:first-child {
+  border-top: none;
+}
+.skills-row__skill {
+  padding: 16px 18px;
+  font-size: 14.5px;
+  font-weight: var(--w-semibold);
+  line-height: 1.35;
+  color: var(--text);
+  border-right: 1px solid var(--line);
+  background: rgba(255,255,255,0.015);
+}
+.skills-row__proof {
+  grid-column: 2 / -1;
+  padding: 16px 18px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+@media (min-width: 760px) {
+  .skills-section__summary {
+    grid-template-columns: 72px minmax(180px, 28%) minmax(0, 1fr) auto;
+  }
+  .skills-section__meta {
+    display: block;
+    justify-self: end;
+    padding-right: 0;
+  }
+  .skills-table__columns {
+    grid-template-columns: 72px minmax(180px, 28%) minmax(0, 1fr);
+  }
+  .skills-table__col--skill {
+    grid-column: 2;
+  }
+  .skills-table__col--proof {
+    grid-column: 3;
+    border-left: none;
+  }
+  .skills-row {
+    grid-template-columns: 72px minmax(180px, 28%) minmax(0, 1fr);
+  }
+  .skills-row__skill {
+    grid-column: 2;
+  }
+  .skills-row__proof {
+    grid-column: 3;
+    border-left: 1px solid var(--line);
+  }
+}
+@media (max-width: 759px) {
+  .skills-table__columns {
+    display: none;
+  }
+  .skills-section__summary,
+  .skills-row {
+    grid-template-columns: 1fr auto;
+  }
+  .skills-section__code {
+    display: none;
+  }
+  .skills-section__title {
+    grid-column: 1;
+  }
+  .skills-row__skill {
+    grid-column: 1 / -1;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+  }
+  .skills-row__proof {
+    grid-column: 1 / -1;
+    padding-top: 12px;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
