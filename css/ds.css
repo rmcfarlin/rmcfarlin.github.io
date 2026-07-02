@@ -7,8 +7,8 @@
    reference for the standard warm advisory system.
    ============================================================ */
 
-/* ---- Fonts (same high-quality pair, loaded for precision) ---- */
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+/* ---- Fonts: loaded via <link rel="preconnect"> + stylesheet in the page head
+   (moved out of CSS @import to unblock first paint) ---- */
 
 /* ---- Mission palette (dark, engineered, high contrast) ---- */
 :root {
