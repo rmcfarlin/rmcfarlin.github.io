@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The General Ledger Becomes an Ontology — Robert McFarlin</title>
+  <meta name="description" content="Fabric and Direct Lake moved the data. The next move is meaning — and finance either owns the definitions or inherits numbers it can't defend." />
+  <link rel="canonical" href="https://robertmcfarlin.com/writing/the-general-ledger-becomes-an-ontology.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://robertmcfarlin.com/writing/the-general-ledger-becomes-an-ontology.html" />
+  <meta property="og:title" content="The General Ledger Becomes an Ontology — Robert McFarlin" />
+  <meta property="og:description" content="Fabric and Direct Lake moved the data. The next move is meaning — and finance either owns the definitions or inherits numbers it can't defend." />
+  <meta property="og:image" content="https://robertmcfarlin.com/assets/og-card.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="The General Ledger Becomes an Ontology — Robert McFarlin" />
+  <meta name="twitter:description" content="Fabric and Direct Lake moved the data. The next move is meaning — and finance either owns the definitions or inherits numbers it can't defend." />
+  <meta name="twitter:image" content="https://robertmcfarlin.com/assets/og-card.png" />
+  <meta property="article:published_time" content="2026-07-01" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/ds.css" />
+  <link rel="stylesheet" href="/css/writing.css" />
+  <link rel="icon" href="/assets/mark.svg" type="image/svg+xml" />
+</head>
+<body>
+<div class="site-backdrop" aria-hidden="true"></div>
+<div class="solar-light" aria-hidden="true"></div>
+<div class="orbital-arc" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="container" style="padding-top:13px; padding-bottom:13px; display:flex; align-items:center; justify-content:space-between; gap:24px;">
+    <a href="/" class="logo" aria-label="Robert McFarlin">
+      <img src="/assets/mark-light.svg" alt="" width="30" height="30" />
+      <span>
+        <span class="name">Robert McFarlin</span>
+        <span class="eyebrow-logo" style="display:block; margin-top:1px;">STRATEGY &bull; VALUE</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="nav">
+      <a href="/#principles">Principles</a>
+      <a href="/#systems">Experience</a>
+      <a href="/#long-bets">Future Outlook</a>
+      <a href="/#stack">Toolbox</a>
+      <a href="/writing/" class="active">Writing</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a class="btn btn--sm btn--secondary" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener">LinkedIn</a>
+      <button class="nav-mobile-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        <svg class="icon-x" style="display:none" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="writing-main">
+  <article class="article-wrap">
+    <div class="article-head">
+      <div class="meta">July 1, 2026 &middot; 4 min read <span class="tag">Draft</span></div>
+      <h1>The General Ledger Becomes an Ontology</h1>
+      <p class="article-lede">Fabric and Direct Lake moved the data. The next move is meaning — and finance either owns the definitions or inherits numbers it can't defend.</p>
+    </div>
+    <hr class="article-rule" />
+    <div class="article-body">
+<p>The general ledger is a recording system. Debits, credits, and balances that prove what happened. It was never designed to explain the business — only to document it. For two hundred years that was enough, because the explaining was done by people.</p>
+<p>That is the part that&rsquo;s changing.</p>
+<h2>The data moved first</h2>
+<p>Start with what already happened. For most of my career, reporting meant copies. Extract from the ERP, load into a model, refresh on a schedule, hope the numbers you present Monday still describe the business by Wednesday. I built our first generation of models this way in Power BI. They worked. They also aged the moment they refreshed.</p>
+<p>Microsoft Fabric changed the physics. Data lands once, in the lakehouse, in an open format. Direct Lake lets the semantic model read those tables directly — no import, no copy, no refresh window. The report is looking at the same data the operation just wrote. We rebuilt our reporting on this architecture, and the practical difference is simple to state: the question &ldquo;as of when?&rdquo; mostly disappeared.</p>
+<p>That was the plumbing. The interesting part is what sits on top of it.</p>
+<h2>A semantic model is an ontology that doesn&rsquo;t know it yet</h2>
+<p>A semantic model looks like a BI artifact. Tables, relationships, measures. But look at what it actually encodes: the entities of the business — customer, part, machine, shift, purchase order. The relationships between them, with direction. And measures with governed definitions: when we say <em>margin</em>, the model knows exactly what we mean. One definition, written once, enforced everywhere it appears.</p>
+<p>That is an ontology. A map of what the business <em>is</em>, not just what it recorded. Palantir has been making this argument for a decade — put an object layer over the data and let people act through it. Microsoft is now shipping the same idea to everyone who already owns the stack.</p>
+<p>The ERP schema can&rsquo;t play this role. It was built for transaction integrity, not meaning. Ask an AI agent to reason over raw ERP tables and it drowns in cryptic names and implied logic that lives in the heads of whoever configured the system fifteen years ago. There is nothing in the schema to reason <em>over</em>.</p>
+<p>Point the same agent at a semantic model and everything changes. Objects with names. Relationships with direction. Measures with definitions. The agent doesn&rsquo;t need to guess what margin means — the ontology tells it.</p>
+<p>This is the point most commentary misses: the ontology is not a nice-to-have for AI. It is the interface. Natural language questions, agent workflows, automated analysis — all of it lands on the semantic layer, or it doesn&rsquo;t land at all.</p>
+<h2>Where this goes</h2>
+<p>Five claims. I&rsquo;m building toward all of them.</p>
+<p><strong>The semantic layer becomes the system of meaning; the ERP demotes to a system of record.</strong> The ledger still matters — for audit, for statute, for proof. But the questions stop going to it. They go to the layer that can answer them.</p>
+<p><strong>The close compresses.</strong> When operational data is continuously reconciled against governed definitions, the month-end close stops being an archaeology project. Most of what we call closing is really re-deriving meaning from records. Put the meaning in the layer and the close becomes a checklist, not an excavation.</p>
+<p><strong>The spreadsheet demotes to a consumption surface.</strong> It stays — it&rsquo;s the most successful analytical tool ever built. But it stops being where truth lives. It reads from the ontology; it doesn&rsquo;t define it.</p>
+<p><strong>Control moves up a layer.</strong> Today we certify reports. Tomorrow we certify definitions. A measure definition is a policy: who changed it, when, why, and what approved it. That is an internal-control question, and most companies have no controls there at all yet.</p>
+<p><strong>Finance owns the ontology, or inherits numbers it can&rsquo;t defend.</strong> The layer will get built either way — by IT, by a vendor, by whoever moves first. If finance doesn&rsquo;t own the definitions, finance will spend the next decade explaining variances between what the agents say and what the ledger says. Owning &ldquo;what is true&rdquo; has always been the CFO&rsquo;s job. The location of that truth is moving.</p>
+<h2>What I&rsquo;m doing about it</h2>
+<p>Three things, none of them exotic.</p>
+<p>Write every definition once, in the model — never in a report, never in a workbook. If a number matters, its definition is code, and it has an owner.</p>
+<p>Treat the semantic model as a product, not a byproduct. It has a roadmap, a change log, and a person accountable for it. Ours is the most-read document in the company; it deserves at least the governance we give a policy manual.</p>
+<p>Name things as if the next reader is an agent, because it will be. Clean entity names, explicit relationships, no tribal shorthand. The model that a new analyst can understand is the same model an agent can use.</p>
+<p>The ledger will keep the score. The ontology will answer the questions. The CFOs who understand the difference are the ones who will still be setting the definitions ten years from now.</p>
+    </div>
+    <div class="article-footer">
+      <a class="back" href="/writing/">&larr; All essays</a>
+      <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--sm btn--secondary">Discuss on LinkedIn</a>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="/" class="logo" style="gap:10px;" aria-label="Robert McFarlin">
+      <img src="/assets/mark-light.svg" alt="" width="24" height="24" />
+      <span class="name" style="font-size:14px;">Robert McFarlin</span>
+    </a>
+    <div class="footer-meta">
+      &copy; 2026 &middot; Building financial operating systems for the AI age
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var toggle = document.getElementById('navToggle');
+  var nav = document.getElementById('nav');
+  if (!toggle || !nav) return;
+  var iconMenu = toggle.querySelector('.icon-menu');
+  var iconX = toggle.querySelector('.icon-x');
+  function setOpen(isOpen) {
+    nav.classList.toggle('open', isOpen);
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    if (iconMenu) iconMenu.style.display = isOpen ? 'none' : '';
+    if (iconX) iconX.style.display = isOpen ? '' : 'none';
+  }
+  toggle.addEventListener('click', function () { setOpen(!nav.classList.contains('open')); });
+  nav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setOpen(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+})();
+</script>
+</body>
+</html>

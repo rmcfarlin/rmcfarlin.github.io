@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Decisions at the Source — Robert McFarlin</title>
+  <meta name="description" content="The most expensive decisions in manufacturing are made a month late, in a conference room, from a PDF. Move the data to where the decision happens." />
+  <link rel="canonical" href="https://robertmcfarlin.com/writing/decisions-at-the-source.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://robertmcfarlin.com/writing/decisions-at-the-source.html" />
+  <meta property="og:title" content="Decisions at the Source — Robert McFarlin" />
+  <meta property="og:description" content="The most expensive decisions in manufacturing are made a month late, in a conference room, from a PDF. Move the data to where the decision happens." />
+  <meta property="og:image" content="https://robertmcfarlin.com/assets/og-card.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Decisions at the Source — Robert McFarlin" />
+  <meta name="twitter:description" content="The most expensive decisions in manufacturing are made a month late, in a conference room, from a PDF. Move the data to where the decision happens." />
+  <meta name="twitter:image" content="https://robertmcfarlin.com/assets/og-card.png" />
+  <meta property="article:published_time" content="2026-07-02" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/ds.css" />
+  <link rel="stylesheet" href="/css/writing.css" />
+  <link rel="icon" href="/assets/mark.svg" type="image/svg+xml" />
+</head>
+<body>
+<div class="site-backdrop" aria-hidden="true"></div>
+<div class="solar-light" aria-hidden="true"></div>
+<div class="orbital-arc" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="container" style="padding-top:13px; padding-bottom:13px; display:flex; align-items:center; justify-content:space-between; gap:24px;">
+    <a href="/" class="logo" aria-label="Robert McFarlin">
+      <img src="/assets/mark-light.svg" alt="" width="30" height="30" />
+      <span>
+        <span class="name">Robert McFarlin</span>
+        <span class="eyebrow-logo" style="display:block; margin-top:1px;">STRATEGY &bull; VALUE</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="nav">
+      <a href="/#principles">Principles</a>
+      <a href="/#systems">Experience</a>
+      <a href="/#long-bets">Future Outlook</a>
+      <a href="/#stack">Toolbox</a>
+      <a href="/writing/" class="active">Writing</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a class="btn btn--sm btn--secondary" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener">LinkedIn</a>
+      <button class="nav-mobile-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        <svg class="icon-x" style="display:none" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="writing-main">
+  <article class="article-wrap">
+    <div class="article-head">
+      <div class="meta">July 2, 2026 &middot; 5 min read <span class="tag">Draft</span></div>
+      <h1>Decisions at the Source</h1>
+      <p class="article-lede">The most expensive decisions in manufacturing are made a month late, in a conference room, from a PDF. Move the data to where the decision happens.</p>
+    </div>
+    <hr class="article-rule" />
+    <div class="article-body">
+<p>The most expensive decisions in manufacturing are made a month late, in a conference room, from a PDF.</p>
+<p>The plant ran the month. The books closed. The variance report landed in a meeting where the people who could have fixed the problem learn about it three to six weeks after it started. Everyone nods, someone commits to &ldquo;watch that closely,&rdquo; and the next month&rsquo;s version of the same meeting is already scheduled.</p>
+<p>I spent years inside that loop — first producing the reports, then running the meetings. The problem was never the analysis. The problem was the latency.</p>
+<h2>Information decays like inventory</h2>
+<p>APQC&rsquo;s benchmarking across thousands of organizations puts the median monthly close at 6.4 calendar days, with the bottom quartile needing ten or more (<a href="https://www.apqc.org/resource-library/resource/cycle-time-perform-monthly-close">APQC, <em>Cycle Time to Perform the Monthly Close</em></a>). Add the time to produce reporting and convene the meeting, and the standard operating rhythm of manufacturing finance is this: decisions about week one are made in week seven.</p>
+<p>A scrap problem that started on the third of the month has run for five weeks before anyone with authority discusses it. A machine bleeding labor variance has bled through two pay cycles. The information was in the building the whole time — sitting in the ERP, waiting for the close, the way grain waits in a silo.</p>
+<p>Information decays like inventory. It is worth the most the day it is produced, and something less every day it sits.</p>
+<h2>The data says this works</h2>
+<p>The evidence that data-driven operation pays is old enough to predate the current tooling. Brynjolfsson, Hitt, and Kim studied 179 large public firms and found that companies adopting data-driven decision-making showed output and productivity 5–6% higher than their other investments would predict, with the effect visible in asset utilization, return on equity, and market value (<a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1819486">Brynjolfsson, Hitt &amp; Kim, <em>Strength in Numbers</em>, 2011</a>).</p>
+<p>That study is from 2011 — before modern lakehouses, before semantic layers, before dashboards were cheap. The premium existed when getting the data was hard. The tooling since then has collapsed the cost side of the equation, which makes the remaining question organizational, not technical: does the data reach the person who makes the decision, while the decision still matters?</p>
+<h2>What we did</h2>
+<p>As a division controller, I owned a plant P&amp;L and sat close enough to operations to see the loop from both sides. The fix we landed on was not a better monthly package. It was moving the numbers to the floor: KPI dashboards in front of plant managers — inventory, carrying cost, the operating drivers they could actually turn — refreshed on the cadence of the work instead of the cadence of the close.</p>
+<p>The decisions changed because the audience changed. A plant manager who sees inventory aging <em>this week</em> pulls the order forward, changes the run schedule, calls the customer. The same manager seeing it in a month-old report can only explain it. Explanation is what latency leaves behind after the decision window closes.</p>
+<p>Years later we rebuilt the whole reporting stack on a lakehouse with a semantic layer, and the same principle held at enterprise scale: production, labor, and financial signals in near real-time, one set of definitions, visible to the people who own the outcomes. The technology matured. The idea didn&rsquo;t change: <strong>move the decision to the data&rsquo;s freshness, or move the data to the decision&rsquo;s location. Ideally both.</strong></p>
+<h2>The failure mode: dashboard theater</h2>
+<p>Every manufacturer now has dashboards. Most of them are decoration.</p>
+<p>Dashboard theater looks like this: a wall of metrics nobody owns, definitions that vary by report, lagging indicators dressed as insight, and a refresh cadence disconnected from any decision anyone actually makes. It photographs well on a plant tour. It changes nothing.</p>
+<p>The test of a dashboard is not whether it is accurate. It is whether a decision changed because of it. If you cannot name the decision a metric feeds, the metric is entertainment.</p>
+<p>Five design rules I hold to now:</p>
+<p><strong>The decision-maker owns the dashboard, not the analyst.</strong> If the plant manager didn&rsquo;t help pick the metrics, the plant manager won&rsquo;t act on them.</p>
+<p><strong>Leading indicators over lagging.</strong> Scrap rate, downtime, labor variance, inventory age — things that predict the month. Net income is a scoreboard, not a steering wheel.</p>
+<p><strong>One definition per number.</strong> If &ldquo;utilization&rdquo; means three things in three rooms, the meeting is about reconciliation instead of action. Definitions live in the semantic model, governed, written once. This is the unglamorous foundation everything else stands on.</p>
+<p><strong>Latency matched to the decision.</strong> A shift-level decision needs shift-fresh data. A pricing decision can wait for the month. Real-time everything is expensive vanity; real-time where the decision cadence demands it is operating leverage.</p>
+<p><strong>A named owner for every metric.</strong> A number without an owner is a fact without a consequence.</p>
+<h2>The cultural half</h2>
+<p>There is a reason plant-floor visibility works, and it is only half technical. A dashboard is a truth-telling device. When the scrap number is on the wall, fresh, with a name next to it — the conversation about scrap happens now, between the people who can fix it, instead of next month between the people who can only account for it.</p>
+<p>That only functions in a culture where bad news is allowed to travel fast. I hold a principle on this: share good news quickly and bad news quicker, because surprises are the most expensive input in any system. The dashboard is that principle rendered in software. If the number is embarrassing, that is the point. Embarrassment this week is cheaper than variance explanation next month.</p>
+<p>The report that arrives after the decision window closes is not information. It is history. Finance can keep producing history — or it can move the numbers to where the decisions are made, while they can still change something. The second one is the job.</p>
+<hr />
+<h2>Sources</h2>
+<ul>
+<li>APQC, <a href="https://www.apqc.org/resource-library/resource/cycle-time-perform-monthly-close"><em>Cycle Time to Perform the Monthly Close</em></a> — median monthly close of 6.4 calendar days; bottom quartile 10+ days.</li>
+<li>Erik Brynjolfsson, Lorin M. Hitt &amp; Heekyung Hellen Kim, <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1819486"><em>Strength in Numbers: How Does Data-Driven Decisionmaking Affect Firm Performance?</em></a> (2011) — data-driven firms show 5–6% higher output and productivity across 179 large public firms.</li>
+</ul>
+    </div>
+    <div class="article-footer">
+      <a class="back" href="/writing/">&larr; All essays</a>
+      <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--sm btn--secondary">Discuss on LinkedIn</a>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="/" class="logo" style="gap:10px;" aria-label="Robert McFarlin">
+      <img src="/assets/mark-light.svg" alt="" width="24" height="24" />
+      <span class="name" style="font-size:14px;">Robert McFarlin</span>
+    </a>
+    <div class="footer-meta">
+      &copy; 2026 &middot; Building financial operating systems for the AI age
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var toggle = document.getElementById('navToggle');
+  var nav = document.getElementById('nav');
+  if (!toggle || !nav) return;
+  var iconMenu = toggle.querySelector('.icon-menu');
+  var iconX = toggle.querySelector('.icon-x');
+  function setOpen(isOpen) {
+    nav.classList.toggle('open', isOpen);
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    if (iconMenu) iconMenu.style.display = isOpen ? 'none' : '';
+    if (iconX) iconX.style.display = isOpen ? '' : 'none';
+  }
+  toggle.addEventListener('click', function () { setOpen(!nav.classList.contains('open')); });
+  nav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setOpen(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+})();
+</script>
+</body>
+</html>
