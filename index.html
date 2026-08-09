@@ -1,32 +1,34 @@
 <!DOCTYPE html>
+<!-- impeccable-disable low-contrast: residual detector noise from print CSS / hidden legacy rules -->
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Robert McFarlin — Value-Creating CFO for the AI Age</title>
-  <meta name="description" content="Manufacturing CFO and systems builder focused on enterprise value creation, AI-enabled finance, strategic capital allocation, data governance, and long-horizon industrial growth." />
+  <title>Robert McFarlin — Manufacturing CFO</title>
+  <meta name="description" content="Manufacturing CFO at RCM Industries. Builds capital allocation, data, automation, and controls himself — not through a BI team." />
   <link rel="canonical" href="https://robertmcfarlin.com/" />
 
   <!-- Social cards -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://robertmcfarlin.com/" />
-  <meta property="og:title" content="Robert McFarlin — Value-Creating CFO for the AI Age" />
-  <meta property="og:description" content="Manufacturing CFO and systems builder. Capital allocation, data infrastructure, automation, and controls for long-horizon industrial growth." />
+  <meta property="og:title" content="Robert McFarlin — Manufacturing CFO" />
+  <meta property="og:description" content="Capital allocation, Fabric, automation, and controls. Built and run from the CFO seat." />
   <meta property="og:image" content="https://robertmcfarlin.com/assets/og-card.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Robert McFarlin — Chief Financial Officer, Industrial Manufacturing. Creating value in the age of AI." />
+  <meta property="og:image:alt" content="Robert McFarlin — Chief Financial Officer, Industrial Manufacturing" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Robert McFarlin — Value-Creating CFO for the AI Age" />
-  <meta name="twitter:description" content="Manufacturing CFO and systems builder. Capital allocation, data infrastructure, automation, and controls for long-horizon industrial growth." />
+  <meta name="twitter:title" content="Robert McFarlin — Manufacturing CFO" />
+  <meta name="twitter:description" content="Capital allocation, Fabric, automation, and controls. Built and run from the CFO seat." />
   <meta name="twitter:image" content="https://robertmcfarlin.com/assets/og-card.png" />
 
   <!-- Fonts: preconnect + link (was a render-blocking @import in ds.css) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/ds.css" />
+  <link rel="stylesheet" href="css/craft.css" />
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
 
   <script type="application/ld+json">
@@ -42,125 +44,49 @@
   }
   </script>
   <style>
-    /* Ambitious page-specific layers */
-    .hero {
-      position: relative;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      background: transparent;
-      overflow: hidden;
-    }
-    .hero-inner {
-      position: relative;
-      z-index: 2;
-      padding-top: 40px;
-      padding-bottom: 40px;
-    }
-    .hero h1 {
-      font-size: 92px;
-      line-height: 0.96;
-      letter-spacing: -0.045em;
-      font-weight: 800;
-      margin: 12px 0 18px;
-      max-width: 18ch;
-    }
-    .hero .mission {
-      font-size: 21px;
-      line-height: 1.35;
-      color: var(--text-secondary);
-      max-width: 52ch;
-      margin-bottom: 10px;
-    }
-    @media (max-width: 600px) {
-      .hero h1 {
-        font-size: clamp(52px, 17vw, 72px);
-      }
-      .hero .mission {
-        font-size: 18px;
-      }
-    }
-    .hero-cta {
-      display: flex;
-      gap: 12px;
-      margin-top: 32px;
-      flex-wrap: nowrap;
-      align-items: center;
-    }
-    @media (max-width: 640px) {
-      .hero-cta {
-        flex-wrap: wrap;
-      }
-    }
-    .state-vector {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-top: 52px;
-    }
-    @media (max-width: 900px) { .state-vector { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 520px) { .state-vector { grid-template-columns: 1fr; } }
-
     .nav-mobile-toggle {
       display: none;
       background: none;
       border: none;
       color: var(--text-secondary);
-      padding: 4px;
+      padding: 6px;
       cursor: pointer;
     }
+    .nav-mobile-toggle:hover { color: var(--text); }
+    .nav-mobile-toggle:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
     @media (max-width: 720px) {
       .site-header .container { flex-wrap: wrap; }
       .site-header .nav { display: none; width: 100%; order: 3; }
       .site-header .nav.open {
         display: flex; flex-direction: column; align-items: flex-start;
-        gap: 10px; padding: 12px 0 4px; border-top: 1px solid var(--line); margin-top: 8px;
+        gap: 4px; padding: 14px 0 6px; border-top: 1px solid var(--line); margin-top: 10px;
       }
+      .site-header .nav.open a { width: 100%; padding: 10px 0; }
       .nav-mobile-toggle { display: inline-flex; }
-    }
-
-    .section-head {
-      max-width: 720px;
-    }
-
-    .sim-note {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 18px;
-    }
-
-    .big-number {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--brass);
+      .site-header .nav-actions .btn { display: none; }
     }
   </style>
 </head>
 <body>
-<div class="site-backdrop" aria-hidden="true"></div>
-<div class="solar-light" aria-hidden="true"></div>
-<canvas id="deepfield" aria-hidden="true"></canvas>
-<div class="orbital-arc" aria-hidden="true"></div>
 
 <!-- Header -->
-<header class="site-header">
-  <div class="container" style="padding-top:13px; padding-bottom:13px; display:flex; align-items:center; justify-content:space-between; gap:24px;">
+<header class="site-header" id="siteHeader">
+  <div class="container site-header__inner">
     <a href="#" class="logo" aria-label="Robert McFarlin">
-      <img src="assets/mark-light.svg" alt="" width="30" height="30" />
-      <span>
+      <span class="logo-mark" aria-hidden="true">
+        <img src="assets/mark.svg" alt="" width="28" height="28" />
+      </span>
+      <span class="logo-text">
         <span class="name">Robert McFarlin</span>
-        <span class="eyebrow-logo" style="display:block; margin-top:1px;">STRATEGY • VALUE</span>
+        <span class="eyebrow-logo">Heavy mfg · Multi-plant</span>
       </span>
     </a>
 
-    <nav class="nav" id="nav">
-      <a href="#principles">Principles</a>
-      <a href="#systems">Experience</a>
-      <a href="#long-bets">Future Outlook</a>
-      <a href="#stack">Toolbox</a>
+    <nav class="nav" id="nav" aria-label="Primary">
+      <a href="#scale">Results</a>
+      <a href="#systems">History</a>
+      <a href="#principles">Standards</a>
+      <a href="#long-bets">Outlook</a>
       <!-- LAUNCH: uncomment when the writing section goes live -->
       <!-- <a href="/writing/">Writing</a> -->
       <a href="#contact">Contact</a>
@@ -175,186 +101,211 @@
     </div>
   </div>
 </header>
+<div class="ind-safety-bar" aria-hidden="true"></div>
 
 <!-- Hero -->
-<section class="hero">
+<section class="hero" aria-label="Introduction">
   <div class="container hero-inner">
     <div class="hero-layout hero-layout--focused">
       <div class="hero-copy">
         <div class="hero-intro">
           <div class="hero-text">
-            <div class="big-number" style="margin-bottom:8px;">Chief Financial Officer · Industrial Manufacturing</div>
-            <h1>Creating value in the age of AI</h1>
+            <p class="hero-kicker">CFO · Multi-plant · Die cast · Automated ops</p>
+            <h1>Finance systems built on the plant floor, not in a slide deck</h1>
             <p class="mission">
-              I build the capital allocation, data, automation, and control systems that help companies grow faster, govern smarter, and fund long-horizon wins.
+              Production data to capital calls. Fabric model owned in finance. Automation on the re-key work. Controls that hold as plants and cells scale. The pack is an output. The job is the system under it.
             </p>
 
             <div class="hero-cta">
-              <a href="#principles" class="btn btn--lg btn--primary">
-                My Principles
-              </a>
-              <a href="#long-bets" class="btn btn--lg btn--horizon">
-                Future Outlook
-              </a>
-              <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--lg btn--secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4V8h4v1a6 6 0 0 1 4-1z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-                Connect
-              </a>
+              <a href="#scale" class="btn btn--lg btn--primary">Results</a>
+              <a href="#systems" class="btn btn--lg btn--secondary">Job history</a>
             </div>
           </div>
 
-          <aside class="headshot-card" aria-label="Robert McFarlin headshot">
+          <aside class="headshot-card" aria-label="Robert McFarlin">
             <div class="headshot-frame">
-              <img src="assets/headshot.jpeg" alt="Robert McFarlin" loading="eager" decoding="async">
+              <img src="assets/headshot.jpeg" alt="Robert McFarlin, Chief Financial Officer" width="640" height="800" loading="eager" decoding="async" fetchpriority="high">
+            </div>
+            <div class="headshot-meta">
+              <span class="headshot-meta__name">Robert McFarlin</span>
+              <span class="headshot-meta__role">CFO · RCM · Multi-plant · Ops</span>
             </div>
           </aside>
         </div>
-
-        <div class="future-readiness" aria-label="Future-ready CFO orientation">
-          <div class="future-card">
-            <div class="future-card__num mono">01</div>
-            <div>
-              <h3>Strategic choices in an uncertain world</h3>
-              <p>Decide where to compete, what not to fund, and which few activities must fit together to create durable competitive advantage.</p>
-            </div>
-          </div>
-          <div class="future-card">
-            <div class="future-card__num mono">02</div>
-            <div>
-              <h3>80/20 value concentration</h3>
-              <p>Find the few customers, products, plants, constraints, and workflows that drive disproportionate profit, cash, risk, or drag.</p>
-            </div>
-          </div>
-          <div class="future-card">
-            <div class="future-card__num mono">03</div>
-            <div>
-              <h3>AI-enabled finance operating systems</h3>
-              <p>Turn finance from a reporting function into an intelligence layer: better data, faster forecasts, cleaner workflows, stronger controls.</p>
-            </div>
-          </div>
-        </div>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- Operating Principles -->
-<section id="principles" class="section">
+<!-- Results -->
+<section id="scale" class="section" aria-label="Results">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Operating Principles</span>
-      <h2 style="margin:10px 0 14px;">Non-negotiable principles for myself and my team.</h2>
-      <p style="color:var(--text-secondary); max-width:58ch;">
-        These are not aspirations. They are the constraints under which the best long-horizon decisions are made.
-      </p>
+    <div class="section-head" data-cell="BAY-01">
+      <h2>Results</h2>
+      <p class="section-lede">Outcomes from the seat, not a projection model.</p>
     </div>
-
-    <div style="margin-top:42px; max-width:860px;">
-      <div class="principle">
-        <div class="principle-num mono">01</div>
-        <div class="principle-body">
-          <div class="title">Relentlessly pursue purposeful progress</div>
-          <p class="desc">Motion without direction is noise. Every system, report, or automation must earn its place by moving the business forward in a way that can be measured and defended at any time horizon.</p>
-        </div>
+    <dl class="results-list">
+      <div class="results-list__row">
+        <dt>3× credit capacity</dt>
+        <dd>Competitive bank process expanded available credit.</dd>
       </div>
-      <div class="principle">
-        <div class="principle-num mono">02</div>
-        <div class="principle-body">
-          <div class="title">Give more in value than you receive in compensation</div>
-          <p class="desc">Trust compounds faster than capital. Deliver clarity early, surface problems before they become expensive, and make recommendations that serve the whole enterprise across multiple decades.</p>
-        </div>
+      <div class="results-list__row">
+        <dt>50 bps lower cost of capital</dt>
+        <dd>Same deal, cheaper to borrow.</dd>
       </div>
-      <div class="principle">
-        <div class="principle-num mono">03</div>
-        <div class="principle-body">
-          <div class="title">Everyone sweeps the floor</div>
-          <p class="desc">No task is beneath the person accountable for the outcome. Titles are temporary. Standards are not. The leader who will not do the work cannot judge the work.</p>
-        </div>
+      <div class="results-list__row">
+        <dt>Fabric reporting rebuild</dt>
+        <dd>Direct Lake model owned in finance, not a BI handoff.</dd>
       </div>
-      <div class="principle">
-        <div class="principle-num mono">04</div>
-        <div class="principle-body">
-          <div class="title">Share good news quickly, and bad news even quicker</div>
-          <p class="desc">Surprises are the most expensive input in any system. The earlier the signal reaches those who can act, the smaller the correction required. This is respect for capital and for people.</p>
-        </div>
+      <div class="results-list__row">
+        <dt>Internal audit from zero</dt>
+        <dd>Stood up as the group grew.</dd>
       </div>
-      <div class="principle">
-        <div class="principle-num mono">05</div>
-        <div class="principle-body">
-          <div class="title">Treat every experience as an opportunity to learn</div>
-          <p class="desc">The best operators remain students. Whether the variance is favorable or unfavorable, the only useful question is: what did we see too late, and how do we see it sooner next time?</p>
-        </div>
-      </div>
-    </div>
+    </dl>
   </div>
 </section>
 
 <!-- Systems Shipped -->
 <section id="systems" class="section section--elev">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Evidence of Action</span>
-      <h2 style="margin:10px 0 14px;">Manufacturing finance work translated into enterprise value.</h2>
-      <p style="color:var(--text-secondary); max-width:64ch;">The details matter because they point to a bigger pattern: I do not wait for perfect systems. I build financial infrastructure, data flows, controls, and operating cadence so leaders can choose faster and fund the few things that matter most.</p>
+    <div class="section-head" data-cell="BAY-02">
+      <h2>Job history</h2>
+      <p class="section-lede">Staff accountant to CFO in the same manufacturing group. Built the stack while running the books.</p>
     </div>
 
-    <div class="timeline" style="margin-top:42px; max-width:920px;">
-      <div class="role">
-        <div class="company">RCM Industries, Inc. — Manufacturing</div>
-        <div class="title">Chief Financial Officer</div>
-        <div class="period">2023 – Present</div>
-        <ul>
-          <li>Restructured RCM's primary banking relationship through a competitive process with multiple lenders, producing a 3× expansion of available credit capacity and a 50 bps reduction in borrowing cost — improving both strategic flexibility and cost of capital simultaneously.</li>
-          <li>Rebuilt enterprise reporting on Microsoft Fabric, creating a stronger data foundation for leadership visibility and faster operating decisions.</li>
-          <li>Reduced workflow debt through automation, returning recurring manual effort to higher-value financial analysis and decision support.</li>
-          <li>Created the internal audit function from zero, strengthening governance, compliance, and risk visibility as the business scaled.</li>
-          <li>Built scalable operating infrastructure by consolidating payroll and HR processes across 4 locations into a unified HRIS environment.</li>          
+    <div class="timeline">
+      <article class="role role--featured">
+        <header class="role-head">
+          <div class="role-meta">
+            <div class="company">RCM Industries, Inc. — Manufacturing</div>
+            <div class="period mono">2023 – Present</div>
+          </div>
+          <h3 class="title">Chief Financial Officer</h3>
+          <p class="role-impact">Banking, data, automation, audit, and HRIS rebuilt together. More credit available, and it costs less to borrow.</p>
+        </header>
+        <ul class="role-proof">
+          <li>Ran a competitive bank process with multiple lenders — more capacity and a lower rate (see Results).</li>
+          <li>Moved enterprise reporting onto Microsoft Fabric so leadership sees the drivers without waiting on Excel month-end.</li>
+          <li>Automated recurring work so the team spends more time analyzing, less time re-keying.</li>
+          <li>Stood up internal audit from nothing as the group grew.</li>
+          <li>Consolidated payroll and HR into one system across the plants.</li>
         </ul>
-      </div>
+      </article>
 
-      <div class="role">
-        <div class="company">RCM Industries, Inc.</div>
-        <div class="title">Corporate Controller</div>
-        <div class="period">2017 – 2022</div>
-        <ul>
-          <li>Built entire financial data infrastructure from the ground up using Microsoft Power BI and imported semantic model</li>
-          <li>Led accounting, AP/AR, and payroll teams across 4 plants while keeping finance connected to the operating reality of the business.</li>
-          <li>Built consolidated forecasting models used by executive leadership for strategic planning and resource allocation.</li>
-          <li>Managed financial reporting for a 6-entity consolidated group with accuracy, repeatability, and governance.</li>
+      <article class="role">
+        <header class="role-head">
+          <div class="role-meta">
+            <div class="company">RCM Industries, Inc.</div>
+            <div class="period mono">2017 – 2022</div>
+          </div>
+          <h3 class="title">Corporate Controller</h3>
+          <p class="role-impact">Built the group's financial data stack from scratch — Power BI model, forecasts, multi-entity reporting.</p>
+        </header>
+        <ul class="role-proof">
+          <li>Built the financial data infrastructure on Power BI with a shared semantic model.</li>
+          <li>Led accounting, AP/AR, and payroll across plants without losing the link to the floor.</li>
+          <li>Built consolidated forecasts the executive team used for planning and headcount.</li>
+          <li>Owned multi-entity reporting with the discipline the group needed.</li>
         </ul>
-      </div>
+      </article>
 
-      <div class="role">
-        <div class="company">RCM Industries, Inc.</div>
-        <div class="title">Division Controller</div>
-        <div class="period">2016 – 2017</div>
-        <ul>
-          <li>Owned plant-level P&amp;L accountability, connecting financial outcomes to operating decisions at the source.</li>
-          <li>Implemented KPI dashboards that gave plant managers clearer visibility into inventory, carrying costs, and operational drivers.</li>
-          <li>Partnered directly with operators to turn financial insight into practical efficiency improvements.</li>
-        </ul>
+      <div class="role-rail" aria-label="Earlier roles">
+        <article class="role role--compact">
+          <div class="role-meta">
+            <div class="company">Division Controller · RCM</div>
+            <div class="period mono">2016 – 2017</div>
+          </div>
+          <p class="role-impact">Owned the plant P&amp;L. Put inventory and cost drivers in front of plant managers on dashboards.</p>
+        </article>
+        <article class="role role--compact">
+          <div class="role-meta">
+            <div class="company">Accounting Manager · RCM</div>
+            <div class="period mono">2014 – 2016</div>
+          </div>
+          <p class="role-impact">Multi-plant statements and cleaner reporting so the numbers could be trusted plant to plant.</p>
+        </article>
+        <article class="role role--compact">
+          <div class="role-meta">
+            <div class="company">Staff Accountant · ScanSource</div>
+            <div class="period mono">2011 – 2014</div>
+          </div>
+          <p class="role-impact">Public-company reconciliations and revenue. SAP go-live support where the process had to keep working.</p>
+        </article>
       </div>
+    </div>
+  </div>
+</section>
 
-      <div class="role">
-        <div class="company">RCM Industries, Inc.</div>
-        <div class="title">Accounting Manager</div>
-        <div class="period">2014 – 2016</div>
-        <ul>
-          <li>Prepared and analyzed financial statements across multiple manufacturing plants, building pattern recognition across operating models.</li>
-          <li>Streamlined multi-plant reporting processes, improving the system-level reliability of financial information.</li>
-        </ul>
-      </div>
+<!-- Systems architecture plate -->
+<section class="arch-plate" aria-label="Systems architecture">
+  <div class="container">
+    <div class="arch-plate__head" data-cell="CELL-01">
+      <h2>Line to ledger</h2>
+      <p class="section-lede">How numbers move from the floor cell to a capital call.</p>
+    </div>
+    <ol class="arch-list">
+      <li>
+        <strong>Floor</strong>
+        <span>ERP, payroll, HRIS, bank, plant ops</span>
+      </li>
+      <li>
+        <strong>Model</strong>
+        <span>Fabric lakehouse · Direct Lake · shared defs</span>
+      </li>
+      <li>
+        <strong>Analysis</strong>
+        <span>Power BI · forecasts · automation</span>
+      </li>
+      <li>
+        <strong>Action</strong>
+        <span>Capital gates · plant KPIs · board pack</span>
+      </li>
+    </ol>
+    <p class="arch-plate__note">Owned in finance · not handed to a BI team</p>
+  </div>
+</section>
 
-      <div class="role">
-        <div class="company">ScanSource, Inc. — Technology Distribution</div>
-        <div class="title">Staff Accountant</div>
-        <div class="period">2011 – 2014</div>
-        <ul>
-          <li>Managed balance sheet reconciliations and revenue accounting in a public-company environment where precision and controls mattered.</li>
-          <li>Served as subject-matter expert during SAP implementation, protecting process continuity and data integrity through change.</li>
-        </ul>
-      </div>
+<!-- Operating Principles -->
+<section id="principles" class="section">
+  <div class="container">
+    <div class="section-head" data-cell="BAY-03">
+      <h2>Operating standards</h2>
+      <p class="section-lede">
+        How I run myself and the team. Break one of these and the call is wrong even when the spreadsheet looks fine.
+      </p>
+    </div>
+
+    <div class="principles-monument">
+      <article class="principle">
+        <div class="principle-body">
+          <h3 class="title">Relentlessly pursue purposeful progress</h3>
+          <p class="desc">Busy is not progress. Every report, system, or automation has to move the business in a way you can measure and defend.</p>
+        </div>
+      </article>
+      <article class="principle">
+        <div class="principle-body">
+          <h3 class="title">Give more in value than you receive in compensation</h3>
+          <p class="desc">Be early with clarity. Surface problems before they get expensive. Recommend what serves the whole company, not the silo.</p>
+        </div>
+      </article>
+      <article class="principle">
+        <div class="principle-body">
+          <h3 class="title">Everyone sweeps the floor</h3>
+          <p class="desc">No task is beneath the person who owns the outcome. Titles rotate. Standards don't. If you won't do the work, you can't judge it.</p>
+        </div>
+      </article>
+      <article class="principle">
+        <div class="principle-body">
+          <h3 class="title">Share good news quickly, and bad news even quicker</h3>
+          <p class="desc">Surprises cost the most. The sooner the right people hear it, the smaller the fix. That's respect for capital and for people.</p>
+        </div>
+      </article>
+      <article class="principle">
+        <div class="principle-body">
+          <h3 class="title">Treat every experience as an opportunity to learn</h3>
+          <p class="desc">Stay a student. When the variance is good or bad, the useful question is: what did we see too late, and how do we see it sooner next time?</p>
+        </div>
+      </article>
     </div>
   </div>
 </section>
@@ -362,253 +313,130 @@
 <!-- Future Thesis -->
 <section id="long-bets" class="section thesis-section">
   <div class="container">
-    <div class="section-head thesis-head">
-      <span class="eyebrow thesis-eyebrow">The Future</span>
-      <h2 style="margin:10px 0 14px;">Building for what is coming.</h2>
-      <p class="thesis-intro">
-        The CFOs who create the most value in the next ten years won't just read the forecast — they'll build the infrastructure that generates it. These are the forces I'm watching, building for, and betting on.
-      </p>
+    <div class="section-head" data-cell="BAY-04">
+      <h2>Outlook</h2>
+      <p class="section-lede">Closing the books is table stakes. The edge is data, less re-keying, and capital aimed at the few constraints that move the P&amp;L.</p>
     </div>
 
-    <div class="thesis-scape in-view" id="thesis-scape">
-      <div class="thesis-timeline" aria-hidden="true">
-        <svg class="thesis-timeline__svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="thesisArc" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="rgba(232,238,248,0.55)" />
-              <stop offset="45%" stop-color="rgba(91,156,245,0.85)" />
-              <stop offset="100%" stop-color="rgba(91,156,245,0.35)" />
-            </linearGradient>
-          </defs>
-          <path class="thesis-timeline__path" d="M 24 78 C 280 88, 420 72, 600 48 S 980 18, 1176 24" />
-        </svg>
-        <div class="thesis-timeline__nodes">
-          <div class="thesis-node thesis-node--present" style="left: 8%;">
-            <span class="thesis-node__ring"></span>
-            <span class="thesis-node__core"></span>
-          </div>
-          <div class="thesis-node thesis-node--building" style="left: 50%;">
-            <span class="thesis-node__ring"></span>
-            <span class="thesis-node__core"></span>
-          </div>
-          <div class="thesis-node thesis-node--watch" style="left: 92%;">
-            <span class="thesis-node__ring"></span>
-            <span class="thesis-node__core"></span>
-          </div>
-        </div>
-        <div class="thesis-timeline__labels mono">
-          <span>Now</span>
-          <span>2030+</span>
-        </div>
+    <div class="os-compare" aria-label="Two ways to do the job">
+      <div class="os-compare__col os-compare__col--old">
+        <p class="os-compare__label">Common default</p>
+        <h3 class="os-compare__title">Reporting CFO</h3>
+        <ul class="os-compare__list">
+          <li>Monthly close is the main event</li>
+          <li>Spreadsheet is the system of record</li>
+          <li>You explain the variance after it happened</li>
+          <li>Finance keeps score</li>
+          <li>Tools live with IT or a vendor</li>
+        </ul>
       </div>
-
-      <div class="thesis-grid">
-        <article class="thesis-panel thesis-panel--forces">
-          <div class="thesis-panel__head">
-            <span class="thesis-badge thesis-badge--present mono">In motion</span>
-            <h3>Current Forces</h3>
-          </div>
-          <ul class="thesis-list">
-            <li class="thesis-item">AI agents transforming finance and accounting workflows</li>
-            <li class="thesis-item">Real-time operational data compressing the monthly close cycle</li>
-            <li class="thesis-item">Conversational AI agents embedding into operational workflows</li>
-            <li class="thesis-item">The spreadsheet demoted from system of record to consumption layer</li>
-            <li class="thesis-item">The CFO evolving from financial steward to infrastructure architect</li>
-          </ul>
-        </article>
-
-        <article class="thesis-panel thesis-panel--bets">
-          <div class="thesis-panel__head">
-            <span class="thesis-badge thesis-badge--building mono">Building</span>
-            <h3>Strategic Bets</h3>
-          </div>
-          <ul class="thesis-list">
-            <li class="thesis-item">Agentic financial and operational intelligence</li>
-            <li class="thesis-item">Direct Lake semantic layers as the new general ledger interface</li>
-            <li class="thesis-item">Natural language as the query interface for operations</li>
-            <li class="thesis-item">Post-ERP modular architecture replacing monolithic financial systems</li>
-          </ul>
-        </article>
-
-        <article class="thesis-panel thesis-panel--watch">
-          <div class="thesis-panel__head">
-            <span class="thesis-badge thesis-badge--watch mono">Watching</span>
-            <h3>Coming Disruptors</h3>
-          </div>
-          <ul class="thesis-list">
-            <li class="thesis-item">Orbital computing constellations dramatically lowering AI infrastructure costs</li>
-            <li class="thesis-item">Quantum optimization delivering measurable gains in computing power</li>
-            <li class="thesis-item">Humanoid robotics entering manufacturing at pilot scale, changing the workforce</li>
-          </ul>
-        </article>
+      <div class="os-compare__col os-compare__col--new">
+        <p class="os-compare__label">My seat</p>
+        <h3 class="os-compare__title">How I work</h3>
+        <ul class="os-compare__list">
+          <li>Plant and ERP signals show up in time to act</li>
+          <li>One shared model everyone uses</li>
+          <li>Forecasts move when the plants move</li>
+          <li>Finance builds the path to the decision</li>
+          <li>I can build and defend the systems myself</li>
+        </ul>
       </div>
+    </div>
+
+    <div class="thesis-grid">
+      <article class="thesis-panel">
+        <h3>What's already moving</h3>
+        <ul class="thesis-list">
+          <li class="thesis-item">AI agents taking the repeat work in finance and accounting</li>
+          <li class="thesis-item">Plant and ERP data shortening the close</li>
+          <li class="thesis-item">Spreadsheets as a view, not the books</li>
+          <li class="thesis-item">CFOs expected to build the pipes, not only read the P&amp;L</li>
+        </ul>
+      </article>
+
+      <article class="thesis-panel">
+        <h3>Where I'm putting time</h3>
+        <ul class="thesis-list">
+          <li class="thesis-item">Agents on real plant and finance data, not demos</li>
+          <li class="thesis-item">Direct Lake models as the shared way into the numbers</li>
+          <li class="thesis-item">Natural-language questions over ops for operators and finance</li>
+          <li class="thesis-item">Smaller connected systems instead of one finance monolith</li>
+        </ul>
+      </article>
+
+      <article class="thesis-panel">
+        <h3>What can break it</h3>
+        <ul class="thesis-list">
+          <li class="thesis-item">ERP lock-in and brittle integrations that block a clean model</li>
+          <li class="thesis-item">Bad plant data: wrong signal, wrong capital call</li>
+          <li class="thesis-item">Teams that can close the books but can't run the systems</li>
+          <li class="thesis-item">Short hold periods and tight capital that punish multi-year builds</li>
+        </ul>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- Capabilities / Stack -->
+<!-- Capabilities -->
 <section id="stack" class="section">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Tools & Infrastructure</span>
-      <h2 style="margin:10px 0 14px;">What I bring to the CFO seat.</h2>
-      <p style="color:var(--text-secondary); max-width:62ch;">From data infrastructure to board narrative — the skills that turn manufacturing complexity into competitive advantage.</p>
+    <div class="section-head" data-cell="BAY-05">
+      <h2>Tools</h2>
+      <p class="section-lede">What I use day to day, with proof attached.</p>
     </div>
 
-    <div class="skills-table" aria-label="Skills and proof points">
-      <div class="skills-table__columns" aria-hidden="true">
-        <div class="skills-table__col skills-table__col--skill">Skill</div>
-        <div class="skills-table__col skills-table__col--proof">In practice</div>
+    <dl class="results-list" aria-label="Tools and proof">
+      <div class="results-list__row">
+        <dt>Capital allocation</dt>
+        <dd>PE-style approval gates and portfolio FCCR forecasts before money commits.</dd>
       </div>
-
-      <details class="skills-section" open>
-        <summary class="skills-section__summary">
-          <span class="skills-section__code mono">01</span>
-          <span class="skills-section__title">Enterprise Value</span>
-          <span class="skills-section__meta mono"></span>
-          <svg class="skills-section__chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </summary>
-        <div class="skills-section__body">
-          <div class="skills-section__proof-label">In practice</div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Strategic capital allocation</div>
-            <div class="skills-row__proof">Built a PE-style capital approval framework based on approval gates and portfolio level FCCR forecasting models.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Data-driven operating leverage</div>
-            <div class="skills-row__proof">Built the group's financial data infrastructure from the ground up — first on Power BI, now rebuilt on a Microsoft Fabric lakehouse with a Direct Lake semantic model — surfacing production, labor, and financial signals in near real-time. Leadership sees the drivers that move margin instead of waiting on an Excel reporting cycle.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Banking relationships & financial architecture</div>
-            <div class="skills-row__proof">Led competitive bank bid process that ultimately resulted in a revolving credit facility 3 times larger than the previous facility; supporting growth and improving financial flexibility.</div>
-          </div>
-        </div>
-      </details>
-
-      <details class="skills-section">
-        <summary class="skills-section__summary">
-          <span class="skills-section__code mono">02</span>
-          <span class="skills-section__title">AI &amp; Data Systems</span>
-          <span class="skills-section__meta mono"></span>
-          <svg class="skills-section__chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </summary>
-        <div class="skills-section__body">
-          <div class="skills-section__proof-label">In practice</div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Microsoft Fabric &amp; Power BI</div>
-            <div class="skills-row__proof">Rebuilt enterprise reporting on Microsoft Fabric to create a stronger data foundation for leadership visibility and faster operating decisions.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Finance workflow automation</div>
-            <div class="skills-row__proof">Reduced manual workflows through automation, returning recurring manual effort to higher-value financial analysis and decision support.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Integrated systems &amp; definitions</div>
-            <div class="skills-row__proof">Consolidated payroll and HR processes across four locations into a unified HRIS environment so finance and operations worked from one source of truth.</div>
-          </div>
-        </div>
-      </details>
-
-      <details class="skills-section">
-        <summary class="skills-section__summary">
-          <span class="skills-section__code mono">03</span>
-          <span class="skills-section__title">Operating Control</span>
-          <span class="skills-section__meta mono"></span>
-          <svg class="skills-section__chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </summary>
-        <div class="skills-section__body">
-          <div class="skills-section__proof-label">In practice</div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Internal audit buildout</div>
-            <div class="skills-row__proof">Created the internal audit function from zero, strengthening governance, compliance, and risk visibility as the business scaled.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Financial statement integrity</div>
-            <div class="skills-row__proof">Managed consolidated financial reporting for a six-entity group with the accuracy, repeatability, and governance expected in a multi-plant manufacturing environment.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Inventory &amp; plant economics</div>
-            <div class="skills-row__proof">Implemented plant KPI dashboards that connected production metrics, inventory, and operating drivers to decisions made on the floor in near real-time, not just at month end.</div>
-          </div>
-        </div>
-      </details>
-
-      <details class="skills-section">
-        <summary class="skills-section__summary">
-          <span class="skills-section__code mono">04</span>
-          <span class="skills-section__title">Execution Stack</span>
-          <span class="skills-section__meta mono"></span>
-          <svg class="skills-section__chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </summary>
-        <div class="skills-section__body">
-          <div class="skills-section__proof-label">In practice</div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Excel, VBA, and Power Query</div>
-            <div class="skills-row__proof">Streamlined multi-plant reporting processes and built forecasting tools long before the Fabric layer existed, improving reliability of financial information across plants.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Python &amp; ETL</div>
-            <div class="skills-row__proof">Used automation and scripting to lessen manual finance workflows and free capacity for analysis, controls, and faster response to operating questions.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Team leadership &amp; change management</div>
-            <div class="skills-row__proof">Led accounting, AP/AR, and payroll teams across four plants while standing up new systems, changing banks, increasing reporting cadences, and implementing controls while deepening connection to operating reality.</div>
-          </div>
-        </div>
-      </details>
-    </div>
+      <div class="results-list__row">
+        <dt>Microsoft Fabric and Power BI</dt>
+        <dd>Direct Lake model owned in finance: production, labor, and P&amp;L in one place.</dd>
+      </div>
+      <div class="results-list__row">
+        <dt>Controls and internal audit</dt>
+        <dd>Audit from zero. Multi-entity reporting habits from public-company work.</dd>
+      </div>
+      <div class="results-list__row">
+        <dt>Automation</dt>
+        <dd>Excel, Power Query, Python, ETL for repeat work so people decide, not retype.</dd>
+      </div>
+      <div class="results-list__row">
+        <dt>Team and change</dt>
+        <dd>Accounting, AP/AR, payroll across plants through bank changes and new systems.</dd>
+      </div>
+    </dl>
   </div>
 </section>
 
 <!-- Credentials & Education -->
 <section id="credentials" class="section section--elev">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Credentials &amp; Education</span>
-      <h2 style="margin:10px 0 14px;">Formal foundation. Continuous study.</h2>
-      <p style="color:var(--text-secondary); max-width:62ch;">Certification and education behind the operating work — plus ongoing study in the areas that keep a manufacturing CFO current.</p>
+    <div class="section-head" data-cell="BAY-06">
+      <h2>Credentials</h2>
+      <p class="section-lede">Certification, degrees, and what I still study.</p>
     </div>
 
-    <div class="skills-table credentials-table" aria-label="Credentials and education">
-      <div class="skills-table__columns" aria-hidden="true">
-        <div class="skills-table__col skills-table__col--skill">Credential</div>
-        <div class="skills-table__col skills-table__col--proof">Detail</div>
-      </div>
-
-      <div class="credentials-table__body">
-        <div class="skills-row">
-          <div class="skills-row__skill">Certified Management Accountant (CMA)</div>
-          <div class="skills-row__proof">Professional certification through the Institute of Management Accountants.</div>
-        </div>
-        <div class="skills-row">
-          <div class="skills-row__skill">Master of Accountancy</div>
-          <div class="skills-row__proof">Stetson University.</div>
-        </div>
-        <div class="skills-row">
-          <div class="skills-row__skill">B.S. Business Administration (Accounting)</div>
-          <div class="skills-row__proof">University of South Carolina Upstate.</div>
-        </div>
-        <div class="skills-row">
-          <div class="skills-row__skill">Continuous study</div>
-          <div class="skills-row__proof">Advanced financial modeling, data analytics, strategy, and valuation.</div>
-        </div>
-      </div>
-    </div>
+    <ul class="cred-list-plain">
+      <li><strong>CMA</strong> — Certified Management Accountant, Institute of Management Accountants</li>
+      <li><strong>Master of Accountancy</strong> — Stetson University</li>
+      <li><strong>B.S. Business Administration (Accounting)</strong> — University of South Carolina Upstate</li>
+      <li><strong>Ongoing</strong> — financial modeling, data analytics, strategy, valuation</li>
+    </ul>
   </div>
 </section>
 
 <!-- Contact -->
 <section id="contact" class="section section--signal">
   <div class="container">
-    <div class="signal">
-      <span class="eyebrow">Contact</span>
-      <h2 style="margin:14px 0 14px;">Building for the same future? Let's talk.</h2>
-      <p style="color:var(--text-secondary); margin-bottom:28px;">
-        I'm open to conversations about manufacturing finance, data infrastructure, and where the CFO seat is headed. LinkedIn is the fastest way to reach me.
+    <div class="contact-block">
+      <h2>Contact</h2>
+      <p>
+        If you run manufacturing finance and want to talk capital, Fabric, cutting manual work, or what the job looks like when agents take the repeat tasks, find me on LinkedIn.
       </p>
       <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--lg btn--primary">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4V8h4v1a6 6 0 0 1 4-1z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-        Connect on LinkedIn
+        Message on LinkedIn
       </a>
     </div>
   </div>
@@ -617,270 +445,56 @@
 <!-- Footer -->
 <footer class="site-footer">
   <div class="footer-inner">
-    <a href="#" class="logo" style="gap:10px;" aria-label="Robert McFarlin">
-      <img src="assets/mark-light.svg" alt="" width="24" height="24" />
-      <span class="name" style="font-size:14px;">Robert McFarlin</span>
-    </a>
+    <div class="footer-brand">
+      <a href="#" class="logo" style="gap:10px;" aria-label="Robert McFarlin">
+        <img src="assets/mark-light.svg" alt="" width="24" height="24" />
+        <span class="name" style="font-size:14px;">Robert McFarlin</span>
+      </a>
+      <p class="footer-tagline">Heavy manufacturing CFO · Multi-plant finance</p>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="#scale">Results</a>
+      <a href="#systems">History</a>
+      <a href="#principles">Standards</a>
+      <a href="#long-bets">Outlook</a>
+      <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener">LinkedIn</a>
+    </nav>
     <div class="footer-meta">
-      © 2026 · Building financial operating systems for the AI age
+      © 2026
     </div>
   </div>
 </footer>
 
 <script>
-// ============================================================
-// Mission-mode interactions. Engineered for clarity and delight.
-// ============================================================
-
-// Mobile nav
 function initMobileNav() {
   const toggle = document.getElementById('navToggle');
   const nav = document.getElementById('nav');
   if (!toggle || !nav) return;
   const iconMenu = toggle.querySelector('.icon-menu');
   const iconX = toggle.querySelector('.icon-x');
-
   function setOpen(isOpen) {
     nav.classList.toggle('open', isOpen);
     toggle.setAttribute('aria-expanded', String(isOpen));
     if (iconMenu) iconMenu.style.display = isOpen ? 'none' : '';
     if (iconX) iconX.style.display = isOpen ? '' : 'none';
   }
-
   toggle.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
   nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') setOpen(false);
   });
 }
-
-// Subtle global background parallax. CSS-only fallback still looks good.
-function initBackdrop() {
-  const layers = [
-    document.querySelector('.site-backdrop'),
-    document.querySelector('.solar-light')
-  ].filter(Boolean);
-  if (!layers.length) return;
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReduced) return;
-
-  let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
-  let raf = null;
-
-  function tick() {
-    currentX += (targetX - currentX) * 0.08;
-    currentY += (targetY - currentY) * 0.08;
-    for (const layer of layers) {
-      layer.style.setProperty('--mx', `${currentX.toFixed(2)}px`);
-      layer.style.setProperty('--my', `${currentY.toFixed(2)}px`);
-    }
-    if (Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
-      raf = requestAnimationFrame(tick);
-    } else {
-      raf = null;
-    }
-  }
-
-  window.addEventListener('pointermove', (e) => {
-    targetX = (e.clientX / window.innerWidth - 0.5) * 44;
-    targetY = (e.clientY / window.innerHeight - 0.5) * 34;
-    if (!raf) raf = requestAnimationFrame(tick);
-  }, { passive: true });
+function initHeaderChrome() {
+  const header = document.getElementById('siteHeader');
+  if (!header) return;
+  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 12);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
 }
-
-// Pronounced global starfield that runs behind every section.
-function initDeepfield() {
-  const canvas = document.getElementById('deepfield');
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d', { alpha: true });
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let w = 0, h = 0, stars = [], bodies = [], rafId = null;
-
-  function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-    w = window.innerWidth;
-    h = window.innerHeight;
-    canvas.width = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function seed() {
-    const starCount = Math.min(1100, Math.max(480, Math.round((w * h) / 1700)));
-    stars = Array.from({ length: starCount }, (_, i) => {
-      const bright = i % 17 === 0;
-      const warm = i % 5 === 0;
-      return {
-        x: Math.random() * w,
-        y: Math.random() * h,
-        z: Math.random() * 0.8 + 0.2,
-        r: bright ? Math.random() * 2.2 + 1.2 : Math.random() * 1.15 + 0.45,
-        a: bright ? Math.random() * 0.38 + 0.72 : Math.random() * 0.42 + 0.42,
-        tw: Math.random() * Math.PI * 2,
-        drift: Math.random() * 0.05 + 0.012,
-        color: warm ? '201, 162, 110' : (i % 11 === 0 ? '95, 209, 198' : '245, 245, 245')
-      };
-    });
-
-    bodies = [
-      { x: w * 0.68, y: h * 0.36, r: Math.min(w, h) * 0.16, color: '95, 209, 198', a: 0.065 },
-      { x: w * 0.14, y: h * 0.74, r: Math.min(w, h) * 0.22, color: '201, 162, 110', a: 0.088 },
-      { x: w * 0.52, y: h * 0.58, r: Math.min(w, h) * 0.11, color: '96, 165, 250', a: 0.048 }
-    ];
-  }
-
-  function drawSun(ts = 0) {
-    const sx = w * 0.94;
-    const sy = h * -0.02;
-    const pulse = prefersReduced ? 1 : 0.96 + Math.sin(ts * 0.00035) * 0.04;
-    const coreR = Math.min(w, h) * 0.038 * pulse;
-    const coronaR = Math.min(w, h) * 0.36 * pulse;
-
-    if (!prefersReduced) {
-      const beams = [
-        { angle: 2.35, spread: 0.14, len: h * 1.05, a: 0.055 },
-        { angle: 2.48, spread: 0.09, len: h * 0.92, a: 0.038 },
-        { angle: 2.62, spread: 0.07, len: h * 0.84, a: 0.028 }
-      ];
-      for (const beam of beams) {
-        ctx.save();
-        ctx.translate(sx, sy);
-        ctx.rotate(beam.angle);
-        const gr = ctx.createLinearGradient(0, 0, 0, beam.len);
-        gr.addColorStop(0, `rgba(255, 224, 170, ${beam.a})`);
-        gr.addColorStop(0.28, `rgba(255, 200, 120, ${beam.a * 0.45})`);
-        gr.addColorStop(1, 'rgba(201, 162, 110, 0)');
-        ctx.fillStyle = gr;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(-coronaR * beam.spread, beam.len);
-        ctx.lineTo(coronaR * beam.spread, beam.len);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-      }
-    }
-
-    const corona = ctx.createRadialGradient(sx, sy, 0, sx, sy, coronaR);
-    corona.addColorStop(0, 'rgba(255, 236, 200, 0.32)');
-    corona.addColorStop(0.18, 'rgba(255, 205, 110, 0.16)');
-    corona.addColorStop(0.42, 'rgba(201, 162, 110, 0.07)');
-    corona.addColorStop(0.68, 'rgba(255, 150, 70, 0.02)');
-    corona.addColorStop(1, 'rgba(255, 150, 70, 0)');
-    ctx.fillStyle = corona;
-    ctx.beginPath();
-    ctx.arc(sx, sy, coronaR, 0, Math.PI * 2);
-    ctx.fill();
-
-    const core = ctx.createRadialGradient(sx, sy, 0, sx, sy, coreR);
-    core.addColorStop(0, 'rgba(255, 250, 235, 0.78)');
-    core.addColorStop(0.6, 'rgba(255, 210, 130, 0.42)');
-    core.addColorStop(1, 'rgba(245, 180, 80, 0)');
-    ctx.fillStyle = core;
-    ctx.beginPath();
-    ctx.arc(sx, sy, coreR, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  function draw(ts = 0) {
-    ctx.clearRect(0, 0, w, h);
-
-    drawSun(ts);
-
-    for (const b of bodies) {
-      const pulse = prefersReduced ? 1 : 0.88 + Math.sin(ts * 0.00035 + b.r) * 0.12;
-      const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * pulse);
-      g.addColorStop(0, `rgba(${b.color}, ${b.a})`);
-      g.addColorStop(0.45, `rgba(${b.color}, ${b.a * 0.35})`);
-      g.addColorStop(1, `rgba(${b.color}, 0)`);
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.r * pulse, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    for (const s of stars) {
-      const twinkle = prefersReduced ? 1 : 0.7 + Math.sin(ts * 0.0012 + s.tw) * 0.3;
-      const alpha = s.a * twinkle;
-      ctx.fillStyle = `rgba(${s.color}, ${alpha})`;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (s.r > 1.7) {
-        ctx.strokeStyle = `rgba(${s.color}, ${alpha * 0.28})`;
-        ctx.lineWidth = 0.7;
-        ctx.beginPath();
-        ctx.moveTo(s.x - s.r * 3.2, s.y);
-        ctx.lineTo(s.x + s.r * 3.2, s.y);
-        ctx.moveTo(s.x, s.y - s.r * 3.2);
-        ctx.lineTo(s.x, s.y + s.r * 3.2);
-        ctx.stroke();
-      }
-
-      if (!prefersReduced) {
-        s.y += s.drift * s.z;
-        if (s.y > h + 4) {
-          s.y = -4;
-          s.x = Math.random() * w;
-        }
-      }
-    }
-
-    if (!prefersReduced) rafId = requestAnimationFrame(draw);
-  }
-
-  function init() {
-    resize();
-    seed();
-    draw();
-    window.addEventListener('resize', () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      resize();
-      seed();
-      draw();
-    }, { passive: true });
-  }
-
-  init();
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
-  initBackdrop();
-  initDeepfield();
-  initThesis();
+  initHeaderChrome();
 });
-
-function initThesis() {
-  const scape = document.getElementById('thesis-scape');
-  if (!scape) return;
-
-  const reveal = () => scape.classList.add('in-view');
-
-  // Always show content if already on screen or motion is reduced
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const rect = scape.getBoundingClientRect();
-  const inViewport = rect.top < window.innerHeight * 0.92 && rect.bottom > 0;
-  if (prefersReduced || inViewport) {
-    reveal();
-    return;
-  }
-
-  if (!('IntersectionObserver' in window)) {
-    reveal();
-    return;
-  }
-
-  const io = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
-      reveal();
-      io.disconnect();
-    }
-  }, { threshold: 0.08, rootMargin: '0px 0px -5% 0px' });
-  io.observe(scape);
-}
 </script>
 
 </body>
