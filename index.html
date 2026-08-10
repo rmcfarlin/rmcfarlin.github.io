@@ -1,34 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Robert McFarlin — Value-Creating CFO for the AI Age</title>
-  <meta name="description" content="Manufacturing CFO and systems builder focused on enterprise value creation, AI-enabled finance, strategic capital allocation, data governance, and long-horizon industrial growth." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#090c0d" />
+  <title>Robert McFarlin &mdash; Automated CNC Cell Portfolio</title>
+  <meta name="description" content="A floor-level automated CNC cell becomes Robert McFarlin's interactive portfolio: select one of seven fence-mounted clipboards on the machine HMI and the tending robot presents it for review." />
   <link rel="canonical" href="https://robertmcfarlin.com/" />
-
-  <!-- Social cards -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://robertmcfarlin.com/" />
-  <meta property="og:title" content="Robert McFarlin — Value-Creating CFO for the AI Age" />
-  <meta property="og:description" content="Manufacturing CFO and systems builder. Capital allocation, data infrastructure, automation, and controls for long-horizon industrial growth." />
+  <meta property="og:title" content="Robert McFarlin &mdash; Automated CNC Cell Portfolio" />
+  <meta property="og:description" content="Choose a labeled clipboard on the machine HMI and the robot retrieves it from the safety fence." />
   <meta property="og:image" content="https://robertmcfarlin.com/assets/og-card.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Robert McFarlin — Chief Financial Officer, Industrial Manufacturing. Creating value in the age of AI." />
+  <meta property="og:image:alt" content="Robert McFarlin, manufacturing CFO and systems builder." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Robert McFarlin — Value-Creating CFO for the AI Age" />
-  <meta name="twitter:description" content="Manufacturing CFO and systems builder. Capital allocation, data infrastructure, automation, and controls for long-horizon industrial growth." />
+  <meta name="twitter:title" content="Robert McFarlin - Automated CNC Cell Portfolio" />
+  <meta name="twitter:description" content="Seven resume clipboards, one machine HMI, and a robot-controlled handoff." />
   <meta name="twitter:image" content="https://robertmcfarlin.com/assets/og-card.png" />
-
-  <!-- Fonts: preconnect + link (was a render-blocking @import in ds.css) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="css/ds.css" />
+  <link rel="stylesheet" href="css/control-room.css?v=20260810-full-resume1" />
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
-
+  <link rel="preload" as="image" href="assets/cnc-cell-floor.webp" fetchpriority="high" />
+  <script>
+    window.__crControlScriptLoaded = false;
+    window.crUseStaticResume = function (message) {
+      document.documentElement.classList.remove("js");
+      document.documentElement.classList.add("no-js");
+      var boot = document.getElementById("cr-boot");
+      if (boot) boot.classList.add("is-done");
+      var error = document.getElementById("cr-error");
+      if (error && message) { error.hidden = false; error.textContent = message; }
+    };
+    window.addEventListener("error", function (event) {
+      var source = String(event.filename || "");
+      if (/\/(?:control-room|three\.min)\.js(?:\?|$)/.test(source)) {
+        window.crUseStaticResume("The automated cell could not start. The complete resume is shown below.");
+      }
+    });
+    document.documentElement.classList.remove("no-js");
+    document.documentElement.classList.add("js");
+  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -41,847 +53,150 @@
     "sameAs": ["https://www.linkedin.com/in/rdmcfarlin"]
   }
   </script>
-  <style>
-    /* Ambitious page-specific layers */
-    .hero {
-      position: relative;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      background: transparent;
-      overflow: hidden;
-    }
-    .hero-inner {
-      position: relative;
-      z-index: 2;
-      padding-top: 40px;
-      padding-bottom: 40px;
-    }
-    .hero h1 {
-      font-size: 92px;
-      line-height: 0.96;
-      letter-spacing: -0.045em;
-      font-weight: 800;
-      margin: 12px 0 18px;
-      max-width: 18ch;
-    }
-    .hero .mission {
-      font-size: 21px;
-      line-height: 1.35;
-      color: var(--text-secondary);
-      max-width: 52ch;
-      margin-bottom: 10px;
-    }
-    @media (max-width: 600px) {
-      .hero h1 {
-        font-size: clamp(52px, 17vw, 72px);
-      }
-      .hero .mission {
-        font-size: 18px;
-      }
-    }
-    .hero-cta {
-      display: flex;
-      gap: 12px;
-      margin-top: 32px;
-      flex-wrap: nowrap;
-      align-items: center;
-    }
-    @media (max-width: 640px) {
-      .hero-cta {
-        flex-wrap: wrap;
-      }
-    }
-    .state-vector {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-top: 52px;
-    }
-    @media (max-width: 900px) { .state-vector { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 520px) { .state-vector { grid-template-columns: 1fr; } }
-
-    .nav-mobile-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      padding: 4px;
-      cursor: pointer;
-    }
-    @media (max-width: 720px) {
-      .site-header .container { flex-wrap: wrap; }
-      .site-header .nav { display: none; width: 100%; order: 3; }
-      .site-header .nav.open {
-        display: flex; flex-direction: column; align-items: flex-start;
-        gap: 10px; padding: 12px 0 4px; border-top: 1px solid var(--line); margin-top: 8px;
-      }
-      .nav-mobile-toggle { display: inline-flex; }
-    }
-
-    .section-head {
-      max-width: 720px;
-    }
-
-    .sim-note {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 18px;
-    }
-
-    .big-number {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--brass);
-    }
-  </style>
 </head>
 <body>
-<div class="site-backdrop" aria-hidden="true"></div>
-<div class="solar-light" aria-hidden="true"></div>
-<canvas id="deepfield" aria-hidden="true"></canvas>
-<div class="orbital-arc" aria-hidden="true"></div>
+  <a class="cr-skip" href="#cr-dock">Skip to alternate clipboard controls</a>
+  <div class="cr-boot" id="cr-boot" role="status" aria-live="polite" aria-atomic="true">
+    <div class="cr-boot__card">
+      <div class="cr-boot__identity" aria-hidden="true"><img src="assets/mark-light.svg" alt="" width="32" height="32" /><span>MC-04 / ROBOT TEND</span></div>
+      <p class="cr-boot__label">Operator panel initialization</p>
+      <p class="cr-boot__message" id="cr-boot-msg">Establishing safety circuit &middot; indexing document rack</p>
+      <div class="cr-boot__bar" aria-hidden="true"><span></span></div>
+      <div class="cr-boot__checks" aria-hidden="true"><span>Safety</span><b>Closed</b><span>Rack index</span><b>07 / 07</b></div>
+    </div>
+  </div>
+  <div id="cr-error" class="cr-error" role="alert" hidden></div>
+  <div class="cr-canvas-poster" aria-hidden="true"></div>
+  <canvas id="viewport" width="1280" height="720" tabindex="0" aria-label="Interactive floor-level CNC cell with seven indexed documents and a guarded operator transfer bay." aria-describedby="cr-hint">Your browser cannot display the automated CNC cell. The complete resume follows below.</canvas>
+  <div class="cr-viewframe" aria-hidden="true"><span class="cr-viewframe__corner cr-viewframe__corner--tl"></span><span class="cr-viewframe__corner cr-viewframe__corner--tr"></span><span class="cr-viewframe__corner cr-viewframe__corner--bl"></span><span class="cr-viewframe__corner cr-viewframe__corner--br"></span><span class="cr-viewframe__datum" id="cr-safety-datum">CAM-04A &middot; GUARD LOCKED</span></div>
+  <div class="cr-operator-stack">
+  <header class="cr-rail" aria-label="Automated cell status">
+    <div class="cr-rail__brand"><img src="assets/mark-light.svg" alt="" width="30" height="30" /><div><span class="cr-rail__title">MC-04 / Automated Machining</span><span class="cr-rail__sub">Robert McFarlin &middot; Manufacturing systems</span></div></div>
+    <div class="cr-rail__meta" aria-label="CNC cell status"><span class="cr-rail__cell"><small>Cell ID</small> MC-04</span><span class="cr-rail__cell cr-rail__safety" id="cr-safety-status" data-safety-channel="guard" role="status" aria-live="polite" aria-atomic="true"><small>Safety circuit</small><span id="cr-safety-value">Guard locked</span></span><span class="cr-led" id="cr-cell-status" aria-live="polite"><small>Controller</small> Auto run</span><span class="cr-rail__perf" id="cr-fps" aria-hidden="true">-- FPS</span></div>
+  </header>
+  <section class="cr-hint cr-orientation" id="cr-hint" aria-labelledby="cr-orientation-title">
+    <p class="cr-orientation__eyebrow"><span></span> Operator notice 2408-04 &middot; System ready</p>
+    <h1 id="cr-orientation-title">Select a document at the machine operator panel.</h1>
+    <p class="cr-orientation__lede">A selection requests a controlled cycle stop. The robot loads the guarded transfer bay; outer access enables only after the inner lock and robot-clear circuits are proven.</p>
+    <div class="cr-orientation__command"><span>Control point &middot; HMI-04</span><kbd>Touch</kbd><span aria-hidden="true">or</span><kbd>1&ndash;7</kbd></div>
+  </section>
 
-<!-- Header -->
-<header class="site-header">
-  <div class="container" style="padding-top:13px; padding-bottom:13px; display:flex; align-items:center; justify-content:space-between; gap:24px;">
-    <a href="#" class="logo" aria-label="Robert McFarlin">
-      <img src="assets/mark-light.svg" alt="" width="30" height="30" />
-      <span>
-        <span class="name">Robert McFarlin</span>
-        <span class="eyebrow-logo" style="display:block; margin-top:1px;">STRATEGY • VALUE</span>
-      </span>
-    </a>
+  <!-- Redundant accessible/service path; the in-world HMI remains the primary chooser. -->
+  <nav class="cr-dock" id="cr-dock" aria-label="Open resume document menu, seven sections" tabindex="-1">
+    <div class="cr-dock__legend" aria-hidden="true"><span>Operator console</span><strong>Open resume</strong><small>Select record 01&ndash;07 &middot; Keys 1&ndash;7</small></div>
+    <div class="cr-dock__controls">
+      <button type="button" data-station="status" aria-label="Clipboard 1: operator overview" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">01</span><span class="cr-control-copy"><strong>Operator</strong><small>Identity / scope</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
+      <button type="button" data-station="results" aria-label="Clipboard 2: results and impact" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">02</span><span class="cr-control-copy"><strong>Results</strong><small>KPI record</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
+      <button type="button" data-station="experience" aria-label="Clipboard 3: career experience" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">03</span><span class="cr-control-copy"><strong>History</strong><small>Work record</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
+      <button type="button" data-station="principles" aria-label="Clipboard 4: operating principles" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">04</span><span class="cr-control-copy"><strong>Standards</strong><small>Operating rules</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
+      <button type="button" data-station="outlook" aria-label="Clipboard 5: future outlook" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">05</span><span class="cr-control-copy"><strong>Outlook</strong><small>Forward plan</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
+      <button type="button" data-station="toolbox" aria-label="Clipboard 6: capabilities and credentials" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">06</span><span class="cr-control-copy"><strong>Systems</strong><small>Capability file</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
+      <button type="button" data-station="contact" aria-label="Clipboard 7: contact Robert McFarlin" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">07</span><span class="cr-control-copy"><strong>Contact</strong><small>Channel record</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
+    </div>
+  </nav>
+  </div>
 
-    <nav class="nav" id="nav">
-      <a href="#principles">Principles</a>
-      <a href="#systems">Experience</a>
-      <a href="#long-bets">Future Outlook</a>
-      <a href="#stack">Toolbox</a>
-      <!-- LAUNCH: uncomment when the writing section goes live -->
-      <!-- <a href="/writing/">Writing</a> -->
-      <a href="#contact">Contact</a>
+  <button class="cr-full-resume-trigger" id="cr-full-resume-trigger" type="button" aria-label="Open the full resume instantly, bypassing robot animation" aria-haspopup="dialog" aria-controls="cr-full-resume" aria-expanded="false">
+    <span class="cr-full-resume-trigger__lamp" aria-hidden="true"></span>
+    <span class="cr-full-resume-trigger__copy"><small>Direct access</small><strong>Full resume</strong></span>
+    <span class="cr-full-resume-trigger__mode" aria-hidden="true">Bypass cell</span>
+  </button>
+
+  <dialog class="cr-full-resume" id="cr-full-resume" aria-labelledby="cr-full-resume-title" aria-describedby="cr-full-resume-description">
+    <div class="cr-full-resume__cabinet">
+      <header class="cr-full-resume__header">
+        <div class="cr-full-resume__nameplate">
+          <span>Document control &middot; Direct channel</span>
+          <h2 id="cr-full-resume-title">Master resume access</h2>
+          <p id="cr-full-resume-description">Complete seven-record resume. No robot transfer or motion queue required.</p>
+        </div>
+        <button class="cr-full-resume__close" id="cr-full-resume-close" type="button" aria-label="Close the full resume">
+          <span>Close / Exit</span><kbd>Esc</kbd>
+        </button>
+      </header>
+      <div class="cr-full-resume__signals" aria-hidden="true">
+        <span><i></i><small>Document</small><strong>Master copy</strong></span>
+        <span><i></i><small>Index</small><strong>07 / 07 loaded</strong></span>
+        <span><i></i><small>Motion queue</small><strong>Bypassed</strong></span>
+      </div>
+      <div class="cr-full-resume__viewport" id="cr-full-resume-viewport" tabindex="0" role="region" aria-label="Complete resume. Scroll to review all seven sections.">
+        <article class="cr-full-resume__paper">
+          <header class="cr-full-resume__paper-head">
+            <img src="assets/mark.svg" alt="" width="44" height="44" />
+            <div><span>RCM / CONTROLLED DOCUMENT</span><h1>Robert McFarlin, CMA</h1><p>Chief Financial Officer &middot; Industrial manufacturing &middot; Systems builder</p></div>
+            <strong>REV 08.10.26<br />DIRECT ACCESS</strong>
+          </header>
+          <div class="cr-full-resume__body" id="cr-full-resume-body"></div>
+        </article>
+      </div>
+      <footer class="cr-full-resume__footer"><span>DOC-MR-07 &middot; CONTROLLED COPY</span><span>ALL RECORDS AVAILABLE &middot; SCROLL TO REVIEW</span></footer>
+    </div>
+  </dialog>
+
+  <aside class="cr-plate" id="cr-plate" aria-hidden="true" aria-modal="false" role="dialog" aria-labelledby="cr-plate-title" aria-describedby="cr-transfer-status" tabindex="-1">
+    <span class="cr-transfer__mount cr-transfer__mount--upper" aria-hidden="true"></span>
+    <span class="cr-transfer__mount cr-transfer__mount--lower" aria-hidden="true"></span>
+    <div class="cr-transfer__header">
+      <div class="cr-transfer__nameplate" aria-hidden="true"><span>Guarded transfer</span><strong>TB-04 / Operator side</strong></div>
+      <button type="button" class="cr-plate__close" id="cr-close" aria-label="Acknowledge review, close outer transfer access, and return the document to the guarded cell"><span>Close / Ack</span><kbd>Esc</kbd></button>
+    </div>
+    <div class="cr-transfer__signals" id="cr-transfer-status" role="status" aria-live="polite" aria-atomic="true">
+      <span class="cr-transfer__signal is-proven" data-transfer-signal="inner-lock"><small>Inner lock</small><strong id="cr-transfer-inner">Locked</strong></span>
+      <span class="cr-transfer__signal is-access" data-transfer-signal="outer-access"><small>Outer access</small><strong id="cr-transfer-outer">Enabled</strong></span>
+      <span class="cr-transfer__signal is-proven" data-transfer-signal="robot-clear"><small>Robot</small><strong id="cr-transfer-robot">Clear</strong></span>
+    </div>
+    <div class="cr-transfer__tray">
+      <span class="cr-transfer__door" aria-hidden="true"><span>Outer access</span></span>
+      <span class="cr-transfer__rail cr-transfer__rail--left" aria-hidden="true"></span>
+      <span class="cr-transfer__rail cr-transfer__rail--right" aria-hidden="true"></span>
+      <span class="cr-transfer__hinge cr-transfer__hinge--upper" aria-hidden="true"></span>
+      <span class="cr-transfer__hinge cr-transfer__hinge--lower" aria-hidden="true"></span>
+      <span class="cr-transfer__latch" aria-hidden="true"><span>O/L</span></span>
+      <span class="cr-transfer__stop cr-transfer__stop--upper" aria-hidden="true"></span>
+      <span class="cr-transfer__stop cr-transfer__stop--lower" aria-hidden="true"></span>
+      <span class="cr-plate__asset" aria-hidden="true">DOC-04 &middot; OUTER ACCESS TRAY</span>
+      <div class="cr-plate__sheet">
+        <div class="cr-plate__head"><div class="cr-plate__heading"><p class="cr-plate__tag" id="cr-plate-tag">Transfer copy</p><h2 class="cr-plate__title" id="cr-plate-title">Awaiting interlocked handoff</h2></div></div>
+        <div class="cr-plate__body" id="cr-plate-body" tabindex="0" role="region" aria-label="Selected resume document. Scroll for more."></div>
+        <div class="cr-plate__foot" id="cr-plate-foot" aria-label="Close outer access to return this document and permit the automatic cycle">Review acknowledged &middot; Close outer access &middot; Return to indexed slot</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- These seven clipboard templates are also the complete GitHub Pages fallback. -->
+  <main id="cr-content" class="cr-content" aria-label="Robert McFarlin resume">
+    <header class="cr-content__intro"><p>Static fence clipboard rack</p><h1>Robert McFarlin</h1><span>Chief Financial Officer &middot; Industrial Manufacturing</span></header>
+    <nav class="cr-static-index" aria-label="Resume sections">
+      <a href="#resume-status"><span>01</span> Operator</a>
+      <a href="#resume-results"><span>02</span> Results</a>
+      <a href="#resume-experience"><span>03</span> History</a>
+      <a href="#resume-principles"><span>04</span> Standards</a>
+      <a href="#resume-outlook"><span>05</span> Outlook</a>
+      <a href="#resume-toolbox"><span>06</span> Systems</a>
+      <a href="#resume-contact"><span>07</span> Contact</a>
     </nav>
-
-    <div class="nav-actions">
-      <a class="btn btn--sm btn--secondary" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener">LinkedIn</a>
-      <button class="nav-mobile-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
-        <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-        <svg class="icon-x" style="display:none" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-      </button>
-    </div>
-  </div>
-</header>
-
-<!-- Hero -->
-<section class="hero">
-  <div class="container hero-inner">
-    <div class="hero-layout hero-layout--focused">
-      <div class="hero-copy">
-        <div class="hero-intro">
-          <div class="hero-text">
-            <div class="big-number" style="margin-bottom:8px;">Chief Financial Officer · Industrial Manufacturing</div>
-            <h1>Creating value in the age of AI</h1>
-            <p class="mission">
-              I build the capital allocation, data, automation, and control systems that help companies grow faster, govern smarter, and fund long-horizon wins.
-            </p>
-
-            <div class="hero-cta">
-              <a href="#principles" class="btn btn--lg btn--primary">
-                My Principles
-              </a>
-              <a href="#long-bets" class="btn btn--lg btn--horizon">
-                Future Outlook
-              </a>
-              <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--lg btn--secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4V8h4v1a6 6 0 0 1 4-1z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-                Connect
-              </a>
-            </div>
-          </div>
-
-          <aside class="headshot-card" aria-label="Robert McFarlin headshot">
-            <div class="headshot-frame">
-              <img src="assets/headshot.jpeg" alt="Robert McFarlin" loading="eager" decoding="async">
-            </div>
-          </aside>
-        </div>
-
-        <div class="future-readiness" aria-label="Future-ready CFO orientation">
-          <div class="future-card">
-            <div class="future-card__num mono">01</div>
-            <div>
-              <h3>Strategic choices in an uncertain world</h3>
-              <p>Decide where to compete, what not to fund, and which few activities must fit together to create durable competitive advantage.</p>
-            </div>
-          </div>
-          <div class="future-card">
-            <div class="future-card__num mono">02</div>
-            <div>
-              <h3>80/20 value concentration</h3>
-              <p>Find the few customers, products, plants, constraints, and workflows that drive disproportionate profit, cash, risk, or drag.</p>
-            </div>
-          </div>
-          <div class="future-card">
-            <div class="future-card__num mono">03</div>
-            <div>
-              <h3>AI-enabled finance operating systems</h3>
-              <p>Turn finance from a reporting function into an intelligence layer: better data, faster forecasts, cleaner workflows, stronger controls.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- Operating Principles -->
-<section id="principles" class="section">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Operating Principles</span>
-      <h2 style="margin:10px 0 14px;">Non-negotiable principles for myself and my team.</h2>
-      <p style="color:var(--text-secondary); max-width:58ch;">
-        These are not aspirations. They are the constraints under which the best long-horizon decisions are made.
-      </p>
-    </div>
-
-    <div style="margin-top:42px; max-width:860px;">
-      <div class="principle">
-        <div class="principle-num mono">01</div>
-        <div class="principle-body">
-          <div class="title">Relentlessly pursue purposeful progress</div>
-          <p class="desc">Motion without direction is noise. Every system, report, or automation must earn its place by moving the business forward in a way that can be measured and defended at any time horizon.</p>
-        </div>
-      </div>
-      <div class="principle">
-        <div class="principle-num mono">02</div>
-        <div class="principle-body">
-          <div class="title">Give more in value than you receive in compensation</div>
-          <p class="desc">Trust compounds faster than capital. Deliver clarity early, surface problems before they become expensive, and make recommendations that serve the whole enterprise across multiple decades.</p>
-        </div>
-      </div>
-      <div class="principle">
-        <div class="principle-num mono">03</div>
-        <div class="principle-body">
-          <div class="title">Everyone sweeps the floor</div>
-          <p class="desc">No task is beneath the person accountable for the outcome. Titles are temporary. Standards are not. The leader who will not do the work cannot judge the work.</p>
-        </div>
-      </div>
-      <div class="principle">
-        <div class="principle-num mono">04</div>
-        <div class="principle-body">
-          <div class="title">Share good news quickly, and bad news even quicker</div>
-          <p class="desc">Surprises are the most expensive input in any system. The earlier the signal reaches those who can act, the smaller the correction required. This is respect for capital and for people.</p>
-        </div>
-      </div>
-      <div class="principle">
-        <div class="principle-num mono">05</div>
-        <div class="principle-body">
-          <div class="title">Treat every experience as an opportunity to learn</div>
-          <p class="desc">The best operators remain students. Whether the variance is favorable or unfavorable, the only useful question is: what did we see too late, and how do we see it sooner next time?</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Systems Shipped -->
-<section id="systems" class="section section--elev">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Evidence of Action</span>
-      <h2 style="margin:10px 0 14px;">Manufacturing finance work translated into enterprise value.</h2>
-      <p style="color:var(--text-secondary); max-width:64ch;">The details matter because they point to a bigger pattern: I do not wait for perfect systems. I build financial infrastructure, data flows, controls, and operating cadence so leaders can choose faster and fund the few things that matter most.</p>
-    </div>
-
-    <div class="timeline" style="margin-top:42px; max-width:920px;">
-      <div class="role">
-        <div class="company">RCM Industries, Inc. — Manufacturing</div>
-        <div class="title">Chief Financial Officer</div>
-        <div class="period">2023 – Present</div>
-        <ul>
-          <li>Restructured RCM's primary banking relationship through a competitive process with multiple lenders, producing a 3× expansion of available credit capacity and a 50 bps reduction in borrowing cost — improving both strategic flexibility and cost of capital simultaneously.</li>
-          <li>Rebuilt enterprise reporting on Microsoft Fabric, creating a stronger data foundation for leadership visibility and faster operating decisions.</li>
-          <li>Reduced workflow debt through automation, returning recurring manual effort to higher-value financial analysis and decision support.</li>
-          <li>Created the internal audit function from zero, strengthening governance, compliance, and risk visibility as the business scaled.</li>
-          <li>Built scalable operating infrastructure by consolidating payroll and HR processes across 4 locations into a unified HRIS environment.</li>          
-        </ul>
-      </div>
-
-      <div class="role">
-        <div class="company">RCM Industries, Inc.</div>
-        <div class="title">Corporate Controller</div>
-        <div class="period">2017 – 2022</div>
-        <ul>
-          <li>Built entire financial data infrastructure from the ground up using Microsoft Power BI and imported semantic model</li>
-          <li>Led accounting, AP/AR, and payroll teams across 4 plants while keeping finance connected to the operating reality of the business.</li>
-          <li>Built consolidated forecasting models used by executive leadership for strategic planning and resource allocation.</li>
-          <li>Managed financial reporting for a 6-entity consolidated group with accuracy, repeatability, and governance.</li>
-        </ul>
-      </div>
-
-      <div class="role">
-        <div class="company">RCM Industries, Inc.</div>
-        <div class="title">Division Controller</div>
-        <div class="period">2016 – 2017</div>
-        <ul>
-          <li>Owned plant-level P&amp;L accountability, connecting financial outcomes to operating decisions at the source.</li>
-          <li>Implemented KPI dashboards that gave plant managers clearer visibility into inventory, carrying costs, and operational drivers.</li>
-          <li>Partnered directly with operators to turn financial insight into practical efficiency improvements.</li>
-        </ul>
-      </div>
-
-      <div class="role">
-        <div class="company">RCM Industries, Inc.</div>
-        <div class="title">Accounting Manager</div>
-        <div class="period">2014 – 2016</div>
-        <ul>
-          <li>Prepared and analyzed financial statements across multiple manufacturing plants, building pattern recognition across operating models.</li>
-          <li>Streamlined multi-plant reporting processes, improving the system-level reliability of financial information.</li>
-        </ul>
-      </div>
-
-      <div class="role">
-        <div class="company">ScanSource, Inc. — Technology Distribution</div>
-        <div class="title">Staff Accountant</div>
-        <div class="period">2011 – 2014</div>
-        <ul>
-          <li>Managed balance sheet reconciliations and revenue accounting in a public-company environment where precision and controls mattered.</li>
-          <li>Served as subject-matter expert during SAP implementation, protecting process continuity and data integrity through change.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Future Thesis -->
-<section id="long-bets" class="section thesis-section">
-  <div class="container">
-    <div class="section-head thesis-head">
-      <span class="eyebrow thesis-eyebrow">The Future</span>
-      <h2 style="margin:10px 0 14px;">Building for what is coming.</h2>
-      <p class="thesis-intro">
-        The CFOs who create the most value in the next ten years won't just read the forecast — they'll build the infrastructure that generates it. These are the forces I'm watching, building for, and betting on.
-      </p>
-    </div>
-
-    <div class="thesis-scape in-view" id="thesis-scape">
-      <div class="thesis-timeline" aria-hidden="true">
-        <svg class="thesis-timeline__svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="thesisArc" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="rgba(232,238,248,0.55)" />
-              <stop offset="45%" stop-color="rgba(91,156,245,0.85)" />
-              <stop offset="100%" stop-color="rgba(91,156,245,0.35)" />
-            </linearGradient>
-          </defs>
-          <path class="thesis-timeline__path" d="M 24 78 C 280 88, 420 72, 600 48 S 980 18, 1176 24" />
-        </svg>
-        <div class="thesis-timeline__nodes">
-          <div class="thesis-node thesis-node--present" style="left: 8%;">
-            <span class="thesis-node__ring"></span>
-            <span class="thesis-node__core"></span>
-          </div>
-          <div class="thesis-node thesis-node--building" style="left: 50%;">
-            <span class="thesis-node__ring"></span>
-            <span class="thesis-node__core"></span>
-          </div>
-          <div class="thesis-node thesis-node--watch" style="left: 92%;">
-            <span class="thesis-node__ring"></span>
-            <span class="thesis-node__core"></span>
-          </div>
-        </div>
-        <div class="thesis-timeline__labels mono">
-          <span>Now</span>
-          <span>2030+</span>
-        </div>
-      </div>
-
-      <div class="thesis-grid">
-        <article class="thesis-panel thesis-panel--forces">
-          <div class="thesis-panel__head">
-            <span class="thesis-badge thesis-badge--present mono">In motion</span>
-            <h3>Current Forces</h3>
-          </div>
-          <ul class="thesis-list">
-            <li class="thesis-item">AI agents transforming finance and accounting workflows</li>
-            <li class="thesis-item">Real-time operational data compressing the monthly close cycle</li>
-            <li class="thesis-item">Conversational AI agents embedding into operational workflows</li>
-            <li class="thesis-item">The spreadsheet demoted from system of record to consumption layer</li>
-            <li class="thesis-item">The CFO evolving from financial steward to infrastructure architect</li>
-          </ul>
-        </article>
-
-        <article class="thesis-panel thesis-panel--bets">
-          <div class="thesis-panel__head">
-            <span class="thesis-badge thesis-badge--building mono">Building</span>
-            <h3>Strategic Bets</h3>
-          </div>
-          <ul class="thesis-list">
-            <li class="thesis-item">Agentic financial and operational intelligence</li>
-            <li class="thesis-item">Direct Lake semantic layers as the new general ledger interface</li>
-            <li class="thesis-item">Natural language as the query interface for operations</li>
-            <li class="thesis-item">Post-ERP modular architecture replacing monolithic financial systems</li>
-          </ul>
-        </article>
-
-        <article class="thesis-panel thesis-panel--watch">
-          <div class="thesis-panel__head">
-            <span class="thesis-badge thesis-badge--watch mono">Watching</span>
-            <h3>Coming Disruptors</h3>
-          </div>
-          <ul class="thesis-list">
-            <li class="thesis-item">Orbital computing constellations dramatically lowering AI infrastructure costs</li>
-            <li class="thesis-item">Quantum optimization delivering measurable gains in computing power</li>
-            <li class="thesis-item">Humanoid robotics entering manufacturing at pilot scale, changing the workforce</li>
-          </ul>
-        </article>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Capabilities / Stack -->
-<section id="stack" class="section">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Tools & Infrastructure</span>
-      <h2 style="margin:10px 0 14px;">What I bring to the CFO seat.</h2>
-      <p style="color:var(--text-secondary); max-width:62ch;">From data infrastructure to board narrative — the skills that turn manufacturing complexity into competitive advantage.</p>
-    </div>
-
-    <div class="skills-table" aria-label="Skills and proof points">
-      <div class="skills-table__columns" aria-hidden="true">
-        <div class="skills-table__col skills-table__col--skill">Skill</div>
-        <div class="skills-table__col skills-table__col--proof">In practice</div>
-      </div>
-
-      <details class="skills-section" open>
-        <summary class="skills-section__summary">
-          <span class="skills-section__code mono">01</span>
-          <span class="skills-section__title">Enterprise Value</span>
-          <span class="skills-section__meta mono"></span>
-          <svg class="skills-section__chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </summary>
-        <div class="skills-section__body">
-          <div class="skills-section__proof-label">In practice</div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Strategic capital allocation</div>
-            <div class="skills-row__proof">Built a PE-style capital approval framework based on approval gates and portfolio level FCCR forecasting models.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Data-driven operating leverage</div>
-            <div class="skills-row__proof">Built the group's financial data infrastructure from the ground up — first on Power BI, now rebuilt on a Microsoft Fabric lakehouse with a Direct Lake semantic model — surfacing production, labor, and financial signals in near real-time. Leadership sees the drivers that move margin instead of waiting on an Excel reporting cycle.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Banking relationships & financial architecture</div>
-            <div class="skills-row__proof">Led competitive bank bid process that ultimately resulted in a revolving credit facility 3 times larger than the previous facility; supporting growth and improving financial flexibility.</div>
-          </div>
-        </div>
-      </details>
-
-      <details class="skills-section">
-        <summary class="skills-section__summary">
-          <span class="skills-section__code mono">02</span>
-          <span class="skills-section__title">AI &amp; Data Systems</span>
-          <span class="skills-section__meta mono"></span>
-          <svg class="skills-section__chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </summary>
-        <div class="skills-section__body">
-          <div class="skills-section__proof-label">In practice</div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Microsoft Fabric &amp; Power BI</div>
-            <div class="skills-row__proof">Rebuilt enterprise reporting on Microsoft Fabric to create a stronger data foundation for leadership visibility and faster operating decisions.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Finance workflow automation</div>
-            <div class="skills-row__proof">Reduced manual workflows through automation, returning recurring manual effort to higher-value financial analysis and decision support.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Integrated systems &amp; definitions</div>
-            <div class="skills-row__proof">Consolidated payroll and HR processes across four locations into a unified HRIS environment so finance and operations worked from one source of truth.</div>
-          </div>
-        </div>
-      </details>
-
-      <details class="skills-section">
-        <summary class="skills-section__summary">
-          <span class="skills-section__code mono">03</span>
-          <span class="skills-section__title">Operating Control</span>
-          <span class="skills-section__meta mono"></span>
-          <svg class="skills-section__chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </summary>
-        <div class="skills-section__body">
-          <div class="skills-section__proof-label">In practice</div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Internal audit buildout</div>
-            <div class="skills-row__proof">Created the internal audit function from zero, strengthening governance, compliance, and risk visibility as the business scaled.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Financial statement integrity</div>
-            <div class="skills-row__proof">Managed consolidated financial reporting for a six-entity group with the accuracy, repeatability, and governance expected in a multi-plant manufacturing environment.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Inventory &amp; plant economics</div>
-            <div class="skills-row__proof">Implemented plant KPI dashboards that connected production metrics, inventory, and operating drivers to decisions made on the floor in near real-time, not just at month end.</div>
-          </div>
-        </div>
-      </details>
-
-      <details class="skills-section">
-        <summary class="skills-section__summary">
-          <span class="skills-section__code mono">04</span>
-          <span class="skills-section__title">Execution Stack</span>
-          <span class="skills-section__meta mono"></span>
-          <svg class="skills-section__chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </summary>
-        <div class="skills-section__body">
-          <div class="skills-section__proof-label">In practice</div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Excel, VBA, and Power Query</div>
-            <div class="skills-row__proof">Streamlined multi-plant reporting processes and built forecasting tools long before the Fabric layer existed, improving reliability of financial information across plants.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Python &amp; ETL</div>
-            <div class="skills-row__proof">Used automation and scripting to lessen manual finance workflows and free capacity for analysis, controls, and faster response to operating questions.</div>
-          </div>
-          <div class="skills-row">
-            <div class="skills-row__skill">Team leadership &amp; change management</div>
-            <div class="skills-row__proof">Led accounting, AP/AR, and payroll teams across four plants while standing up new systems, changing banks, increasing reporting cadences, and implementing controls while deepening connection to operating reality.</div>
-          </div>
-        </div>
-      </details>
-    </div>
-  </div>
-</section>
-
-<!-- Credentials & Education -->
-<section id="credentials" class="section section--elev">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Credentials &amp; Education</span>
-      <h2 style="margin:10px 0 14px;">Formal foundation. Continuous study.</h2>
-      <p style="color:var(--text-secondary); max-width:62ch;">Certification and education behind the operating work — plus ongoing study in the areas that keep a manufacturing CFO current.</p>
-    </div>
-
-    <div class="skills-table credentials-table" aria-label="Credentials and education">
-      <div class="skills-table__columns" aria-hidden="true">
-        <div class="skills-table__col skills-table__col--skill">Credential</div>
-        <div class="skills-table__col skills-table__col--proof">Detail</div>
-      </div>
-
-      <div class="credentials-table__body">
-        <div class="skills-row">
-          <div class="skills-row__skill">Certified Management Accountant (CMA)</div>
-          <div class="skills-row__proof">Professional certification through the Institute of Management Accountants.</div>
-        </div>
-        <div class="skills-row">
-          <div class="skills-row__skill">Master of Accountancy</div>
-          <div class="skills-row__proof">Stetson University.</div>
-        </div>
-        <div class="skills-row">
-          <div class="skills-row__skill">B.S. Business Administration (Accounting)</div>
-          <div class="skills-row__proof">University of South Carolina Upstate.</div>
-        </div>
-        <div class="skills-row">
-          <div class="skills-row__skill">Continuous study</div>
-          <div class="skills-row__proof">Advanced financial modeling, data analytics, strategy, and valuation.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Contact -->
-<section id="contact" class="section section--signal">
-  <div class="container">
-    <div class="signal">
-      <span class="eyebrow">Contact</span>
-      <h2 style="margin:14px 0 14px;">Building for the same future? Let's talk.</h2>
-      <p style="color:var(--text-secondary); margin-bottom:28px;">
-        I'm open to conversations about manufacturing finance, data infrastructure, and where the CFO seat is headed. LinkedIn is the fastest way to reach me.
-      </p>
-      <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener" class="btn btn--lg btn--primary">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4V8h4v1a6 6 0 0 1 4-1z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-        Connect on LinkedIn
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="site-footer">
-  <div class="footer-inner">
-    <a href="#" class="logo" style="gap:10px;" aria-label="Robert McFarlin">
-      <img src="assets/mark-light.svg" alt="" width="24" height="24" />
-      <span class="name" style="font-size:14px;">Robert McFarlin</span>
-    </a>
-    <div class="footer-meta">
-      © 2026 · Building financial operating systems for the AI age
-    </div>
-  </div>
-</footer>
-
-<script>
-// ============================================================
-// Mission-mode interactions. Engineered for clarity and delight.
-// ============================================================
-
-// Mobile nav
-function initMobileNav() {
-  const toggle = document.getElementById('navToggle');
-  const nav = document.getElementById('nav');
-  if (!toggle || !nav) return;
-  const iconMenu = toggle.querySelector('.icon-menu');
-  const iconX = toggle.querySelector('.icon-x');
-
-  function setOpen(isOpen) {
-    nav.classList.toggle('open', isOpen);
-    toggle.setAttribute('aria-expanded', String(isOpen));
-    if (iconMenu) iconMenu.style.display = isOpen ? 'none' : '';
-    if (iconX) iconX.style.display = isOpen ? '' : 'none';
-  }
-
-  toggle.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
-  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setOpen(false);
-  });
-}
-
-// Subtle global background parallax. CSS-only fallback still looks good.
-function initBackdrop() {
-  const layers = [
-    document.querySelector('.site-backdrop'),
-    document.querySelector('.solar-light')
-  ].filter(Boolean);
-  if (!layers.length) return;
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReduced) return;
-
-  let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
-  let raf = null;
-
-  function tick() {
-    currentX += (targetX - currentX) * 0.08;
-    currentY += (targetY - currentY) * 0.08;
-    for (const layer of layers) {
-      layer.style.setProperty('--mx', `${currentX.toFixed(2)}px`);
-      layer.style.setProperty('--my', `${currentY.toFixed(2)}px`);
-    }
-    if (Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
-      raf = requestAnimationFrame(tick);
-    } else {
-      raf = null;
-    }
-  }
-
-  window.addEventListener('pointermove', (e) => {
-    targetX = (e.clientX / window.innerWidth - 0.5) * 44;
-    targetY = (e.clientY / window.innerHeight - 0.5) * 34;
-    if (!raf) raf = requestAnimationFrame(tick);
-  }, { passive: true });
-}
-
-// Pronounced global starfield that runs behind every section.
-function initDeepfield() {
-  const canvas = document.getElementById('deepfield');
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d', { alpha: true });
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let w = 0, h = 0, stars = [], bodies = [], rafId = null;
-
-  function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-    w = window.innerWidth;
-    h = window.innerHeight;
-    canvas.width = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function seed() {
-    const starCount = Math.min(1100, Math.max(480, Math.round((w * h) / 1700)));
-    stars = Array.from({ length: starCount }, (_, i) => {
-      const bright = i % 17 === 0;
-      const warm = i % 5 === 0;
-      return {
-        x: Math.random() * w,
-        y: Math.random() * h,
-        z: Math.random() * 0.8 + 0.2,
-        r: bright ? Math.random() * 2.2 + 1.2 : Math.random() * 1.15 + 0.45,
-        a: bright ? Math.random() * 0.38 + 0.72 : Math.random() * 0.42 + 0.42,
-        tw: Math.random() * Math.PI * 2,
-        drift: Math.random() * 0.05 + 0.012,
-        color: warm ? '201, 162, 110' : (i % 11 === 0 ? '95, 209, 198' : '245, 245, 245')
-      };
-    });
-
-    bodies = [
-      { x: w * 0.68, y: h * 0.36, r: Math.min(w, h) * 0.16, color: '95, 209, 198', a: 0.065 },
-      { x: w * 0.14, y: h * 0.74, r: Math.min(w, h) * 0.22, color: '201, 162, 110', a: 0.088 },
-      { x: w * 0.52, y: h * 0.58, r: Math.min(w, h) * 0.11, color: '96, 165, 250', a: 0.048 }
-    ];
-  }
-
-  function drawSun(ts = 0) {
-    const sx = w * 0.94;
-    const sy = h * -0.02;
-    const pulse = prefersReduced ? 1 : 0.96 + Math.sin(ts * 0.00035) * 0.04;
-    const coreR = Math.min(w, h) * 0.038 * pulse;
-    const coronaR = Math.min(w, h) * 0.36 * pulse;
-
-    if (!prefersReduced) {
-      const beams = [
-        { angle: 2.35, spread: 0.14, len: h * 1.05, a: 0.055 },
-        { angle: 2.48, spread: 0.09, len: h * 0.92, a: 0.038 },
-        { angle: 2.62, spread: 0.07, len: h * 0.84, a: 0.028 }
-      ];
-      for (const beam of beams) {
-        ctx.save();
-        ctx.translate(sx, sy);
-        ctx.rotate(beam.angle);
-        const gr = ctx.createLinearGradient(0, 0, 0, beam.len);
-        gr.addColorStop(0, `rgba(255, 224, 170, ${beam.a})`);
-        gr.addColorStop(0.28, `rgba(255, 200, 120, ${beam.a * 0.45})`);
-        gr.addColorStop(1, 'rgba(201, 162, 110, 0)');
-        ctx.fillStyle = gr;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(-coronaR * beam.spread, beam.len);
-        ctx.lineTo(coronaR * beam.spread, beam.len);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-      }
-    }
-
-    const corona = ctx.createRadialGradient(sx, sy, 0, sx, sy, coronaR);
-    corona.addColorStop(0, 'rgba(255, 236, 200, 0.32)');
-    corona.addColorStop(0.18, 'rgba(255, 205, 110, 0.16)');
-    corona.addColorStop(0.42, 'rgba(201, 162, 110, 0.07)');
-    corona.addColorStop(0.68, 'rgba(255, 150, 70, 0.02)');
-    corona.addColorStop(1, 'rgba(255, 150, 70, 0)');
-    ctx.fillStyle = corona;
-    ctx.beginPath();
-    ctx.arc(sx, sy, coronaR, 0, Math.PI * 2);
-    ctx.fill();
-
-    const core = ctx.createRadialGradient(sx, sy, 0, sx, sy, coreR);
-    core.addColorStop(0, 'rgba(255, 250, 235, 0.78)');
-    core.addColorStop(0.6, 'rgba(255, 210, 130, 0.42)');
-    core.addColorStop(1, 'rgba(245, 180, 80, 0)');
-    ctx.fillStyle = core;
-    ctx.beginPath();
-    ctx.arc(sx, sy, coreR, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  function draw(ts = 0) {
-    ctx.clearRect(0, 0, w, h);
-
-    drawSun(ts);
-
-    for (const b of bodies) {
-      const pulse = prefersReduced ? 1 : 0.88 + Math.sin(ts * 0.00035 + b.r) * 0.12;
-      const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * pulse);
-      g.addColorStop(0, `rgba(${b.color}, ${b.a})`);
-      g.addColorStop(0.45, `rgba(${b.color}, ${b.a * 0.35})`);
-      g.addColorStop(1, `rgba(${b.color}, 0)`);
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.r * pulse, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    for (const s of stars) {
-      const twinkle = prefersReduced ? 1 : 0.7 + Math.sin(ts * 0.0012 + s.tw) * 0.3;
-      const alpha = s.a * twinkle;
-      ctx.fillStyle = `rgba(${s.color}, ${alpha})`;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (s.r > 1.7) {
-        ctx.strokeStyle = `rgba(${s.color}, ${alpha * 0.28})`;
-        ctx.lineWidth = 0.7;
-        ctx.beginPath();
-        ctx.moveTo(s.x - s.r * 3.2, s.y);
-        ctx.lineTo(s.x + s.r * 3.2, s.y);
-        ctx.moveTo(s.x, s.y - s.r * 3.2);
-        ctx.lineTo(s.x, s.y + s.r * 3.2);
-        ctx.stroke();
-      }
-
-      if (!prefersReduced) {
-        s.y += s.drift * s.z;
-        if (s.y > h + 4) {
-          s.y = -4;
-          s.x = Math.random() * w;
-        }
-      }
-    }
-
-    if (!prefersReduced) rafId = requestAnimationFrame(draw);
-  }
-
-  function init() {
-    resize();
-    seed();
-    draw();
-    window.addEventListener('resize', () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      resize();
-      seed();
-      draw();
-    }, { passive: true });
-  }
-
-  init();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  initMobileNav();
-  initBackdrop();
-  initDeepfield();
-  initThesis();
-});
-
-function initThesis() {
-  const scape = document.getElementById('thesis-scape');
-  if (!scape) return;
-
-  const reveal = () => scape.classList.add('in-view');
-
-  // Always show content if already on screen or motion is reduced
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const rect = scape.getBoundingClientRect();
-  const inViewport = rect.top < window.innerHeight * 0.92 && rect.bottom > 0;
-  if (prefersReduced || inViewport) {
-    reveal();
-    return;
-  }
-
-  if (!('IntersectionObserver' in window)) {
-    reveal();
-    return;
-  }
-
-  const io = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
-      reveal();
-      io.disconnect();
-    }
-  }, { threshold: 0.08, rootMargin: '0px 0px -5% 0px' });
-  io.observe(scape);
-}
-</script>
-
+    <article id="resume-status" data-station="status" data-title="Operator overview">
+      <div class="cr-id-card"><img src="assets/headshot.jpeg" alt="Robert McFarlin" width="76" height="76" loading="lazy" decoding="async" /><div><span class="cr-mini-label">Operator 01 &middot; Active</span><h3>Robert McFarlin, CMA</h3><p>Chief Financial Officer, RCM Industries</p></div></div>
+      <p class="cr-panel-lede">Creating value in the age of AI by building the capital allocation, data, automation, and control systems that help industrial companies grow faster, govern smarter, and fund long-horizon wins.</p>
+      <div class="cr-signal-grid"><section><span>01 &middot; Strategy</span><h3>Choose where to compete</h3><p>Fund the few activities that fit together to create durable competitive advantage.</p></section><section><span>02 &middot; Focus</span><h3>Concentrate the 80/20</h3><p>Find the customers, products, plants, constraints, and workflows driving disproportionate profit, cash, risk, or drag.</p></section><section><span>03 &middot; Infrastructure</span><h3>Make finance intelligent</h3><p>Move finance from a reporting function to an intelligence layer with better data, faster forecasts, cleaner workflows, and stronger controls.</p></section></div>
+      <p class="cr-meta-line">Scope &middot; Six entities &middot; Four manufacturing plants &middot; Finance connected to operating reality</p>
+    </article>
+    <article id="resume-results" data-station="results" data-title="Enterprise impact">
+      <p class="cr-panel-lede">Manufacturing finance work translated into measurable enterprise value.</p>
+      <div class="metric"><div><strong>3&times;</strong><span>Available credit capacity</span><small>Competitive multi-lender process</small></div><div><strong>&minus;50 bps</strong><span>Borrowing cost</span><small>Greater flexibility at lower cost</small></div><div><strong>4</strong><span>Locations on one HRIS</span><small>Unified payroll and HR</small></div><div><strong>0 &rarr; 1</strong><span>Internal audit function</span><small>Governance built from zero</small></div></div>
+      <h3>Systems shipped</h3><ul class="cr-checklist"><li>Rebuilt enterprise reporting on a <strong>Microsoft Fabric lakehouse and Direct Lake semantic model</strong>, surfacing production, labor, and financial signals in near real time.</li><li>Reduced workflow debt through automation, returning recurring manual effort to higher-value analysis and decision support.</li><li>Created internal audit from zero, strengthening governance, compliance, and risk visibility as the business scaled.</li><li>Consolidated payroll and HR across four locations into one source-of-truth HRIS environment.</li><li>Built a PE-style capital approval framework with approval gates and portfolio-level FCCR forecasting.</li></ul>
+    </article>
+    <article id="resume-experience" data-station="experience" data-title="Career timeline">
+      <p class="cr-panel-lede">A career spent connecting financial integrity to the operating decisions made on the manufacturing floor.</p>
+      <div class="cr-timeline"><section class="cr-role"><header><div><span>RCM Industries, Inc. &middot; Manufacturing</span><h3>Chief Financial Officer</h3></div><time>2023 &ndash; Present</time></header><ul><li>Restructured the primary banking relationship through a competitive process, expanding available credit capacity 3&times; while reducing borrowing cost by 50 bps.</li><li>Rebuilt enterprise reporting on Microsoft Fabric for stronger leadership visibility and faster operating decisions.</li><li>Automated recurring finance work, created internal audit from zero, and unified payroll and HR across four locations.</li></ul></section><section class="cr-role"><header><div><span>RCM Industries, Inc.</span><h3>Corporate Controller</h3></div><time>2017 &ndash; 2022</time></header><ul><li>Built the financial data infrastructure from the ground up using Microsoft Power BI and an imported semantic model.</li><li>Led accounting, AP/AR, and payroll teams across four plants while keeping finance connected to operations.</li><li>Built consolidated forecasting models for strategic planning and resource allocation; governed reporting for a six-entity group.</li></ul></section><section class="cr-role"><header><div><span>RCM Industries, Inc.</span><h3>Division Controller</h3></div><time>2016 &ndash; 2017</time></header><ul><li>Owned plant-level P&amp;L accountability, connecting financial outcomes to operating decisions at the source.</li><li>Implemented KPI dashboards for inventory, carrying costs, and operational drivers; partnered directly with operators on efficiency improvements.</li></ul></section><section class="cr-role"><header><div><span>RCM Industries, Inc.</span><h3>Accounting Manager</h3></div><time>2014 &ndash; 2016</time></header><ul><li>Prepared and analyzed financial statements across multiple manufacturing plants.</li><li>Streamlined multi-plant reporting processes, improving the reliability of financial information.</li></ul></section><section class="cr-role"><header><div><span>ScanSource, Inc. &middot; Technology Distribution</span><h3>Staff Accountant</h3></div><time>2011 &ndash; 2014</time></header><ul><li>Managed balance-sheet reconciliations and revenue accounting in a public-company control environment.</li><li>Served as subject-matter expert during SAP implementation, protecting continuity and data integrity through change.</li></ul></section></div>
+    </article>
+    <article id="resume-principles" data-station="principles" data-title="Operating principles"><p class="cr-panel-lede">Non-negotiable constraints for how I lead, build systems, and make long-horizon decisions.</p><ol class="cr-principles"><li><span>01</span><div><h3>Relentlessly pursue purposeful progress</h3><p>Motion without direction is noise. Every system, report, or automation must move the business forward in a way that can be measured and defended.</p></div></li><li><span>02</span><div><h3>Give more in value than you receive in compensation</h3><p>Trust compounds faster than capital. Deliver clarity early, surface problems before they become expensive, and serve the whole enterprise.</p></div></li><li><span>03</span><div><h3>Everyone sweeps the floor</h3><p>No task is beneath the person accountable for the outcome. Titles are temporary; standards are not.</p></div></li><li><span>04</span><div><h3>Share good news quickly, and bad news even quicker</h3><p>Surprises are the most expensive input. The earlier the signal reaches those who can act, the smaller the correction required.</p></div></li><li><span>05</span><div><h3>Treat every experience as an opportunity to learn</h3><p>The best operators remain students: what did we see too late, and how do we see it sooner next time?</p></div></li></ol></article>
+    <article id="resume-outlook" data-station="outlook" data-title="Future outlook"><p class="cr-panel-lede">The CFOs who create the most value in the next decade will build the infrastructure that generates the forecast.</p><div class="cr-horizon"><section><span class="cr-horizon__status is-live">In motion</span><h3>Current forces</h3><ul><li>AI agents transforming finance and accounting workflows</li><li>Real-time operational data compressing the monthly close cycle</li><li>Conversational AI agents embedding into operating workflows</li><li>The spreadsheet demoted from system of record to consumption layer</li><li>The CFO evolving from financial steward to infrastructure architect</li></ul></section><section><span class="cr-horizon__status is-build">Building</span><h3>Active bets</h3><ul><li>Agentic financial and operational intelligence</li><li>Direct Lake semantic layers as the new general-ledger interface</li><li>Natural language as the query interface for operations</li><li>Post-ERP modular architecture replacing monolithic financial systems</li></ul></section><section><span class="cr-horizon__status is-watch">Watching</span><h3>Coming disruptors</h3><ul><li>Orbital computing constellations lowering AI infrastructure costs</li><li>Quantum optimization delivering measurable gains in computing power</li><li>Humanoid robotics entering manufacturing at pilot scale and changing the workforce</li></ul></section></div></article>
+    <article id="resume-toolbox" data-station="toolbox" data-title="Systems and credentials"><p class="cr-panel-lede">The practical stack behind the work: enterprise value, data systems, operating control, and execution.</p><div class="cr-capabilities"><section><span>01</span><div><h3>Enterprise value</h3><dl><dt>Strategic capital allocation</dt><dd>PE-style approval gates and portfolio-level FCCR forecasting.</dd><dt>Data-driven operating leverage</dt><dd>Power BI to Fabric lakehouse and Direct Lake, surfacing production, labor, and margin drivers.</dd><dt>Banking architecture</dt><dd>Competitive bank process producing a 3&times; larger revolver and greater flexibility.</dd></dl></div></section><section><span>02</span><div><h3>AI and data systems</h3><dl><dt>Microsoft Fabric &amp; Power BI</dt><dd>Enterprise reporting designed for faster, more visible operating decisions.</dd><dt>Finance automation</dt><dd>Manual workflow returned to analysis, controls, and decision support.</dd><dt>Integrated definitions</dt><dd>One HRIS across four locations so finance and operations share a source of truth.</dd></dl></div></section><section><span>03</span><div><h3>Operating control</h3><dl><dt>Internal audit buildout</dt><dd>Governance, compliance, and risk visibility built from zero.</dd><dt>Statement integrity</dt><dd>Accurate, repeatable reporting across a six-entity manufacturing group.</dd><dt>Plant economics</dt><dd>KPI dashboards connecting production, inventory, and operating drivers to floor decisions.</dd></dl></div></section><section><span>04</span><div><h3>Execution stack</h3><dl><dt>Excel, VBA &amp; Power Query</dt><dd>Multi-plant reporting and forecasting systems built for reliability.</dd><dt>Python &amp; ETL</dt><dd>Automation and scripting that free capacity for higher-value work.</dd><dt>Leadership &amp; change</dt><dd>Teams led across four plants while implementing systems, controls, banks, and faster cadence.</dd></dl></div></section></div><h3>Credentials and education</h3><div class="cr-credentials"><p><strong>Certified Management Accountant (CMA)</strong><span>Institute of Management Accountants</span></p><p><strong>Master of Accountancy</strong><span>Stetson University</span></p><p><strong>B.S. Business Administration (Accounting)</strong><span>University of South Carolina Upstate</span></p><p><strong>Continuous study</strong><span>Advanced financial modeling, data analytics, strategy, and valuation</span></p></div></article>
+    <article id="resume-contact" data-station="contact" data-title="Open channel"><div class="cr-contact"><span class="cr-contact__signal" aria-hidden="true"></span><p class="cr-mini-label">Secure line &middot; Available</p><h3>Building for the same future?</h3><p>I'm open to conversations about manufacturing finance, capital allocation, data infrastructure, automation, and where the CFO seat is headed.</p><a class="cr-contact__link" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span aria-hidden="true">&nearr;</span></a><small>LinkedIn is the fastest way to reach me.</small></div></article>
+  </main>
+  <script src="js/vendor/three.min.js" onerror="window.crUseStaticResume('Three.js could not load. The complete resume is shown below.')"></script>
+  <script src="js/control-room.js?v=20260810-full-resume1" onload="window.__crControlScriptLoaded = true" onerror="window.crUseStaticResume('The CNC-cell script could not load. The complete resume is shown below.')"></script>
+  <script>setTimeout(function(){var boot=document.getElementById("cr-boot");if(boot)boot.classList.add("is-done");if(!window.__crControlScriptLoaded)window.crUseStaticResume("The interactive cell timed out. The complete resume is shown below.");},2400);</script>
 </body>
 </html>
