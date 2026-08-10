@@ -1,0 +1,187 @@
+/* ============================================================
+   Writing section — long-form reading layer over the mission
+   design system. Loaded only by /writing/ pages, after ds.css.
+   ============================================================ */
+
+.writing-main {
+  position: relative;
+  z-index: 1;
+  padding: 64px 0 96px;
+}
+
+/* Header chrome for subpages — mirrors the inline mobile-nav rules in index.html */
+.nav-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 4px;
+  cursor: pointer;
+}
+@media (max-width: 720px) {
+  .site-header .container { flex-wrap: wrap; }
+  .site-header .nav { display: none; width: 100%; order: 3; }
+  .site-header .nav.open {
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: 10px; padding: 12px 0 4px; border-top: 1px solid var(--line); margin-top: 8px;
+  }
+  .nav-mobile-toggle { display: inline-flex; }
+}
+.site-header .nav a.active { color: var(--text); }
+
+/* ---- Index: essay list ---- */
+.index-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 var(--space-7);
+}
+.essay-list {
+  margin-top: 44px;
+  border-top: 1px solid var(--line);
+}
+.essay-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 26px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  align-items: baseline;
+}
+.essay-row .meta {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  line-height: 1.9;
+}
+.essay-row .meta .rt { display: block; }
+.essay-row h3 {
+  font-size: 21px;
+  letter-spacing: -0.015em;
+  margin: 0 0 8px;
+  color: var(--text);
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+.essay-row h3 .go {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--brass);
+  opacity: 0;
+  margin-left: 8px;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+.essay-row p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 64ch;
+}
+.essay-row:hover h3 { color: var(--brass); }
+.essay-row:hover h3 .go { opacity: 1; }
+.essay-row .tag { margin-left: 10px; vertical-align: 2px; }
+@media (max-width: 640px) {
+  .essay-row { grid-template-columns: 1fr; gap: 8px; }
+  .essay-row .meta .rt { display: inline; margin-left: 12px; }
+}
+
+/* ---- Article ---- */
+.article-wrap {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 var(--space-7);
+}
+.article-head { padding-top: 26px; }
+.article-head .meta {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+.article-head .meta .tag { margin-left: 12px; vertical-align: 1px; }
+.article-head h1 {
+  font-size: clamp(34px, 5.4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 18px 0;
+}
+.article-lede {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 58ch;
+}
+.article-rule {
+  height: 2px;
+  border: 0;
+  margin: 32px 0 40px;
+  background: linear-gradient(90deg, var(--brass) 0 34%, rgba(201, 162, 110, 0.22) 34% 100%);
+}
+
+.article-body {
+  font-size: 16.5px;
+  line-height: 1.78;
+  color: rgba(232, 231, 226, 0.88);
+}
+.article-body p { margin: 0 0 22px; max-width: none; }
+.article-body h2 {
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  margin: 46px 0 16px;
+  color: var(--text);
+}
+.article-body strong { color: var(--text); font-weight: var(--w-semibold); }
+.article-body em { color: inherit; }
+.article-body a {
+  color: var(--horizon);
+  border-bottom: 1px solid rgba(95, 209, 198, 0.35);
+  transition: border-color var(--dur-fast) var(--ease-standard);
+}
+.article-body a:hover { border-bottom-color: var(--horizon); color: var(--horizon); }
+.article-body ul, .article-body ol { margin: 0 0 22px; padding-left: 22px; }
+.article-body li { margin-bottom: 10px; }
+.article-body hr { border: 0; border-top: 1px solid var(--line); margin: 44px 0 36px; }
+.article-body blockquote {
+  border-left: 2px solid var(--brass);
+  margin: 0 0 22px;
+  padding: 4px 0 4px 20px;
+  color: var(--text-secondary);
+}
+
+/* Sources block: the h2 + list that follow the closing rule */
+.article-body hr + h2 {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: var(--w-medium);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brass);
+  margin: 0 0 14px;
+}
+.article-body hr + h2 + ul {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.article-footer {
+  margin-top: 60px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.article-footer .back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+.article-footer .back:hover { color: var(--text); }

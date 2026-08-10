@@ -1,0 +1,21 @@
+<!-- @dsCard group="Colors" viewport="700x210" name="Semantic — financial states" subtitle="Positive, negative, caution, info + washes" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body{margin:0;background:var(--paper);font-family:var(--font-sans);padding:24px;}
+  .row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .sw{display:flex;flex-direction:column;gap:8px;}
+  .chip{height:54px;border-radius:var(--radius-md) var(--radius-md) 0 0;}
+  .wash{height:22px;border-radius:0 0 var(--radius-md) var(--radius-md);border:1px solid var(--line);border-top:none;}
+  .n{font-size:12.5px;font-weight:600;color:var(--ink);}
+  .v{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-tertiary);}
+</style></head>
+<body>
+<div class="row">
+  <div class="sw"><div class="chip" style="background:var(--positive)"></div><div class="wash" style="background:var(--positive-wash)"></div><span class="n">Positive</span><span class="v">#2F6E4E · gain</span></div>
+  <div class="sw"><div class="chip" style="background:var(--negative)"></div><div class="wash" style="background:var(--negative-wash)"></div><span class="n">Negative</span><span class="v">#B23A33 · loss</span></div>
+  <div class="sw"><div class="chip" style="background:var(--caution)"></div><div class="wash" style="background:var(--caution-wash)"></div><span class="n">Caution</span><span class="v">#C08A2E · watch</span></div>
+  <div class="sw"><div class="chip" style="background:var(--info)"></div><div class="wash" style="background:var(--info-wash)"></div><span class="n">Info</span><span class="v">#3E6E73 · note</span></div>
+</div>
+</body></html>

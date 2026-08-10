@@ -1,0 +1,49 @@
+<!-- @dsCard group="Slides" viewport="1280x720" name="Board deck — Metrics" subtitle="KPI row + revenue chart" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  html,body{margin:0;}
+  .slide{width:1280px;height:720px;background:var(--paper);color:var(--ink);font-family:var(--font-sans);box-sizing:border-box;padding:64px 80px;display:flex;flex-direction:column;}
+  .eyebrow{font-family:var(--font-mono);font-size:13px;letter-spacing:0.16em;text-transform:uppercase;color:var(--moss);}
+  h2{font-weight:700;font-size:40px;letter-spacing:-0.02em;margin:12px 0 0;}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:36px;}
+  .panel{margin-top:28px;flex:1;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow-sm);padding:26px 28px;display:flex;flex-direction:column;}
+  .panel h3{font-weight:600;font-size:18px;margin:0 0 18px;}
+  .foot{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:12px;color:var(--ink-tertiary);margin-top:24px;}
+</style></head>
+<body>
+<div class="slide">
+  <div>
+    <span class="eyebrow">Performance · Q3 2025</span>
+    <h2>The quarter in four numbers</h2>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="panel">
+    <h3>Net revenue trend — last 6 quarters ($M)</h3>
+    <div id="chart" style="flex:1;display:flex;align-items:flex-end;"></div>
+  </div>
+  <div class="foot"><span>Robert McFarlin · Fractional CFO</span><span>02</span></div>
+</div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { StatCard, BarChart } = window.McFarlinCFODesignSystem_e3e0bb;
+  ReactDOM.createRoot(document.getElementById('kpis')).render(
+    <React.Fragment>
+      <StatCard label="Net Revenue" value="$4.82M" delta={23.6} caption="vs. Q2" accent />
+      <StatCard label="Gross Margin" value="57.4%" delta={3.1} caption="vs. Q2" />
+      <StatCard label="Monthly Burn" value="$310K" delta={-8.2} deltaProps={{ invert: true }} caption="mo/mo" />
+      <StatCard label="Runway" value="19 mo" tone="forest" />
+    </React.Fragment>
+  );
+  ReactDOM.createRoot(document.getElementById('chart')).render(
+    <BarChart height={170} showValues highlightLast format={(v) => '$' + v + 'M'} data={[
+      { label: 'Q2 24', value: 2.9 }, { label: 'Q3 24', value: 3.1 }, { label: 'Q4 24', value: 3.4 },
+      { label: 'Q1 25', value: 3.9 }, { label: 'Q2 25', value: 3.9 }, { label: 'Q3 25', value: 4.82 },
+    ]} />
+  );
+</script>
+</body></html>

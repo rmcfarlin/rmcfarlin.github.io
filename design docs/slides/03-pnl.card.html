@@ -1,0 +1,52 @@
+<!-- @dsCard group="Slides" viewport="1280x720" name="Board deck — P&L table" subtitle="Condensed financials" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  html,body{margin:0;}
+  .slide{width:1280px;height:720px;background:var(--paper);color:var(--ink);font-family:var(--font-sans);box-sizing:border-box;padding:64px 80px;display:flex;flex-direction:column;}
+  .eyebrow{font-family:var(--font-mono);font-size:13px;letter-spacing:0.16em;text-transform:uppercase;color:var(--moss);}
+  h2{font-weight:700;font-size:40px;letter-spacing:-0.02em;margin:12px 0 4px;}
+  .lede{font-size:17px;color:var(--ink-secondary);margin:0 0 28px;max-width:760px;}
+  #tbl{font-size:17px;}
+  #tbl .rm-table tbody td{padding:15px 18px;font-size:16px;}
+  #tbl .rm-table thead th{padding:12px 18px;font-size:12px;}
+  #tbl .rm-table tfoot td{padding:15px 18px;font-size:17px;}
+  .foot{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:12px;color:var(--ink-tertiary);margin-top:auto;padding-top:24px;}
+</style></head>
+<body>
+<div class="slide">
+  <span class="eyebrow">Financials · Q3 2025</span>
+  <h2>Condensed P&amp;L</h2>
+  <p class="lede">Margin expanded as revenue outpaced cost growth; net income reached 8.7% of revenue.</p>
+  <div id="tbl"></div>
+  <div class="foot"><span>Unaudited · Acme Robotics, Inc.</span><span>03</span></div>
+</div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { DataTable, DeltaIndicator } = window.McFarlinCFODesignSystem_e3e0bb;
+  ReactDOM.createRoot(document.getElementById('tbl')).render(
+    <DataTable
+      zebra
+      columns={[
+        { key: 'item', header: 'Line item', strong: true, width: '40%' },
+        { key: 'prev', header: 'Q2 2025', numeric: true },
+        { key: 'cur', header: 'Q3 2025', numeric: true },
+        { key: 'pct', header: '% rev', align: 'right' },
+        { key: 'd', header: 'Change', align: 'right', render: (r) => <DeltaIndicator value={r.d} invert={r.invert} /> },
+      ]}
+      rows={[
+        { item: 'Revenue', prev: '$3.90M', cur: '$4.82M', pct: '100%', d: 23.6 },
+        { item: 'Cost of revenue', prev: '$1.66M', cur: '$2.05M', pct: '42.6%', d: 23.5, invert: true },
+        { item: 'Gross profit', prev: '$2.24M', cur: '$2.77M', pct: '57.4%', d: 23.7 },
+        { item: 'Operating expense', prev: '$2.07M', cur: '$2.35M', pct: '48.7%', d: 13.5, invert: true },
+      ]}
+      totals={{ item: 'Net income', prev: '$0.17M', cur: '$0.42M', pct: '8.7%' }}
+      totalsLabel="Net income"
+    />
+  );
+</script>
+</body></html>

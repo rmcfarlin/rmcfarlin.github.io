@@ -1,0 +1,5 @@
+# Local résumé files — kept out of the public Pages site
+PROTECTED/
+
+# Local dev config (preview server)
+.claude/

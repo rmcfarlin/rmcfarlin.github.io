@@ -1,0 +1,22 @@
+<!-- @dsCard group="Colors" viewport="700x190" name="Warm neutrals — paper & ink" subtitle="Backgrounds, surfaces, text, lines" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body{margin:0;background:var(--paper);font-family:var(--font-sans);padding:24px;}
+  .row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+  .sw{display:flex;flex-direction:column;gap:8px;}
+  .chip{height:72px;border-radius:var(--radius-md);border:1px solid var(--line);}
+  .n{font-size:12px;font-weight:600;color:var(--ink);}
+  .v{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-tertiary);}
+</style></head>
+<body>
+<div class="row">
+  <div class="sw"><div class="chip" style="background:var(--paper)"></div><span class="n">Paper</span><span class="v">#FBFAF7</span></div>
+  <div class="sw"><div class="chip" style="background:var(--paper-sunken)"></div><span class="n">Sunken</span><span class="v">#F4F2EC</span></div>
+  <div class="sw"><div class="chip" style="background:var(--surface)"></div><span class="n">Surface</span><span class="v">#FFFFFF</span></div>
+  <div class="sw"><div class="chip" style="background:var(--line-strong)"></div><span class="n">Line</span><span class="v">#D4CFC2</span></div>
+  <div class="sw"><div class="chip" style="background:var(--ink-secondary)"></div><span class="n">Ink 2°</span><span class="v">#4A483F</span></div>
+  <div class="sw"><div class="chip" style="background:var(--ink)"></div><span class="n">Ink</span><span class="v">#1C1B17</span></div>
+</div>
+</body></html>
