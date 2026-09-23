@@ -45,11 +45,14 @@ html.js body.dcm-cell #cr-dock button:hover:not(:disabled){background:#354033aa;
 html.js body.dcm-cell #cr-dock button.is-active,html.js body.dcm-cell #cr-dock button.is-queued{background:#cbb07d;color:#17241c;box-shadow:inset 0 2px #f5dca9}
 html.js body.dcm-cell #cr-dock button.is-active .cr-key,html.js body.dcm-cell #cr-dock button.is-queued .cr-key{color:#384430}
 html.js body.dcm-cell #cr-dock button:disabled{opacity:.65;cursor:wait}
-html.js body.dcm-cell #cr-full-resume-trigger{position:fixed;z-index:21;left:6vw;bottom:195px;top:auto;right:auto;display:flex;align-items:center;gap:12px;width:auto;min-width:0;min-height:44px;padding:10px 0;border:0;border-bottom:1px solid #cbb07d99;border-radius:0;background:transparent;box-shadow:none;transform:none;color:var(--cinema-paper);text-align:left}
-html.js body.dcm-cell #cr-full-resume-trigger::before,html.js body.dcm-cell #cr-full-resume-trigger::after,html.js body.dcm-cell #cr-full-resume-trigger>span:not(.cr-full-resume-trigger__copy),html.js body.dcm-cell #cr-full-resume-trigger small{display:none}
-html.js body.dcm-cell #cr-full-resume-trigger strong{display:flex;gap:35px;align-items:center;color:var(--cinema-paper);font:500 13px Arial,sans-serif;letter-spacing:0;text-transform:none}
-html.js body.dcm-cell #cr-full-resume-trigger strong span{color:var(--cinema-brass);font-size:20px}
-html.js body.dcm-cell #cr-full-resume-trigger:hover strong{color:var(--cinema-brass)}
+html.js body.dcm-cell #cr-full-resume-trigger{position:fixed;z-index:21;left:6vw;bottom:190px;top:auto;right:auto;display:flex;align-items:center;gap:12px;width:auto;min-width:0;min-height:64px;padding:13px 22px 14px 20px;border:1px solid var(--cinema-brass);border-radius:2px;background:var(--cinema-brass);box-shadow:0 10px 28px #0000004d;transform:none;color:var(--cinema-ink);text-align:left;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+html.js body.dcm-cell #cr-full-resume-trigger::before,html.js body.dcm-cell #cr-full-resume-trigger::after,html.js body.dcm-cell #cr-full-resume-trigger>span:not(.cr-full-resume-trigger__copy){display:none}
+html.js body.dcm-cell #cr-full-resume-trigger .cr-full-resume-trigger__copy{display:flex;flex-direction:column;gap:5px}
+html.js body.dcm-cell #cr-full-resume-trigger small{display:block;color:#101715b8;font:600 10px/1 var(--hmi);letter-spacing:.12em;text-transform:uppercase}
+html.js body.dcm-cell #cr-full-resume-trigger strong{display:flex;gap:18px;align-items:center;color:var(--cinema-ink);font:700 19px/1.1 Arial,sans-serif;letter-spacing:-.01em;text-transform:none}
+html.js body.dcm-cell #cr-full-resume-trigger strong span{color:var(--cinema-ink);font-size:21px}
+html.js body.dcm-cell #cr-full-resume-trigger:hover{background:#e3c78f;border-color:#e3c78f;transform:translateY(-1px)}
+html.js body.dcm-cell #cr-full-resume-trigger:hover strong{color:var(--cinema-ink)}
 html.js body.dcm-cell.cr-presenting .portfolio-intro,html.js body.dcm-cell.cr-presenting .portfolio-scene-caption{opacity:0;pointer-events:none}
 html.js body.dcm-cell.cr-presenting #cr-full-resume-trigger{visibility:hidden}
 body:has(#cr-error:not([hidden])) .portfolio-header,body:has(#cr-error:not([hidden])) .portfolio-intro,body:has(#cr-error:not([hidden])) .portfolio-scene-caption{display:none}
@@ -86,10 +89,12 @@ html.js body.dcm-cell.cr-requested .cr-skip{display:none}
  html.js body.dcm-cell #cr-dock .cr-dock__controls button:nth-child(n+5){border-bottom:0}
  html.js body.dcm-cell #cr-dock .cr-dock__controls button:last-child{grid-column:span 2}
  html.js body.dcm-cell #cr-dock .cr-control-copy strong{font-size:11px}
- html.js body.dcm-cell #cr-full-resume-trigger{left:24px;bottom:191px}
+ html.js body.dcm-cell #cr-full-resume-trigger{left:24px;bottom:191px;min-height:56px;padding:10px 16px 11px 15px}
+ html.js body.dcm-cell #cr-full-resume-trigger strong{font-size:16px;gap:14px}
+ html.js body.dcm-cell #cr-full-resume-trigger small{font-size:9px}
  html.js .portfolio-scene-caption{right:20px;bottom:196px;max-width:172px;font-size:8px}.portfolio-scene-caption span:last-child{display:block;font-size:9px;letter-spacing:.02em;text-transform:none}
 }
-@media(max-height:640px) and (min-width:601px){html.js .portfolio-intro{top:110px}.portfolio-intro h1{font-size:62px}.portfolio-intro__signature{display:none}.portfolio-intro__description{margin-top:15px}html.js body.dcm-cell #cr-full-resume-trigger{bottom:137px}}
+@media(max-height:640px) and (min-width:601px){html.js .portfolio-intro{top:110px}.portfolio-intro h1{font-size:62px}.portfolio-intro__signature{display:none}.portfolio-intro__description{margin-top:15px}html.js body.dcm-cell #cr-full-resume-trigger{bottom:158px}}
 @media(max-height:680px) and (max-width:600px){html.js .portfolio-intro{top:85px}.portfolio-intro h1{font-size:48px}.portfolio-intro__description{display:none}}
 @media(max-width:380px){html.js .portfolio-scene-caption{right:18px;max-width:124px}.portfolio-scene-caption span:first-child{font-size:7px}}
 @media(max-height:500px) and (min-width:601px){html.js .portfolio-header{padding-top:14px}html.js .portfolio-intro{top:85px}.portfolio-eyebrow{margin-bottom:12px}.portfolio-intro h1{font-size:46px}.portfolio-intro h1 br,.portfolio-intro__description,.portfolio-intro__signature{display:none}.portfolio-intro h1 em{margin-left:8px}html.js body.dcm-cell #cr-plate{top:74px;bottom:126px}html.js body.dcm-cell #cr-plate .cr-plate__head{padding:12px 18px}html.js body.dcm-cell #cr-plate .cr-transfer__header{min-height:48px;padding:4px 12px}}

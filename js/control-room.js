@@ -1146,6 +1146,7 @@
 
   var debugFps = false;
   var postDisabledByQuery = false;
+  var captureDprOverride = 0;
   try {
     var diagnosticsQuery = new URLSearchParams(window.location.search);
     var debugRequested = diagnosticsQuery.get("debug") === "1";
@@ -1153,6 +1154,8 @@
     var proofQueryValue = diagnosticsQuery.get("proof");
     postDisabledByQuery = diagnosticsQuery.get("post") === "0";
     debugFps = debugRequested || qaRequested || proofQueryValue === "1";
+    // QA screenshot captures may render above the production DPR cap.
+    if (debugFps) captureDprOverride = Math.min(3, Number(diagnosticsQuery.get("dpr")) || 0);
     exhaustiveProofRequested =
       qaRequested ||
       proofQueryValue === "1" ||
@@ -1252,12 +1255,13 @@
     !lowPower &&
     width * height <= 2600000 &&
     (window.devicePixelRatio || 1) <= 2.25;
-  var dprCap = lowPower ? 1 : useMsaa ? 1.5 : 1.25;
+  var dprCap = captureDprOverride || (lowPower ? 1 : useMsaa ? 1.5 : 1.25);
   var nativeRenderDpr = Math.max(0.78, Math.min(window.devicePixelRatio || 1, dprCap));
   var renderDpr = nativeRenderDpr;
   // The governor has exactly two resolution states. A sub-.90 native display
   // never changes DPR, and every other display has one stable motion fallback.
-  var adaptiveMotionDpr = Math.min(nativeRenderDpr, 0.9);
+  var adaptiveMotionDpr = captureDprOverride ? nativeRenderDpr : Math.min(nativeRenderDpr, 0.9);
+  var captureFrozen = false;
   var dynamicShadows =
     !lowPower &&
     width * height <= 2300000 &&
@@ -1313,9 +1317,10 @@
   }
   if (THREE.ACESFilmicToneMapping !== undefined) {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    // The factory plate is exposed separately below. The modeled foreground
-    // keeps a full tonal range for warm paint and long steel reflections.
-    renderer.toneMappingExposure = 1.02;
+    // Exposed the way a video camera auto-exposes a daylit hall: mid-tones
+    // sit high, daylight and wet specular clip, and only the machine's
+    // interior and contact shadows fall to black.
+    renderer.toneMappingExposure = 1.32;
   }
   canvas.style.width = "100%";
   canvas.style.height = "100%";
@@ -1512,7 +1517,13 @@
         bloomStrength: { value: POST_BLOOM_STRENGTH / POST_BLOOM_LEVELS },
         heatSources: { value: [new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4()] },
         heatTime: { value: 0 },
-        aspect: { value: 1 }
+        aspect: { value: 1 },
+        grainCell: { value: 1 },
+        tDepth: { value: null },
+        cameraInverseProjection: { value: new THREE.Matrix4() },
+        dofStrength: { value: 0 },
+        dofFocus: { value: 23 },
+        texel: { value: new THREE.Vector2(1, 1) }
       },
       vertexShader: postFullscreenVertexShader(),
       fragmentShader: [
@@ -1527,7 +1538,20 @@
         "uniform vec4 heatSources[ 3 ];",
         "uniform float heatTime;",
         "uniform float aspect;",
+        "uniform float grainCell;",
+        "uniform sampler2D tDepth;",
+        "uniform mat4 cameraInverseProjection;",
+        "uniform float dofStrength;",
+        "uniform float dofFocus;",
+        "uniform vec2 texel;",
         "varying vec2 vUv;",
+        // Thin-lens circle of confusion in pixels for the view distance at uv.
+        "float dofCoc( vec2 uv ) {",
+        "  float depth = texture2D( tDepth, uv ).x;",
+        "  vec4 view = cameraInverseProjection * vec4( uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0 );",
+        "  float distance = max( -view.z / view.w, 0.1 );",
+        "  return dofStrength * grainCell * min( abs( 1.0 - dofFocus / distance ), 1.4 );",
+        "}",
         "float hash12( vec2 p ) {",
         "  vec3 p3 = fract( vec3( p.xyx ) * 0.1031 );",
         "  p3 += dot( p3, p3.yzx + 33.33 );",
@@ -1558,7 +1582,36 @@
         "}",
         "void main() {",
         "  vec2 uv = vUv + heatOffset( vUv );",
-        "  vec3 color = texture2D( tScene, uv ).rgb;",
+        // Lateral chromatic aberration of a zoom lens: red and blue land a
+        // fraction of a pixel apart toward the frame edge.
+        "  vec2 fringe = ( uv - 0.5 ) * vec2( aspect, 1.0 ) * 0.0011;",
+        "  fringe.x /= aspect;",
+        "  vec3 color = vec3(",
+        "    texture2D( tScene, uv + fringe ).r,",
+        "    texture2D( tScene, uv ).g,",
+        "    texture2D( tScene, uv - fringe ).b",
+        "  );",
+        // Depth of field of a long video lens focused on the cell: the near
+        // aisle and the far wall soften, the fence a hair in front of the
+        // machine only barely. Samples farther behind than the center are
+        // weighted by their own blur so the sharp cell does not bleed.
+        "  if ( dofStrength > 0.0 ) {",
+        "    float coc = dofCoc( uv );",
+        "    if ( coc > 0.35 ) {",
+        "      vec3 dofSum = color;",
+        "      float dofWeight = 1.0;",
+        "      for ( int tap = 0; tap < 12; tap++ ) {",
+        "        float angle = float( tap ) * 2.39996 + 0.5;",
+        "        float radius = sqrt( ( float( tap ) + 0.5 ) / 12.0 );",
+        "        vec2 offset = vec2( cos( angle ), sin( angle ) ) * radius * coc * texel;",
+        "        float sampleCoc = dofCoc( uv + offset );",
+        "        float weight = clamp( sampleCoc / max( coc, 1e-3 ) + 0.25, 0.0, 1.0 );",
+        "        dofSum += texture2D( tScene, uv + offset ).rgb * weight;",
+        "        dofWeight += weight;",
+        "      }",
+        "      color = mix( color, dofSum / dofWeight, smoothstep( 0.35, 1.2, coc ) );",
+        "    }",
+        "  }",
         "  if ( occlusionStrength > 0.0 ) {",
         "    color *= mix( 1.0, texture2D( tOcclusion, uv ).r, occlusionStrength );",
         "  }",
@@ -1572,9 +1625,15 @@
         // Gentle natural lens falloff, as a real camera frames the bay.
         "  vec2 vignetteOffset = ( vUv - 0.5 ) * vec2( aspect, 1.0 );",
         "  gl_FragColor.rgb *= 1.0 - 0.2 * smoothstep( 0.35, 1.05, length( vignetteOffset ) );",
-        // Triangular dither in output space hides 8-bit banding in fog/steam.
-        "  float dither = hash12( gl_FragCoord.xy ) + hash12( gl_FragCoord.xy + 71.3 ) - 1.0;",
-        "  gl_FragColor.rgb += dither / 255.0;",
+        // Sensor noise at the grain of a 1080p video camera: luma noise
+        // that rises in the shadows plus weaker chroma noise. It also
+        // dithers 8-bit banding out of the fog and steam.
+        "  vec2 grainCoord = floor( gl_FragCoord.xy / grainCell ) + floor( fract( heatTime * 7.31 ) * 64.0 ) * vec2( 17.0, 29.0 );",
+        "  float grain = hash12( grainCoord ) + hash12( grainCoord + 71.3 ) - 1.0;",
+        "  float grainLuma = dot( gl_FragColor.rgb, vec3( 0.299, 0.587, 0.114 ) );",
+        "  float grainAmount = 0.004 + 0.022 * ( 1.0 - grainLuma ) * ( 1.0 - grainLuma );",
+        "  vec3 chroma = vec3( hash12( grainCoord + 13.1 ), hash12( grainCoord + 37.7 ), hash12( grainCoord + 59.3 ) ) - 0.5;",
+        "  gl_FragColor.rgb += grain * grainAmount + chroma * grainAmount * 0.45;",
         "}"
       ].join("\n"),
       depthTest: false,
@@ -1614,10 +1673,13 @@
   // feet, column bases, robot pedestal) its crease darkening; the SSR pass
   // runs only on the polished slab and mirrors the cell into it.
   var POST_AO_SAMPLES = 12;
-  var POST_AO_RADIUS = 0.55;
-  var POST_AO_STRENGTH = 0.75;
+  var POST_AO_RADIUS = 1.1;
+  var POST_AO_STRENGTH = 1.15;
   var POST_SSR_STEPS = 40;
-  var POST_SSR_STRENGTH = 1.3;
+  var POST_SSR_STRENGTH = 0.8;
+  // Circle of confusion, in 1080p pixels, for a subject at twice (or half)
+  // the focus distance.
+  var POST_DOF_STRENGTH = 4.5;
 
   var POST_VIEW_POSITION_GLSL = [
     "uniform sampler2D tDepth;",
@@ -1754,13 +1816,29 @@
       "uniform mat4 cameraViewMatrix;",
       "uniform mat4 cameraWorldMatrix;",
       "varying vec2 vUv;",
+      "float slabHash( vec2 p ) {",
+      "  vec3 p3 = fract( vec3( p.xyx ) * 0.1031 );",
+      "  p3 += dot( p3, p3.yzx + 33.33 );",
+      "  return fract( ( p3.x + p3.y ) * p3.z );",
+      "}",
+      "float slabNoise( vec2 p ) {",
+      "  vec2 i = floor( p ); vec2 f = fract( p );",
+      "  vec2 u = f * f * ( 3.0 - 2.0 * f );",
+      "  return mix( mix( slabHash( i ), slabHash( i + vec2( 1.0, 0.0 ) ), u.x ),",
+      "    mix( slabHash( i + vec2( 0.0, 1.0 ) ), slabHash( i + vec2( 1.0 ) ), u.x ), u.y );",
+      "}",
       "void main() {",
       "  float depth = texture2D( tDepth, vUv ).x;",
       "  if ( depth >= 0.99999 ) { gl_FragColor = vec4( 0.0 ); return; }",
       "  vec3 origin = viewPositionAt( vUv );",
       "  vec3 world = ( cameraWorldMatrix * vec4( origin, 1.0 ) ).xyz;",
-      // Only the polished slab (and paint/decals lying on it) is a mirror.
+      // Only the slab (and paint/decals lying on it) reflects.
       "  if ( abs( world.y ) > 0.015 ) { gl_FragColor = vec4( 0.0 ); return; }",
+      // A worn working floor is not a mirror: only oily, traffic-polished
+      // patches return a clear image; the rest scatters it away.
+      "  float sheen = slabNoise( world.xz * 0.35 + 3.0 ) * 0.65 + slabNoise( world.xz * 1.3 + 11.0 ) * 0.35;",
+      "  float gloss = smoothstep( 0.42, 0.78, sheen );",
+      "  if ( gloss <= 0.0 ) { gl_FragColor = vec4( 0.0 ); return; }",
       "  vec3 floorNormal = normalize( ( cameraViewMatrix * vec4( 0.0, 1.0, 0.0, 0.0 ) ).xyz );",
       "  vec3 viewDirection = normalize( origin );",
       "  vec3 ray = normalize( reflect( viewDirection, floorNormal ) );",
@@ -1799,7 +1877,7 @@
       "  float cosine = clamp( dot( -viewDirection, floorNormal ), 0.0, 1.0 );",
       "  float fresnel = 0.04 + 0.96 * pow( 1.0 - cosine, 5.0 );",
       "  vec3 color = min( texture2D( tScene, hitUv ).rgb, vec3( 16.0 ) );",
-      "  gl_FragColor = vec4( color * fresnel * fade, fade );",
+      "  gl_FragColor = vec4( color * fresnel * fade * gloss, fade * gloss );",
       "}"
     ].join("\n"), {
       tDepth: shared.tDepth,
@@ -1833,6 +1911,9 @@
       reflectionBlurY: bilateralBlurMaterial(reflectionScratchSource, new THREE.Vector2(0, 2.2), 6, 0.6)
     };
     pipeline.compositeMaterial.uniforms.tOcclusion.value = occlusionTarget.texture;
+    pipeline.compositeMaterial.uniforms.tDepth.value = shared.tDepth.value;
+    pipeline.compositeMaterial.uniforms.cameraInverseProjection = shared.cameraInverseProjection;
+    pipeline.compositeMaterial.uniforms.dofStrength.value = POST_DOF_STRENGTH;
     pipeline.compositeMaterial.uniforms.tReflection.value = reflectionTarget.texture;
     pipeline.compositeMaterial.uniforms.occlusionStrength.value = POST_AO_STRENGTH;
     pipeline.compositeMaterial.uniforms.reflectionStrength.value = POST_SSR_STRENGTH;
@@ -1846,6 +1927,7 @@
     shared.cameraInverseProjection.value.copy(camera.projectionMatrixInverse);
     shared.cameraViewMatrix.value.copy(camera.matrixWorldInverse);
     shared.cameraWorldMatrix.value.copy(camera.matrixWorld);
+    post.compositeMaterial.uniforms.dofFocus.value = camera.position.distanceTo(PROCESS_CAMERA_TARGET);
     function pass(material, target) {
       post.quad.material = material;
       renderer.setRenderTarget(target);
@@ -1892,6 +1974,8 @@
       sourceHeight = mipHeight;
     }
     post.compositeMaterial.uniforms.aspect.value = targetWidth / targetHeight;
+    post.compositeMaterial.uniforms.grainCell.value = Math.max(1, targetHeight / 1080);
+    post.compositeMaterial.uniforms.texel.value.set(1 / targetWidth, 1 / targetHeight);
   }
 
   function renderPostFrame() {
@@ -1965,9 +2049,6 @@
   function patchDisplayMaterials(root) {
     if (!post || !root) return;
     postOverlayOpacityScale = POST_OVERLAY_OPACITY_SCALE;
-    compensateLinearOverlay(M.guardGlass);
-    compensateLinearOverlay(M.polyEdge);
-    compensateLinearOverlay(M.polyUpperEdge);
     compensateLinearOverlay(M.glass);
     root.traverse(function (object) {
       if (!object.material) return;
@@ -1990,8 +2071,8 @@
   }
 
   // Interior haze of a working hall: cool, slightly dusty air lit by LEDs.
-  var PLANT_HAZE_COLOR = 0x5b666c;
-  var PLANT_FOG_DENSITY = 0.0125;
+  var PLANT_HAZE_COLOR = 0x7b8487;
+  var PLANT_FOG_DENSITY = 0.0165;
   scene = new THREE.Scene();
   scene.background = new THREE.Color(PLANT_HAZE_COLOR);
   // Aerial perspective across the bay: the cell at ~23 m keeps almost all of
@@ -2205,7 +2286,7 @@
 
   // Cool sky and low concrete fill leave readable shadow faces without the
   // uniform gray ambient response that flattens machine volumes.
-  var ambientLight = new THREE.HemisphereLight(0xb9d4e1, 0x28363e, 0.3);
+  var ambientLight = new THREE.HemisphereLight(0xb9d4e1, 0x28363e, 0.07);
   ambientLight.position.set(0, 7, -3.5);
   scene.add(ambientLight);
 
@@ -2213,7 +2294,7 @@
   // steep (~64 deg), as overhead fixtures are: tops read bright, vertical
   // faces fall off, and shadows stay short under the machine. Normalized
   // light-ray vector (source to cell) is approximately +0.24,-0.9,-0.37.
-  var keyLight = new THREE.DirectionalLight(0xffebd2, 3.1);
+  var keyLight = new THREE.DirectionalLight(0xffebd2, 5.2);
   keyLight.position.set(-2.55, 14.5, 1.5);
   keyLight.target.position.set(0.8, 1.0, -4.1);
   keyLight.castShadow = dynamicShadows;
@@ -2237,7 +2318,7 @@
 
   // Low-energy machine fill follows the same overhead vector, so it cannot
   // introduce a contradictory second shadow/read direction.
-  var machineLight = new THREE.DirectionalLight(0xb6d5e6, 0.42);
+  var machineLight = new THREE.DirectionalLight(0xb6d5e6, 0.26);
   machineLight.position.set(-2.2, 13.5, 2.1);
   machineLight.target.position.set(2.6, 2.0, -5.8);
   scene.add(machineLight);
@@ -2252,6 +2333,14 @@
   cavityLight.target.position.set(3.1, 1.75, -6.25);
   scene.add(cavityLight);
   scene.add(cavityLight.target);
+
+  // Guard-roof work light over the tooling window: real cells light the die
+  // so the operator can inspect the faces through the door glazing.
+  var dieWorkLight = new THREE.SpotLight(0xf1efe8, 16, 6.5, 0.62, 0.75, 2);
+  dieWorkLight.position.set(0.7, 3.95, -3.55);
+  dieWorkLight.target.position.set(0.45, 2.0, -5.1);
+  scene.add(dieWorkLight);
+  scene.add(dieWorkLight.target);
 
   var cavityBounce = new THREE.PointLight(0xa9c8c6, 0.18, 3.2, 2);
   cavityBounce.position.set(3.25, 2.0, -5.95);
@@ -2678,6 +2767,70 @@
   M.polyUpperEdge.envMapIntensity = 0.7;
   M.polyUpperEdge.needsUpdate = true;
 
+  // Welded-wire guarding (50 x 100 mm mesh on 5 mm wire), as real HPDC
+  // cells use, replaces the polycarbonate glazing. The mesh is computed in
+  // world space with analytic coverage, so at the aisle camera it resolves
+  // to a see-through dark veil instead of moire. The glazing's edge strips
+  // become the painted steel panel frame.
+  function convertGuardGlazingToMesh() {
+    var mesh = M.guardGlass;
+    mesh.color.setHex(0x272b2d);
+    mesh.opacity = 1;
+    mesh.roughness = 0.46;
+    mesh.roughnessMap = null;
+    mesh.metalness = 0.65;
+    mesh.clearcoat = 0;
+    mesh.reflectivity = 0.5;
+    mesh.envMapIntensity = 0.55;
+    mesh.transparent = true;
+    mesh.depthWrite = false;
+    mesh.side = THREE.DoubleSide;
+    mesh.onBeforeCompile = function (shader) {
+      shader.vertexShader = 'varying vec3 vMeshWorld;\n' + shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\n\tvMeshWorld = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz;'
+      );
+      shader.fragmentShader = 'varying vec3 vMeshWorld;\n' + shader.fragmentShader.replace(
+        '#include <alphamap_fragment>',
+        [
+          '#include <alphamap_fragment>',
+          '\tvec2 meshCell = vec2( ( vMeshWorld.x + vMeshWorld.z ) / 0.05, vMeshWorld.y / 0.1 );',
+          // Drawn wire is never dead straight: a few millimetres of wander
+          // along each run, and panels hung a hair out of true.
+          '\tmeshCell.x += sin( vMeshWorld.y * 6.3 + floor( meshCell.x + 0.5 ) * 1.7 ) * 0.045 + sin( vMeshWorld.y * 1.1 + vMeshWorld.x * 0.8 ) * 0.05;',
+          '\tmeshCell.y += sin( ( vMeshWorld.x + vMeshWorld.z ) * 4.7 + floor( meshCell.y + 0.5 ) * 2.3 ) * 0.03;',
+          '\tvec2 meshFootprint = fwidth( meshCell ) + 1.0e-4;',
+          '\tvec2 meshHalfWire = vec2( 0.0035 / 0.05, 0.0035 / 0.1 ) * 0.5;',
+          '\tvec2 meshDistance = abs( fract( meshCell + 0.5 ) - 0.5 );',
+          // Weld nodes swell the wire where the runs cross.
+          '\tvec2 meshNode = 1.0 - smoothstep( vec2( 0.0 ), meshHalfWire * 3.0, meshDistance.yx );',
+          '\tmeshHalfWire *= 1.0 + 0.6 * meshNode;',
+          // Lens softness: thin wire edges spread across about two pixels.
+          '\tvec2 meshSharp = 1.0 - smoothstep( meshHalfWire - meshFootprint * 0.9, meshHalfWire + meshFootprint * 0.9, meshDistance );',
+          '\tvec2 meshCoverage = mix( meshSharp, meshHalfWire * 2.0, clamp( meshFootprint * 1.5 - 0.5, 0.0, 1.0 ) );',
+          '\tdiffuseColor.a = clamp( ( 1.0 - ( 1.0 - meshCoverage.x ) * ( 1.0 - meshCoverage.y ) ) * 1.2, 0.0, 1.0 );'
+        ].join('\n')
+      );
+    };
+    mesh.customProgramCacheKey = function () {
+      return 'crWeldedMesh';
+    };
+    mesh.needsUpdate = true;
+    [M.polyEdge, M.polyUpperEdge].forEach(function (frame) {
+      frame.color.setHex(0x2c3134);
+      frame.transparent = false;
+      frame.opacity = 1;
+      frame.depthWrite = true;
+      frame.side = THREE.FrontSide;
+      frame.metalness = 0.45;
+      frame.roughness = 0.52;
+      frame.clearcoat = 0.12;
+      frame.envMapIntensity = 0.7;
+      frame.needsUpdate = true;
+    });
+  }
+  convertGuardGlazingToMesh();
+
   var guardGlareTexture = makeTexture(function (ctx, w, h) {
     ctx.clearRect(0, 0, w, h);
     // Three uneven fixture/crane spans read as one broad reflection band, but
@@ -2711,6 +2864,8 @@
     ctx.globalCompositeOperation = "source-over";
   }, 256, 64);
   var guardGlareMaterial = new THREE.MeshBasicMaterial({
+    // Glazing glare has no counterpart on welded-wire guarding.
+    visible: false,
     map: guardGlareTexture,
     color: 0xfff0c8,
     transparent: true,
@@ -3272,20 +3427,59 @@
       ctx.fillStyle = foreground;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.font = "700 28px ui-monospace, monospace";
+      ctx.font = "700 27px 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif";
       for (var i = 0; i < lines.length; i++) {
         ctx.fillText(lines[i], w * 0.5, h * (i + 1) / (lines.length + 1));
+      }
+      // Plates on a working machine age: grime settles at the lower edge,
+      // gloves scuff the face, and the print yellows and fades unevenly.
+      var seed = lines.join("").length * 7919 + w;
+      function random() {
+        seed = (seed * 16807) % 2147483647;
+        return (seed - 1) / 2147483646;
+      }
+      var grime = ctx.createLinearGradient(0, h * 0.45, 0, h);
+      grime.addColorStop(0, "rgba(40,34,24,0)");
+      grime.addColorStop(1, "rgba(40,34,24,0.38)");
+      ctx.fillStyle = grime;
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = "rgba(150,128,70,0.1)";
+      ctx.fillRect(0, 0, w, h);
+      for (var smudge = 0; smudge < 26; smudge++) {
+        var sx = random() * w;
+        var sy = random() * h;
+        var radius = 4 + random() * 18;
+        var blot = ctx.createRadialGradient(sx, sy, 0, sx, sy, radius);
+        blot.addColorStop(0, "rgba(30,26,20," + (0.12 + random() * 0.2) + ")");
+        blot.addColorStop(1, "rgba(30,26,20,0)");
+        ctx.fillStyle = blot;
+        ctx.fillRect(sx - radius, sy - radius, radius * 2, radius * 2);
+      }
+      ctx.strokeStyle = "rgba(235,232,220,0.28)";
+      ctx.lineWidth = 1;
+      for (var scratch = 0; scratch < 14; scratch++) {
+        var ax = random() * w;
+        var ay = random() * h;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(ax + (random() - 0.5) * 40, ay + (random() - 0.5) * 10);
+        ctx.stroke();
       }
     }, widthValue || 256, heightValue || 128);
   }
 
   function labelPlane(texture, widthValue, heightValue, x, y, z, parent) {
-    var material = new THREE.MeshBasicMaterial({
+    // Printed plates are lit like the steel they are riveted to: they fall
+    // into shadow, catch the hall haze, and collect the same grime.
+    var material = new THREE.MeshStandardMaterial({
       map: texture,
-      toneMapped: false,
-      transparent: true,
-      fog: false
+      roughness: 0.58,
+      metalness: 0.05,
+      polygonOffset: true,
+      polygonOffsetFactor: -1,
+      polygonOffsetUnits: -1
     });
+    material.envMapIntensity = 0.5;
     var mesh = new THREE.Mesh(new THREE.PlaneGeometry(widthValue, heightValue), material);
     mesh.position.set(x, y, z);
     mesh.userData.screenLabel = true;
@@ -4028,6 +4222,10 @@
       ctx.fillText('SLOW  /  FAST  /  HOLD', 22, 219);
       ctx.fillStyle = '#325b58'; ctx.fillRect(22, 234, 64, 7); ctx.fillRect(98, 234, 53, 7);
     }, 256, 256), toneMapped: false});
+    // The press root is mirrored in X; flip the screen image back so the
+    // shot-profile text reads correctly, as the label planes already do.
+    cabinetDisplay.map.center.set(0.5, 0.5);
+    cabinetDisplay.map.repeat.set(-1, 1);
     panel(0.5, 0.51, 0.012, 2.64, 2.72, 1.158,
       'cabinet shot-profile display', cabinetDisplay).castShadow = false;
     var cabinetVents = [];
@@ -4248,6 +4446,227 @@
     dieSprayer.jets.material.uniforms.pixelRatio.value = renderDpr;
   }
 
+
+  // Working die tooling. The parting faces carry what a production die
+  // shows after a shift: a machined cavity with runner, overflows and vents,
+  // ejector-pin witness marks, chalky release-agent crust, and aluminum flash
+  // along the parting line. Water lines, clamp plates, and a core-pull
+  // cylinder sit on the top and far edges, clear of the robot's approach.
+  function makeDieFaceTexture(coreSide) {
+    return makeTexture(function (ctx, w, h) {
+      var seed = coreSide ? 911 : 577;
+      function random() {
+        seed = (seed * 16807) % 2147483647;
+        return (seed - 1) / 2147483646;
+      }
+      var steel = ctx.createLinearGradient(0, 0, w, h);
+      steel.addColorStop(0, '#454a4c');
+      steel.addColorStop(0.5, '#383c3e');
+      steel.addColorStop(1, '#2d3133');
+      ctx.fillStyle = steel;
+      ctx.fillRect(0, 0, w, h);
+      // Heat tint from thousands of shots: straw near the cavity, blue out.
+      var tint = ctx.createRadialGradient(w * 0.5, h * 0.46, w * 0.05, w * 0.5, h * 0.46, w * 0.62);
+      tint.addColorStop(0, 'rgba(112,92,54,0.42)');
+      tint.addColorStop(0.55, 'rgba(70,74,92,0.2)');
+      tint.addColorStop(1, 'rgba(40,46,60,0)');
+      ctx.fillStyle = tint;
+      ctx.fillRect(0, 0, w, h);
+      for (var speck = 0; speck < 2600; speck++) {
+        var tone = 40 + Math.floor(random() * 50);
+        ctx.fillStyle = 'rgba(' + tone + ',' + tone + ',' + (tone + 4) + ',0.35)';
+        ctx.fillRect(random() * w, random() * h, 1.5, 1.5);
+      }
+      var cx = w * 0.5;
+      var cy = h * 0.44;
+      var cw = w * 0.56;
+      var ch = h * 0.46;
+      // Machined cavity (fixed half) or core (moving half).
+      ctx.fillStyle = coreSide ? '#50565a' : '#1b1e20';
+      ctx.fillRect(cx - cw / 2, cy - ch / 2, cw, ch);
+      ctx.strokeStyle = coreSide ? '#2a2e30' : '#6a7073';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(cx - cw / 2, cy - ch / 2, cw, ch);
+      ctx.strokeStyle = coreSide ? '#2f3336' : '#3c4144';
+      ctx.lineWidth = 6;
+      for (var rib = 1; rib < 4; rib++) {
+        ctx.beginPath();
+        ctx.moveTo(cx - cw / 2 + 10, cy - ch / 2 + rib * ch / 4);
+        ctx.lineTo(cx + cw / 2 - 10, cy - ch / 2 + rib * ch / 4);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.moveTo(cx + cw * 0.12, cy - ch / 2 + 8);
+      ctx.lineTo(cx + cw * 0.12, cy + ch / 2 - 8);
+      ctx.stroke();
+      // Runner from the biscuit, fan gate into the cavity.
+      ctx.fillStyle = coreSide ? '#4a5054' : '#1e2123';
+      ctx.fillRect(cx - 9, cy + ch / 2, 18, h * 0.9 - (cy + ch / 2));
+      ctx.beginPath();
+      ctx.moveTo(cx - 9, cy + ch / 2 + 16);
+      ctx.lineTo(cx - cw * 0.3, cy + ch / 2);
+      ctx.lineTo(cx + cw * 0.3, cy + ch / 2);
+      ctx.lineTo(cx + 9, cy + ch / 2 + 16);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx, h * 0.9, w * 0.085, 0, Math.PI * 2);
+      ctx.fill();
+      // Overflow wells and air vents to the top edge.
+      for (var well = 0; well < 4; well++) {
+        var wx = cx - cw / 2 + cw * (0.14 + well * 0.24);
+        ctx.beginPath();
+        ctx.ellipse(wx, cy - ch / 2 - 18, 15, 9, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillRect(wx - 2, 0, 4, cy - ch / 2 - 26);
+      }
+      // Ejector pins (core side) or cooling plugs (cavity side).
+      ctx.lineWidth = 2;
+      var pins = coreSide ? 14 : 6;
+      for (var pin = 0; pin < pins; pin++) {
+        var px = coreSide ? cx - cw / 2 + 18 + random() * (cw - 36) : (pin % 2 ? w * 0.08 : w * 0.92);
+        var py = coreSide ? cy - ch / 2 + 18 + random() * (ch - 36) : h * (0.18 + Math.floor(pin / 2) * 0.28);
+        ctx.fillStyle = coreSide ? '#8d9396' : '#6f5a3c';
+        ctx.beginPath();
+        ctx.arc(px, py, coreSide ? 6 : 9, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#1a1c1d';
+        ctx.stroke();
+      }
+      // Release-agent crust: chalky blotches and downward drip streaks.
+      for (var blotch = 0; blotch < 70; blotch++) {
+        var bx = random() * w;
+        var by = random() * h;
+        var br = 6 + random() * 28;
+        var crust = ctx.createRadialGradient(bx, by, 0, bx, by, br);
+        crust.addColorStop(0, 'rgba(205,203,194,' + (0.16 + random() * 0.22) + ')');
+        crust.addColorStop(1, 'rgba(205,203,194,0)');
+        ctx.fillStyle = crust;
+        ctx.fillRect(bx - br, by - br, br * 2, br * 2);
+      }
+      ctx.strokeStyle = 'rgba(214,212,204,0.2)';
+      for (var drip = 0; drip < 40; drip++) {
+        var dx = random() * w;
+        var dy = random() * h * 0.7;
+        ctx.lineWidth = 1 + random() * 2.5;
+        ctx.beginPath();
+        ctx.moveTo(dx, dy);
+        ctx.lineTo(dx + (random() - 0.5) * 6, dy + 30 + random() * 90);
+        ctx.stroke();
+      }
+      // Aluminum flash: bright ragged beads along the parting-line edge and
+      // around the cavity rim.
+      ctx.strokeStyle = 'rgba(196,200,201,0.85)';
+      ctx.lineWidth = 2;
+      for (var flash = 0; flash < 120; flash++) {
+        var edge = flash % 4;
+        var t = random();
+        var fx = edge === 0 ? t * w : edge === 1 ? w - 4 - random() * 8 : edge === 2 ? t * w : 4 + random() * 8;
+        var fy = edge === 0 ? 4 + random() * 8 : edge === 1 ? t * h : edge === 2 ? h - 4 - random() * 8 : t * h;
+        ctx.beginPath();
+        ctx.moveTo(fx, fy);
+        ctx.lineTo(fx + (random() - 0.5) * 10, fy + (random() - 0.5) * 10);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = 'rgba(190,194,196,0.55)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(cx - cw / 2 - 3, cy - ch / 2 - 3, cw + 6, ch + 6);
+    }, 384, 576);
+  }
+
+  function addDieFaceDecal(parent, texture, x, facing) {
+    var material = new THREE.MeshStandardMaterial({
+      map: texture,
+      bumpMap: texture,
+      bumpScale: 0.004,
+      roughness: 0.58,
+      metalness: 0.45
+    });
+    material.envMapIntensity = 0.7;
+    var decal = new THREE.Mesh(new THREE.PlaneGeometry(0.72, 1.06), material);
+    decal.name = 'worn production die parting face';
+    decal.position.set(x, 2.12, 0);
+    decal.rotation.y = facing * Math.PI / 2;
+    decal.castShadow = false;
+    decal.receiveShadow = dynamicShadows;
+    parent.add(decal);
+    return decal;
+  }
+
+  function addDieWaterLines(parent, faceX, inward) {
+    var hoseColors = [0x1f4f8f, 0x9b2a22, 0x16191a, 0x1f4f8f, 0x9b2a22];
+    var zs = [-0.3, -0.16, -0.02, 0.12, 0.24];
+    for (var line = 0; line < zs.length; line++) {
+      var z = zs[line];
+      var curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(faceX, 2.66, z),
+        new THREE.Vector3(faceX + inward * 0.03, 2.9, z + 0.02),
+        new THREE.Vector3(faceX + inward * 0.14, 3.22 + line * 0.02, z * 1.3),
+        new THREE.Vector3(faceX + inward * 0.34, 3.28, z * 1.45)
+      ]);
+      var hoseMaterial = standard(hoseColors[line], 0, 0, 0.62, 0.05, { envMapIntensity: 0.4 });
+      var hose = new THREE.Mesh(new THREE.TubeGeometry(curve, 12, 0.017, 6, false), hoseMaterial);
+      hose.name = 'die cooling water line ' + (line + 1);
+      hose.castShadow = false;
+      parent.add(hose);
+      // Brass quick-coupler at the die block.
+      cylinder(0.024, 0.06, M.copper, faceX, 2.68, z, parent, 0, 0, 0, 10).castShadow = false;
+    }
+  }
+
+  // Operator-side services on a die block: a cooling manifold bolted to the
+  // front face with brass quick-connects, and a fan of braided and colored
+  // hoses that droop under their own weight toward the bed. Everything stays
+  // inside the block's own footprint, clear of the open parting gap.
+  var dieHoseMaterials = null;
+  function addDieFrontServices(parent, blockX, frontZ, side) {
+    if (!dieHoseMaterials) {
+      dieHoseMaterials = [0x1b1d1e, 0x1b1d1e, 0x1f4f8f, 0x1b1d1e, 0x9b2a22, 0x2a2d2e, 0x1f4f8f].map(function (hex) {
+        return standard(hex, 0, 0, 0.58, 0.08, { envMapIntensity: 0.45 });
+      });
+    }
+    roundedBox(0.06, 0.86, 0.05, 0.01, M.machineDark, blockX, 2.14, frontZ + 0.025, parent).castShadow = false;
+    for (var port = 0; port < 7; port++) {
+      var y = 1.82 + port * 0.105;
+      cylinder(0.013, 0.05, M.copper, blockX, y, frontZ + 0.07, parent, Math.PI / 2, 0, 0, 8).castShadow = false;
+      var sag = 0.05 + (port % 3) * 0.035;
+      var curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(blockX, y, frontZ + 0.09),
+        new THREE.Vector3(blockX + side * 0.02, y - 0.06, frontZ + 0.12 + sag * 0.3),
+        new THREE.Vector3(blockX + side * (0.05 + port * 0.008), 1.55 - port * 0.02, frontZ + 0.1 + sag),
+        new THREE.Vector3(blockX + side * (0.07 + port * 0.01), 1.28, frontZ + 0.05)
+      ]);
+      var hose = new THREE.Mesh(new THREE.TubeGeometry(curve, 14, port % 2 ? 0.011 : 0.013, 6, false), dieHoseMaterials[port]);
+      hose.name = 'die-front cooling hose ' + (port + 1);
+      hose.castShadow = false;
+      parent.add(hose);
+    }
+    // Thermocouple lead and its connector box.
+    roundedBox(0.07, 0.05, 0.035, 0.008, M.machineEdge, blockX - side * 0.06, 2.64, frontZ + 0.03, parent).castShadow = false;
+  }
+
+  function buildDieTooling(fixedPlaten, movingHalf) {
+    var coreTexture = makeDieFaceTexture(true);
+    var cavityTexture = makeDieFaceTexture(false);
+    addDieFaceDecal(fixedPlaten, cavityTexture, 0.4695, 1);
+    addDieFaceDecal(movingHalf, coreTexture, -0.2325, -1);
+    addDieWaterLines(fixedPlaten, 0.44, -1);
+    addDieWaterLines(movingHalf, -0.2, 1);
+    addDieFrontServices(fixedPlaten, 0.3, 0.61, -1);
+    addDieFrontServices(movingHalf, -0.05, 0.61, 1);
+    // Core-pull cylinder lying across the top of the moving die block.
+    cylinder(0.075, 0.46, M.machineEdge, -0.1, 2.8, -0.02, movingHalf, Math.PI / 2, 0, 0, 16).castShadow = false;
+    cylinder(0.03, 0.22, M.tieBar, -0.1, 2.8, 0.3, movingHalf, Math.PI / 2, 0, 0, 10).castShadow = false;
+    roundedBox(0.16, 0.12, 0.12, 0.02, M.dieSteel, -0.1, 2.72, -0.24, movingHalf).castShadow = false;
+    // Bolted clamp plates on the far edges of both die halves.
+    var clampPlates = [];
+    [[0.43, fixedPlaten], [-0.21, movingHalf]].forEach(function (entry) {
+      [1.75, 2.12, 2.49].forEach(function (y) {
+        clampPlates.push(roundedBox(0.07, 0.16, 0.09, 0.012, M.machineDark, entry[0], y, -0.4, entry[1]));
+      });
+    });
+    for (var plate = 0; plate < clampPlates.length; plate++) clampPlates[plate].castShadow = false;
+  }
+
   function buildMachineProxy() {
     var group = new THREE.Group();
     group.position.set(DCM_PRESS_ROOT_X, 0, -5.65);
@@ -4308,7 +4727,7 @@
     fixedPlatenInnerFrame.name = 'recessed fixed-platen throat C-frame';
     roundedBox(0.25, 1.62, 1.22, 0.052, M.dieSteel, 0.28, 2.12, 0, fixedPlaten);
     roundedBox(0.055, 1.22, 0.86, 0.018, M.contactAo, 0.418, 2.12, 0, fixedPlaten);
-    roundedBox(0.035, 1.06, 0.72, 0.014, M.copper, 0.451, 2.12, 0, fixedPlaten);
+    roundedBox(0.035, 1.06, 0.72, 0.014, M.dieSteel, 0.451, 2.12, 0, fixedPlaten);
 
     var movingHalf = new THREE.Group();
     movingHalf.position.set(0.92, 0, 0);
@@ -4329,7 +4748,8 @@
     movingPlatenInnerFrame.name = 'recessed moving-platen throat C-frame';
     roundedBox(0.25, 1.62, 1.22, 0.052, M.dieSteel, -0.04, 2.12, 0, movingHalf);
     roundedBox(0.055, 1.22, 0.86, 0.018, M.contactAo, -0.181, 2.12, 0, movingHalf);
-    roundedBox(0.035, 1.06, 0.72, 0.014, M.copper, -0.214, 2.12, 0, movingHalf);
+    roundedBox(0.035, 1.06, 0.72, 0.014, M.dieSteel, -0.214, 2.12, 0, movingHalf);
+    buildDieTooling(fixedPlaten, movingHalf);
 
     // Camera-side tapered ribs connect the tie-bar bearing zones into the
     // crossheads without altering a pivot, die face, or collision envelope.
@@ -6373,6 +6793,10 @@
     ladlePaint.metalness = 0.13;
     var ladleVessel = new THREE.Group();
     ladle.add(ladleVessel);
+    // Transfer ladles wear a thick white boron-nitride / refractory wash,
+    // crusted with dross and splashed metal after a few hundred dips.
+    var ladleRefractory = standard(0xd8d4ca, 0, 0, 0.92, 0.04, { envMapIntensity: 0.35 });
+    applyRefractoryCrust(ladleRefractory);
     // One physical pouring-lip datum belongs to the rotating vessel. All
     // dosing FK and the molten stream now reference this point, never the
     // trunnion origin or an independently-authored world coordinate.
@@ -6392,17 +6816,17 @@
       new THREE.Vector2(0.325, -0.07),
       new THREE.Vector2(0.23, -0.13),
       new THREE.Vector2(0, -0.13)
-    ], 32), M.burnished);
+    ], 32), ladleRefractory);
     ladleCup.position.x = -0.34;
     ladleCup.name = 'open stainless transport ladle with rounded refractory bowl';
     ladleVessel.add(ladleCup);
-    applyMeshShadows(ladleCup, M.burnished);
+    applyMeshShadows(ladleCup, ladleRefractory);
     var ladleMetal = cylinder(0.31, 0.045, M.molten, -0.34, 0.13, 0, ladleVessel, 0, 0, 0, 24);
-    var ladleRim = new THREE.Mesh(new THREE.TorusGeometry(0.37, 0.035, 7, 24), M.tieBar);
+    var ladleRim = new THREE.Mesh(new THREE.TorusGeometry(0.37, 0.035, 7, 24), ladleRefractory);
     ladleRim.position.set(-0.34, 0.13, 0);
     ladleRim.rotation.x = Math.PI / 2;
     ladleVessel.add(ladleRim);
-    applyMeshShadows(ladleRim, M.tieBar);
+    applyMeshShadows(ladleRim, ladleRefractory);
     roundedBox(0.42, 0.075, 0.1, 0.02, M.burnished, -0.2, 0.035, 0.32, ladleVessel);
     cylinder(0.095, 0.11, ladlePaint, -0.02, 0.04, 0.32, ladleVessel, Math.PI / 2, 0, 0, 20);
     cylinder(0.09, 0.52, M.machineEdge, 0, 0, 0, ladle, Math.PI / 2, 0, 0, 18);
@@ -6754,7 +7178,7 @@
     var sleevePool = cylinder(0.135, 0.018, M.molten, -2.28, 1.493, 0.32, group, 0, 0, 0, 18);
     sleevePool.visible = false;
     sleevePool.scale.set(0.15, 1, 0.15);
-    castingGlow = new THREE.PointLight(0xff7b24, 0.14, 3.4, 2.1);
+    castingGlow = new THREE.PointLight(0x5c4534, 0.14, 3.4, 2.1);
     castingGlow.position.set(-2.25, 1.66, 0.32);
     group.add(castingGlow);
 
@@ -8435,16 +8859,17 @@
     if (hmiPressHit && !hmiPressHit.userData.enabled) cancelHmiPress();
   }
 
-  function addCable(parent, points, offset) {
+  function addCable(parent, points, offset, material, radius) {
     if (!THREE.TubeGeometry || !THREE.CatmullRomCurve3) return;
     var shifted = [];
     for (var i = 0; i < points.length; i++) {
       shifted.push(new THREE.Vector3(points[i][0] + offset, points[i][1], points[i][2]));
     }
     var curve = new THREE.CatmullRomCurve3(shifted);
-    var cable = new THREE.Mesh(new THREE.TubeGeometry(curve, 12, 0.025, 6, false), M.robotCable);
+    var cableMaterial = material || M.robotCable;
+    var cable = new THREE.Mesh(new THREE.TubeGeometry(curve, 12, radius || 0.025, 6, false), cableMaterial);
     parent.add(cable);
-    applyMeshShadows(cable, M.robotCable);
+    applyMeshShadows(cable, cableMaterial);
     return cable;
   }
 
@@ -8700,6 +9125,10 @@
     applyMeshShadows(forearmTransitionSeam, M.robotGrease);
     addCable(arm2, [[0.16, 0.03, 0.17], [0.10, 0.6, 0.12], [0.15, 1.2, 0.17]], -0.025);
     addCable(arm2, [[0.16, 0.03, 0.17], [0.10, 0.6, 0.12], [0.15, 1.2, 0.17]], 0.035);
+    // Red gripper air line riding the same clamps as the black conduit.
+    var gripperAirLine = addCable(arm2, [[0.16, 0.03, 0.2], [0.10, 0.6, 0.155], [0.15, 1.2, 0.2]], 0.075,
+      standard(0x9b2a22, 0, 0, 0.5, 0.04, { envMapIntensity: 0.5 }), 0.014);
+    if (gripperAirLine) gripperAirLine.name = 'gripper air line';
     instanceBoxes([
       [0.135, 0.25, 0.15, 0.105, 0.035, 0.07],
       [0.108, 0.67, 0.12, 0.105, 0.035, 0.07],
@@ -10078,10 +10507,10 @@
     }
     processVapor = createVaporSystem({
       name: 'die spray flash vapor and casting smoke',
-      capacity: lowPower ? 56 : 140,
+      capacity: lowPower ? 140 : 560,
       anchor: dieAnchor,
-      litColor: 0xe6e8e6,
-      litIntensity: 1.05,
+      litColor: 0xf0f1ef,
+      litIntensity: 1.3,
       shadeColor: 0x5c666b,
       warmColor: 0x000000,
       buoyancy: 3.1,
@@ -10545,17 +10974,35 @@
     if (activity < 0.02) return;
     // Water-based release agent flashes to vapor on the hot die faces; the
     // cloud rebounds into the parting gap and rises out of the open die.
-    var rate = (lowPower ? 20 : 54) * activity;
+    var rate = (lowPower ? 48 : 180) * activity;
     dieFxState.sprayAccumulator += rate * dt;
-    var head = dieSprayer.head;
-    head.updateWorldMatrix(true, false);
+    // Flash vapor forms on both parting faces across the open gap, so it is
+    // emitted from the surveyed die faces themselves.
+    castingRig.fixedPlaten.updateWorldMatrix(true, false);
+    castingRig.movingHalf.updateWorldMatrix(true, false);
+    castingRig.fixedPlaten.getWorldPosition(fxScratchB);
+    var fixedFaceX = fxScratchB.x;
+    castingRig.movingHalf.getWorldPosition(fxScratchB);
+    var movingFaceX = fxScratchB.x;
+    var windowCenterX = fixedFaceX + (movingFaceX - fixedFaceX) * 0.25;
     while (dieFxState.sprayAccumulator >= 1) {
       dieFxState.sprayAccumulator -= 1;
       var face = fxRandom() < 0.5 ? -1 : 1;
-      fxScratch.set(face * fxRange(0.36, 0.43), fxRange(-0.26, 0.06), fxRange(-0.34, 0.34));
-      head.localToWorld(fxScratch);
-      fxScratchB.set(-face * fxRange(0.12, 0.35), fxRange(0.05, 0.25), fxRange(-0.08, 0.08));
-      fxScratchB.transformDirection(head.matrixWorld).multiplyScalar(fxRange(0.3, 0.55));
+      var faceOwner = face < 0 ? castingRig.fixedPlaten : castingRig.movingHalf;
+      // About half the flash vapor vents straight up between the tie bars and
+      // out over the clamp: from the aisle, that rising plume is what die
+      // spray looks like on a working line.
+      var venting = fxRandom() < 0.5;
+      fxScratch.set(face < 0 ? 0.43 : -0.19, venting ? fxRange(2.7, 3.3) : fxRange(1.65, 2.6), fxRange(-0.34, 0.34));
+      faceOwner.localToWorld(fxScratch);
+      // The cloud fills the gap between the faces, then rolls toward the open
+      // tooling window and climbs out over the clamp roof.
+      fxScratch.x += (windowCenterX - fxScratch.x) * fxRange(0.1, 0.7);
+      fxScratchB.set(
+        (windowCenterX - fxScratch.x) * fxRange(0.6, 1.2),
+        venting ? fxRange(1.1, 1.8) : fxRange(0.35, 0.8),
+        venting ? fxRange(-0.3, -0.05) : fxRange(0.05, 0.25)
+      );
       // The housing roofs the die, so the expanding cloud spills out of the
       // open operator-side tooling bay (+Z) before it can rise.
       emitVapor(
@@ -10564,12 +11011,12 @@
         fxScratch.y,
         fxScratch.z,
         fxScratchB.x,
-        fxScratchB.y + 0.12,
+        fxScratchB.y + 0.3,
         fxScratchB.z + fxRange(0.35, 0.75),
-        fxRange(0.06, 0.1),
-        fxRange(0.5, 0.85),
-        fxRange(1.3, 1.9),
-        fxRange(0.3, 0.44),
+        fxRange(0.12, 0.2),
+        venting ? fxRange(2.1, 3.2) : fxRange(1.3, 2.2),
+        fxRange(2.2, 3.0),
+        venting ? fxRange(0.75, 0.92) : fxRange(0.6, 0.8),
         1,
         0
       );
@@ -11183,19 +11630,85 @@
     material.needsUpdate = true;
   }
 
+  // Refractory wash after a few hundred dips: a lumpy chalk-white shell with
+  // grey dross build-up, frozen aluminum splash that catches the light, and
+  // dark scorch where the bowl meets the melt line. Object space, so the
+  // crust rides with the tilting ladle.
+  function applyRefractoryCrust(material) {
+    material.onBeforeCompile = function (shader) {
+      shader.vertexShader = 'varying vec3 vCrustPosition;\n' + shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\n\tvCrustPosition = transformed;'
+      );
+      shader.fragmentShader = [
+        'varying vec3 vCrustPosition;',
+        'float crustHash( vec3 p ) {',
+        '  p = fract( p * 0.3183099 + 0.1 );',
+        '  p *= 17.0;',
+        '  return fract( p.x * p.y * p.z * ( p.x + p.y + p.z ) );',
+        '}',
+        'float crustNoise( vec3 x ) {',
+        '  vec3 i = floor( x ); vec3 f = fract( x );',
+        '  f = f * f * ( 3.0 - 2.0 * f );',
+        '  return mix( mix( mix( crustHash( i ), crustHash( i + vec3( 1.0, 0.0, 0.0 ) ), f.x ),',
+        '    mix( crustHash( i + vec3( 0.0, 1.0, 0.0 ) ), crustHash( i + vec3( 1.0, 1.0, 0.0 ) ), f.x ), f.y ),',
+        '    mix( mix( crustHash( i + vec3( 0.0, 0.0, 1.0 ) ), crustHash( i + vec3( 1.0, 0.0, 1.0 ) ), f.x ),',
+        '    mix( crustHash( i + vec3( 0.0, 1.0, 1.0 ) ), crustHash( i + vec3( 1.0 ) ), f.x ), f.y ), f.z );',
+        '}',
+        'float crustField( vec3 p ) {',
+        '  return crustNoise( p * 14.0 ) * 0.55 + crustNoise( p * 31.0 + 4.0 ) * 0.3 + crustNoise( p * 70.0 + 9.0 ) * 0.15;',
+        '}',
+        ''
+      ].join('\n') + shader.fragmentShader
+        .replace('#include <color_fragment>', [
+          '#include <color_fragment>',
+          '\tfloat crust = crustField( vCrustPosition );',
+          '\tfloat crustDross = smoothstep( 0.55, 0.78, crustNoise( vCrustPosition * 9.0 + 2.0 ) );',
+          '\tfloat crustSplash = step( 0.83, crustNoise( vCrustPosition * 46.0 + 7.0 ) ) * smoothstep( -0.05, 0.12, vCrustPosition.y );',
+          '\tfloat crustScorch = smoothstep( 0.2, 0.0, abs( vCrustPosition.y - 0.1 ) ) * 0.5;',
+          '\tdiffuseColor.rgb *= 0.82 + 0.3 * crust;',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.36, 0.35, 0.33 ), crustDross * 0.7 );',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.2, 0.18, 0.16 ), crustScorch * crustDross );',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.62, 0.62, 0.6 ), crustSplash );'
+        ].join('\n'))
+        .replace('#include <roughnessmap_fragment>', [
+          '#include <roughnessmap_fragment>',
+          '\troughnessFactor = mix( roughnessFactor, 0.25, crustSplash );'
+        ].join('\n'))
+        .replace('#include <metalnessmap_fragment>', [
+          '#include <metalnessmap_fragment>',
+          '\tmetalnessFactor = mix( metalnessFactor, 0.85, crustSplash );'
+        ].join('\n'))
+        .replace('#include <normal_fragment_maps>', [
+          '#include <normal_fragment_maps>',
+          // Bump the shell from the crust height field.
+          '\tfloat crustHeight = crustField( vCrustPosition ) + crustDross * 0.6;',
+          '\tvec3 crustGrad = vec3( dFdx( crustHeight ), dFdy( crustHeight ), 0.0 );',
+          '\tnormal = normalize( normal - vec3( crustGrad.xy * 2.2, 0.0 ) );'
+        ].join('\n'));
+    };
+    material.customProgramCacheKey = function () {
+      return 'crRefractoryCrust';
+    };
+  }
+
+  // Aluminum at 680-720 C barely glows under plant lighting: bright metal
+  // shows as a liquid mirror of the bay, the oxide skin as dull pale gray,
+  // and only the torn skin and the jet core carry a faint dull-red warmth.
   function configureMoltenMaterials() {
     var resting = {
-      color: 0x8f8c87,
+      color: 0xc4c3bf,
       emissive: 0xff5a16,
-      emissiveIntensity: 2.8,
-      roughness: 0.22,
-      metalness: 0.7,
-      envMapIntensity: 0.55,
+      emissiveIntensity: 0.32,
+      roughness: 0.12,
+      metalness: 0.92,
+      envMapIntensity: 1.15,
       // Resting melt (furnace well, ladle, sleeve pool) is mostly skinned.
-      coverage: 0.7,
-      skinEmission: 0.08,
-      skinRoughness: 0.78,
-      skinColor: 0x55524f,
+      coverage: 0.76,
+      skinEmission: 0.06,
+      skinRoughness: 0.82,
+      // Dross: a pale gray-white oxide crust over the melt.
+      skinColor: 0xaeaba4,
       scale: 9,
       flow: [0.04, 0, 0.025]
     };
@@ -11205,10 +11718,10 @@
       applyMoltenFlowShader(slug, {
         color: resting.color,
         emissive: resting.emissive,
-        emissiveIntensity: 2.2,
-        roughness: 0.22,
-        metalness: 0.7,
-        envMapIntensity: 0.5,
+        emissiveIntensity: 0.3,
+        roughness: 0.14,
+        metalness: 0.9,
+        envMapIntensity: 1.1,
         coverage: 0.45,
         skinEmission: 0.14,
         skinRoughness: 0.58,
@@ -11219,12 +11732,12 @@
     }
     if (pourStream) {
       applyMoltenFlowShader(pourStream.material, {
-        color: 0xa7a39c,
+        color: 0xd2d1cc,
         emissive: 0xff7424,
-        emissiveIntensity: 6,
-        roughness: 0.14,
-        metalness: 0.55,
-        envMapIntensity: 0.45,
+        emissiveIntensity: 0.12,
+        roughness: 0.08,
+        metalness: 0.95,
+        envMapIntensity: 1.25,
         // A falling jet constantly exposes fresh metal; skin is sparse.
         coverage: 0.22,
         skinEmission: 0.2,
@@ -11276,7 +11789,7 @@
     castingRig.furnace.updateWorldMatrix(true, false);
     heatHazePoint.set(-0.34, 1.62, 0);
     castingRig.furnace.localToWorld(heatHazePoint);
-    if (setHeatSource(0, 0.42, 0.0009)) count += 1;
+    if (setHeatSource(0, 0.36, 0.0004)) count += 1;
     // Pour and shot: the stream and the charged sleeve port.
     var pourHeat = 0;
     if (state === STATE.LADLE_POUR) pourHeat = 1;
@@ -11284,7 +11797,7 @@
     else if (state === STATE.INJECT_FAST || state === STATE.INTENSIFY) pourHeat = 0.3;
     heatHazePoint.set(-2.28, 1.72, 0.32);
     castingRig.group.localToWorld(heatHazePoint);
-    if (setHeatSource(1, 0.34, 0.0018 * pourHeat)) count += 1;
+    if (setHeatSource(1, 0.24, 0.0008 * pourHeat)) count += 1;
     // A freshly ejected casting still carries ~350 C into the cell air.
     var castingHeat = castThermal.waterline.valid && castThermal.submerged <= 0
       ? clamp((castThermal.temperature - 140) / 240, 0, 1)
@@ -11294,7 +11807,7 @@
       fxCastBox.max.y,
       (fxCastBox.min.z + fxCastBox.max.z) * 0.5
     );
-    if (setHeatSource(2, 0.3, 0.0016 * castingHeat)) count += 1;
+    if (setHeatSource(2, 0.24, 0.0008 * castingHeat)) count += 1;
     post.heatSourceCount = count;
   }
 
@@ -11454,8 +11967,8 @@
     'uniform vec3 plantStainCenter;',
     'uniform vec4 plantColumnGrid;',
     'uniform vec4 plantWalls;',
-    // Broad illuminance pools under the high-bay grid (9.6 m mounting height
-    // with wide optics gives a gentle ~20% swing), and occlusion where the
+    // Illuminance pools under the high-bay grid (9.6 m mounting height gives
+    // a ~50% swing between fixtures and the dim lanes between them), and occlusion where the
     // slab meets column bases and the envelope.
     'float plantFloorLight( vec2 xz ) {',
     '  vec2 spacing = vec2( 6.0, 6.5 );',
@@ -11471,7 +11984,7 @@
     '  float columnOcclusion = exp( -max( columnDistance - 0.55, 0.0 ) * max( columnDistance - 0.55, 0.0 ) / 0.45 );',
     '  float wallDistance = min( min( xz.x - plantWalls.x, plantWalls.y - xz.x ), xz.y - plantWalls.z );',
     '  float wallOcclusion = 1.0 - smoothstep( 0.0, 2.2, wallDistance );',
-    '  return ( 0.9 + 0.2 * pool ) * ( 1.0 - 0.38 * columnOcclusion ) * ( 1.0 - 0.3 * wallOcclusion );',
+    '  return ( 0.7 + 0.55 * pool ) * ( 1.0 - 0.38 * columnOcclusion ) * ( 1.0 - 0.3 * wallOcclusion );',
     '}',
     'uniform vec4 plantFixtureGrid;',
     'uniform vec4 plantFixtureBounds;',
@@ -11490,10 +12003,9 @@
     '  vec2 local = hit - plantFixtureGrid.xy;',
     '  vec2 spacing = vec2( 6.0, 6.5 );',
     '  vec2 offset = ( fract( local / spacing + 0.5 ) - 0.5 ) * spacing;',
-    '  float blur = 0.03 + roughness * roughness * travel * 0.09;',
-    '  float rect = ( 1.0 - smoothstep( 0.17 - blur, 0.17 + blur, abs( offset.x ) ) ) *',
-    '    ( 1.0 - smoothstep( 0.56 - blur, 0.56 + blur, abs( offset.y ) ) );',
-    '  float spread = 0.17 * 1.12 / ( ( 0.34 + 2.0 * blur ) * ( 1.12 + 2.0 * blur ) );',
+    '  float blur = 0.12 + roughness * roughness * travel * 0.22;',
+    '  float rect = 1.0 - smoothstep( 0.25 - blur, 0.25 + blur, length( offset ) );',
+    '  float spread = 0.0625 / ( ( 0.25 + blur ) * ( 0.25 + blur ) );',
     '  float cosine = clamp( -viewRay.y, 0.0, 1.0 );',
     '  float fresnel = 0.04 + 0.96 * pow( 1.0 - cosine, 5.0 );',
     '  return plantFixtureRadiance * rect * spread * fresnel;',
@@ -11506,11 +12018,11 @@
     // saw-cut joints on the column grid, and darker, glossier die-lube
     // tracking around the machine base where a real cell is never spotless.
     var material = new THREE.MeshStandardMaterial({
-      color: 0x7d7973,
-      roughness: 0.32,
+      color: 0x6c6862,
+      roughness: 0.56,
       metalness: 0
     });
-    material.envMapIntensity = 0.45;
+    material.envMapIntensity = 0.35;
     var stainCenter = { value: new THREE.Vector3(1.0, 0, -5.0) };
     var fixtureGrid = { value: new THREE.Vector4(PLANT_FIXTURE_X0, PLANT_FIXTURE_Z0, 6, PLANT_FIXTURE_Y) };
     var fixtureBounds = {
@@ -11521,7 +12033,7 @@
         PLANT_FIXTURE_Z0 + 0.8
       )
     };
-    var fixtureRadiance = { value: new THREE.Color(0xfff4e6).multiplyScalar(post ? 9 : 1.6) };
+    var fixtureRadiance = { value: new THREE.Color(0xfff4e6).multiplyScalar(post ? 3.2 : 0.8) };
     var columnGrid = {
       value: new THREE.Vector4(
         PLANT.columnXs[0],
@@ -11554,15 +12066,47 @@
           '\tfloat plantGrain = plantNoise( vPlantWorld.xz * 9.0 );',
           '\tvec2 plantStainOffset = ( vPlantWorld.xz - plantStainCenter.xz ) * vec2( 0.16, 0.3 );',
           '\tfloat plantStain = exp( -dot( plantStainOffset, plantStainOffset ) ) * smoothstep( 0.35, 0.75, plantFbm( vPlantWorld.xz * 0.9 + 3.0 ) );',
-          '\tdiffuseColor.rgb *= ( 0.84 + 0.26 * plantMacro ) * ( 0.95 + 0.1 * plantGrain );',
+          '\tdiffuseColor.rgb *= ( 0.63 + 0.47 * plantMacro ) * ( 0.93 + 0.14 * plantGrain );',
           '\tdiffuseColor.rgb *= 1.0 - 0.45 * plantJoint;',
           '\tdiffuseColor.rgb *= 1.0 - 0.32 * plantStain;',
-          '\tdiffuseColor.rgb *= plantFloorLight( vPlantWorld.xz );'
+          '\tdiffuseColor.rgb *= plantFloorLight( vPlantWorld.xz );',
+          // Forklift traffic polishes two dark wheel lanes along the aisle.
+          '\tfloat plantTrack = 0.0;',
+          '\tfor ( int lane = 0; lane < 2; lane++ ) {',
+          '\t\tfloat laneZ = 3.2 + float( lane ) * 1.05 + ( plantNoise( vec2( vPlantWorld.x * 0.06, float( lane ) * 7.0 ) ) - 0.5 ) * 0.9;',
+          '\t\tplantTrack = max( plantTrack, exp( -pow( ( vPlantWorld.z - laneZ ) / 0.2, 2.0 ) ) );',
+          '\t}',
+          '\tplantTrack *= smoothstep( 0.25, 0.7, plantFbm( vPlantWorld.xz * vec2( 0.35, 2.0 ) + 4.0 ) );',
+          '\tdiffuseColor.rgb *= 1.0 - 0.42 * plantTrack;',
+          // Oil drips and die-lube spots, densest near the cell, plus rubber
+          // scuffs and a paler dusty film away from the traffic.
+          '\tvec2 plantCell = ( vPlantWorld.xz - plantStainCenter.xz ) * vec2( 0.09, 0.14 );',
+          '\tfloat plantNear = exp( -dot( plantCell, plantCell ) );',
+          '\tfloat plantDrip = smoothstep( 0.66, 0.78, plantFbm( vPlantWorld.xz * vec2( 1.1, 1.7 ) + 7.0 ) ) * clamp( plantNear * 1.2 + plantTrack * 0.5, 0.0, 1.0 );',
+          '\tplantDrip = max( plantDrip, smoothstep( 0.86, 0.92, plantNoise( vPlantWorld.xz * 6.3 + 2.0 ) ) * plantNear * smoothstep( 0.4, 0.6, plantFbm( vPlantWorld.xz * 0.8 ) ) );',
+          '\tfloat plantScuff = smoothstep( 0.62, 0.9, plantNoise( vPlantWorld.xz * vec2( 0.9, 6.5 ) + 13.0 ) ) * 0.6;',
+          '\tdiffuseColor.rgb *= 1.0 - 0.5 * plantDrip - 0.18 * plantScuff - 0.22 * plantNear * smoothstep( 0.3, 0.7, plantFbm( vPlantWorld.xz * 0.4 + 8.0 ) );',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.52, 0.5, 0.46 ), 0.22 * smoothstep( 0.45, 0.8, plantFbm( vPlantWorld.xz * 0.21 + 21.0 ) ) * ( 1.0 - plantNear ) );',
+          // Green epoxy on the main aisle between the yellow lines, worn back
+          // to grey concrete in the wheel lanes and scuffed where pallets drag.
+          '\tfloat plantAisle = smoothstep( 0.93, 0.98, vPlantWorld.z ) * ( 1.0 - smoothstep( 7.02, 7.07, vPlantWorld.z ) );',
+          '\tfloat plantLaneWear = 0.0;',
+          '\tfor ( int wearLane = 0; wearLane < 2; wearLane++ ) {',
+          '\t\tfloat wearZ = 3.2 + float( wearLane ) * 1.05 + ( plantNoise( vec2( vPlantWorld.x * 0.06, float( wearLane ) * 7.0 ) ) - 0.5 ) * 0.9;',
+          '\t\tplantLaneWear = max( plantLaneWear, exp( -pow( ( vPlantWorld.z - wearZ ) / 0.34, 2.0 ) ) );',
+          '\t}',
+          '\tfloat plantEpoxyWear = clamp( plantLaneWear * smoothstep( 0.3, 0.62, plantFbm( vPlantWorld.xz * 1.3 + 5.0 ) ) * 1.2 + smoothstep( 0.72, 0.86, plantFbm( vPlantWorld.xz * 0.3 + 31.0 ) ) * 0.6 + smoothstep( 0.86, 0.9, plantNoise( vPlantWorld.xz * 15.0 ) ) * 0.3, 0.0, 1.0 );',
+          '\tfloat plantEpoxy = plantAisle * ( 1.0 - plantEpoxyWear );',
+          '\tvec3 plantEpoxyColor = vec3( 0.05, 0.068, 0.057 ) * ( 0.8 + 0.4 * plantMacro ) * ( 0.93 + 0.14 * plantGrain ) * ( 1.0 - 0.35 * plantDrip );',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, plantEpoxyColor, plantEpoxy );'
         ].join('\n'))
         .replace('#include <roughnessmap_fragment>', [
           '#include <roughnessmap_fragment>',
-          '\troughnessFactor *= 0.78 + 0.5 * plantFbm( vPlantWorld.xz * 0.27 + 9.0 );',
-          '\troughnessFactor = mix( roughnessFactor, 0.16, plantStain * 0.7 );',
+          '\troughnessFactor *= 0.55 + 1.0 * plantFbm( vPlantWorld.xz * 0.27 + 9.0 ) * plantFbm( vPlantWorld.xz * 0.09 + 3.0 ) * 1.6;',
+          '\troughnessFactor = mix( roughnessFactor, 0.62, plantTrack * 0.6 );',
+          '\troughnessFactor = mix( roughnessFactor, 0.28, plantStain * 0.7 );',
+          '\troughnessFactor = mix( roughnessFactor, 0.22, plantDrip );',
+          '\troughnessFactor = mix( roughnessFactor, 0.38, plantEpoxy );',
           '\troughnessFactor = mix( roughnessFactor, 0.85, plantJoint );'
         ].join('\n'))
         .replace('#include <aomap_fragment>', [
@@ -11645,6 +12189,20 @@
     }
     plantBox(paint, x0 + dir * length * 0.15, 1.1, z0 + 1.9, 1.6, 2.2, 0.7, 0xc9ccc8);
     plantBox(paint, x0 - dir * 1.2, 1.0, z0 - 0.4, 1.4, 2.0, 2.6, 0x3a5a78);
+    // Service platform rail over the clamp guards, and the extraction robot
+    // standing at the operator side of the die.
+    plantBox(paint, x0 + dir * length * 0.36, 3.05, z0 + 1.15, length * 0.7, 0.05, 0.05, 0xd9aa12);
+    plantBox(paint, x0 + dir * length * 0.36, 2.72, z0 + 1.15, length * 0.7, 0.04, 0.04, 0xd9aa12);
+    for (var railPost = 0; railPost <= 6; railPost++) {
+      plantBox(paint, x0 + dir * length * (0.01 + railPost * 0.117), 2.75, z0 + 1.15, 0.05, 0.62, 0.05, 0xd9aa12);
+    }
+    var robotX = x0 + dir * length * 0.52;
+    var robotZ = z0 + 2.45;
+    plantCylinder(paint, robotX, 0.35, robotZ, 0.34, 0.7, 0x2c3134, 14);
+    plantCylinder(paint, robotX, 0.85, robotZ, 0.28, 0.3, 0xd9a90e, 14);
+    plantBeam(paint, robotX, 0.95, robotZ, robotX + dir * 0.35, 2.1, robotZ - 0.2, 0.26, 0.3, 0xd9a90e);
+    plantBeam(paint, robotX + dir * 0.35, 2.1, robotZ - 0.2, robotX + dir * 0.2, 2.35, robotZ - 1.25, 0.2, 0.22, 0xd9a90e);
+    plantBox(paint, robotX + dir * 0.2, 2.2, robotZ - 1.4, 0.3, 0.34, 0.28, 0x3a3f41);
     var minX = Math.min(x0, x0 + dir * length) - 2;
     var maxX = Math.max(x0, x0 + dir * length) + 2;
     var minZ = z0 - 4;
@@ -11753,6 +12311,7 @@
     var steel = createPlantBatch();
     var lights = createPlantBatch();
     var glass = createPlantBatch();
+    var daylight = createPlantBatch();
     var walls = createPlantBatch();
     var marks = createPlantBatch();
     var fencePosts = createPlantBatch();
@@ -11791,27 +12350,78 @@
     // Roof: primary girders over each column line, eave beams on each row,
     // purlins, and the ribbed deck above.
     var girderY = PLANT.girderBottom + 0.6;
+    // Primary roof trusses on every column line: top and bottom chords with
+    // a Warren web, open so the roof deck and roof lights read through them.
+    var chordTop = PLANT.girderBottom + 1.1;
+    var chordBottom = PLANT.girderBottom + 0.1;
     for (var gx = 0; gx < PLANT.columnXs.length; gx++) {
-      plantBox(steel, PLANT.columnXs[gx], girderY, (PLANT.minZ + PLANT.maxZ) * 0.5, 0.36, 1.2, floorSizeZ, 0x2f363b);
+      var trussX = PLANT.columnXs[gx];
+      plantBox(steel, trussX, chordTop, (PLANT.minZ + PLANT.maxZ) * 0.5, 0.3, 0.2, floorSizeZ, 0x56616a);
+      plantBox(steel, trussX, chordBottom, (PLANT.minZ + PLANT.maxZ) * 0.5, 0.3, 0.2, floorSizeZ, 0x56616a);
+      var panel = 0;
+      for (var webZ = PLANT.minZ; webZ < PLANT.maxZ - 0.1; webZ += 1.6) {
+        var nextZ = Math.min(PLANT.maxZ, webZ + 1.6);
+        var up = panel % 2 === 0;
+        plantBeam(steel, trussX, up ? chordBottom : chordTop, webZ, trussX, up ? chordTop : chordBottom, nextZ, 0.1, 0.12, 0x56616a);
+        if (panel % 4 === 0) plantBox(steel, trussX, (chordTop + chordBottom) * 0.5, webZ, 0.12, chordTop - chordBottom, 0.1, 0x56616a);
+        panel += 1;
+      }
     }
     for (var gz = 0; gz < PLANT.columnZs.length; gz++) {
-      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, girderY - 0.1, PLANT.columnZs[gz], floorSizeX, 0.9, 0.3, 0x2f363b);
+      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, girderY - 0.1, PLANT.columnZs[gz], floorSizeX, 0.9, 0.3, 0x56616a);
     }
     for (var purlinZ = PLANT.maxZ - 1.5; purlinZ > PLANT.minZ; purlinZ -= 2.75) {
-      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, PLANT.roofHeight - 0.35, purlinZ, floorSizeX, 0.32, 0.14, 0x3a4146);
+      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, PLANT.roofHeight - 0.35, purlinZ, floorSizeX, 0.32, 0.14, 0x6b757b);
     }
-    plantBox(walls, (PLANT.minX + PLANT.maxX) * 0.5, PLANT.roofHeight, (PLANT.minZ + PLANT.maxZ) * 0.5, floorSizeX, 0.1, floorSizeZ, 0x8f9496);
+    plantBox(walls, (PLANT.minX + PLANT.maxX) * 0.5, PLANT.roofHeight, (PLANT.minZ + PLANT.maxZ) * 0.5, floorSizeX, 0.1, floorSizeZ, 0xb7bbbb);
+    // Translucent roof lights: daylight panels between the purlins, the
+    // brightest surfaces in a daytime hall.
+    for (var skyZ = PLANT.maxZ - 2.875; skyZ > PLANT.minZ + 2; skyZ -= 8.25) {
+      for (var skyX = PLANT.minX + 3; skyX < PLANT.maxX - 3; skyX += 6) {
+        plantBox(daylight, skyX, PLANT.roofHeight - 0.06, skyZ, 3.2, 0.02, 1.4, 0xffffff);
+      }
+    }
 
     // Crane runway on column brackets and a parked 10 t bridge crane: every
     // die-casting bay needs one for die changes.
     var runwayY = 8.4;
     for (var rz = 0; rz < 2; rz++) {
       var runwayZ = PLANT.columnZs[rz] + (rz === 0 ? -0.62 : 0.62);
-      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, runwayY, runwayZ, floorSizeX, 0.7, 0.34, 0x30373c);
+      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, runwayY, runwayZ, floorSizeX, 0.7, 0.34, 0x505a62);
       for (var bx = 0; bx < PLANT.columnXs.length; bx++) {
-        plantBox(steel, PLANT.columnXs[bx], runwayY - 0.6, runwayZ + (rz === 0 ? 0.28 : -0.28), 0.3, 0.5, 0.6, 0x30373c);
+        plantBox(steel, PLANT.columnXs[bx], runwayY - 0.6, runwayZ + (rz === 0 ? 0.28 : -0.28), 0.3, 0.5, 0.6, 0x505a62);
       }
     }
+    // The far bay has its own runway and a 20 t double-girder crane parked
+    // over the machine line behind this cell, hook block lowered.
+    var farRunwayA = PLANT.columnZs[1] - 0.62;
+    var farRunwayB = PLANT.columnZs[2] + 0.62;
+    [farRunwayA, farRunwayB].forEach(function (runwayZ, side) {
+      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, runwayY, runwayZ, floorSizeX, 0.7, 0.34, 0x505a62);
+      for (var bracket = 0; bracket < PLANT.columnXs.length; bracket++) {
+        plantBox(steel, PLANT.columnXs[bracket], runwayY - 0.6, runwayZ + (side === 0 ? 0.28 : -0.28), 0.3, 0.5, 0.6, 0x505a62);
+      }
+    });
+    var farCraneX = 17.5;
+    var farCraneMid = (farRunwayA + farRunwayB) * 0.5;
+    var farCraneSpan = farRunwayA - farRunwayB;
+    var craneRed = 0xc2352b;
+    plantBox(paint, farCraneX - 0.75, runwayY + 1.05, farCraneMid, 0.55, 1.35, farCraneSpan, craneRed);
+    plantBox(paint, farCraneX + 0.75, runwayY + 1.05, farCraneMid, 0.55, 1.35, farCraneSpan, craneRed);
+    plantBox(paint, farCraneX, runwayY + 0.62, farRunwayA - 0.25, 4.2, 0.62, 0.6, craneRed);
+    plantBox(paint, farCraneX, runwayY + 0.62, farRunwayB + 0.25, 4.2, 0.62, 0.6, craneRed);
+    // Walkway rail along the girder and the festoon cable line.
+    plantBox(paint, farCraneX + 1.25, runwayY + 2.05, farCraneMid, 0.04, 0.04, farCraneSpan, 0xd9aa12);
+    plantBox(steel, farCraneX - 1.2, runwayY + 1.9, farCraneMid, 0.03, 0.03, farCraneSpan, 0x2a2f31);
+    var trolleyZ = farCraneMid + 3.5;
+    plantBox(paint, farCraneX, runwayY + 2.05, trolleyZ, 2.2, 0.9, 2.3, 0x9a2c24);
+    plantCylinder(steel, farCraneX, runwayY + 2.1, trolleyZ, 0.42, 1.9, 0x3a3f41, 14, 0, Math.PI / 2);
+    plantCylinder(steel, farCraneX - 0.18, runwayY - 0.9, trolleyZ, 0.018, 3.8, 0x2a2e30, 6);
+    plantCylinder(steel, farCraneX + 0.18, runwayY - 0.9, trolleyZ, 0.018, 3.8, 0x2a2e30, 6);
+    plantBox(paint, farCraneX, runwayY - 2.95, trolleyZ, 0.62, 0.55, 0.34, 0xd9aa12);
+    plantAdd(steel, plantGeometry('hookTorus', function () {
+      return new THREE.TorusGeometry(1, 0.28, 8, 16, Math.PI * 1.35);
+    }), farCraneX, runwayY - 3.55, trolleyZ, 0.2, 0.2, 0.2, 0x3a3f41, 0, Math.PI / 2, Math.PI * 0.8);
     var craneX = -7.5;
     var craneZ0 = PLANT.columnZs[0] - 0.62;
     var craneZ1 = PLANT.columnZs[1] + 0.62;
@@ -11825,11 +12435,17 @@
     plantCylinder(steel, craneX, runwayY - 0.4, craneMid - 4.2, 0.012, 2.6, 0x252a2d, 6);
     plantBox(paint, craneX, runwayY - 1.85, craneMid - 4.2, 0.36, 0.5, 0.26, 0xd8a60c);
 
-    // LED high-bays below the girders (the slab shader reflects this grid).
+    // Round LED high-bays on pendant rods below the girders (the slab
+    // shader reflects this grid). Output drifts a little fixture to fixture.
+    var fixtureIndex = 0;
     for (var lx = PLANT_FIXTURE_X0; lx < PLANT.maxX - 2; lx += 6) {
       for (var lz = PLANT_FIXTURE_Z0; lz > PLANT.minZ + 2; lz -= 6.5) {
-        plantBox(steel, lx, PLANT_FIXTURE_Y + 0.055, lz, 0.42, 0.09, 1.25, 0x3a4044);
-        plantBox(lights, lx, PLANT_FIXTURE_Y, lz, 0.34, 0.02, 1.12, 0xffffff);
+        fixtureIndex += 1;
+        plantCylinder(steel, lx, PLANT_FIXTURE_Y + 0.9, lz, 0.012, 1.6, 0x2a2f31, 6);
+        plantCylinder(steel, lx, PLANT_FIXTURE_Y + 0.12, lz, 0.13, 0.12, 0x5d666b, 12);
+        plantCylinder(steel, lx, PLANT_FIXTURE_Y + 0.045, lz, 0.29, 0.07, 0x3a4044, 18);
+        var fixtureTone = (fixtureIndex * 37) % 7;
+        plantCylinder(lights, lx, PLANT_FIXTURE_Y, lz, 0.25, 0.02, fixtureTone === 3 ? 0x8f8a80 : fixtureTone === 5 ? 0xd9dde0 : 0xffffff, 18);
       }
     }
 
@@ -11858,8 +12474,27 @@
     ].forEach(function (wall) {
       plantBox(paint, wall.x, bandHeight * 0.5, wall.z, wall.length, bandHeight, 0.3, 0x3d4247, wall.angle);
       plantBox(walls, wall.x, (bandHeight + clerestoryBottom) * 0.5, wall.z, wall.length, clerestoryBottom - bandHeight, 0.25, 0xffffff, wall.angle);
-      plantBox(glass, wall.x, clerestoryBottom + clerestoryHeight * 0.5, wall.z, wall.length, clerestoryHeight, 0.2, 0xffffff, wall.angle);
+      plantBox(daylight, wall.x, clerestoryBottom + clerestoryHeight * 0.5, wall.z, wall.length, clerestoryHeight, 0.2, 0xffffff, wall.angle);
       plantBox(walls, wall.x, (clerestoryBottom + clerestoryHeight + wallHeight) * 0.5, wall.z, wall.length, wallHeight - clerestoryBottom - clerestoryHeight, 0.25, 0xffffff, wall.angle);
+      // Window units in each 6 m bay of the side wall, and mullions across
+      // the clerestory, all read against the overcast daylight behind them.
+      var along = wall.angle ? [0, 1] : [1, 0];
+      var inward = wall.angle ? (wall.x > 0 ? -0.16 : 0.16) : 0.16;
+      var start = -wall.length * 0.5;
+      for (var unit = start + 3; unit < wall.length * 0.5 - 2; unit += 6) {
+        var ux = wall.x + along[0] * unit + (wall.angle ? inward : 0);
+        var uz = wall.z + along[1] * unit + (wall.angle ? 0 : inward);
+        plantBox(daylight, ux, 5.3, uz, 3.6, 2.2, 0.04, 0xf2f4f4, wall.angle);
+        plantBox(steel, ux, 4.17, uz, 3.8, 0.1, 0.12, 0x80898d, wall.angle);
+        plantBox(steel, ux, 6.43, uz, 3.8, 0.1, 0.12, 0x80898d, wall.angle);
+        plantBox(steel, ux, 5.3, uz, 3.6, 0.05, 0.08, 0x80898d, wall.angle);
+        for (var mullion = -1; mullion <= 1; mullion++) {
+          plantBox(steel, ux + along[0] * mullion * 1.2, 5.3, uz + along[1] * mullion * 1.2, 0.06, 2.2, 0.08, 0x80898d, wall.angle);
+        }
+      }
+      for (var bar = start; bar <= wall.length * 0.5; bar += 1.5) {
+        plantBox(steel, wall.x + along[0] * bar + (wall.angle ? inward : 0), clerestoryBottom + clerestoryHeight * 0.5, wall.z + along[1] * bar + (wall.angle ? 0 : inward), 0.07, clerestoryHeight, 0.08, 0x6b757b, wall.angle);
+      }
     });
 
     // Mezzanine with offices and electrical rooms beneath it on the far wall.
@@ -11884,6 +12519,17 @@
     // Neighboring cells, the melt shop, and racking along the right wall.
     plantNeighborCell(paint, steel, fencePosts, fencePanels, 16.5, -4.2, 10, false);
     plantNeighborCell(paint, steel, fencePosts, fencePanels, 30.5, -30.5, 10, false);
+    // The far bay's machine line, one cell per crane bay behind this one.
+    plantNeighborCell(paint, steel, fencePosts, fencePanels, 4, -19, 10, false);
+    plantNeighborCell(paint, steel, fencePosts, fencePanels, 19, -19, 10, false);
+    plantNeighborCell(paint, steel, fencePosts, fencePanels, 34, -19, 10, false);
+    // Work in progress staged along the far aisle: pallets of castings in
+    // wire baskets and stacked blue totes.
+    [[1.2, -13.9], [2.6, -13.9], [16.4, -14.1], [31.0, -13.9], [32.4, -13.9]].forEach(function (spot, index) {
+      plantBox(steel, spot[0], 0.075, spot[1], 1.2, 0.15, 1.0, 0x8b6f45);
+      plantBox(steel, spot[0], 0.55, spot[1], 1.15, 0.8, 0.95, index % 2 ? 0x6f777a : 0x5e6568);
+      if (index % 3 === 0) plantBox(paint, spot[0], 1.2, spot[1], 1.1, 0.5, 0.9, 0x2f6aa3);
+    });
     plantTowerMelter(paint, steel, -1.5, -29.5);
     plantPalletRacking(paint, 51.5, 0.5, 9, 4);
     // Castings in wire baskets staged beside the neighboring cell.
@@ -11893,6 +12539,30 @@
     }
     plantBox(steel, 7.6, 1.35, -8.7, 1.15, 0.8, 0.95, 0x6f777a);
     plantForklift(paint, steel, 10.6, -4.6, -0.35);
+
+    // Working clutter around this cell, all outside its guarded envelope:
+    // release-agent drums at the clamp end, a pallet of cast parts in wire
+    // baskets, a scrap tote at the fence corner, a trench grate along the
+    // machine front, and a coiled air line.
+    [[-4.45, -4.55], [-4.45, -5.2], [-5.05, -4.85], [-5.05, -5.5]].forEach(function (drum, index) {
+      plantCylinder(paint, drum[0], 0.46, drum[1], 0.29, 0.92, index === 3 ? 0x2c5f95 : 0x1f5a9e, 18);
+      plantCylinder(paint, drum[0], 0.93, drum[1], 0.3, 0.02, 0x1a4f8a, 18);
+      plantCylinder(steel, drum[0] + 0.12, 0.95, drum[1], 0.03, 0.03, 0xd7d9d6, 8);
+    });
+    plantBox(steel, -5.3, 0.07, -2.9, 1.2, 0.14, 1.0, 0x7b6547);
+    plantBox(steel, -5.3, 0.55, -2.9, 1.1, 0.82, 0.9, 0x5e6568);
+    plantBox(steel, -5.3, 0.97, -2.9, 1.08, 0.04, 0.88, 0x8d918f);
+    plantBox(paint, 6.55, 0.42, -1.55, 1.0, 0.84, 0.8, 0xc99a12);
+    plantBox(steel, 6.55, 0.85, -1.55, 0.94, 0.03, 0.74, 0x6f6c63);
+    plantBox(steel, 0.9, 0.006, -4.25, 8.2, 0.012, 0.32, 0x2a2e30);
+    for (var grate = 0; grate < 60; grate++) {
+      plantBox(steel, -3.1 + grate * 0.135, 0.014, -4.25, 0.025, 0.012, 0.3, 0x151819);
+    }
+    for (var coil = 0; coil < 3; coil++) {
+      plantAdd(paint, plantGeometry('torus', function () {
+        return new THREE.TorusGeometry(1, 0.06, 6, 24);
+      }), -3.9, 0.03 + coil * 0.028, -1.4, 0.36 - coil * 0.025, 0.36 - coil * 0.025, 0.36, 0x1e3f7a, Math.PI / 2, 0, 0);
+    }
 
     // Walkway paint: main aisle edges and the keep-out line around this cell.
     var aisleColor = 0xd9aa12;
@@ -11909,8 +12579,16 @@
     var paintMaterial = plantMaterial(0.72, 0.04, 0.45);
     var steelMaterial = plantMaterial(0.5, 0.55, 0.6);
     var lightMaterial = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(0xfff4e6).multiplyScalar(post ? 9 : 1.6),
-      vertexColors: true
+      color: new THREE.Color(0xfff4e6).multiplyScalar(post ? 14 : 1.6),
+      vertexColors: true,
+      fog: false
+    });
+    // Overcast sky through glazing: bright enough to clip like a real
+    // exposure, veiled by the hall haze with distance.
+    var daylightMaterial = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(0xe9eef0).multiplyScalar(post ? 6.5 : 1.3),
+      vertexColors: true,
+      fog: false
     });
     var glassMaterial = new THREE.MeshStandardMaterial({
       color: 0x1f272b,
@@ -11945,6 +12623,7 @@
     finishPlantBatch(walls, wallMaterial, 'insulated wall panels');
     finishPlantBatch(glass, glassMaterial, 'clerestory and office glazing');
     finishPlantBatch(lights, lightMaterial, 'LED high-bay diffusers');
+    finishPlantBatch(daylight, daylightMaterial, 'clerestory, window, and roof-light daylight');
     finishPlantBatch(marks, markMaterial, 'walkway and keep-out paint');
     finishPlantBatch(fencePosts, fencePostMaterial, 'neighboring cell fence posts');
     var panels = finishPlantBatch(fencePanels, fencePanelMaterial, 'neighboring cell welded-wire panels');
@@ -11998,6 +12677,9 @@
     'varying vec3 vWeatherWorld;',
     'varying vec3 vWeatherNormal;',
     'uniform vec4 weatherAmounts;',
+    'uniform vec4 weatherExtra;',
+    'uniform vec4 weatherDieZone;',
+    'uniform vec4 weatherShotZone;',
     'uniform vec3 weatherDustColor;',
     'float weatherHash( vec3 p ) {',
     '  p = fract( p * 0.3183099 + 0.1 );',
@@ -12020,10 +12702,13 @@
     ''
   ].join('\n');
 
-  function applyWeatheringShader(material, amounts, dustColor) {
+  function applyWeatheringShader(material, amounts, extra, zones, dustColor, objectSpace) {
     material.userData.crWeather = true;
     material.onBeforeCompile = function (shader) {
       shader.uniforms.weatherAmounts = amounts;
+      shader.uniforms.weatherExtra = extra;
+      shader.uniforms.weatherDieZone = zones.die;
+      shader.uniforms.weatherShotZone = zones.shot;
       shader.uniforms.weatherDustColor = dustColor;
       shader.vertexShader = 'varying vec3 vWeatherWorld;\nvarying vec3 vWeatherNormal;\n' +
         shader.vertexShader.replace('#include <begin_vertex>', [
@@ -12034,7 +12719,11 @@
           '\t\tweatherPosition = instanceMatrix * weatherPosition;',
           '\t\tweatherObjectNormal = mat3( instanceMatrix ) * weatherObjectNormal;',
           '\t#endif',
-          '\tvWeatherWorld = ( modelMatrix * weatherPosition ).xyz;',
+          // Moving robot links weather in their own frame so dirt rides
+          // with the paint instead of sliding through it.
+          objectSpace
+            ? '\tvWeatherWorld = weatherPosition.xyz * 1.7 + vec3( 0.0, 0.6, 0.0 );'
+            : '\tvWeatherWorld = ( modelMatrix * weatherPosition ).xyz;',
           '\tvWeatherNormal = normalize( mat3( modelMatrix ) * weatherObjectNormal );'
         ].join('\n'));
       shader.fragmentShader = WEATHER_PARS + shader.fragmentShader
@@ -12043,29 +12732,100 @@
           // x: grime, y: dust, z: streaks, w: tonal drift
           '\tvec3 weatherN = normalize( vWeatherNormal );',
           '\tfloat weatherBlotch = weatherFbm( vWeatherWorld * 1.7 );',
-          '\tfloat weatherGrime = ( 1.0 - smoothstep( 0.03, 0.85, vWeatherWorld.y ) ) * ( 0.45 + 0.55 * weatherBlotch );',
+          '\tfloat weatherGrime = ( 1.0 - smoothstep( 0.03, 1.35, vWeatherWorld.y + ( weatherBlotch - 0.5 ) * 0.5 ) ) * ( 0.45 + 0.55 * weatherBlotch );',
           '\tfloat weatherDust = smoothstep( 0.55, 0.95, weatherN.y ) * smoothstep( 0.3, 0.75, weatherFbm( vWeatherWorld * 0.9 + 4.0 ) );',
-          '\tfloat weatherStreak = ( 1.0 - abs( weatherN.y ) ) * smoothstep( 0.6, 0.92, weatherNoise( vec3( ( vWeatherWorld.x + vWeatherWorld.z ) * 11.0, vWeatherWorld.y * 0.9, 3.0 ) ) );',
+          '\tfloat weatherStreak = ( 1.0 - abs( weatherN.y ) ) * smoothstep( 0.6, 0.92, weatherNoise( vec3( ( vWeatherWorld.x + vWeatherWorld.z ) * 11.0, vWeatherWorld.y * 0.8, 3.0 ) ) ) * smoothstep( 0.35, 0.7, weatherFbm( vWeatherWorld * 0.7 + 17.0 ) );',
           '\tfloat weatherTint = weatherFbm( vWeatherWorld * 0.33 + 11.0 ) - 0.5;',
           '\tdiffuseColor.rgb *= 1.0 + weatherTint * weatherAmounts.w;',
-          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, diffuseColor.rgb * vec3( 0.5, 0.48, 0.45 ), weatherGrime * weatherAmounts.x );',
+          // Broad handling and shop dirt: every panel carries blotchy, brownish
+          // soiling at several scales, not one even coat.
+          '\tfloat weatherDirt = smoothstep( 0.4, 0.82, weatherFbm( vWeatherWorld * 2.6 + 13.0 ) ) * ( 0.45 + 0.55 * weatherBlotch );',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, diffuseColor.rgb * vec3( 0.56, 0.52, 0.46 ), weatherDirt * weatherAmounts.x );',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, diffuseColor.rgb * vec3( 0.4, 0.38, 0.35 ), weatherGrime * weatherAmounts.x );',
           '\tdiffuseColor.rgb = mix( diffuseColor.rgb, weatherDustColor, weatherDust * weatherAmounts.y );',
-          '\tdiffuseColor.rgb *= 1.0 - weatherStreak * weatherAmounts.z;'
+          '\tdiffuseColor.rgb *= 1.0 - weatherStreak * weatherAmounts.z;',
+          // Process zones around the die and the shot sleeve: a soot and oil
+          // film, chalky release-agent residue, and aluminum spatter specks.
+          '\tvec3 weatherDieOffset = ( vWeatherWorld - weatherDieZone.xyz ) / weatherDieZone.w;',
+          '\tvec3 weatherShotOffset = ( vWeatherWorld - weatherShotZone.xyz ) / weatherShotZone.w;',
+          '\tfloat weatherZone = max( exp( -dot( weatherDieOffset, weatherDieOffset ) ), exp( -dot( weatherShotOffset, weatherShotOffset ) ) ) * weatherExtra.y;',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, diffuseColor.rgb * vec3( 0.4, 0.38, 0.35 ), weatherZone * ( 0.35 + 0.45 * weatherBlotch ) );',
+          // Overspray reaches well past the tooling: a mottled grey-brown film
+          // of burnt release agent over everything within a few metres, and
+          // dark wet runs below the parting line where the lube drains.
+          '\tvec3 weatherDieWide = weatherDieOffset * 0.32;',
+          '\tvec3 weatherShotWide = weatherShotOffset * 0.55;',
+          '\tfloat weatherWide = max( exp( -dot( weatherDieWide, weatherDieWide ) ), exp( -dot( weatherShotWide, weatherShotWide ) ) ) * weatherExtra.y;',
+          '\tfloat weatherFilm = weatherWide * smoothstep( 0.3, 0.72, weatherFbm( vWeatherWorld * 2.3 + 5.0 ) );',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, min( diffuseColor.rgb, vec3( 0.36, 0.34, 0.31 ) ), weatherFilm * 0.62 );',
+          '\tfloat weatherRun = ( 1.0 - abs( weatherN.y ) ) * smoothstep( 0.46, 0.8, weatherNoise( vec3( ( vWeatherWorld.x + vWeatherWorld.z ) * 7.0, vWeatherWorld.y * 0.22, 5.0 ) ) ) * weatherWide * ( 1.0 - smoothstep( weatherDieZone.y - 0.2, weatherDieZone.y + 0.6, vWeatherWorld.y ) );',
+          '\tdiffuseColor.rgb *= 1.0 - 0.55 * weatherRun;',
+          '\tfloat weatherResidue = smoothstep( 0.52, 0.78, weatherFbm( vWeatherWorld * 5.5 + 2.0 ) ) * weatherZone;',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.58, 0.57, 0.54 ), weatherResidue * 0.6 );',
+          '\tfloat weatherSpatter = step( 0.9, weatherNoise( vWeatherWorld * 36.0 ) ) * weatherZone;',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.7, 0.71, 0.7 ), weatherSpatter * 0.85 );',
+          // Chipped and scuffed paint, concentrated where carts and boots hit.
+          '\tfloat weatherChip = smoothstep( 0.88, 0.92, weatherNoise( vWeatherWorld * 24.0 + 9.0 ) ) * ( 1.0 - 0.8 * smoothstep( 0.2, 1.4, vWeatherWorld.y ) ) * weatherExtra.x;',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.13, 0.13, 0.125 ), weatherChip );'
         ].join('\n'))
         .replace('#include <roughnessmap_fragment>', [
           '#include <roughnessmap_fragment>',
-          '\troughnessFactor = clamp( roughnessFactor + weatherDust * weatherAmounts.y * 0.35 + weatherGrime * weatherAmounts.x * 0.12, 0.04, 1.0 );'
+          '\troughnessFactor = clamp( roughnessFactor + weatherDust * weatherAmounts.y * 0.35 + weatherGrime * weatherAmounts.x * 0.12, 0.04, 1.0 );',
+          '\troughnessFactor = mix( roughnessFactor, 0.28, weatherZone * 0.5 );',
+          '\troughnessFactor = mix( roughnessFactor, 0.22, weatherRun * 0.8 );',
+          '\troughnessFactor = mix( roughnessFactor, 0.9, weatherFilm * 0.4 );',
+          '\troughnessFactor = mix( roughnessFactor, 0.85, weatherResidue * 0.7 );',
+          '\troughnessFactor = mix( roughnessFactor, 0.3, weatherSpatter );'
+        ].join('\n'))
+        .replace('#include <metalnessmap_fragment>', [
+          '#include <metalnessmap_fragment>',
+          '\tmetalnessFactor = mix( metalnessFactor, 0.9, weatherSpatter );',
+          '\tmetalnessFactor = mix( metalnessFactor, 0.55, weatherChip );'
         ].join('\n'));
     };
     material.customProgramCacheKey = function () {
-      return 'crWeathered';
+      return objectSpace ? 'crWeatheredObject' : 'crWeathered';
     };
     material.needsUpdate = true;
   }
 
   function applyServiceWear(root, cleanMaterials) {
-    var painted = { value: new THREE.Vector4(0.5, 0.32, 0.1, 0.07) };
-    var metal = { value: new THREE.Vector4(0.34, 0.14, 0.04, 0.03) };
+    // x: grime, y: dust, z: streaks, w: tonal drift. Extra x: chips, y: zones.
+    var painted = { value: new THREE.Vector4(1.0, 0.55, 0.46, 0.4) };
+    var metal = { value: new THREE.Vector4(0.7, 0.26, 0.14, 0.08) };
+    var paintedExtra = { value: new THREE.Vector4(0.75, 1, 0, 0) };
+    var metalExtra = { value: new THREE.Vector4(0, 1, 0, 0) };
+    // Robot paint: a dull film and chips, no world-anchored zones.
+    var robotPainted = { value: new THREE.Vector4(0.35, 0.3, 0.12, 0.3) };
+    var robotExtra = { value: new THREE.Vector4(0.6, 0, 0, 0) };
+    var robotOnly = [];
+    var sharedWithPlant = [];
+    if (robotRig && robotRig.root) {
+      robotRig.root.traverse(function (object) {
+        if (object.isMesh && object.material && !Array.isArray(object.material) && robotOnly.indexOf(object.material) < 0) {
+          robotOnly.push(object.material);
+        }
+      });
+      root.traverse(function (object) {
+        if (!object.isMesh || !object.material || Array.isArray(object.material)) return;
+        var insideRobot = false;
+        for (var parent = object; parent; parent = parent.parent) {
+          if (parent === robotRig.root) { insideRobot = true; break; }
+        }
+        if (!insideRobot && sharedWithPlant.indexOf(object.material) < 0) sharedWithPlant.push(object.material);
+      });
+    }
+    var dieCenter = new THREE.Vector3(-0.2, 2.2, 0.2);
+    var shotCenter = new THREE.Vector3(-2.2, 1.45, 0.32);
+    if (castingRig && castingRig.group) {
+      castingRig.group.updateMatrixWorld(true);
+      castingRig.group.localToWorld(dieCenter);
+      castingRig.group.localToWorld(shotCenter);
+    }
+    var zones = {
+      die: { value: new THREE.Vector4(dieCenter.x, dieCenter.y, dieCenter.z, 1.35) },
+      shot: { value: new THREE.Vector4(shotCenter.x, shotCenter.y, shotCenter.z, 0.95) }
+    };
     var dustColor = { value: new THREE.Color(0x8f8b82) };
     var patched = 0;
     var defaultCompile = THREE.Material.prototype.onBeforeCompile;
@@ -12079,7 +12839,20 @@
         material.onBeforeCompile !== defaultCompile ||
         cleanMaterials.indexOf(material) >= 0
       ) return;
-      applyWeatheringShader(material, material.metalness >= 0.45 ? metal : painted, dustColor);
+      var isMetal = material.metalness >= 0.45;
+      var robotMaterial = robotOnly.indexOf(material) >= 0 && sharedWithPlant.indexOf(material) < 0;
+      // Hall light reaches painted faces as one soft wash; inside the machine
+      // it is mostly blocked, so painted surfaces take less of it and lean on
+      // the key light and AO for their shape.
+      if (!isMetal) material.envMapIntensity *= 0.4;
+      applyWeatheringShader(
+        material,
+        robotMaterial ? robotPainted : isMetal ? metal : painted,
+        robotMaterial ? robotExtra : isMetal ? metalExtra : paintedExtra,
+        zones,
+        dustColor,
+        robotMaterial
+      );
       patched += 1;
     });
     return patched;
@@ -21317,6 +22090,47 @@
   }
 
   sceneReady = true;
+  if (debugFps) {
+    // Live cycle position for QA captures that must freeze a specific moment.
+    window.__crFreeze = function (frozen) {
+      captureFrozen = !!frozen;
+      lastTime = performance.now();
+      requestSceneRender("capture-freeze");
+    };
+    window.__crSampleVapor = function () {
+      var samples = [];
+      var raycaster = new THREE.Raycaster();
+      var point = new THREE.Vector3();
+      for (var index = 0; index < Math.min(processVapor.live, 8); index++) {
+        point.set(processVapor.px[index], processVapor.py[index], processVapor.pz[index]);
+        var world = point.toArray().map(function (v) { return Number(v.toFixed(2)); });
+        var distance = point.distanceTo(camera.position);
+        raycaster.set(camera.position, point.clone().sub(camera.position).normalize());
+        raycaster.far = distance;
+        var hits = raycaster.intersectObjects(scene.children, true).filter(function (hit) {
+          return hit.object.visible && hit.object.material && !hit.object.material.transparent && !hit.object.isPoints;
+        });
+        point.project(camera);
+        samples.push({
+          world: world,
+          screen: [Number(((point.x + 1) * 0.5).toFixed(3)), Number(((1 - point.y) * 0.5).toFixed(3))],
+          blockedBy: hits.length ? hits[0].object.name || hits[0].object.type : null
+        });
+      }
+      return samples;
+    };
+    Object.defineProperty(window, "__crLive", {
+      configurable: true,
+      get: function () {
+        var duration = isFinite(activeStateDuration) ? activeStateDuration : 0;
+        return {
+          state: state,
+          progress: duration > 0 ? clamp((simulationClock - stateEntered) / duration, 0, 1) : 1,
+          clock: simulationClock
+        };
+      }
+    });
+  }
   setBodyState();
   setDockState();
   setCellStatus("Charge", "Ladle charging - die open and guarded");
@@ -22802,7 +23616,7 @@
     lastTime = now;
     var animationWasActive = renderLoopMotionActive();
 
-    if (!reducedMotion && animationWasActive) {
+    if (!reducedMotion && animationWasActive && !captureFrozen) {
       if (Math.abs(cameraInspectionTarget - cameraInspection) > 0.0005) {
         cameraInspection = lerp(
           cameraInspection,
