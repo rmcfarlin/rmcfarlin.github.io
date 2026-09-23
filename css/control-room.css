@@ -1048,7 +1048,7 @@
   height:100%;
   pointer-events:none;
   background-color:#111719;
-  background-image:url("../assets/dcm-cell-floor.webp");
+  background-image:url("../assets/dcm-plant-poster.webp");
   background-position:center center;
   background-repeat:no-repeat;
   background-size:cover;
@@ -1447,7 +1447,7 @@ body.dcm-cell .cr-canvas-poster{
   background-color:#111817;
   background-image:
     linear-gradient(180deg,rgba(8,13,13,.06),rgba(8,13,13,.2)),
-    url("../assets/dcm-cell-floor.webp");
+    url("../assets/dcm-plant-poster.webp");
   background-position:center center;
   background-size:cover;
 }

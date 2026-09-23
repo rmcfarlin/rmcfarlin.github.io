@@ -424,7 +424,6 @@
   var renderer = null;
   var scene = null;
   var camera = null;
-  var backdrop = null;
   var baseCameraPosition = null;
   var baseCameraTarget = null;
   var inspectCameraPosition = null;
@@ -473,7 +472,6 @@
   var ambientDust = null;
   var guardGlare = null;
   var guardAccessDoor = null;
-  var shadowReceiver = null;
   var contactShadowEntries = [];
   var requestSceneRender = function () {};
 
@@ -1336,6 +1334,8 @@
   var POST_BLOOM_STRENGTH = 0.5;
   var post = null;
   var postDrawingBufferSize = new THREE.Vector2();
+  var frameDrawCalls = 0;
+  var frameTriangles = 0;
 
   function postFullscreenVertexShader() {
     return [
@@ -1419,6 +1419,11 @@
     }
 
     var sceneTarget = makeTarget(useMsaa ? 4 : 0, true);
+    // Resolved scene depth feeds ambient occlusion and slab reflections.
+    if (THREE.DepthTexture) {
+      sceneTarget.depthTexture = new THREE.DepthTexture(1, 1);
+      sceneTarget.depthTexture.type = THREE.UnsignedIntType;
+    }
     var mips = [];
     var downMaterials = [];
     var upMaterials = [];
@@ -1500,6 +1505,10 @@
       uniforms: {
         tScene: { value: sceneTarget.texture },
         tBloom: { value: mips[0].texture },
+        tOcclusion: { value: null },
+        tReflection: { value: null },
+        occlusionStrength: { value: 0 },
+        reflectionStrength: { value: 0 },
         bloomStrength: { value: POST_BLOOM_STRENGTH / POST_BLOOM_LEVELS },
         heatSources: { value: [new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4()] },
         heatTime: { value: 0 },
@@ -1509,6 +1518,10 @@
       fragmentShader: [
         "uniform sampler2D tScene;",
         "uniform sampler2D tBloom;",
+        "uniform sampler2D tOcclusion;",
+        "uniform sampler2D tReflection;",
+        "uniform float occlusionStrength;",
+        "uniform float reflectionStrength;",
         "uniform float bloomStrength;",
         // xy = screen UV center, z = radius in view-height units, w = strength
         "uniform vec4 heatSources[ 3 ];",
@@ -1545,10 +1558,20 @@
         "}",
         "void main() {",
         "  vec2 uv = vUv + heatOffset( vUv );",
-        "  vec3 color = texture2D( tScene, uv ).rgb + texture2D( tBloom, uv ).rgb * bloomStrength;",
+        "  vec3 color = texture2D( tScene, uv ).rgb;",
+        "  if ( occlusionStrength > 0.0 ) {",
+        "    color *= mix( 1.0, texture2D( tOcclusion, uv ).r, occlusionStrength );",
+        "  }",
+        "  if ( reflectionStrength > 0.0 ) {",
+        "    color += texture2D( tReflection, uv ).rgb * reflectionStrength;",
+        "  }",
+        "  color += texture2D( tBloom, uv ).rgb * bloomStrength;",
         "  gl_FragColor = vec4( color, 1.0 );",
         "  #include <tonemapping_fragment>",
         "  #include <colorspace_fragment>",
+        // Gentle natural lens falloff, as a real camera frames the bay.
+        "  vec2 vignetteOffset = ( vUv - 0.5 ) * vec2( aspect, 1.0 );",
+        "  gl_FragColor.rgb *= 1.0 - 0.2 * smoothstep( 0.35, 1.05, length( vignetteOffset ) );",
         // Triangular dither in output space hides 8-bit banding in fog/steam.
         "  float dither = hash12( gl_FragCoord.xy ) + hash12( gl_FragCoord.xy + 71.3 ) - 1.0;",
         "  gl_FragColor.rgb += dither / 255.0;",
@@ -1586,6 +1609,256 @@
     };
   }
 
+  // Screen-space ambient occlusion and slab reflections, both at half
+  // resolution from the resolved depth. AO gives every contact (machine
+  // feet, column bases, robot pedestal) its crease darkening; the SSR pass
+  // runs only on the polished slab and mirrors the cell into it.
+  var POST_AO_SAMPLES = 12;
+  var POST_AO_RADIUS = 0.55;
+  var POST_AO_STRENGTH = 0.75;
+  var POST_SSR_STEPS = 40;
+  var POST_SSR_STRENGTH = 1.3;
+
+  var POST_VIEW_POSITION_GLSL = [
+    "uniform sampler2D tDepth;",
+    "uniform mat4 cameraProjection;",
+    "uniform mat4 cameraInverseProjection;",
+    "vec3 viewPositionAt( vec2 uv ) {",
+    "  float depth = texture2D( tDepth, uv ).x;",
+    "  vec4 clip = vec4( uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0 );",
+    "  vec4 view = cameraInverseProjection * clip;",
+    "  return view.xyz / view.w;",
+    "}",
+    "float hash12( vec2 p ) {",
+    "  vec3 p3 = fract( vec3( p.xyx ) * 0.1031 );",
+    "  p3 += dot( p3, p3.yzx + 33.33 );",
+    "  return fract( ( p3.x + p3.y ) * p3.z );",
+    "}"
+  ].join("\n");
+
+  function buildScreenSpacePasses(pipeline) {
+    if (!pipeline.sceneTarget.depthTexture) return;
+    function halfTarget(type) {
+      var target = new THREE.WebGLRenderTarget(1, 1, {
+        type: type,
+        format: THREE.RGBAFormat,
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        depthBuffer: false,
+        stencilBuffer: false
+      });
+      target.texture.generateMipmaps = false;
+      return target;
+    }
+    var shared = {
+      tDepth: { value: pipeline.sceneTarget.depthTexture },
+      cameraProjection: { value: new THREE.Matrix4() },
+      cameraInverseProjection: { value: new THREE.Matrix4() },
+      cameraViewMatrix: { value: new THREE.Matrix4() },
+      cameraWorldMatrix: { value: new THREE.Matrix4() },
+      passResolution: { value: new THREE.Vector2(1, 1) }
+    };
+    var kernel = [];
+    var seed = 1301;
+    function random() {
+      seed = (seed * 16807) % 2147483647;
+      return (seed - 1) / 2147483646;
+    }
+    for (var sample = 0; sample < POST_AO_SAMPLES; sample++) {
+      var direction = new THREE.Vector3(random() * 2 - 1, random() * 2 - 1, random() * 0.85 + 0.15).normalize();
+      var scale = sample / POST_AO_SAMPLES;
+      direction.multiplyScalar(0.12 + 0.88 * scale * scale);
+      kernel.push(direction);
+    }
+    var occlusionMaterial = postPassMaterial([
+      POST_VIEW_POSITION_GLSL,
+      "uniform vec2 passResolution;",
+      "uniform vec3 kernel[ " + POST_AO_SAMPLES + " ];",
+      "uniform float radius;",
+      "varying vec2 vUv;",
+      "void main() {",
+      "  float depth = texture2D( tDepth, vUv ).x;",
+      "  if ( depth >= 0.99999 ) { gl_FragColor = vec4( 1.0 ); return; }",
+      "  vec3 origin = viewPositionAt( vUv );",
+      "  vec2 texel = 1.0 / passResolution;",
+      "  vec3 right = viewPositionAt( vUv + vec2( texel.x, 0.0 ) ) - origin;",
+      "  vec3 left = origin - viewPositionAt( vUv - vec2( texel.x, 0.0 ) );",
+      "  vec3 up = viewPositionAt( vUv + vec2( 0.0, texel.y ) ) - origin;",
+      "  vec3 down = origin - viewPositionAt( vUv - vec2( 0.0, texel.y ) );",
+      "  vec3 dx = abs( right.z ) < abs( left.z ) ? right : left;",
+      "  vec3 dy = abs( up.z ) < abs( down.z ) ? up : down;",
+      "  vec3 normal = normalize( cross( dx, dy ) );",
+      "  float angle = hash12( gl_FragCoord.xy ) * 6.2831853;",
+      "  vec3 randomVector = vec3( cos( angle ), sin( angle ), 0.0 );",
+      "  vec3 tangent = normalize( randomVector - normal * dot( randomVector, normal ) );",
+      "  mat3 basis = mat3( tangent, cross( normal, tangent ), normal );",
+      "  float occlusion = 0.0;",
+      "  for ( int i = 0; i < " + POST_AO_SAMPLES + "; i++ ) {",
+      "    vec3 samplePoint = origin + basis * kernel[ i ] * radius;",
+      "    vec4 projected = cameraProjection * vec4( samplePoint, 1.0 );",
+      "    vec2 sampleUv = projected.xy / projected.w * 0.5 + 0.5;",
+      "    if ( sampleUv.x < 0.0 || sampleUv.x > 1.0 || sampleUv.y < 0.0 || sampleUv.y > 1.0 ) continue;",
+      "    float sceneDepth = viewPositionAt( sampleUv ).z;",
+      "    float rangeCheck = smoothstep( 0.0, 1.0, radius / max( abs( origin.z - sceneDepth ), 1.0e-4 ) );",
+      "    occlusion += ( sceneDepth >= samplePoint.z + 0.025 ? 1.0 : 0.0 ) * rangeCheck;",
+      "  }",
+      "  gl_FragColor = vec4( vec3( 1.0 - occlusion / " + POST_AO_SAMPLES.toFixed(1) + " ), 1.0 );",
+      "}"
+    ].join("\n"), {
+      tDepth: shared.tDepth,
+      cameraProjection: shared.cameraProjection,
+      cameraInverseProjection: shared.cameraInverseProjection,
+      passResolution: shared.passResolution,
+      kernel: { value: kernel },
+      radius: { value: POST_AO_RADIUS }
+    });
+
+    // Separable, depth-aware blur. Weights fall off with view-depth
+    // difference so occlusion never bleeds across a silhouette.
+    function bilateralBlurMaterial(sourceUniform, direction, taps, depthFalloff) {
+      return postPassMaterial([
+        POST_VIEW_POSITION_GLSL,
+        "uniform sampler2D tSource;",
+        "uniform vec2 passResolution;",
+        "uniform vec2 direction;",
+        "uniform float depthFalloff;",
+        "varying vec2 vUv;",
+        "void main() {",
+        "  float centerDepth = viewPositionAt( vUv ).z;",
+        "  vec4 sum = vec4( 0.0 );",
+        "  float weights = 0.0;",
+        "  for ( int i = -" + taps + "; i <= " + taps + "; i++ ) {",
+        "    vec2 offset = direction * float( i ) / passResolution;",
+        "    float sampleDepth = viewPositionAt( vUv + offset ).z;",
+        "    float weight = exp( -float( i * i ) / " + (taps * taps * 0.5).toFixed(1) + " ) *",
+        "      exp( -abs( sampleDepth - centerDepth ) * depthFalloff );",
+        "    sum += texture2D( tSource, vUv + offset ) * weight;",
+        "    weights += weight;",
+        "  }",
+        "  gl_FragColor = sum / max( weights, 1.0e-4 );",
+        "}"
+      ].join("\n"), {
+        tDepth: shared.tDepth,
+        cameraInverseProjection: shared.cameraInverseProjection,
+        cameraProjection: shared.cameraProjection,
+        passResolution: shared.passResolution,
+        tSource: sourceUniform,
+        direction: { value: direction },
+        depthFalloff: { value: depthFalloff }
+      });
+    }
+
+    var reflectionMaterial = postPassMaterial([
+      POST_VIEW_POSITION_GLSL,
+      "uniform sampler2D tScene;",
+      "uniform mat4 cameraViewMatrix;",
+      "uniform mat4 cameraWorldMatrix;",
+      "varying vec2 vUv;",
+      "void main() {",
+      "  float depth = texture2D( tDepth, vUv ).x;",
+      "  if ( depth >= 0.99999 ) { gl_FragColor = vec4( 0.0 ); return; }",
+      "  vec3 origin = viewPositionAt( vUv );",
+      "  vec3 world = ( cameraWorldMatrix * vec4( origin, 1.0 ) ).xyz;",
+      // Only the polished slab (and paint/decals lying on it) is a mirror.
+      "  if ( abs( world.y ) > 0.015 ) { gl_FragColor = vec4( 0.0 ); return; }",
+      "  vec3 floorNormal = normalize( ( cameraViewMatrix * vec4( 0.0, 1.0, 0.0, 0.0 ) ).xyz );",
+      "  vec3 viewDirection = normalize( origin );",
+      "  vec3 ray = normalize( reflect( viewDirection, floorNormal ) );",
+      "  float stepLength = 0.05 + length( origin ) * 0.0035;",
+      "  vec3 position = origin + floorNormal * 0.02;",
+      "  vec3 previous = position;",
+      "  vec2 hitUv = vec2( -1.0 );",
+      "  float hitStep = 0.0;",
+      "  for ( int i = 0; i < " + POST_SSR_STEPS + "; i++ ) {",
+      "    previous = position;",
+      "    position += ray * stepLength;",
+      "    stepLength *= 1.1;",
+      "    vec4 projected = cameraProjection * vec4( position, 1.0 );",
+      "    vec2 uv = projected.xy / projected.w * 0.5 + 0.5;",
+      "    if ( uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0 ) break;",
+      "    float delta = viewPositionAt( uv ).z - position.z;",
+      "    if ( delta > 0.0 && delta < stepLength * 2.5 + 0.25 ) {",
+      // Binary refinement between the last miss and the first hit.
+      "      vec3 low = previous;",
+      "      vec3 high = position;",
+      "      for ( int j = 0; j < 5; j++ ) {",
+      "        vec3 middle = ( low + high ) * 0.5;",
+      "        vec4 middleProjected = cameraProjection * vec4( middle, 1.0 );",
+      "        vec2 middleUv = middleProjected.xy / middleProjected.w * 0.5 + 0.5;",
+      "        if ( viewPositionAt( middleUv ).z - middle.z > 0.0 ) high = middle; else low = middle;",
+      "      }",
+      "      vec4 hitProjected = cameraProjection * vec4( high, 1.0 );",
+      "      hitUv = hitProjected.xy / hitProjected.w * 0.5 + 0.5;",
+      "      hitStep = float( i );",
+      "      break;",
+      "    }",
+      "  }",
+      "  if ( hitUv.x < 0.0 ) { gl_FragColor = vec4( 0.0 ); return; }",
+      "  vec2 edge = smoothstep( 0.0, 0.1, hitUv ) * smoothstep( 0.0, 0.1, 1.0 - hitUv );",
+      "  float fade = edge.x * edge.y * ( 1.0 - hitStep / " + POST_SSR_STEPS.toFixed(1) + " );",
+      "  float cosine = clamp( dot( -viewDirection, floorNormal ), 0.0, 1.0 );",
+      "  float fresnel = 0.04 + 0.96 * pow( 1.0 - cosine, 5.0 );",
+      "  vec3 color = min( texture2D( tScene, hitUv ).rgb, vec3( 16.0 ) );",
+      "  gl_FragColor = vec4( color * fresnel * fade, fade );",
+      "}"
+    ].join("\n"), {
+      tDepth: shared.tDepth,
+      cameraProjection: shared.cameraProjection,
+      cameraInverseProjection: shared.cameraInverseProjection,
+      cameraViewMatrix: shared.cameraViewMatrix,
+      cameraWorldMatrix: shared.cameraWorldMatrix,
+      tScene: { value: pipeline.sceneTarget.texture }
+    });
+
+    var occlusionTarget = halfTarget(THREE.UnsignedByteType);
+    var occlusionScratch = halfTarget(THREE.UnsignedByteType);
+    var reflectionTarget = halfTarget(THREE.HalfFloatType);
+    var reflectionScratch = halfTarget(THREE.HalfFloatType);
+    var occlusionSource = { value: occlusionTarget.texture };
+    var occlusionScratchSource = { value: occlusionScratch.texture };
+    var reflectionSource = { value: reflectionTarget.texture };
+    var reflectionScratchSource = { value: reflectionScratch.texture };
+    pipeline.screenSpace = {
+      shared: shared,
+      occlusionTarget: occlusionTarget,
+      occlusionScratch: occlusionScratch,
+      reflectionTarget: reflectionTarget,
+      reflectionScratch: reflectionScratch,
+      occlusionMaterial: occlusionMaterial,
+      occlusionBlurX: bilateralBlurMaterial(occlusionSource, new THREE.Vector2(1, 0), 4, 2.0),
+      occlusionBlurY: bilateralBlurMaterial(occlusionScratchSource, new THREE.Vector2(0, 1), 4, 2.0),
+      reflectionMaterial: reflectionMaterial,
+      // A rough slab stretches reflections vertically; blur follows suit.
+      reflectionBlurX: bilateralBlurMaterial(reflectionSource, new THREE.Vector2(1, 0), 3, 0.6),
+      reflectionBlurY: bilateralBlurMaterial(reflectionScratchSource, new THREE.Vector2(0, 2.2), 6, 0.6)
+    };
+    pipeline.compositeMaterial.uniforms.tOcclusion.value = occlusionTarget.texture;
+    pipeline.compositeMaterial.uniforms.tReflection.value = reflectionTarget.texture;
+    pipeline.compositeMaterial.uniforms.occlusionStrength.value = POST_AO_STRENGTH;
+    pipeline.compositeMaterial.uniforms.reflectionStrength.value = POST_SSR_STRENGTH;
+  }
+
+  function renderScreenSpacePasses() {
+    var passes = post.screenSpace;
+    if (!passes) return;
+    var shared = passes.shared;
+    shared.cameraProjection.value.copy(camera.projectionMatrix);
+    shared.cameraInverseProjection.value.copy(camera.projectionMatrixInverse);
+    shared.cameraViewMatrix.value.copy(camera.matrixWorldInverse);
+    shared.cameraWorldMatrix.value.copy(camera.matrixWorld);
+    function pass(material, target) {
+      post.quad.material = material;
+      renderer.setRenderTarget(target);
+      renderer.render(post.quadScene, post.quadCamera);
+    }
+    pass(passes.occlusionMaterial, passes.occlusionTarget);
+    pass(passes.occlusionBlurX, passes.occlusionScratch);
+    pass(passes.occlusionBlurY, passes.occlusionTarget);
+    pass(passes.reflectionMaterial, passes.reflectionTarget);
+    pass(passes.reflectionBlurX, passes.reflectionScratch);
+    pass(passes.reflectionBlurY, passes.reflectionTarget);
+  }
+
   function resizePostPipeline() {
     if (!post) return;
     renderer.getDrawingBufferSize(postDrawingBufferSize);
@@ -1595,6 +1868,15 @@
     post.width = targetWidth;
     post.height = targetHeight;
     post.sceneTarget.setSize(targetWidth, targetHeight);
+    if (post.screenSpace) {
+      var halfWidth = Math.max(1, Math.ceil(targetWidth / 2));
+      var halfHeight = Math.max(1, Math.ceil(targetHeight / 2));
+      post.screenSpace.occlusionTarget.setSize(halfWidth, halfHeight);
+      post.screenSpace.occlusionScratch.setSize(halfWidth, halfHeight);
+      post.screenSpace.reflectionTarget.setSize(halfWidth, halfHeight);
+      post.screenSpace.reflectionScratch.setSize(halfWidth, halfHeight);
+      post.screenSpace.shared.passResolution.value.set(halfWidth, halfHeight);
+    }
     var sourceWidth = targetWidth;
     var sourceHeight = targetHeight;
     for (var level = 0; level < post.mips.length; level++) {
@@ -1619,6 +1901,7 @@
     renderer.setRenderTarget(post.sceneTarget);
     renderer.render(scene, camera);
     renderer.autoClear = false;
+    renderScreenSpacePasses();
     for (var down = 0; down < post.mips.length; down++) {
       post.quad.material = post.downMaterials[down];
       renderer.setRenderTarget(post.mips[down]);
@@ -1700,34 +1983,45 @@
 
   try {
     post = buildPostPipeline();
+    if (post) buildScreenSpacePasses(post);
   } catch (postError) {
     post = null;
     if (window.console && console.warn) console.warn("HDR pipeline unavailable; using direct render", postError);
   }
 
+  // Interior haze of a working hall: cool, slightly dusty air lit by LEDs.
+  var PLANT_HAZE_COLOR = 0x5b666c;
+  var PLANT_FOG_DENSITY = 0.0125;
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x12171a);
-  // Cool distance haze joins the far cell to the factory while keeping the
-  // foreground's silhouette, labels, and metallic highlights crisp.
-  scene.fog = new THREE.Fog(0x394b50, 17, 39);
+  scene.background = new THREE.Color(PLANT_HAZE_COLOR);
+  // Aerial perspective across the bay: the cell at ~23 m keeps almost all of
+  // its contrast while the far walls and roof steel fall into cool haze.
+  scene.fog = new THREE.FogExp2(PLANT_HAZE_COLOR, PLANT_FOG_DENSITY);
 
-  camera = new THREE.PerspectiveCamera(43, width / height, 0.08, 70);
+  camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 180);
   scene.add(camera);
-  // One physical process viewpoint serves AUTO, service, and pendant inspect.
-  // The shared operator view keeps enough process-axis depth to expose both
-  // physical grip lands and the central casting rib at native scale while the
-  // shot cylinder, sleeve, die split, and extractor remain one readable chain.
-  // Responsive branches change only optical fit on this fixed view vector.
-  var PROCESS_CAMERA_TARGET = new THREE.Vector3(1.3, 2.2, -5.2);
-  var PROCESS_CAMERA_DIRECTION = new THREE.Vector3(
+  // Operator eye-level plant view. The camera stands in the aisle at eye
+  // height and stays level, so verticals stay vertical as in architectural
+  // photography. A longer lens and a vertical lens rise place the cell in the
+  // middle distance at true scale, with the bay's steel and lights above it.
+  // Responsive branches change only lens and distance on this view vector.
+  var CAMERA_EYE_HEIGHT = 1.7;
+  var PROCESS_CAMERA_TARGET = new THREE.Vector3(1.3, CAMERA_EYE_HEIGHT, -5.2);
+  var PROCESS_CAMERA_DIRECTION = new THREE.Vector3(-0.6427876097, 0, 0.7660444431);
+  var PROCESS_CAMERA_STANDARD_DISTANCE = 23;
+  var PROCESS_CAMERA_FOV = 30;
+  // Fraction of frame height the lens is raised: the horizon sits below
+  // center so the frame holds the machine, the roof steel, and less slab.
+  var PROCESS_CAMERA_LENS_RISE = 0.06;
+  // The pendant is a fixed installed enclosure; inspection approaches its
+  // face on the original raised 3/4 vector rather than from the aisle.
+  var INSPECT_CAMERA_DIRECTION = new THREE.Vector3(
     -0.6392663519,
     0.1045284633,
     0.7618479715
   ).normalize();
-  var PROCESS_CAMERA_STANDARD_DISTANCE = Math.sqrt(
-    6.3 * 6.3 + 0.35 * 0.35 + 10.9 * 10.9
-  );
   var processCameraDistance = PROCESS_CAMERA_STANDARD_DISTANCE;
+  var processCameraLensRise = PROCESS_CAMERA_LENS_RISE;
   baseCameraPosition = new THREE.Vector3();
   baseCameraTarget = new THREE.Vector3();
   inspectCameraPosition = new THREE.Vector3();
@@ -1735,6 +2029,48 @@
   cameraPositionScratch = new THREE.Vector3();
   cameraTargetScratch = new THREE.Vector3();
   var cameraEditorialOffset = 0;
+
+  // Lens, distance, and rise per viewport shape. Portrait keeps the aisle
+  // position's azimuth and eye height; a wider lens from slightly farther
+  // back keeps furnace, robot, and HMI inside the crop.
+  function processLensForViewport(viewWidth, viewHeight) {
+    var aspect = viewWidth / Math.max(1, viewHeight);
+    if (aspect < 0.78) {
+      return { fov: viewHeight <= 650 ? 50 : 52, distance: 25, rise: 0.02 };
+    }
+    if (aspect < 1.25) {
+      return { fov: 40, distance: PROCESS_CAMERA_STANDARD_DISTANCE, rise: 0.05 };
+    }
+    return {
+      fov: PROCESS_CAMERA_FOV,
+      distance: PROCESS_CAMERA_STANDARD_DISTANCE,
+      rise: PROCESS_CAMERA_LENS_RISE
+    };
+  }
+
+  // QA optical proofs use the same lens, distance, and rise as the live view,
+  // so every projected clearance is measured through the camera people see.
+  function configureProcessProofCamera(proofCamera, proofWidth, proofHeight) {
+    var lens = processLensForViewport(proofWidth, proofHeight);
+    proofCamera.fov = lens.fov;
+    proofCamera.aspect = proofWidth / proofHeight;
+    proofCamera.position
+      .copy(PROCESS_CAMERA_DIRECTION)
+      .multiplyScalar(lens.distance)
+      .add(PROCESS_CAMERA_TARGET);
+    proofCamera.lookAt(PROCESS_CAMERA_TARGET);
+    proofCamera.setViewOffset(
+      proofWidth,
+      proofHeight,
+      0,
+      -lens.rise * proofHeight,
+      proofWidth,
+      proofHeight
+    );
+    proofCamera.updateProjectionMatrix();
+    proofCamera.updateMatrixWorld(true);
+    return proofCamera;
+  }
 
   function applyCameraPose() {
     if (!camera || !baseCameraPosition || !inspectCameraPosition) return;
@@ -1748,31 +2084,18 @@
     var aspect = width / Math.max(1, height);
     var wideLayout = width >= 900 ? Math.min(1, Math.max(0, (aspect - 1.25) / 0.3)) : 0;
     cameraEditorialOffset = -0.1 * width * wideLayout * (1 - cameraInspection);
+    var lensRise = -processCameraLensRise * height * (1 - cameraInspection);
     if (camera.setViewOffset) {
-      camera.setViewOffset(width, height, cameraEditorialOffset, 0, width, height);
+      camera.setViewOffset(width, height, cameraEditorialOffset, lensRise, width, height);
     }
-    updateBackdropScale();
   }
 
   function frameCamera() {
     var aspect = width / Math.max(1, height);
-    if (aspect < 0.78) {
-      // Portrait retains the exact process azimuth and only changes distance
-      // and FOV to keep furnace, robot, receiver, and fixed HMI inside crop.
-      if (height <= 650) {
-        camera.fov = 60.5;
-        processCameraDistance = 19.8;
-      } else {
-        camera.fov = 61;
-        processCameraDistance = 20.6;
-      }
-    } else if (aspect < 1.25) {
-      camera.fov = 51;
-      processCameraDistance = PROCESS_CAMERA_STANDARD_DISTANCE;
-    } else {
-      camera.fov = 43;
-      processCameraDistance = PROCESS_CAMERA_STANDARD_DISTANCE;
-    }
+    var lens = processLensForViewport(width, height);
+    camera.fov = lens.fov;
+    processCameraDistance = lens.distance;
+    processCameraLensRise = lens.rise;
     baseCameraTarget.copy(PROCESS_CAMERA_TARGET);
     baseCameraPosition
       .copy(PROCESS_CAMERA_DIRECTION)
@@ -1793,294 +2116,12 @@
     var verticalFit = 0.925 / Math.max(0.01, verticalTangent * usableY);
     var inspectDistance = Math.max(horizontalFit, verticalFit) * 1.025;
     inspectCameraPosition
-      .copy(PROCESS_CAMERA_DIRECTION)
+      .copy(INSPECT_CAMERA_DIRECTION)
       .multiplyScalar(inspectDistance)
       .add(inspectCameraTarget);
     applyCameraPose();
-    updateBackdropScale();
     // HMI-04 is a fixed machine pendant. Camera changes inspect it from a new
     // viewpoint; they never rotate the installed enclosure toward the viewer.
-  }
-
-  function proceduralBackdropTexture() {
-    return makeTexture(function (ctx, w, h) {
-      var ceiling = ctx.createLinearGradient(0, 0, 0, h);
-      ceiling.addColorStop(0, "#353b3e");
-      ceiling.addColorStop(0.55, "#7c8284");
-      ceiling.addColorStop(1, "#b6b8b5");
-      ctx.fillStyle = ceiling;
-      ctx.fillRect(0, 0, w, h);
-
-      ctx.fillStyle = "#d7a80c";
-      ctx.fillRect(0, 34, w, 28);
-      ctx.fillStyle = "#2c3438";
-      ctx.fillRect(0, 60, w, 8);
-      ctx.fillStyle = "#4c5559";
-      ctx.fillRect(0, 125, w, 10);
-
-      ctx.fillStyle = "#192126";
-      for (var x = 15; x < w * 0.44; x += 42) ctx.fillRect(x, 120, 4, 175);
-      for (var y = 130; y < 300; y += 17) ctx.fillRect(0, y, w * 0.44, 2);
-
-      ctx.fillStyle = "#aeb4b7";
-      ctx.fillRect(w * 0.45, 95, w * 0.55, h * 0.56);
-      ctx.fillStyle = "#1d2529";
-      ctx.fillRect(w * 0.62, 145, w * 0.26, h * 0.31);
-      ctx.fillStyle = "#31393e";
-      ctx.fillRect(w * 0.45, h * 0.61, w * 0.55, h * 0.18);
-
-      ctx.fillStyle = "#8a9092";
-      ctx.fillRect(0, h * 0.67, w, h * 0.33);
-      ctx.strokeStyle = "rgba(255,255,255,0.18)";
-      ctx.lineWidth = 2;
-      for (var fy = h * 0.72; fy < h; fy += 38) {
-        ctx.beginPath();
-        ctx.moveTo(0, fy);
-        ctx.lineTo(w, fy + 6);
-        ctx.stroke();
-      }
-    }, 800, 450);
-  }
-
-  function applyBackdropCover(texture) {
-    if (!texture || !camera) return;
-    var imageAspect = 16 / 9;
-    var viewportAspect = camera.aspect || imageAspect;
-    var repeatX = 1;
-    var repeatY = 1;
-    var offsetX = 0;
-    var offsetY = 0;
-
-    if (viewportAspect > imageAspect) {
-      repeatY = imageAspect / viewportAspect;
-      offsetY = (1 - repeatY) * 0.5;
-    } else if (viewportAspect < imageAspect) {
-      repeatX = viewportAspect / imageAspect;
-      // Preserve the clean center-right press bay and operator HMI in narrow
-      // crops while retaining enough of the left furnace aisle to explain the
-      // charge path.
-      offsetX = (1 - repeatX) * 0.62;
-    }
-
-    var wrappingChanged = texture.wrapS !== THREE.ClampToEdgeWrapping ||
-      texture.wrapT !== THREE.ClampToEdgeWrapping;
-    texture.wrapS = THREE.ClampToEdgeWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.repeat.set(repeatX, repeatY);
-    texture.offset.set(offsetX, offsetY);
-    if (wrappingChanged) texture.needsUpdate = true;
-  }
-
-  function prefilterBackdropTexture(image) {
-    var sourceWidth = image && (image.naturalWidth || image.videoWidth || image.width);
-    var sourceHeight = image && (image.naturalHeight || image.videoHeight || image.height);
-    if (!sourceWidth || !sourceHeight) return null;
-    var economicalPlate = lowPower || reducedMotion;
-    var maxWidth = economicalPlate ? 960 : 1280;
-    var outputScale = Math.min(1, maxWidth / sourceWidth);
-    var outputWidth = Math.max(2, Math.round(sourceWidth * outputScale));
-    var outputHeight = Math.max(2, Math.round(sourceHeight * outputScale));
-    // Focus is on the working cell. A gentle distance blur removes the busy
-    // high-frequency roof and fence detail before reaching the contact floor.
-    var softScale = economicalPlate ? 0.58 : 0.65;
-    var farBlurPx = economicalPlate ? 1.7 : 2.3;
-    var farContrast = 0.88;
-    var softWidth = Math.max(2, Math.round(outputWidth * softScale));
-    var softHeight = Math.max(2, Math.round(outputHeight * softScale));
-    var outputCanvas = document.createElement("canvas");
-    var softCanvas = document.createElement("canvas");
-    var softLayer = document.createElement("canvas");
-    outputCanvas.width = outputWidth;
-    outputCanvas.height = outputHeight;
-    softCanvas.width = softWidth;
-    softCanvas.height = softHeight;
-    softLayer.width = outputWidth;
-    softLayer.height = outputHeight;
-
-    var outputContext = outputCanvas.getContext("2d", { alpha: false });
-    var softContext = softCanvas.getContext("2d", { alpha: false });
-    var layerContext = softLayer.getContext("2d", { alpha: true });
-    if (!outputContext || !softContext || !layerContext) {
-      outputCanvas.width = 1;
-      outputCanvas.height = 1;
-      softCanvas.width = 1;
-      softCanvas.height = 1;
-      softLayer.width = 1;
-      softLayer.height = 1;
-      return null;
-    }
-
-    // The base copy retains the exact camera-plate crop and a sharp floor
-    // datum. A single down/up-sampled layer removes only the razor-frequency
-    // detail in the distant fence and photographed machine; this is generated
-    // once, so it adds no per-frame post-processing or extra scene draw call.
-    outputContext.imageSmoothingEnabled = true;
-    outputContext.imageSmoothingQuality = "high";
-    // Expose for the cell, with the distant factory falling into cool shade.
-    // This grade is baked once; controls and resume text remain native DOM.
-    var supportsBaseFilter = typeof outputContext.filter === "string";
-    if (supportsBaseFilter) {
-      outputContext.filter = "saturate(0.5) brightness(0.46) contrast(1.08)";
-    }
-    outputContext.drawImage(image, 0, 0, outputWidth, outputHeight);
-    if (supportsBaseFilter) outputContext.filter = "none";
-    else {
-      outputContext.fillStyle = "rgba(9,19,25,0.52)";
-      outputContext.fillRect(0, 0, outputWidth, outputHeight);
-    }
-    softContext.imageSmoothingEnabled = true;
-    softContext.imageSmoothingQuality = "high";
-    softContext.drawImage(outputCanvas, 0, 0, softWidth, softHeight);
-    layerContext.imageSmoothingEnabled = true;
-    layerContext.imageSmoothingQuality = "high";
-    // Filter only the throwaway upper-depth layer. A small overscan keeps the
-    // blur kernel from sampling transparency at the plate edge, preventing a
-    // dark halo while leaving the crop registration effectively unchanged.
-    var supportsCanvasFilter = typeof layerContext.filter === "string";
-    if (supportsCanvasFilter) {
-      var filterOverscan = 2;
-      layerContext.filter =
-        "blur(" + farBlurPx + "px) contrast(" + farContrast + ")";
-      layerContext.drawImage(
-        softCanvas,
-        -filterOverscan,
-        -filterOverscan,
-        outputWidth + filterOverscan * 2,
-        outputHeight + filterOverscan * 2
-      );
-      layerContext.filter = "none";
-    } else {
-      // Down/up-sampling remains a deterministic no-filter fallback.
-      layerContext.drawImage(softCanvas, 0, 0, outputWidth, outputHeight);
-    }
-    layerContext.globalCompositeOperation = "destination-in";
-    var focusMask = layerContext.createLinearGradient(0, 0, 0, outputHeight);
-    focusMask.addColorStop(0, "rgba(0,0,0,0.94)");
-    focusMask.addColorStop(0.32, "rgba(0,0,0,0.92)");
-    focusMask.addColorStop(0.56, "rgba(0,0,0,0.78)");
-    focusMask.addColorStop(0.64, "rgba(0,0,0,0.32)");
-    focusMask.addColorStop(0.68, "rgba(0,0,0,0)");
-    focusMask.addColorStop(1, "rgba(0,0,0,0)");
-    layerContext.fillStyle = focusMask;
-    layerContext.fillRect(0, 0, outputWidth, outputHeight);
-    outputContext.drawImage(softLayer, 0, 0);
-
-    // Cool aerial veiling is strongest around the remote machine plane and
-    // fades completely before the floor/contact region. The restrained alpha
-    // binds plate and geometry without lifting black levels or washing labels.
-    var haze = outputContext.createLinearGradient(0, 0, 0, outputHeight);
-    haze.addColorStop(0, "rgba(25,48,59,0.16)");
-    haze.addColorStop(0.42, "rgba(40,64,73,0.14)");
-    haze.addColorStop(0.66, "rgba(31,52,60,0.08)");
-    haze.addColorStop(0.72, "rgba(31,52,60,0)");
-    haze.addColorStop(1, "rgba(31,52,60,0)");
-    outputContext.fillStyle = haze;
-    outputContext.fillRect(0, 0, outputWidth, outputHeight);
-
-    // The high windows share the modeled key's warm direction. A broad pool
-    // and lens-edge falloff establish a focal hierarchy without drawn rays or
-    // particles competing with the actual moving machinery.
-    var windowLight = outputContext.createRadialGradient(
-      outputWidth * 0.22, outputHeight * 0.12, 0,
-      outputWidth * 0.22, outputHeight * 0.12, outputWidth * 0.64
-    );
-    windowLight.addColorStop(0, "rgba(248,199,124,0.19)");
-    windowLight.addColorStop(0.42, "rgba(209,160,98,0.075)");
-    windowLight.addColorStop(1, "rgba(209,160,98,0)");
-    outputContext.fillStyle = windowLight;
-    outputContext.fillRect(0, 0, outputWidth, outputHeight);
-    var lensFalloff = outputContext.createRadialGradient(
-      outputWidth * 0.53, outputHeight * 0.52, outputHeight * 0.16,
-      outputWidth * 0.53, outputHeight * 0.52, outputWidth * 0.67
-    );
-    lensFalloff.addColorStop(0, "rgba(5,12,17,0)");
-    lensFalloff.addColorStop(0.58, "rgba(5,12,17,0.12)");
-    lensFalloff.addColorStop(1, "rgba(5,12,17,0.6)");
-    outputContext.fillStyle = lensFalloff;
-    outputContext.fillRect(0, 0, outputWidth, outputHeight);
-
-    var texture = new THREE.CanvasTexture(outputCanvas);
-    texture.generateMipmaps = false;
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.userData.prefilteredCameraPlate = true;
-    texture.userData.opticalDepthPrefilter = Object.freeze({
-      farBlurPx: farBlurPx,
-      farContrast: farContrast,
-      maskClearAtNormalizedY: 0.68,
-      outputWidth: outputWidth,
-      outputHeight: outputHeight,
-      retainedBytes: outputWidth * outputHeight * 4,
-      peakCanvasBytes:
-        (outputWidth * outputHeight * 2 + softWidth * softHeight) * 4,
-      animatedPasses: 0,
-      extraSceneDraws: 0
-    });
-    setTextureSRGB(texture);
-
-    // CanvasTexture retains only outputCanvas. Release the two transient pixel
-    // stores immediately; the low-power/reduced-motion path also caps the live
-    // plate at 960 px and performs no animated optical work.
-    softCanvas.width = 1;
-    softCanvas.height = 1;
-    softLayer.width = 1;
-    softLayer.height = 1;
-    return texture;
-  }
-
-  function buildBackdrop() {
-    var material = new THREE.MeshBasicMaterial({
-      map: proceduralBackdropTexture(),
-      // A cool multiplier keeps the factory recessive behind the warm cell.
-      color: 0xe2e8e5,
-      toneMapped: true,
-      depthTest: false,
-      depthWrite: false,
-      fog: false
-    });
-    applyBackdropCover(material.map);
-    backdrop = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-    backdrop.position.set(0, 0, -28);
-    backdrop.frustumCulled = false;
-    backdrop.renderOrder = -1000;
-    camera.add(backdrop);
-    updateBackdropScale();
-
-    var loader = new THREE.TextureLoader();
-    loader.load(
-      "assets/dcm-cell-floor.webp",
-      function (texture) {
-        var filteredTexture = prefilterBackdropTexture(texture.image);
-        var nextTexture = filteredTexture || texture;
-        setTextureSRGB(nextTexture);
-        nextTexture.generateMipmaps = false;
-        nextTexture.minFilter = THREE.LinearFilter;
-        nextTexture.magFilter = THREE.LinearFilter;
-        applyBackdropCover(nextTexture);
-        var previousTexture = material.map;
-        material.map = nextTexture;
-        material.needsUpdate = true;
-        if (previousTexture && previousTexture !== nextTexture) previousTexture.dispose();
-        if (filteredTexture && texture !== filteredTexture) texture.dispose();
-        requestSceneRender();
-      },
-      undefined,
-      function () {
-        requestSceneRender();
-      }
-    );
-  }
-
-  function updateBackdropScale() {
-    if (!backdrop || !camera) return;
-    var distance = 28;
-    var spanY = 2 * Math.tan((camera.fov * Math.PI / 180) * 0.5) * distance;
-    var spanX = spanY * camera.aspect;
-    backdrop.scale.set(spanX * 0.515, spanY * 0.515, 1);
-    // Camera-locked photography follows the asymmetric optical crop so the
-    // left edge never exposes the clear color during editorial framing.
-    backdrop.position.x = spanX * cameraEditorialOffset / Math.max(1, width);
-    applyBackdropCover(backdrop.material.map);
   }
 
   frameCamera();
@@ -2168,22 +2209,25 @@
   ambientLight.position.set(0, 7, -3.5);
   scene.add(ambientLight);
 
-  // One warm-neutral high-bay direction drives every cast shadow. Normalized
-  // light-ray vector (source to cell) is approximately +0.325,-0.779,-0.535.
+  // One warm-neutral high-bay direction drives every cast shadow. It is
+  // steep (~64 deg), as overhead fixtures are: tops read bright, vertical
+  // faces fall off, and shadows stay short under the machine. Normalized
+  // light-ray vector (source to cell) is approximately +0.24,-0.9,-0.37.
   var keyLight = new THREE.DirectionalLight(0xffebd2, 3.1);
-  keyLight.position.set(-4.0, 12.5, 3.8);
+  keyLight.position.set(-2.55, 14.5, 1.5);
   keyLight.target.position.set(0.8, 1.0, -4.1);
   keyLight.castShadow = dynamicShadows;
   var keyShadowSize = dynamicShadows && width * height <= 1600000 ? 2048 : 1024;
   keyLight.shadow.mapSize.set(keyShadowSize, keyShadowSize);
-  // These bounds are fitted to x -3.5..6.8, y 0..6.2, z -7..-1.5
-  // in light space, with only a small safety margin for moving tooling.
-  keyLight.shadow.camera.near = 7.35;
-  keyLight.shadow.camera.far = 19.65;
-  keyLight.shadow.camera.left = -5.45;
-  keyLight.shadow.camera.right = 6.75;
-  keyLight.shadow.camera.top = 7.9;
-  keyLight.shadow.camera.bottom = -4.3;
+  // These bounds cover the cell plus the full throw of its tallest parts
+  // across the real slab (x -6..10, y 0..6.2, z -11..0), so no cast shadow
+  // is clipped where the floor extends beyond the guarded footprint.
+  keyLight.shadow.camera.near = 5.5;
+  keyLight.shadow.camera.far = 24;
+  keyLight.shadow.camera.left = -8;
+  keyLight.shadow.camera.right = 9.5;
+  keyLight.shadow.camera.top = 10.5;
+  keyLight.shadow.camera.bottom = -6.5;
   keyLight.shadow.camera.updateProjectionMatrix();
   keyLight.shadow.bias = -0.00022;
   keyLight.shadow.normalBias = 0.016;
@@ -2213,10 +2257,12 @@
   cavityBounce.position.set(3.25, 2.0, -5.95);
   scene.add(cavityBounce);
 
-  // A cool rear practical gives the robot's yellow castings a clean edge
-  // against the warm machine without filling their forward shadow faces.
-  var robotRimLight = new THREE.DirectionalLight(0x94c9e2, 1.65);
-  robotRimLight.position.set(5.8, 4.6, -8.0);
+  // A cool rear high-bay row gives the robot's castings a clean edge against
+  // the machine. It stays steep (~58 deg) so its specular glint on the
+  // polished slab lands at the operator's feet, below the frame, as the real
+  // overhead fixtures' glints do.
+  var robotRimLight = new THREE.DirectionalLight(0x94c9e2, 1.35);
+  robotRimLight.position.set(3.6, 11.5, -10.5);
   robotRimLight.target.position.set(0.3, 2.35, -4.0);
   scene.add(robotRimLight);
   scene.add(robotRimLight.target);
@@ -3499,11 +3545,13 @@
       drawMeshes: drawMeshes,
       expectedInstancedDraws: 8,
       fallbackDrawBudget: 17,
+      // Re-frozen for the eye-level aisle camera (23 m, 40 deg lens at the
+      // 652 px proof viewport); the world-space bounds audit is unchanged.
       frozenProjection: Object.freeze({
-        handleWidthPx652: 5.61,
-        handleHeightPx652: 12.5,
-        interlockWidthPx652: 13.0,
-        interlockHeightPx652: 15.56
+        handleWidthPx652: 3.79,
+        handleHeightPx652: 8.64,
+        interlockWidthPx652: 10.19,
+        interlockHeightPx652: 10.1
       })
     };
   }
@@ -6893,7 +6941,7 @@
     cylinder(0.083, 0.13, towerAmber, 0, 0, 0, tower, 0, 0, 0, 18);
     cylinder(0.083, 0.13, towerGreen, 0, -0.14, 0, tower, 0, 0, 0, 18);
 
-    labelPlane(makeLabelTexture(['DCM-900', 'COLD CHAMBER / CELL 04'], '#15191a', '#d8a50e', 420, 120), 1.05, 0.3, 0.02, 0.79, 0.947, group);
+    labelPlane(makeLabelTexture(['DCM-350', 'COLD CHAMBER / CELL 04'], '#15191a', '#d8a50e', 420, 120), 1.05, 0.3, 0.02, 0.79, 0.947, group);
     labelPlane(makeLabelTexture(['SHOT PROFILE', 'SLOW / FAST / INTENSIFY'], '#15191a', '#aebfc0', 420, 120), 0.94, 0.27, -1.52, 0.72, 0.947, group);
 
     group.traverse(function (object) {
@@ -7543,7 +7591,7 @@
     ctx.fillRect(24, h - 62, w - 48, 32);
     ctx.fillStyle = "#10171a";
     ctx.font = "800 12px ui-monospace, monospace";
-    ctx.fillText("DCM-900 / RECIPE 0" + meta.key, 33, h - 42);
+    ctx.fillText("DCM-350 / RECIPE 0" + meta.key, 33, h - 42);
     ctx.restore();
   }
 
@@ -8174,7 +8222,7 @@
     ctx.fillRect(0, 0, 768, 5);
     ctx.fillStyle = "#eef4f3";
     ctx.font = "850 28px ui-monospace, monospace";
-    ctx.fillText("DCM-900 / HMI-DC4", 28, 42);
+    ctx.fillText("DCM-350 / HMI-DC4", 28, 42);
     ctx.fillStyle = "#869ba1";
     ctx.font = "700 14px ui-monospace, monospace";
     ctx.fillText("DIE RECIPE / SHOT PROFILE CONTROL", 28, 71);
@@ -8360,7 +8408,7 @@
     ctx.fillRect(0, 738, 768, 30);
     ctx.fillStyle = "#789096";
     ctx.font = "700 13px ui-monospace, monospace";
-    ctx.fillText("RMCFARLIN / DCM-900 / HMI-DC4 / DIE RECIPES", 22, 758);
+    ctx.fillText("RMCFARLIN / DCM-350 / HMI-DC4 / DIE RECIPES", 22, 758);
     ctx.textAlign = "right";
     ctx.fillStyle = accent;
     ctx.fillText(
@@ -11250,21 +11298,795 @@
     post.heatSourceCount = count;
   }
 
+  // Production bay. The cell stands in a modeled die-casting hall: a column
+  // grid with painted bases, roof girders and purlins, a bridge crane over the
+  // die-change bay, LED high-bays, cable trays, a tower melter, a neighboring
+  // cell, racking, and walkway paint. Everything is merged into a handful of
+  // vertex-colored batches (no per-part draw calls) and casts no shadow, so
+  // the cell's shadow map and draw budget are unchanged.
+  var PLANT = {
+    minX: -40,
+    maxX: 56,
+    minZ: -48,
+    maxZ: 26,
+    columnXs: [-34, -22, -10, 2, 14, 26, 38, 50],
+    // A 28 m clear span: the camera stands in the operator aisle between
+    // rows, and the next row falls behind the cell rather than in front of it.
+    columnZs: [16, -12, -40],
+    girderBottom: 10.4,
+    roofHeight: 12.2,
+    slab: 6
+  };
+  var PLANT_FIXTURE_X0 = PLANT.minX + 4;
+  var PLANT_FIXTURE_Z0 = PLANT.maxZ - 5;
+  var PLANT_FIXTURE_Y = 9.565;
+  var plantRoot = null;
+  var plantScratchMatrix = new THREE.Matrix4();
+  var plantScratchNormal = new THREE.Matrix3();
+  var plantScratchPosition = new THREE.Vector3();
+  var plantScratchQuaternion = new THREE.Quaternion();
+  var plantScratchScale = new THREE.Vector3();
+  var plantScratchEuler = new THREE.Euler();
+  var plantScratchVertex = new THREE.Vector3();
+  var plantScratchColor = new THREE.Color();
+  var plantGeometryCache = {};
+
+  function createPlantBatch() {
+    return { positions: [], normals: [], colors: [], uvs: [], indices: [], vertexCount: 0 };
+  }
+
+  function plantGeometry(key, factory) {
+    if (!plantGeometryCache[key]) plantGeometryCache[key] = factory();
+    return plantGeometryCache[key];
+  }
+
+  function plantAdd(batch, geometry, x, y, z, sx, sy, sz, color, rx, ry, rz) {
+    plantScratchPosition.set(x, y, z);
+    plantScratchEuler.set(rx || 0, ry || 0, rz || 0);
+    plantScratchQuaternion.setFromEuler(plantScratchEuler);
+    plantScratchScale.set(sx, sy, sz);
+    plantScratchMatrix.compose(plantScratchPosition, plantScratchQuaternion, plantScratchScale);
+    plantScratchNormal.getNormalMatrix(plantScratchMatrix);
+    plantScratchColor.setHex(color);
+    var position = geometry.attributes.position;
+    var normal = geometry.attributes.normal;
+    var uv = geometry.attributes.uv;
+    var base = batch.vertexCount;
+    for (var vertex = 0; vertex < position.count; vertex++) {
+      plantScratchVertex.fromBufferAttribute(position, vertex).applyMatrix4(plantScratchMatrix);
+      batch.positions.push(plantScratchVertex.x, plantScratchVertex.y, plantScratchVertex.z);
+      plantScratchVertex.fromBufferAttribute(normal, vertex).applyMatrix3(plantScratchNormal).normalize();
+      batch.normals.push(plantScratchVertex.x, plantScratchVertex.y, plantScratchVertex.z);
+      batch.colors.push(plantScratchColor.r, plantScratchColor.g, plantScratchColor.b);
+      // World-scale UVs (1 unit = 1 m) let one tiling texture serve every part.
+      batch.uvs.push(uv ? uv.getX(vertex) * sx : 0, uv ? uv.getY(vertex) * sy : 0);
+    }
+    var index = geometry.index;
+    if (index) {
+      for (var i = 0; i < index.count; i++) batch.indices.push(base + index.getX(i));
+    } else {
+      for (var j = 0; j < position.count; j++) batch.indices.push(base + j);
+    }
+    batch.vertexCount += position.count;
+  }
+
+  function plantBox(batch, x, y, z, sx, sy, sz, color, ry) {
+    plantAdd(batch, plantGeometry('box', function () {
+      return new THREE.BoxGeometry(1, 1, 1);
+    }), x, y, z, sx, sy, sz, color, 0, ry || 0, 0);
+  }
+
+  // Box spanning two points: used for bracing, stair stringers, and railings.
+  function plantBeam(batch, ax, ay, az, bx, by, bz, thickness, depth, color) {
+    var dx = bx - ax;
+    var dy = by - ay;
+    var dz = bz - az;
+    var length = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    if (length < 1e-4) return;
+    plantScratchPosition.set(dx / length, dy / length, dz / length);
+    plantScratchQuaternion.setFromUnitVectors(fxWorldUp, plantScratchPosition);
+    plantScratchEuler.setFromQuaternion(plantScratchQuaternion);
+    plantAdd(
+      batch,
+      plantGeometry('box', function () { return new THREE.BoxGeometry(1, 1, 1); }),
+      (ax + bx) * 0.5, (ay + by) * 0.5, (az + bz) * 0.5,
+      thickness, length, depth, color,
+      plantScratchEuler.x, plantScratchEuler.y, plantScratchEuler.z
+    );
+  }
+
+  function plantCylinder(batch, x, y, z, radius, heightValue, color, segments, rx, rz) {
+    var sides = segments || 16;
+    plantAdd(batch, plantGeometry('cyl' + sides, function () {
+      return new THREE.CylinderGeometry(1, 1, 1, sides);
+    }), x, y, z, radius, heightValue, radius, color, rx || 0, 0, rz || 0);
+  }
+
+  function finishPlantBatch(batch, material, name) {
+    if (!batch.vertexCount) return null;
+    var geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(batch.positions, 3));
+    geometry.setAttribute('normal', new THREE.Float32BufferAttribute(batch.normals, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(batch.colors, 3));
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(batch.uvs, 2));
+    geometry.setIndex(batch.vertexCount > 65535
+      ? new THREE.Uint32BufferAttribute(batch.indices, 1)
+      : new THREE.Uint16BufferAttribute(batch.indices, 1));
+    geometry.computeBoundingSphere();
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.name = name;
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
+    plantRoot.add(mesh);
+    return mesh;
+  }
+
+  function plantMaterial(roughness, metalness, envMapIntensity, extra) {
+    var material = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      vertexColors: true,
+      roughness: roughness,
+      metalness: metalness
+    });
+    material.envMapIntensity = envMapIntensity;
+    if (extra) {
+      for (var key in extra) material[key] = extra[key];
+    }
+    return material;
+  }
+
+  var PLANT_FLOOR_PARS = [
+    'varying vec3 vPlantWorld;',
+    'float plantHash( vec2 p ) {',
+    '  vec3 p3 = fract( vec3( p.xyx ) * 0.1031 );',
+    '  p3 += dot( p3, p3.yzx + 33.33 );',
+    '  return fract( ( p3.x + p3.y ) * p3.z );',
+    '}',
+    'float plantNoise( vec2 p ) {',
+    '  vec2 i = floor( p ); vec2 f = fract( p );',
+    '  vec2 u = f * f * ( 3.0 - 2.0 * f );',
+    '  return mix( mix( plantHash( i ), plantHash( i + vec2( 1.0, 0.0 ) ), u.x ),',
+    '    mix( plantHash( i + vec2( 0.0, 1.0 ) ), plantHash( i + vec2( 1.0 ) ), u.x ), u.y );',
+    '}',
+    'float plantFbm( vec2 p ) {',
+    '  return plantNoise( p ) * 0.5 + plantNoise( p * 2.1 + 17.0 ) * 0.3 + plantNoise( p * 4.3 + 5.0 ) * 0.2;',
+    '}',
+    'uniform vec3 plantStainCenter;',
+    'uniform vec4 plantColumnGrid;',
+    'uniform vec4 plantWalls;',
+    // Broad illuminance pools under the high-bay grid (9.6 m mounting height
+    // with wide optics gives a gentle ~20% swing), and occlusion where the
+    // slab meets column bases and the envelope.
+    'float plantFloorLight( vec2 xz ) {',
+    '  vec2 spacing = vec2( 6.0, 6.5 );',
+    '  vec2 offset = ( fract( ( xz - vec2( ' + PLANT_FIXTURE_X0.toFixed(1) + ', ' + PLANT_FIXTURE_Z0.toFixed(1) + ' ) ) / spacing + 0.5 ) - 0.5 ) * spacing;',
+    '  float pool = exp( -dot( offset, offset ) / 9.0 );',
+    '  vec2 column = xz;',
+    '  column.x = plantColumnGrid.x + floor( ( xz.x - plantColumnGrid.x ) / plantColumnGrid.z + 0.5 ) * plantColumnGrid.z;',
+    '  float rowA = abs( xz.y - plantColumnGrid.y );',
+    '  float rowB = abs( xz.y - ( plantColumnGrid.y - plantColumnGrid.w ) );',
+    '  float rowC = abs( xz.y - ( plantColumnGrid.y - 2.0 * plantColumnGrid.w ) );',
+    '  float rowDistance = min( rowA, min( rowB, rowC ) );',
+    '  float columnDistance = length( vec2( xz.x - column.x, rowDistance ) );',
+    '  float columnOcclusion = exp( -max( columnDistance - 0.55, 0.0 ) * max( columnDistance - 0.55, 0.0 ) / 0.45 );',
+    '  float wallDistance = min( min( xz.x - plantWalls.x, plantWalls.y - xz.x ), xz.y - plantWalls.z );',
+    '  float wallOcclusion = 1.0 - smoothstep( 0.0, 2.2, wallDistance );',
+    '  return ( 0.9 + 0.2 * pool ) * ( 1.0 - 0.38 * columnOcclusion ) * ( 1.0 - 0.3 * wallOcclusion );',
+    '}',
+    'uniform vec4 plantFixtureGrid;',
+    'uniform vec4 plantFixtureBounds;',
+    'uniform vec3 plantFixtureRadiance;',
+    // Mirror image of the LED high-bay grid in the sealed slab. The reflected
+    // view ray is intersected with the fixture plane analytically, so every
+    // fixture, including those above the frame, reflects in the right place;
+    // its edges soften with roughness and ray length like a glossy floor.
+    'vec3 plantFixtureReflection( vec3 worldPosition, float roughness ) {',
+    '  vec3 viewRay = normalize( worldPosition - cameraPosition );',
+    '  vec3 reflected = reflect( viewRay, vec3( 0.0, 1.0, 0.0 ) );',
+    '  if ( reflected.y < 0.02 ) return vec3( 0.0 );',
+    '  float travel = ( plantFixtureGrid.w - worldPosition.y ) / reflected.y;',
+    '  vec2 hit = worldPosition.xz + reflected.xz * travel;',
+    '  if ( hit.x < plantFixtureBounds.x || hit.x > plantFixtureBounds.y || hit.y < plantFixtureBounds.z || hit.y > plantFixtureBounds.w ) return vec3( 0.0 );',
+    '  vec2 local = hit - plantFixtureGrid.xy;',
+    '  vec2 spacing = vec2( 6.0, 6.5 );',
+    '  vec2 offset = ( fract( local / spacing + 0.5 ) - 0.5 ) * spacing;',
+    '  float blur = 0.03 + roughness * roughness * travel * 0.09;',
+    '  float rect = ( 1.0 - smoothstep( 0.17 - blur, 0.17 + blur, abs( offset.x ) ) ) *',
+    '    ( 1.0 - smoothstep( 0.56 - blur, 0.56 + blur, abs( offset.y ) ) );',
+    '  float spread = 0.17 * 1.12 / ( ( 0.34 + 2.0 * blur ) * ( 1.12 + 2.0 * blur ) );',
+    '  float cosine = clamp( -viewRay.y, 0.0, 1.0 );',
+    '  float fresnel = 0.04 + 0.96 * pow( 1.0 - cosine, 5.0 );',
+    '  return plantFixtureRadiance * rect * spread * fresnel;',
+    '}',
+    ''
+  ].join('\n');
+
+  function buildPlantFloorMaterial() {
+    // Polished, sealed concrete: light aggregate with trowel mottling, 6 m
+    // saw-cut joints on the column grid, and darker, glossier die-lube
+    // tracking around the machine base where a real cell is never spotless.
+    var material = new THREE.MeshStandardMaterial({
+      color: 0x7d7973,
+      roughness: 0.32,
+      metalness: 0
+    });
+    material.envMapIntensity = 0.45;
+    var stainCenter = { value: new THREE.Vector3(1.0, 0, -5.0) };
+    var fixtureGrid = { value: new THREE.Vector4(PLANT_FIXTURE_X0, PLANT_FIXTURE_Z0, 6, PLANT_FIXTURE_Y) };
+    var fixtureBounds = {
+      value: new THREE.Vector4(
+        PLANT_FIXTURE_X0 - 0.5,
+        PLANT.maxX - 2,
+        PLANT.minZ + 2,
+        PLANT_FIXTURE_Z0 + 0.8
+      )
+    };
+    var fixtureRadiance = { value: new THREE.Color(0xfff4e6).multiplyScalar(post ? 9 : 1.6) };
+    var columnGrid = {
+      value: new THREE.Vector4(
+        PLANT.columnXs[0],
+        PLANT.columnZs[0],
+        PLANT.columnXs[1] - PLANT.columnXs[0],
+        PLANT.columnZs[0] - PLANT.columnZs[1]
+      )
+    };
+    var walls = { value: new THREE.Vector4(PLANT.minX, PLANT.maxX, PLANT.minZ, PLANT.maxZ) };
+    material.onBeforeCompile = function (shader) {
+      shader.uniforms.plantStainCenter = stainCenter;
+      shader.uniforms.plantColumnGrid = columnGrid;
+      shader.uniforms.plantWalls = walls;
+      shader.uniforms.plantFixtureGrid = fixtureGrid;
+      shader.uniforms.plantFixtureBounds = fixtureBounds;
+      shader.uniforms.plantFixtureRadiance = fixtureRadiance;
+      shader.vertexShader = 'varying vec3 vPlantWorld;\n' + shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\n\tvPlantWorld = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz;'
+      );
+      shader.fragmentShader = PLANT_FLOOR_PARS + shader.fragmentShader
+        .replace('#include <color_fragment>', [
+          '#include <color_fragment>',
+          '\tvec2 plantSlab = vPlantWorld.xz / ' + PLANT.slab.toFixed(1) + ' + vec2( 0.5 );',
+          '\tvec2 plantJointDistance = abs( fract( plantSlab ) - 0.5 ) * ' + PLANT.slab.toFixed(1) + ';',
+          '\tvec2 plantJointAa = fwidth( vPlantWorld.xz ) + 1.0e-4;',
+          '\tvec2 plantJointMask = 1.0 - smoothstep( vec2( 0.004 ), vec2( 0.004 ) + plantJointAa, plantJointDistance );',
+          '\tfloat plantJoint = max( plantJointMask.x, plantJointMask.y );',
+          '\tfloat plantMacro = plantFbm( vPlantWorld.xz * 0.13 );',
+          '\tfloat plantGrain = plantNoise( vPlantWorld.xz * 9.0 );',
+          '\tvec2 plantStainOffset = ( vPlantWorld.xz - plantStainCenter.xz ) * vec2( 0.16, 0.3 );',
+          '\tfloat plantStain = exp( -dot( plantStainOffset, plantStainOffset ) ) * smoothstep( 0.35, 0.75, plantFbm( vPlantWorld.xz * 0.9 + 3.0 ) );',
+          '\tdiffuseColor.rgb *= ( 0.84 + 0.26 * plantMacro ) * ( 0.95 + 0.1 * plantGrain );',
+          '\tdiffuseColor.rgb *= 1.0 - 0.45 * plantJoint;',
+          '\tdiffuseColor.rgb *= 1.0 - 0.32 * plantStain;',
+          '\tdiffuseColor.rgb *= plantFloorLight( vPlantWorld.xz );'
+        ].join('\n'))
+        .replace('#include <roughnessmap_fragment>', [
+          '#include <roughnessmap_fragment>',
+          '\troughnessFactor *= 0.78 + 0.5 * plantFbm( vPlantWorld.xz * 0.27 + 9.0 );',
+          '\troughnessFactor = mix( roughnessFactor, 0.16, plantStain * 0.7 );',
+          '\troughnessFactor = mix( roughnessFactor, 0.85, plantJoint );'
+        ].join('\n'))
+        .replace('#include <aomap_fragment>', [
+          '#include <aomap_fragment>',
+          '\treflectedLight.indirectSpecular += plantFixtureReflection( vPlantWorld, roughnessFactor );'
+        ].join('\n'));
+    };
+    material.customProgramCacheKey = function () {
+      return 'plantFloor';
+    };
+    return material;
+  }
+
+  function makeWallPanelTexture() {
+    // Insulated sandwich panel: vertical trapezoidal ribs every ~0.25 m.
+    var texture = makeTexture(function (ctx, w, h) {
+      ctx.fillStyle = '#a3a8a9';
+      ctx.fillRect(0, 0, w, h);
+      for (var rib = 0; rib < 8; rib++) {
+        var x = rib * (w / 8);
+        ctx.fillStyle = 'rgba(255,255,255,0.18)';
+        ctx.fillRect(x, 0, 2, h);
+        ctx.fillStyle = 'rgba(40,46,48,0.22)';
+        ctx.fillRect(x + 6, 0, 3, h);
+      }
+    }, 64, 16);
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(0.5, 1);
+    texture.generateMipmaps = true;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    return texture;
+  }
+
+  function makeMeshFenceTexture() {
+    // Welded-wire guarding: 50 x 200 mm mesh. Mipmapped transparency lets it
+    // fade to a see-through gray at distance instead of moire.
+    var texture = makeTexture(function (ctx, w, h) {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(28,31,31,1)';
+      for (var x = 0; x < w; x += 8) ctx.fillRect(x, 0, 1.4, h);
+      for (var y = 0; y < h; y += 32) ctx.fillRect(0, y, w, 1.6);
+    }, 64, 64);
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.generateMipmaps = true;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    if (renderer.capabilities.getMaxAnisotropy) {
+      texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    }
+    return texture;
+  }
+
+  // Neighboring die-casting cell, reduced to what reads at 35-50 m: bed,
+  // platens and tie bars, guard skins, hydraulic unit, accumulators, cabinet,
+  // and a welded-wire fence on yellow posts.
+  function plantNeighborCell(paint, steel, fencePosts, fencePanels, x0, z0, length, mirrored) {
+    var dir = mirrored ? -1 : 1;
+    var cx = x0 + dir * length * 0.5;
+    var guardGray = 0xbfc2be;
+    var frameGray = 0x40474c;
+    plantBox(paint, cx, 0.45, z0, length, 0.9, 2.3, frameGray);
+    plantBox(paint, x0 + dir * length * 0.2, 1.7, z0, length * 0.36, 1.6, 2.1, guardGray);
+    plantBox(paint, x0 + dir * length * 0.52, 1.9, z0, length * 0.2, 2.0, 2.4, 0x2f3538);
+    plantBox(paint, x0 + dir * length * 0.8, 1.55, z0, length * 0.34, 1.3, 1.8, guardGray);
+    for (var bar = 0; bar < 4; bar++) {
+      plantCylinder(
+        steel,
+        x0 + dir * length * 0.52,
+        bar < 2 ? 1.25 : 2.55,
+        z0 + (bar % 2 ? 0.75 : -0.75),
+        0.09,
+        length * 0.32,
+        0xb5bcbd,
+        12,
+        0,
+        Math.PI / 2
+      );
+    }
+    for (var bottle = 0; bottle < 3; bottle++) {
+      plantCylinder(paint, x0 + dir * (length * 0.3 + bottle * 0.55), 3.2, z0 - 0.9, 0.24, 2.2, 0xd8dbd8, 14);
+    }
+    plantBox(paint, x0 + dir * length * 0.15, 1.1, z0 + 1.9, 1.6, 2.2, 0.7, 0xc9ccc8);
+    plantBox(paint, x0 - dir * 1.2, 1.0, z0 - 0.4, 1.4, 2.0, 2.6, 0x3a5a78);
+    var minX = Math.min(x0, x0 + dir * length) - 2;
+    var maxX = Math.max(x0, x0 + dir * length) + 2;
+    var minZ = z0 - 4;
+    var maxZ = z0 + 4;
+    plantFenceRun(fencePosts, fencePanels, minX, maxZ, maxX, maxZ);
+    plantFenceRun(fencePosts, fencePanels, maxX, maxZ, maxX, minZ);
+    plantFenceRun(fencePosts, fencePanels, minX, minZ, maxX, minZ);
+    plantFenceRun(fencePosts, fencePanels, minX, maxZ, minX, minZ);
+  }
+
+  function plantFenceRun(posts, panels, ax, az, bx, bz) {
+    var dx = bx - ax;
+    var dz = bz - az;
+    var length = Math.sqrt(dx * dx + dz * dz);
+    var bays = Math.max(1, Math.round(length / 1.5));
+    var angle = Math.atan2(dx, dz) + Math.PI / 2;
+    for (var bay = 0; bay <= bays; bay++) {
+      var t = bay / bays;
+      plantBox(posts, ax + dx * t, 1.1, az + dz * t, 0.06, 2.2, 0.06, 0xe0b10f);
+    }
+    plantBox(panels, ax + dx * 0.5, 1.15, az + dz * 0.5, length, 1.9, 0.01, 0xffffff, angle);
+  }
+
+  // Box in a local frame (heading about +Y at origin x/z); used for props.
+  function plantLocalBox(batch, originX, originZ, heading, lx, ly, lz, sx, sy, sz, color) {
+    var c = Math.cos(heading);
+    var s = Math.sin(heading);
+    plantBox(batch, originX + lx * c + lz * s, ly, originZ - lx * s + lz * c, sx, sy, sz, color, heading);
+  }
+
+  function plantLocalWheel(batch, originX, originZ, heading, lx, ly, lz, radius, widthValue) {
+    var c = Math.cos(heading);
+    var s = Math.sin(heading);
+    plantAdd(batch, plantGeometry('cyl14', function () {
+      return new THREE.CylinderGeometry(1, 1, 1, 14);
+    }), originX + lx * c + lz * s, ly, originZ - lx * s + lz * c,
+    radius, widthValue, radius, 0x16191a, Math.PI / 2, heading, 0);
+  }
+
+  // 2.5 t counterbalance forklift parked in the aisle: the most familiar
+  // scale reference on any plant floor.
+  function plantForklift(paint, steel, x, z, heading) {
+    var body = 0xd79a1c;
+    plantLocalBox(paint, x, z, heading, 0, 0.62, 0.15, 1.12, 0.78, 1.95, body);
+    plantLocalBox(paint, x, z, heading, 0, 0.72, 1.3, 1.12, 0.95, 0.5, 0x2c3134);
+    plantLocalBox(paint, x, z, heading, 0, 1.12, 0.35, 0.5, 0.3, 0.5, 0x1d2123);
+    plantLocalBox(paint, x, z, heading, 0, 1.45, 0.5, 0.48, 0.5, 0.1, 0x1d2123);
+    [[-0.5, -0.45], [0.5, -0.45], [-0.5, 0.95], [0.5, 0.95]].forEach(function (post) {
+      plantLocalBox(steel, x, z, heading, post[0], 1.55, post[1], 0.06, 1.35, 0.06, 0x2a2f31);
+    });
+    plantLocalBox(steel, x, z, heading, 0, 2.23, 0.25, 1.1, 0.05, 1.5, 0x2a2f31);
+    plantLocalBox(steel, x, z, heading, -0.34, 1.25, -0.95, 0.1, 2.4, 0.14, 0x2a2f31);
+    plantLocalBox(steel, x, z, heading, 0.34, 1.25, -0.95, 0.1, 2.4, 0.14, 0x2a2f31);
+    plantLocalBox(steel, x, z, heading, 0, 0.55, -1.08, 0.9, 0.5, 0.08, 0x2a2f31);
+    plantLocalBox(steel, x, z, heading, -0.28, 0.1, -1.65, 0.12, 0.05, 1.1, 0x3a3f41);
+    plantLocalBox(steel, x, z, heading, 0.28, 0.1, -1.65, 0.12, 0.05, 1.1, 0x3a3f41);
+    plantLocalWheel(paint, x, z, heading, -0.5, 0.3, -0.55, 0.3, 0.26);
+    plantLocalWheel(paint, x, z, heading, 0.5, 0.3, -0.55, 0.3, 0.26);
+    plantLocalWheel(paint, x, z, heading, -0.47, 0.24, 1.05, 0.24, 0.2);
+    plantLocalWheel(paint, x, z, heading, 0.47, 0.24, 1.05, 0.24, 0.2);
+  }
+
+  function plantTowerMelter(paint, steel, x, z) {
+    // Gas-fired tower melter: stack shaft, holding bath, charging skip hoist,
+    // service platform, and the exhaust duct to the roof.
+    plantBox(paint, x, 2.2, z, 5.2, 4.4, 3.6, 0x5c6870);
+    plantBox(paint, x + 0.9, 5.8, z, 2.2, 2.8, 2.2, 0x55616a);
+    plantBox(paint, x - 1.6, 1.0, z + 1.85, 1.6, 1.3, 0.2, 0x2a2d2f);
+    plantCylinder(steel, x + 0.9, 9.6, z, 0.55, 5.4, 0x8f979a, 18);
+    plantBox(steel, x + 3.4, 4.2, z - 0.6, 0.18, 8.4, 0.18, 0x6f777b);
+    plantBox(steel, x + 3.4, 4.2, z + 0.6, 0.18, 8.4, 0.18, 0x6f777b);
+    plantBox(paint, x + 3.4, 1.4, z, 1.1, 0.8, 1.0, 0x4a5258);
+    plantBox(steel, x, 3.05, z + 2.6, 6.4, 0.12, 1.6, 0x575f63);
+    plantBox(paint, x, 4.1, z + 3.35, 6.4, 0.05, 0.05, 0xe0b10f);
+    plantBox(paint, x, 3.6, z + 3.35, 6.4, 0.04, 0.04, 0xe0b10f);
+    for (var post = -3; post <= 3; post++) {
+      plantBox(paint, x + post, 3.6, z + 3.35, 0.05, 1.1, 0.05, 0xe0b10f);
+    }
+    plantBeam(steel, x - 3.2, 0.05, z + 6.2, x - 3.2, 3.05, z + 3.3, 0.08, 0.9, 0x575f63);
+  }
+
+  function plantPalletRacking(paint, x0, z0, bays, levels) {
+    for (var bay = 0; bay <= bays; bay++) {
+      var z = z0 - bay * 2.8;
+      plantBox(paint, x0, levels * 1.6 * 0.5, z, 0.08, levels * 1.6, 0.08, 0x2d5d8a);
+      plantBox(paint, x0 + 1.1, levels * 1.6 * 0.5, z, 0.08, levels * 1.6, 0.08, 0x2d5d8a);
+      if (bay === bays) break;
+      for (var level = 1; level <= levels; level++) {
+        var y = level * 1.6 - 0.1;
+        plantBox(paint, x0 + 0.55, y, z - 1.4, 1.2, 0.12, 2.8, 0xd9661f);
+        var fill = (bay * 7 + level * 3) % 5;
+        if (fill < 4) {
+          plantBox(paint, x0 + 0.55, y + 0.5, z - 0.75, 1.0, 0.85, 1.1, fill % 2 ? 0x6b7479 : 0x8d8466);
+          plantBox(paint, x0 + 0.55, y + 0.5, z - 2.05, 1.0, 0.85, 1.1, fill === 1 ? 0x566067 : 0x7c7f7a);
+        }
+      }
+    }
+  }
+
+  function buildPlantEnvironment() {
+    plantRoot = new THREE.Group();
+    plantRoot.name = 'die-casting production bay';
+    scene.add(plantRoot);
+
+    var paint = createPlantBatch();
+    var steel = createPlantBatch();
+    var lights = createPlantBatch();
+    var glass = createPlantBatch();
+    var walls = createPlantBatch();
+    var marks = createPlantBatch();
+    var fencePosts = createPlantBatch();
+    var fencePanels = createPlantBatch();
+
+    // Slab.
+    var floorSizeX = PLANT.maxX - PLANT.minX;
+    var floorSizeZ = PLANT.maxZ - PLANT.minZ;
+    var floor = new THREE.Mesh(new THREE.PlaneGeometry(floorSizeX, floorSizeZ), buildPlantFloorMaterial());
+    floor.name = 'polished concrete production slab';
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.set((PLANT.minX + PLANT.maxX) * 0.5, 0, (PLANT.minZ + PLANT.maxZ) * 0.5);
+    floor.receiveShadow = dynamicShadows;
+    floor.renderOrder = -10;
+    plantRoot.add(floor);
+
+    // Column grid: white upper shafts over charcoal impact bases, with base
+    // plates and yellow corner guards where forklifts pass.
+    for (var cx = 0; cx < PLANT.columnXs.length; cx++) {
+      for (var cz = 0; cz < PLANT.columnZs.length; cz++) {
+        var colX = PLANT.columnXs[cx];
+        var colZ = PLANT.columnZs[cz];
+        plantBox(paint, colX, 1.2, colZ, 0.82, 2.4, 0.82, 0x3b4146);
+        plantBox(paint, colX, 1.2 + (PLANT.girderBottom - 2.4) * 0.5 + 1.2, colZ, 0.8, PLANT.girderBottom - 2.4, 0.8, 0xc4c7c6);
+        plantBox(steel, colX, 0.02, colZ, 1.1, 0.04, 1.1, 0x4d5357);
+        plantBox(paint, colX + 0.44, 0.6, colZ + 0.44, 0.08, 1.2, 0.08, 0xe0b10f);
+        plantBox(paint, colX - 0.44, 0.6, colZ + 0.44, 0.08, 1.2, 0.08, 0xe0b10f);
+        // Electrical distribution box and conduit riser on the aisle face.
+        if ((cx + cz) % 2 === 0) {
+          plantBox(paint, colX, 1.75, colZ + 0.52, 0.5, 0.7, 0.22, 0x9aa1a3);
+          plantBox(steel, colX + 0.18, 5.5, colZ + 0.45, 0.05, 6.8, 0.05, 0x7b8386);
+        }
+      }
+    }
+
+    // Roof: primary girders over each column line, eave beams on each row,
+    // purlins, and the ribbed deck above.
+    var girderY = PLANT.girderBottom + 0.6;
+    for (var gx = 0; gx < PLANT.columnXs.length; gx++) {
+      plantBox(steel, PLANT.columnXs[gx], girderY, (PLANT.minZ + PLANT.maxZ) * 0.5, 0.36, 1.2, floorSizeZ, 0x2f363b);
+    }
+    for (var gz = 0; gz < PLANT.columnZs.length; gz++) {
+      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, girderY - 0.1, PLANT.columnZs[gz], floorSizeX, 0.9, 0.3, 0x2f363b);
+    }
+    for (var purlinZ = PLANT.maxZ - 1.5; purlinZ > PLANT.minZ; purlinZ -= 2.75) {
+      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, PLANT.roofHeight - 0.35, purlinZ, floorSizeX, 0.32, 0.14, 0x3a4146);
+    }
+    plantBox(walls, (PLANT.minX + PLANT.maxX) * 0.5, PLANT.roofHeight, (PLANT.minZ + PLANT.maxZ) * 0.5, floorSizeX, 0.1, floorSizeZ, 0x8f9496);
+
+    // Crane runway on column brackets and a parked 10 t bridge crane: every
+    // die-casting bay needs one for die changes.
+    var runwayY = 8.4;
+    for (var rz = 0; rz < 2; rz++) {
+      var runwayZ = PLANT.columnZs[rz] + (rz === 0 ? -0.62 : 0.62);
+      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, runwayY, runwayZ, floorSizeX, 0.7, 0.34, 0x30373c);
+      for (var bx = 0; bx < PLANT.columnXs.length; bx++) {
+        plantBox(steel, PLANT.columnXs[bx], runwayY - 0.6, runwayZ + (rz === 0 ? 0.28 : -0.28), 0.3, 0.5, 0.6, 0x30373c);
+      }
+    }
+    var craneX = -7.5;
+    var craneZ0 = PLANT.columnZs[0] - 0.62;
+    var craneZ1 = PLANT.columnZs[1] + 0.62;
+    var craneMid = (craneZ0 + craneZ1) * 0.5;
+    var craneSpan = craneZ0 - craneZ1;
+    plantBox(paint, craneX - 0.55, runwayY + 0.95, craneMid, 0.45, 1.1, craneSpan, 0xd8a60c);
+    plantBox(paint, craneX + 0.55, runwayY + 0.95, craneMid, 0.45, 1.1, craneSpan, 0xd8a60c);
+    plantBox(paint, craneX, runwayY + 0.62, craneZ0 - 0.2, 3.4, 0.55, 0.5, 0xd8a60c);
+    plantBox(paint, craneX, runwayY + 0.62, craneZ1 + 0.2, 3.4, 0.55, 0.5, 0xd8a60c);
+    plantBox(paint, craneX, runwayY + 1.75, craneMid - 4.2, 1.7, 0.7, 1.9, 0x3e464b);
+    plantCylinder(steel, craneX, runwayY - 0.4, craneMid - 4.2, 0.012, 2.6, 0x252a2d, 6);
+    plantBox(paint, craneX, runwayY - 1.85, craneMid - 4.2, 0.36, 0.5, 0.26, 0xd8a60c);
+
+    // LED high-bays below the girders (the slab shader reflects this grid).
+    for (var lx = PLANT_FIXTURE_X0; lx < PLANT.maxX - 2; lx += 6) {
+      for (var lz = PLANT_FIXTURE_Z0; lz > PLANT.minZ + 2; lz -= 6.5) {
+        plantBox(steel, lx, PLANT_FIXTURE_Y + 0.055, lz, 0.42, 0.09, 1.25, 0x3a4044);
+        plantBox(lights, lx, PLANT_FIXTURE_Y, lz, 0.34, 0.02, 1.12, 0xffffff);
+      }
+    }
+
+    // Cable trays along both column rows, with a drop tray over the cell.
+    for (var tz = 0; tz < 2; tz++) {
+      var trayZ = PLANT.columnZs[tz] + (tz === 0 ? -1.1 : 1.1);
+      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, 7.6, trayZ, floorSizeX, 0.1, 0.6, 0x9aa1a3);
+      plantBox(steel, (PLANT.minX + PLANT.maxX) * 0.5, 7.66, trayZ + 0.29, floorSizeX, 0.12, 0.02, 0x8c9395);
+    }
+    plantBox(steel, -3.2, 7.2, (PLANT.columnZs[0] + PLANT.columnZs[1]) * 0.5, 0.6, 0.1, PLANT.columnZs[0] - PLANT.columnZs[1], 0x9aa1a3);
+    // Power and signal drops from the tray into the clamp electrical end.
+    plantCylinder(paint, -3.02, 5.3, -5.45, 0.045, 3.8, 0x1c2023, 10);
+    plantCylinder(paint, -3.02, 5.3, -5.8, 0.035, 3.8, 0x1c2023, 10);
+    plantCylinder(steel, -3.02, 5.3, -6.1, 0.028, 3.8, 0x8c9395, 10);
+    plantBox(paint, -3.02, 3.52, -5.78, 0.32, 0.16, 0.9, 0x9aa1a3);
+
+    // Envelope: charcoal dado, ribbed insulated panels, and a clerestory.
+    var wallHeight = PLANT.roofHeight;
+    var bandHeight = 3;
+    var clerestoryBottom = 8.1;
+    var clerestoryHeight = 1.8;
+    [
+      { x: (PLANT.minX + PLANT.maxX) * 0.5, z: PLANT.minZ, length: floorSizeX, angle: 0 },
+      { x: PLANT.maxX, z: (PLANT.minZ + PLANT.maxZ) * 0.5, length: floorSizeZ, angle: Math.PI / 2 },
+      { x: PLANT.minX, z: (PLANT.minZ + PLANT.maxZ) * 0.5, length: floorSizeZ, angle: Math.PI / 2 }
+    ].forEach(function (wall) {
+      plantBox(paint, wall.x, bandHeight * 0.5, wall.z, wall.length, bandHeight, 0.3, 0x3d4247, wall.angle);
+      plantBox(walls, wall.x, (bandHeight + clerestoryBottom) * 0.5, wall.z, wall.length, clerestoryBottom - bandHeight, 0.25, 0xffffff, wall.angle);
+      plantBox(glass, wall.x, clerestoryBottom + clerestoryHeight * 0.5, wall.z, wall.length, clerestoryHeight, 0.2, 0xffffff, wall.angle);
+      plantBox(walls, wall.x, (clerestoryBottom + clerestoryHeight + wallHeight) * 0.5, wall.z, wall.length, wallHeight - clerestoryBottom - clerestoryHeight, 0.25, 0xffffff, wall.angle);
+    });
+
+    // Mezzanine with offices and electrical rooms beneath it on the far wall.
+    var mezzanineZ = PLANT.minZ + 3.2;
+    plantBox(steel, 26, 4.2, mezzanineZ, 36, 0.28, 6.4, 0x454c51);
+    for (var mx = 8; mx <= 44; mx += 6) {
+      plantBox(steel, mx, 2.05, mezzanineZ + 3.0, 0.22, 4.1, 0.22, 0x454c51);
+    }
+    plantBox(paint, 26, 2.05, mezzanineZ + 2.9, 35.6, 4.1, 0.14, 0xaeb3b3);
+    for (var ox = 10; ox <= 42; ox += 4) {
+      plantBox(glass, ox, 2.3, mezzanineZ + 2.99, 2.2, 1.1, 0.04, 0xffffff);
+      plantBox(paint, ox + 1.6, 1.05, mezzanineZ + 2.99, 0.95, 2.1, 0.05, 0x39424a);
+    }
+    plantBox(paint, 26, 5.4, mezzanineZ + 3.18, 36, 0.06, 0.06, 0xe0b10f);
+    plantBox(paint, 26, 4.85, mezzanineZ + 3.18, 36, 0.05, 0.05, 0xe0b10f);
+    for (var rx = 8; rx <= 44; rx += 1.5) {
+      plantBox(paint, rx, 4.85, mezzanineZ + 3.18, 0.05, 1.1, 0.05, 0xe0b10f);
+    }
+    plantBeam(steel, 6.2, 0.05, mezzanineZ + 9.0, 6.2, 4.2, mezzanineZ + 3.3, 0.1, 1.0, 0x454c51);
+    plantBeam(paint, 5.7, 1.0, mezzanineZ + 9.0, 5.7, 5.2, mezzanineZ + 3.3, 0.05, 0.05, 0xe0b10f);
+
+    // Neighboring cells, the melt shop, and racking along the right wall.
+    plantNeighborCell(paint, steel, fencePosts, fencePanels, 16.5, -4.2, 10, false);
+    plantNeighborCell(paint, steel, fencePosts, fencePanels, 30.5, -30.5, 10, false);
+    plantTowerMelter(paint, steel, -1.5, -29.5);
+    plantPalletRacking(paint, 51.5, 0.5, 9, 4);
+    // Castings in wire baskets staged beside the neighboring cell.
+    for (var bin = 0; bin < 3; bin++) {
+      plantBox(steel, 7.6 + bin * 1.35, 0.075, -8.7, 1.2, 0.15, 1.0, 0x8b6f45);
+      plantBox(steel, 7.6 + bin * 1.35, 0.55, -8.7, 1.15, 0.8, 0.95, 0x6f777a);
+    }
+    plantBox(steel, 7.6, 1.35, -8.7, 1.15, 0.8, 0.95, 0x6f777a);
+    plantForklift(paint, steel, 10.6, -4.6, -0.35);
+
+    // Walkway paint: main aisle edges and the keep-out line around this cell.
+    var aisleColor = 0xd9aa12;
+    plantBox(marks, (PLANT.minX + PLANT.maxX) * 0.5, 0.004, 0.9, floorSizeX, 0.008, 0.1, aisleColor);
+    plantBox(marks, (PLANT.minX + PLANT.maxX) * 0.5, 0.004, 7.1, floorSizeX, 0.008, 0.1, aisleColor);
+    plantBox(marks, 1.0, 0.004, FRONT_GUARD_Z + 0.7, (FRONT_GUARD_MAX_X - FRONT_GUARD_MIN_X) + 1.4, 0.008, 0.08, aisleColor);
+    plantBox(marks, SIDE_GUARD_X + 0.7, 0.004, (FRONT_GUARD_Z + 0.7 + SIDE_GUARD_MIN_Z - 2.2) * 0.5, 0.08, 0.008, (FRONT_GUARD_Z + 0.7) - (SIDE_GUARD_MIN_Z - 2.2), aisleColor);
+    plantBox(marks, FRONT_GUARD_MIN_X - 0.7, 0.004, (FRONT_GUARD_Z + 0.7 + SIDE_GUARD_MIN_Z - 2.2) * 0.5, 0.08, 0.008, (FRONT_GUARD_Z + 0.7) - (SIDE_GUARD_MIN_Z - 2.2), aisleColor);
+    for (var hatch = 0; hatch < 5; hatch++) {
+      plantBox(marks, 22 + hatch * 0.7, 0.004, 4.0, 0.25, 0.008, 5.6, 0xe7e2d2);
+    }
+
+    // Materials.
+    var paintMaterial = plantMaterial(0.72, 0.04, 0.45);
+    var steelMaterial = plantMaterial(0.5, 0.55, 0.6);
+    var lightMaterial = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(0xfff4e6).multiplyScalar(post ? 9 : 1.6),
+      vertexColors: true
+    });
+    var glassMaterial = new THREE.MeshStandardMaterial({
+      color: 0x1f272b,
+      emissive: 0x3f4d55,
+      emissiveIntensity: 0.4,
+      roughness: 0.12,
+      metalness: 0.3,
+      vertexColors: true
+    });
+    var wallTexture = makeWallPanelTexture();
+    var wallMaterial = plantMaterial(0.8, 0.1, 0.5, { map: wallTexture });
+    var markMaterial = plantMaterial(0.6, 0, 0.3, {
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      polygonOffsetUnits: -2
+    });
+    var fencePostMaterial = plantMaterial(0.55, 0.1, 0.5);
+    var fencePanelMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      vertexColors: true,
+      map: makeMeshFenceTexture(),
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      roughness: 0.6,
+      metalness: 0.4
+    });
+    fencePanelMaterial.map.repeat.set(1 / 0.4, 1 / 0.8);
+
+    finishPlantBatch(paint, paintMaterial, 'bay painted structure and equipment');
+    finishPlantBatch(steel, steelMaterial, 'bay structural steel, trays, and roof');
+    finishPlantBatch(walls, wallMaterial, 'insulated wall panels');
+    finishPlantBatch(glass, glassMaterial, 'clerestory and office glazing');
+    finishPlantBatch(lights, lightMaterial, 'LED high-bay diffusers');
+    finishPlantBatch(marks, markMaterial, 'walkway and keep-out paint');
+    finishPlantBatch(fencePosts, fencePostMaterial, 'neighboring cell fence posts');
+    var panels = finishPlantBatch(fencePanels, fencePanelMaterial, 'neighboring cell welded-wire panels');
+    if (panels) panels.renderOrder = 1;
+    return plantRoot;
+  }
+
+  // Reflections come from the bay itself: one HDR cube capture of the hall
+  // (cell hidden) replaces the synthetic light-box environment.
+  function capturePlantEnvironment() {
+    if (!plantRoot || !THREE.WebGLCubeRenderTarget || !THREE.CubeCamera || !THREE.PMREMGenerator) return;
+    var hidden = [];
+    for (var child = 0; child < scene.children.length; child++) {
+      var object = scene.children[child];
+      if (object === plantRoot || object.isLight || object === camera) continue;
+      if (object.visible) {
+        hidden.push(object);
+        object.visible = false;
+      }
+    }
+    var size = lowPower ? 64 : 256;
+    var cubeTarget = new THREE.WebGLCubeRenderTarget(size, {
+      type: THREE.HalfFloatType,
+      generateMipmaps: false
+    });
+    var cubeCamera = new THREE.CubeCamera(0.3, 160, cubeTarget);
+    cubeCamera.position.set(1.3, 2.4, -3.6);
+    scene.add(cubeCamera);
+    var previousShadowUpdate = renderer.shadowMap.autoUpdate;
+    renderer.shadowMap.autoUpdate = false;
+    cubeCamera.update(renderer, scene);
+    renderer.shadowMap.autoUpdate = previousShadowUpdate;
+    scene.remove(cubeCamera);
+    for (var restore = 0; restore < hidden.length; restore++) hidden[restore].visible = true;
+    var pmrem = new THREE.PMREMGenerator(renderer);
+    var environmentTarget = pmrem.fromCubemap(cubeTarget.texture);
+    var previous = scene.environment;
+    scene.environment = environmentTarget.texture;
+    if (previous && previous !== scene.environment && previous.dispose) previous.dispose();
+    cubeTarget.dispose();
+    pmrem.dispose();
+  }
+
+
+  // Service wear. Real plant equipment is never catalog-clean: grime and oil
+  // gather toward the floor, dust settles on up-facing surfaces, faint drip
+  // streaks run down side panels, and repainted panels drift in tone. One
+  // world-space patch applies it to every opaque painted or metal surface
+  // that has no custom shader of its own (castings stay fresh from the die).
+  var WEATHER_PARS = [
+    'varying vec3 vWeatherWorld;',
+    'varying vec3 vWeatherNormal;',
+    'uniform vec4 weatherAmounts;',
+    'uniform vec3 weatherDustColor;',
+    'float weatherHash( vec3 p ) {',
+    '  p = fract( p * 0.3183099 + 0.1 );',
+    '  p *= 17.0;',
+    '  return fract( p.x * p.y * p.z * ( p.x + p.y + p.z ) );',
+    '}',
+    'float weatherNoise( vec3 x ) {',
+    '  vec3 i = floor( x );',
+    '  vec3 f = fract( x );',
+    '  f = f * f * ( 3.0 - 2.0 * f );',
+    '  return mix(',
+    '    mix( mix( weatherHash( i ), weatherHash( i + vec3( 1.0, 0.0, 0.0 ) ), f.x ),',
+    '      mix( weatherHash( i + vec3( 0.0, 1.0, 0.0 ) ), weatherHash( i + vec3( 1.0, 1.0, 0.0 ) ), f.x ), f.y ),',
+    '    mix( mix( weatherHash( i + vec3( 0.0, 0.0, 1.0 ) ), weatherHash( i + vec3( 1.0, 0.0, 1.0 ) ), f.x ),',
+    '      mix( weatherHash( i + vec3( 0.0, 1.0, 1.0 ) ), weatherHash( i + vec3( 1.0 ) ), f.x ), f.y ), f.z );',
+    '}',
+    'float weatherFbm( vec3 p ) {',
+    '  return weatherNoise( p ) * 0.55 + weatherNoise( p * 2.07 + 7.3 ) * 0.3 + weatherNoise( p * 4.3 + 1.7 ) * 0.15;',
+    '}',
+    ''
+  ].join('\n');
+
+  function applyWeatheringShader(material, amounts, dustColor) {
+    material.userData.crWeather = true;
+    material.onBeforeCompile = function (shader) {
+      shader.uniforms.weatherAmounts = amounts;
+      shader.uniforms.weatherDustColor = dustColor;
+      shader.vertexShader = 'varying vec3 vWeatherWorld;\nvarying vec3 vWeatherNormal;\n' +
+        shader.vertexShader.replace('#include <begin_vertex>', [
+          '#include <begin_vertex>',
+          '\tvec4 weatherPosition = vec4( transformed, 1.0 );',
+          '\tvec3 weatherObjectNormal = objectNormal;',
+          '\t#ifdef USE_INSTANCING',
+          '\t\tweatherPosition = instanceMatrix * weatherPosition;',
+          '\t\tweatherObjectNormal = mat3( instanceMatrix ) * weatherObjectNormal;',
+          '\t#endif',
+          '\tvWeatherWorld = ( modelMatrix * weatherPosition ).xyz;',
+          '\tvWeatherNormal = normalize( mat3( modelMatrix ) * weatherObjectNormal );'
+        ].join('\n'));
+      shader.fragmentShader = WEATHER_PARS + shader.fragmentShader
+        .replace('#include <color_fragment>', [
+          '#include <color_fragment>',
+          // x: grime, y: dust, z: streaks, w: tonal drift
+          '\tvec3 weatherN = normalize( vWeatherNormal );',
+          '\tfloat weatherBlotch = weatherFbm( vWeatherWorld * 1.7 );',
+          '\tfloat weatherGrime = ( 1.0 - smoothstep( 0.03, 0.85, vWeatherWorld.y ) ) * ( 0.45 + 0.55 * weatherBlotch );',
+          '\tfloat weatherDust = smoothstep( 0.55, 0.95, weatherN.y ) * smoothstep( 0.3, 0.75, weatherFbm( vWeatherWorld * 0.9 + 4.0 ) );',
+          '\tfloat weatherStreak = ( 1.0 - abs( weatherN.y ) ) * smoothstep( 0.6, 0.92, weatherNoise( vec3( ( vWeatherWorld.x + vWeatherWorld.z ) * 11.0, vWeatherWorld.y * 0.9, 3.0 ) ) );',
+          '\tfloat weatherTint = weatherFbm( vWeatherWorld * 0.33 + 11.0 ) - 0.5;',
+          '\tdiffuseColor.rgb *= 1.0 + weatherTint * weatherAmounts.w;',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, diffuseColor.rgb * vec3( 0.5, 0.48, 0.45 ), weatherGrime * weatherAmounts.x );',
+          '\tdiffuseColor.rgb = mix( diffuseColor.rgb, weatherDustColor, weatherDust * weatherAmounts.y );',
+          '\tdiffuseColor.rgb *= 1.0 - weatherStreak * weatherAmounts.z;'
+        ].join('\n'))
+        .replace('#include <roughnessmap_fragment>', [
+          '#include <roughnessmap_fragment>',
+          '\troughnessFactor = clamp( roughnessFactor + weatherDust * weatherAmounts.y * 0.35 + weatherGrime * weatherAmounts.x * 0.12, 0.04, 1.0 );'
+        ].join('\n'));
+    };
+    material.customProgramCacheKey = function () {
+      return 'crWeathered';
+    };
+    material.needsUpdate = true;
+  }
+
+  function applyServiceWear(root, cleanMaterials) {
+    var painted = { value: new THREE.Vector4(0.5, 0.32, 0.1, 0.07) };
+    var metal = { value: new THREE.Vector4(0.34, 0.14, 0.04, 0.03) };
+    var dustColor = { value: new THREE.Color(0x8f8b82) };
+    var patched = 0;
+    var defaultCompile = THREE.Material.prototype.onBeforeCompile;
+    root.traverse(function (object) {
+      if (!object.isMesh || !object.material || Array.isArray(object.material)) return;
+      var material = object.material;
+      if (
+        material.userData.crWeather ||
+        !(material.isMeshStandardMaterial) ||
+        material.transparent ||
+        material.onBeforeCompile !== defaultCompile ||
+        cleanMaterials.indexOf(material) >= 0
+      ) return;
+      applyWeatheringShader(material, material.metalness >= 0.45 ? metal : painted, dustColor);
+      patched += 1;
+    });
+    return patched;
+  }
+
   function buildSceneFinishing() {
     buildContactShadowSystem();
-    if (dynamicShadows && THREE.ShadowMaterial) {
-      var shadowMaterial = new THREE.ShadowMaterial({
-        color: 0x151a1b,
-        transparent: true,
-        opacity: 0.44,
-        depthWrite: false
-      });
-      // One receiver follows the photographed slab plane. Its material writes
-      // only shadow alpha, preserving the graded concrete texture beneath it.
-      shadowReceiver = horizontalPlane(13.6, 9.6, shadowMaterial, 1.15, 0.006, -4.55, scene);
-      shadowReceiver.receiveShadow = true;
-      shadowReceiver.renderOrder = -2;
-    }
 
     // Sparse, barely visible particulates add parallax and depth without a
     // costly post-processing pass or a theatrical "fog machine" effect.
@@ -15301,19 +16123,11 @@
     startupDiagnostics.ejectOcclusionCalls += 1;
     var proofWidth = 1420;
     var proofHeight = 982;
-    var proofCamera = new THREE.PerspectiveCamera(
-      43,
-      proofWidth / proofHeight,
-      0.08,
-      70
+    var proofCamera = configureProcessProofCamera(
+      new THREE.PerspectiveCamera(PROCESS_CAMERA_FOV, proofWidth / proofHeight, 0.1, 180),
+      proofWidth,
+      proofHeight
     );
-    proofCamera.position
-      .copy(PROCESS_CAMERA_DIRECTION)
-      .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
-      .add(PROCESS_CAMERA_TARGET);
-    proofCamera.lookAt(PROCESS_CAMERA_TARGET);
-    proofCamera.updateProjectionMatrix();
-    proofCamera.updateMatrixWorld(true);
 
     var savedPose = poseCopy(currentPose || SAFE_POSE);
     var savedClampStroke = castingRig.clampDrive.state.stroke;
@@ -15487,19 +16301,11 @@
     startupDiagnostics.gripOpticalCalls += 1;
     var proofWidth = 1420;
     var proofHeight = 982;
-    var proofCamera = new THREE.PerspectiveCamera(
-      43,
-      proofWidth / proofHeight,
-      0.08,
-      70
+    var proofCamera = configureProcessProofCamera(
+      new THREE.PerspectiveCamera(PROCESS_CAMERA_FOV, proofWidth / proofHeight, 0.1, 180),
+      proofWidth,
+      proofHeight
     );
-    proofCamera.position
-      .copy(PROCESS_CAMERA_DIRECTION)
-      .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
-      .add(PROCESS_CAMERA_TARGET);
-    proofCamera.lookAt(PROCESS_CAMERA_TARGET);
-    proofCamera.updateProjectionMatrix();
-    proofCamera.updateMatrixWorld(true);
 
     var savedPose = poseCopy(currentPose || SAFE_POSE);
     var savedClampStroke = castingRig.clampDrive.state.stroke;
@@ -15968,19 +16774,11 @@
     var proofWidth = 1420;
     var proofHeight = 982;
     var requiredClearance = 60;
-    var proofCamera = new THREE.PerspectiveCamera(
-      43,
-      proofWidth / proofHeight,
-      0.08,
-      70
+    var proofCamera = configureProcessProofCamera(
+      new THREE.PerspectiveCamera(PROCESS_CAMERA_FOV, proofWidth / proofHeight, 0.1, 180),
+      proofWidth,
+      proofHeight
     );
-    proofCamera.position
-      .copy(PROCESS_CAMERA_DIRECTION)
-      .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
-      .add(PROCESS_CAMERA_TARGET);
-    proofCamera.lookAt(PROCESS_CAMERA_TARGET);
-    proofCamera.updateProjectionMatrix();
-    proofCamera.updateMatrixWorld(true);
 
     // Compare against the lower visible edge of the unchanged 75 mm top rail,
     // not its centerline. Both the front span and machine-side return are
@@ -17231,14 +18029,11 @@
     var hydraulicPowerPackBounds = unionWorldBounds(hydraulicPowerPackObjects);
     var hydraulicPackBodyBounds = new THREE.Box3().setFromObject(anatomy.hydraulicPackBody);
     var hydraulicPackLegBounds = new THREE.Box3().setFromObject(anatomy.hydraulicPackLegs);
-    var hydraulicProofCamera = new THREE.PerspectiveCamera(51, 652 / 706, 0.08, 70);
-    hydraulicProofCamera.position
-      .copy(PROCESS_CAMERA_DIRECTION)
-      .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
-      .add(PROCESS_CAMERA_TARGET);
-    hydraulicProofCamera.lookAt(PROCESS_CAMERA_TARGET);
-    hydraulicProofCamera.updateMatrixWorld(true);
-    hydraulicProofCamera.updateProjectionMatrix();
+    var hydraulicProofCamera = configureProcessProofCamera(
+      new THREE.PerspectiveCamera(PROCESS_CAMERA_FOV, 652 / 706, 0.1, 180),
+      652,
+      706
+    );
     var hydraulicProjectionMinX = Infinity;
     var hydraulicProjectionMaxX = -Infinity;
     var hydraulicProjectionMinY = Infinity;
@@ -18041,19 +18836,11 @@
 
     var proofWidth = 652;
     var proofHeight = 706;
-    var proofCamera = new THREE.PerspectiveCamera(
-      51,
-      proofWidth / proofHeight,
-      0.08,
-      70
+    var proofCamera = configureProcessProofCamera(
+      new THREE.PerspectiveCamera(PROCESS_CAMERA_FOV, proofWidth / proofHeight, 0.1, 180),
+      proofWidth,
+      proofHeight
     );
-    proofCamera.position
-      .copy(PROCESS_CAMERA_DIRECTION)
-      .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
-      .add(PROCESS_CAMERA_TARGET);
-    proofCamera.lookAt(PROCESS_CAMERA_TARGET);
-    proofCamera.updateProjectionMatrix();
-    proofCamera.updateMatrixWorld(true);
     var projectedCorner = new THREE.Vector3();
     function projectWorldBox(worldBox) {
       var result = {
@@ -18100,11 +18887,13 @@
     if (door.handleBatch) {
       handleScreen = projectWorldBox(new THREE.Box3().setFromObject(door.handleBatch));
       var handleSilhouette = handleScreen.width;
-      if (handleSilhouette < 5 || handleSilhouette > 6) {
+      // The legibility window scales with the aisle camera's ~0.68x
+      // magnification of the former close 3/4 view.
+      if (handleSilhouette < 3.4 || handleSilhouette > 4.2) {
         issues.push(
           'raised pull-handle width projects ' +
           handleSilhouette.toFixed(2) +
-          'px instead of the required 5-6px'
+          'px instead of the required 3.4-4.2px'
         );
       }
       startupDiagnostics.guardDoorHandlePx652 = handleSilhouette;
@@ -19726,17 +20515,13 @@
         }
 
         scene.updateMatrixWorld(true);
-        var strokeProofCamera = new THREE.PerspectiveCamera(51, 652 / 706, 0.08, 70);
-        strokeProofCamera.position
-          .copy(PROCESS_CAMERA_DIRECTION)
-          .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
-          .add(PROCESS_CAMERA_TARGET);
-        strokeProofCamera.lookAt(PROCESS_CAMERA_TARGET);
-        strokeProofCamera.updateProjectionMatrix();
-        // Vector3.project reads matrixWorldInverse directly. Mirror the render
-        // path by resolving the proof camera's world matrix before projecting;
-        // otherwise the identity view matrix reports a false 43 px sweep.
-        strokeProofCamera.updateMatrixWorld(true);
+        // Vector3.project reads matrixWorldInverse directly; the shared
+        // configuration resolves the proof camera's world matrix first.
+        var strokeProofCamera = configureProcessProofCamera(
+          new THREE.PerspectiveCamera(PROCESS_CAMERA_FOV, 652 / 706, 0.1, 180),
+          652,
+          706
+        );
         var strokeStartAngle = strokeWitness.pointerStart;
         var strokeEndAngle = strokeStartAngle + strokeWitness.pointerSweep;
         var strokeStartTip = new THREE.Vector3(
@@ -19760,11 +20545,13 @@
         );
         strokeWitness.projectedArcPx652 = strokeArcPx652;
         startupDiagnostics.shotStrokeWitnessArcPx652 = strokeArcPx652;
-        if (strokeArcPx652 < 25 || strokeArcPx652 > 30) {
+        // Readable-but-restrained sweep, scaled to the aisle camera's
+        // ~0.72x magnification of the former close 3/4 view.
+        if (strokeArcPx652 < 18 || strokeArcPx652 > 24) {
           issues.push(
             'rack-and-pinion pointer projects ' +
             strokeArcPx652.toFixed(2) +
-            'px instead of the required 25-30px at 652'
+            'px instead of the required 18-24px at 652'
           );
         }
       }
@@ -20350,13 +21137,16 @@
       PROCESS_CAMERA_DIRECTION.z
     ) * 180 / Math.PI;
     var processElevationDegrees = Math.asin(PROCESS_CAMERA_DIRECTION.y) * 180 / Math.PI;
+    // The operator-side aisle view is level at standing eye height, so the
+    // cell is read at true scale with vertical lines kept vertical.
     if (
       processAzimuthDegrees < 35 ||
       processAzimuthDegrees > 42 ||
-      processElevationDegrees < 5 ||
-      processElevationDegrees > 8
+      Math.abs(processElevationDegrees) > 0.5 ||
+      PROCESS_CAMERA_TARGET.y < 1.5 ||
+      PROCESS_CAMERA_TARGET.y > 1.9
     ) {
-      issues.push('process camera escaped the operator-side topology view');
+      issues.push('process camera escaped the operator-side eye-level aisle view');
     }
     startupDiagnostics.processTopologyCamera = Object.freeze({
       azimuthDeg: Number(processAzimuthDegrees.toFixed(2)),
@@ -20493,13 +21283,24 @@
 
   try {
     if (bootMessage) bootMessage.textContent = "Charging ladle - proving cold-chamber cell";
-    buildBackdrop();
     buildMachineProxy();
     buildRobot();
     buildStaging();
     buildSceneFinishing();
+    buildPlantEnvironment();
+    capturePlantEnvironment();
     configureMoltenMaterials();
     patchDisplayMaterials(scene);
+    // Castings leave the die bright; only the plant and machinery weather.
+    var cleanCastingMaterials = [];
+    for (var travelerIndex = 0; travelerIndex < travelers.length; travelerIndex++) {
+      travelers[travelerIndex].group.traverse(function (object) {
+        if (object.material && cleanCastingMaterials.indexOf(object.material) < 0) {
+          cleanCastingMaterials.push(object.material);
+        }
+      });
+    }
+    startupDiagnostics.weatheredMaterials = applyServiceWear(scene, cleanCastingMaterials);
     applyPose(HERO_POSE);
     // The bounded production proof covers recipe identity, press/fence
     // separation, robot reach, die-normal reversal, sensor baseline, and the
@@ -20963,8 +21764,13 @@
 
   function renderSceneFrame(now, idleFrame) {
     var renderStartedAt = performance.now();
+    // Frame totals (scene + every post pass), not just the last render call.
+    renderer.info.autoReset = false;
+    renderer.info.reset();
     if (post) renderPostFrame();
     else renderer.render(scene, camera);
+    frameDrawCalls = renderer.info.render.calls;
+    frameTriangles = renderer.info.render.triangles;
     var renderFinishedAt = performance.now();
     recordRenderCost(renderFinishedAt - renderStartedAt);
     if (!startupDiagnostics.firstRenderAt) {
@@ -21563,6 +22369,10 @@
           heroJointScreenPoints: startupDiagnostics.heroJointScreenPoints,
           heroTerminalScreenBounds: startupDiagnostics.heroTerminalScreenBounds
         })
+      }),
+      frame: Object.freeze({
+        drawCalls: frameDrawCalls,
+        triangles: frameTriangles
       }),
       post: Object.freeze({
         requested: postRequested,
