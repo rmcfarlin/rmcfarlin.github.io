@@ -459,7 +459,6 @@
   var castingSteam = null;
   var castingGlow = null;
   var moltenStream = null;
-  var moltenDrops = null;
   var castPlaqueReady = false;
   var castRecycleProved = false;
   var castingChargeLoaded = true;
@@ -1148,11 +1147,13 @@
   }
 
   var debugFps = false;
+  var postDisabledByQuery = false;
   try {
     var diagnosticsQuery = new URLSearchParams(window.location.search);
     var debugRequested = diagnosticsQuery.get("debug") === "1";
     var qaRequested = diagnosticsQuery.get("qa") === "1";
     var proofQueryValue = diagnosticsQuery.get("proof");
+    postDisabledByQuery = diagnosticsQuery.get("post") === "0";
     debugFps = debugRequested || qaRequested || proofQueryValue === "1";
     exhaustiveProofRequested =
       qaRequested ||
@@ -1263,6 +1264,10 @@
     !lowPower &&
     width * height <= 2300000 &&
     (window.devicePixelRatio || 1) <= 2.25;
+  // The linear HDR pipeline owns multisampling through its scene target, so
+  // the default framebuffer never pays for a second, discarded MSAA surface.
+  // Low-power devices keep the original direct, tone-mapped render path.
+  var postRequested = !lowPower && !postDisabledByQuery;
 
   function setTextureSRGB(texture) {
     if (!texture) return;
@@ -1288,7 +1293,7 @@
   try {
     renderer = new THREE.WebGLRenderer({
       canvas: canvas,
-      antialias: useMsaa,
+      antialias: useMsaa && !postRequested,
       alpha: false,
       powerPreference: lowPower ? "default" : "high-performance",
       preserveDrawingBuffer: false
@@ -1316,6 +1321,389 @@
   }
   canvas.style.width = "100%";
   canvas.style.height = "100%";
+
+  // Linear HDR post pipeline. The scene renders once into a half-float,
+  // multisampled target; a 13-tap mip-chain bloom (Karis-weighted first
+  // level) spreads only energy above display white, and one composite applies
+  // the renderer's own ACES curve, sRGB transfer, and triangular dither. The
+  // classic Three.js build ships no EffectComposer, so every pass is inline.
+  var POST_BLOOM_LEVELS = 6;
+  // Threshold/knee are linear scene radiance before exposure. Painted and
+  // display surfaces and ordinary steel glints stay below it; molten metal
+  // and lit lamps, the cell's actual light sources, exceed it.
+  var POST_BLOOM_THRESHOLD = 3.5;
+  var POST_BLOOM_KNEE = 1.5;
+  var POST_BLOOM_STRENGTH = 0.5;
+  var post = null;
+  var postDrawingBufferSize = new THREE.Vector2();
+
+  function postFullscreenVertexShader() {
+    return [
+      "varying vec2 vUv;",
+      "void main() {",
+      "  vUv = position.xy * 0.5 + 0.5;",
+      "  gl_Position = vec4( position.xy, 0.0, 1.0 );",
+      "}"
+    ].join("\n");
+  }
+
+  function postPassMaterial(fragmentShader, uniforms, blending) {
+    return new THREE.ShaderMaterial({
+      uniforms: uniforms,
+      vertexShader: postFullscreenVertexShader(),
+      fragmentShader: fragmentShader,
+      depthTest: false,
+      depthWrite: false,
+      toneMapped: false,
+      blending: blending || THREE.NoBlending
+    });
+  }
+
+  function postGlslMat3(matrix) {
+    var values = [];
+    for (var index = 0; index < 9; index++) values.push(matrix.elements[index].toFixed(8));
+    return "mat3( " + values.join(", ") + " )";
+  }
+
+  // Exact inverse of Three's ACESFilmicToneMapping for display surfaces that
+  // were authored with toneMapped:false (HMI, labels, cabinet screen). The
+  // composite re-applies ACES, so these pixels reproduce their authored
+  // values. Inputs clamp at 0.9 so a white glyph never becomes bloom energy.
+  function postInverseDisplayGlsl() {
+    var acesInput = new THREE.Matrix3().fromArray([
+      0.59719, 0.076, 0.0284,
+      0.35458, 0.90834, 0.13383,
+      0.04823, 0.01566, 0.83777
+    ]);
+    var acesOutput = new THREE.Matrix3().fromArray([
+      1.60475, -0.10208, -0.00327,
+      -0.53108, 1.10813, -0.07276,
+      -0.07367, -0.00605, 1.07602
+    ]);
+    return [
+      "uniform float crDisplayExposure;",
+      "vec3 crInverseDisplay( vec3 displayColor ) {",
+      "  const mat3 crAcesInputInverse = " + postGlslMat3(acesInput.clone().invert()) + ";",
+      "  const mat3 crAcesOutputInverse = " + postGlslMat3(acesOutput.clone().invert()) + ";",
+      "  vec3 fitted = clamp( crAcesOutputInverse * clamp( displayColor, 0.0, 1.0 ), 0.0, 0.9 );",
+      "  vec3 a = 0.983729 * fitted - 1.0;",
+      "  vec3 b = 0.432951 * fitted - 0.0245786;",
+      "  vec3 c = 0.238081 * fitted + 0.000090537;",
+      "  vec3 radiance = ( -b - sqrt( max( b * b - 4.0 * a * c, 0.0 ) ) ) / ( 2.0 * a );",
+      "  return max( crAcesInputInverse * radiance, 0.0 ) * ( 0.6 / crDisplayExposure );",
+      "}",
+      ""
+    ].join("\n");
+  }
+
+  function buildPostPipeline() {
+    if (!postRequested || !THREE.HalfFloatType || !THREE.WebGLRenderTarget) return null;
+    var capabilities = renderer.capabilities;
+    if (!capabilities || !capabilities.isWebGL2) return null;
+    if (!renderer.extensions || !renderer.extensions.has("EXT_color_buffer_float")) return null;
+
+    function makeTarget(samples, depthBuffer) {
+      var target = new THREE.WebGLRenderTarget(1, 1, {
+        type: THREE.HalfFloatType,
+        format: THREE.RGBAFormat,
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        wrapS: THREE.ClampToEdgeWrapping,
+        wrapT: THREE.ClampToEdgeWrapping,
+        depthBuffer: depthBuffer,
+        stencilBuffer: false,
+        samples: samples
+      });
+      target.texture.generateMipmaps = false;
+      return target;
+    }
+
+    var sceneTarget = makeTarget(useMsaa ? 4 : 0, true);
+    var mips = [];
+    var downMaterials = [];
+    var upMaterials = [];
+    var downFragment = [
+      "uniform sampler2D tSource;",
+      "uniform vec2 texelSize;",
+      "uniform float prefilter;",
+      "uniform float threshold;",
+      "uniform float knee;",
+      "varying vec2 vUv;",
+      "float luma( vec3 c ) { return dot( c, vec3( 0.2126, 0.7152, 0.0722 ) ); }",
+      "vec3 tap( vec2 offset ) { return min( texture2D( tSource, vUv + texelSize * offset ).rgb, vec3( 6.0e4 ) ); }",
+      "void main() {",
+      "  vec3 a = tap( vec2( -2.0, 2.0 ) ); vec3 b = tap( vec2( 0.0, 2.0 ) ); vec3 c = tap( vec2( 2.0, 2.0 ) );",
+      "  vec3 d = tap( vec2( -2.0, 0.0 ) ); vec3 e = tap( vec2( 0.0 ) );       vec3 f = tap( vec2( 2.0, 0.0 ) );",
+      "  vec3 g = tap( vec2( -2.0, -2.0 ) ); vec3 h = tap( vec2( 0.0, -2.0 ) ); vec3 i = tap( vec2( 2.0, -2.0 ) );",
+      "  vec3 j = tap( vec2( -1.0, 1.0 ) ); vec3 k = tap( vec2( 1.0, 1.0 ) );",
+      "  vec3 l = tap( vec2( -1.0, -1.0 ) ); vec3 m = tap( vec2( 1.0, -1.0 ) );",
+      "  vec3 color;",
+      "  if ( prefilter > 0.5 ) {",
+      "    vec3 g0 = ( a + b + d + e ) * 0.25; vec3 g1 = ( b + c + e + f ) * 0.25;",
+      "    vec3 g2 = ( d + e + g + h ) * 0.25; vec3 g3 = ( e + f + h + i ) * 0.25;",
+      "    vec3 g4 = ( j + k + l + m ) * 0.25;",
+      "    float w0 = 0.125 / ( 1.0 + luma( g0 ) ); float w1 = 0.125 / ( 1.0 + luma( g1 ) );",
+      "    float w2 = 0.125 / ( 1.0 + luma( g2 ) ); float w3 = 0.125 / ( 1.0 + luma( g3 ) );",
+      "    float w4 = 0.5 / ( 1.0 + luma( g4 ) );",
+      "    color = ( g0 * w0 + g1 * w1 + g2 * w2 + g3 * w3 + g4 * w4 ) / ( w0 + w1 + w2 + w3 + w4 );",
+      "    float brightest = max( color.r, max( color.g, color.b ) );",
+      "    float soft = clamp( brightest - threshold + knee, 0.0, 2.0 * knee );",
+      "    soft = soft * soft / ( 4.0 * knee + 1.0e-4 );",
+      "    color *= max( soft, brightest - threshold ) / max( brightest, 1.0e-4 );",
+      "  } else {",
+      "    color = e * 0.125 + ( a + c + g + i ) * 0.03125 + ( b + d + f + h ) * 0.0625 + ( j + k + l + m ) * 0.125;",
+      "  }",
+      "  gl_FragColor = vec4( color, 1.0 );",
+      "}"
+    ].join("\n");
+    var upFragment = [
+      "uniform sampler2D tSource;",
+      "uniform vec2 texelSize;",
+      "varying vec2 vUv;",
+      "void main() {",
+      "  vec4 d = texelSize.xyxy * vec4( 1.0, 1.0, -1.0, 0.0 );",
+      "  vec3 s = texture2D( tSource, vUv - d.xy ).rgb;",
+      "  s += texture2D( tSource, vUv - d.wy ).rgb * 2.0;",
+      "  s += texture2D( tSource, vUv - d.zy ).rgb;",
+      "  s += texture2D( tSource, vUv + d.zw ).rgb * 2.0;",
+      "  s += texture2D( tSource, vUv ).rgb * 4.0;",
+      "  s += texture2D( tSource, vUv + d.xw ).rgb * 2.0;",
+      "  s += texture2D( tSource, vUv + d.zy ).rgb;",
+      "  s += texture2D( tSource, vUv + d.wy ).rgb * 2.0;",
+      "  s += texture2D( tSource, vUv + d.xy ).rgb;",
+      "  gl_FragColor = vec4( s * 0.0625, 1.0 );",
+      "}"
+    ].join("\n");
+    for (var level = 0; level < POST_BLOOM_LEVELS; level++) {
+      mips.push(makeTarget(0, false));
+      downMaterials.push(postPassMaterial(downFragment, {
+        tSource: { value: level === 0 ? sceneTarget.texture : null },
+        texelSize: { value: new THREE.Vector2(1, 1) },
+        prefilter: { value: level === 0 ? 1 : 0 },
+        threshold: { value: POST_BLOOM_THRESHOLD },
+        knee: { value: POST_BLOOM_KNEE }
+      }));
+    }
+    for (var downLevel = 1; downLevel < POST_BLOOM_LEVELS; downLevel++) {
+      downMaterials[downLevel].uniforms.tSource.value = mips[downLevel - 1].texture;
+    }
+    for (var upLevel = 0; upLevel < POST_BLOOM_LEVELS - 1; upLevel++) {
+      // Each smaller level is tent-filtered and added into the next larger
+      // one, so mip 0 ends as the sum of every bloom radius.
+      upMaterials.push(postPassMaterial(upFragment, {
+        tSource: { value: mips[upLevel + 1].texture },
+        texelSize: { value: new THREE.Vector2(1, 1) }
+      }, THREE.AdditiveBlending));
+    }
+
+    var compositeMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        tScene: { value: sceneTarget.texture },
+        tBloom: { value: mips[0].texture },
+        bloomStrength: { value: POST_BLOOM_STRENGTH / POST_BLOOM_LEVELS },
+        heatSources: { value: [new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4()] },
+        heatTime: { value: 0 },
+        aspect: { value: 1 }
+      },
+      vertexShader: postFullscreenVertexShader(),
+      fragmentShader: [
+        "uniform sampler2D tScene;",
+        "uniform sampler2D tBloom;",
+        "uniform float bloomStrength;",
+        // xy = screen UV center, z = radius in view-height units, w = strength
+        "uniform vec4 heatSources[ 3 ];",
+        "uniform float heatTime;",
+        "uniform float aspect;",
+        "varying vec2 vUv;",
+        "float hash12( vec2 p ) {",
+        "  vec3 p3 = fract( vec3( p.xyx ) * 0.1031 );",
+        "  p3 += dot( p3, p3.yzx + 33.33 );",
+        "  return fract( ( p3.x + p3.y ) * p3.z );",
+        "}",
+        "float valueNoise( vec2 p ) {",
+        "  vec2 i = floor( p ); vec2 f = fract( p );",
+        "  vec2 u = f * f * ( 3.0 - 2.0 * f );",
+        "  return mix( mix( hash12( i ), hash12( i + vec2( 1.0, 0.0 ) ), u.x ),",
+        "    mix( hash12( i + vec2( 0.0, 1.0 ) ), hash12( i + vec2( 1.0 ) ), u.x ), u.y );",
+        "}",
+        "vec2 heatOffset( vec2 uv ) {",
+        "  vec2 offset = vec2( 0.0 );",
+        "  for ( int index = 0; index < 3; index++ ) {",
+        "    vec4 source = heatSources[ index ];",
+        "    if ( source.w <= 0.0 ) continue;",
+        // Convective plumes rise: the lobe is tall, narrow, and skewed upward.
+        "    vec2 local = ( uv - source.xy ) * vec2( aspect, 1.0 ) / max( source.z, 1.0e-4 );",
+        "    local.y = ( local.y - 0.55 ) * 0.62;",
+        "    float mask = exp( -dot( local, local ) * 2.2 );",
+        "    if ( mask < 0.002 ) continue;",
+        "    vec2 flow = uv * vec2( aspect, 1.0 ) * ( 42.0 / max( source.z * 6.0, 0.35 ) );",
+        "    flow.y -= heatTime * 2.6;",
+        "    vec2 warp = vec2( valueNoise( flow ), valueNoise( flow + 19.7 ) ) - 0.5;",
+        "    offset += warp * mask * source.w;",
+        "  }",
+        "  return offset;",
+        "}",
+        "void main() {",
+        "  vec2 uv = vUv + heatOffset( vUv );",
+        "  vec3 color = texture2D( tScene, uv ).rgb + texture2D( tBloom, uv ).rgb * bloomStrength;",
+        "  gl_FragColor = vec4( color, 1.0 );",
+        "  #include <tonemapping_fragment>",
+        "  #include <colorspace_fragment>",
+        // Triangular dither in output space hides 8-bit banding in fog/steam.
+        "  float dither = hash12( gl_FragCoord.xy ) + hash12( gl_FragCoord.xy + 71.3 ) - 1.0;",
+        "  gl_FragColor.rgb += dither / 255.0;",
+        "}"
+      ].join("\n"),
+      depthTest: false,
+      depthWrite: false
+    });
+
+    var quadGeometry = new THREE.BufferGeometry();
+    quadGeometry.setAttribute("position", new THREE.Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1, 3, 0], 3));
+    var quad = new THREE.Mesh(quadGeometry, compositeMaterial);
+    quad.frustumCulled = false;
+    var quadScene = new THREE.Scene();
+    quadScene.add(quad);
+
+    return {
+      sceneTarget: sceneTarget,
+      mips: mips,
+      mipSizes: [],
+      downMaterials: downMaterials,
+      upMaterials: upMaterials,
+      compositeMaterial: compositeMaterial,
+      quad: quad,
+      quadScene: quadScene,
+      quadCamera: new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1),
+      width: 0,
+      height: 0,
+      samples: useMsaa ? 4 : 0,
+      displayExposure: { value: renderer.toneMappingExposure || 1 },
+      inverseDisplayGlsl: postInverseDisplayGlsl(),
+      patchedDisplayMaterials: 0,
+      compensatedOverlays: 0,
+      heatSourceCount: 0
+    };
+  }
+
+  function resizePostPipeline() {
+    if (!post) return;
+    renderer.getDrawingBufferSize(postDrawingBufferSize);
+    var targetWidth = Math.max(1, Math.round(postDrawingBufferSize.x));
+    var targetHeight = Math.max(1, Math.round(postDrawingBufferSize.y));
+    if (targetWidth === post.width && targetHeight === post.height) return;
+    post.width = targetWidth;
+    post.height = targetHeight;
+    post.sceneTarget.setSize(targetWidth, targetHeight);
+    var sourceWidth = targetWidth;
+    var sourceHeight = targetHeight;
+    for (var level = 0; level < post.mips.length; level++) {
+      var mipWidth = Math.max(1, Math.ceil(sourceWidth / 2));
+      var mipHeight = Math.max(1, Math.ceil(sourceHeight / 2));
+      post.mips[level].setSize(mipWidth, mipHeight);
+      post.mipSizes[level] = [mipWidth, mipHeight];
+      post.downMaterials[level].uniforms.texelSize.value.set(1 / sourceWidth, 1 / sourceHeight);
+      if (level > 0) {
+        post.upMaterials[level - 1].uniforms.texelSize.value.set(1 / mipWidth, 1 / mipHeight);
+      }
+      sourceWidth = mipWidth;
+      sourceHeight = mipHeight;
+    }
+    post.compositeMaterial.uniforms.aspect.value = targetWidth / targetHeight;
+  }
+
+  function renderPostFrame() {
+    resizePostPipeline();
+    var previousAutoClear = renderer.autoClear;
+    renderer.autoClear = true;
+    renderer.setRenderTarget(post.sceneTarget);
+    renderer.render(scene, camera);
+    renderer.autoClear = false;
+    for (var down = 0; down < post.mips.length; down++) {
+      post.quad.material = post.downMaterials[down];
+      renderer.setRenderTarget(post.mips[down]);
+      renderer.render(post.quadScene, post.quadCamera);
+    }
+    for (var up = post.upMaterials.length - 1; up >= 0; up--) {
+      post.quad.material = post.upMaterials[up];
+      renderer.setRenderTarget(post.mips[up]);
+      renderer.render(post.quadScene, post.quadCamera);
+    }
+    post.quad.material = post.compositeMaterial;
+    renderer.setRenderTarget(null);
+    renderer.render(post.quadScene, post.quadCamera);
+    renderer.autoClear = previousAutoClear;
+  }
+
+  // Glazing and reflection overlays were authored against sRGB-encoded
+  // blending. Linear blending adds the same light more strongly over dark
+  // backgrounds, so their opacity is scaled to keep the authored density.
+  var POST_OVERLAY_OPACITY_SCALE = 0.6;
+  var postOverlayOpacityScale = 1;
+
+  function compensateLinearOverlay(material) {
+    if (!post || !material || (material.userData && material.userData.crLinearOverlay)) return;
+    material.userData.crLinearOverlay = true;
+    material.opacity *= POST_OVERLAY_OPACITY_SCALE;
+    post.compensatedOverlays += 1;
+  }
+
+  function patchDisplayMaterial(material) {
+    if (
+      !post ||
+      !material ||
+      material.toneMapped !== false ||
+      material.isShaderMaterial ||
+      (material.userData && (material.userData.crLinearDisplay || material.userData.crLinearOverlay))
+    ) return;
+    // A translucent overlay is light added over the scene, not a display
+    // surface; inverting ACES would amplify it, so it only keeps its density.
+    if (material.transparent && material.opacity < 0.999) {
+      compensateLinearOverlay(material);
+      return;
+    }
+    material.userData.crLinearDisplay = true;
+    var previousCompile = material.onBeforeCompile;
+    material.onBeforeCompile = function (shader, activeRenderer) {
+      if (typeof previousCompile === "function") previousCompile.call(this, shader, activeRenderer);
+      shader.uniforms.crDisplayExposure = post.displayExposure;
+      shader.fragmentShader = post.inverseDisplayGlsl + shader.fragmentShader.replace(
+        "#include <colorspace_fragment>",
+        "#include <colorspace_fragment>\n\tgl_FragColor.rgb = crInverseDisplay( gl_FragColor.rgb );"
+      );
+    };
+    material.customProgramCacheKey = function () {
+      return "crLinearDisplay";
+    };
+    material.needsUpdate = true;
+    post.patchedDisplayMaterials += 1;
+  }
+
+  function patchDisplayMaterials(root) {
+    if (!post || !root) return;
+    postOverlayOpacityScale = POST_OVERLAY_OPACITY_SCALE;
+    compensateLinearOverlay(M.guardGlass);
+    compensateLinearOverlay(M.polyEdge);
+    compensateLinearOverlay(M.polyUpperEdge);
+    compensateLinearOverlay(M.glass);
+    root.traverse(function (object) {
+      if (!object.material) return;
+      if (Array.isArray(object.material)) {
+        for (var index = 0; index < object.material.length; index++) {
+          patchDisplayMaterial(object.material[index]);
+        }
+      } else {
+        patchDisplayMaterial(object.material);
+      }
+    });
+  }
+
+  try {
+    post = buildPostPipeline();
+  } catch (postError) {
+    post = null;
+    if (window.console && console.warn) console.warn("HDR pipeline unavailable; using direct render", postError);
+  }
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x12171a);
@@ -2938,7 +3326,8 @@
     var viewLength = Math.max(0.001, Math.sqrt(viewX * viewX + viewZ * viewZ));
     var facing = Math.abs((viewX * nx + viewZ * nz) / viewLength);
     var grazing = 1 - Math.min(1, facing);
-    guardGlare.material.opacity = 0.045 + grazing * grazing * 0.065;
+    guardGlare.material.opacity =
+      (0.045 + grazing * grazing * 0.065) * postOverlayOpacityScale;
   }
 
   function makeGuardLatchMaterials() {
@@ -3794,7 +4183,7 @@
     var alpha = dieSprayer.jets.geometry.getAttribute('sprayAlpha');
     var envelope = smoothstep(clamp((progress - 0.16) / 0.06, 0, 1)) *
       (1 - smoothstep(clamp((progress - 0.70) / 0.08, 0, 1)));
-    dieSprayer.fans.material.uniforms.strength.value = envelope;
+    dieSprayer.fans.material.uniforms.strength.value = envelope * postOverlayOpacityScale;
     for (var i = 0; i < positions.count; i++) {
       var side = i % 2 ? 1 : -1;
       var nozzle = Math.floor(i / 2) % 6;
@@ -3804,7 +4193,7 @@
       positions.setXYZ(i, side * (0.133 + flight * 0.30),
         -0.045 + Math.sin(angle) * spread * 0.17 - flight * flight * 0.045,
         -0.32 + nozzle * 0.128 + Math.cos(angle) * spread * 0.065);
-      alpha.setX(i, envelope * (0.72 - flight * 0.48));
+      alpha.setX(i, envelope * postOverlayOpacityScale * (0.72 - flight * 0.48));
     }
     positions.needsUpdate = true;
     alpha.needsUpdate = true;
@@ -6313,35 +6702,10 @@
     }
     updateLadleSupport();
 
-    moltenStream = cylinder(0.052, 0.84, M.molten, -2.28, 1.92, 0.32, group, 0, 0, 0, 14);
-    moltenStream.visible = false;
-    moltenStream.scale.y = 0.02;
+    moltenStream = buildPourStream(group);
     var sleevePool = cylinder(0.135, 0.018, M.molten, -2.28, 1.493, 0.32, group, 0, 0, 0, 18);
     sleevePool.visible = false;
     sleevePool.scale.set(0.15, 1, 0.15);
-    // One batched droplet draw call breaks the perfect web-cylinder stream
-    // without a particle farm. Positions are rewritten in place only while
-    // metal is actually falling.
-    var moltenDropCount = lowPower ? 6 : 12;
-    var moltenDropGeometry = new THREE.BufferGeometry();
-    moltenDropGeometry.setAttribute(
-      'position',
-      new THREE.BufferAttribute(new Float32Array(moltenDropCount * 3), 3)
-    );
-    moltenDrops = new THREE.Points(
-      moltenDropGeometry,
-      new THREE.PointsMaterial({
-        color: 0xffb65a,
-        size: lowPower ? 0.025 : 0.038,
-        transparent: true,
-        opacity: 0.78,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        fog: true
-      })
-    );
-    moltenDrops.visible = false;
-    group.add(moltenDrops);
     castingGlow = new THREE.PointLight(0xff7b24, 0.14, 3.4, 2.1);
     castingGlow.position.set(-2.25, 1.66, 0.32);
     group.add(castingGlow);
@@ -8852,38 +9216,10 @@
     ], M.machineDark, bath);
     addContactShadow(0, 0, 1.4, 1.35, 0.85, bath);
     labelPlane(makeLabelTexture(['Q-01', 'QUENCH'], '#d8e7df', '#1e353b', 256, 96), 0.48, 0.18, 0, 0.94, 0.563, bath);
-    var waterMaterial = standard(0x497577, 0, 0, 0.09, 0.65, {envMapIntensity: 1.7});
-    // Soft high-bay reflections make the resting water legible from the low
-    // operator viewpoint without a second scene render or animated shader.
-    waterMaterial.map = makeTexture(function (ctx, w, h) {
-      var waterGradient = ctx.createLinearGradient(0, 0, w, h);
-      waterGradient.addColorStop(0, '#23444a');
-      waterGradient.addColorStop(0.5, '#587c80');
-      waterGradient.addColorStop(1, '#172e35');
-      ctx.fillStyle = waterGradient;
-      ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = 'rgba(220,241,235,0.32)';
-      ctx.save();
-      ctx.translate(w * 0.5, h * 0.5);
-      ctx.rotate(-0.28);
-      ctx.fillRect(-w * 0.38, -h * 0.23, w * 0.62, h * 0.07);
-      ctx.fillRect(-w * 0.38, -h * 0.08, w * 0.62, h * 0.04);
-      ctx.restore();
-    }, 128, 128);
-    var water = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.92), waterMaterial);
-    water.rotation.x = -Math.PI / 2;
-    water.position.y = 1.22;
-    bath.add(water);
-    var ripples = [];
-    for (var rippleIndex = 0; rippleIndex < 3; rippleIndex++) {
-      var ripple = new THREE.Mesh(new THREE.RingGeometry(0.19, 0.196, 40),
-        new THREE.MeshBasicMaterial({color: 0xb1d4cf, transparent: true, opacity: 0, depthWrite: false}));
-      ripple.rotation.x = -Math.PI / 2;
-      ripple.position.y = 1.223 + rippleIndex * 0.001;
-      bath.add(ripple);
-      ripples.push(ripple);
-    }
-    quenchRig = {completed: false, group: bath, water: water, ripples: ripples, steam: buildQuenchSteam(bath), walls: bathWalls.map(function (wall, index) {
+    // The bath surface is a simulated wave field: the casting, boiling, and
+    // drips all drive it, and its normals carry the high-bay reflections.
+    var surface = createQuenchWater(bath, QUENCH_WATER_Y);
+    quenchRig = {completed: false, group: bath, water: surface.mesh, surface: surface, steam: buildQuenchSteam(), walls: bathWalls.map(function (wall, index) {
       return {name: 'quench bath wall ' + index,
         minX: bath.position.x + wall[0] - wall[3] / 2, maxX: bath.position.x + wall[0] + wall[3] / 2,
         minY: wall[1] - wall[4] / 2, maxY: wall[1] + wall[4] / 2,
@@ -8920,102 +9256,1998 @@
     labelPlane(makeLabelTexture(['AL RETURN', 'CLOSED LOOP'], '#15191a', '#bbc2c1', 260, 110), 0.5, 0.2, -0.98, 0.4, 0.416, trimNest);
   }
 
-  function buildQuenchSteam(parent) {
-    var puffTexture = makeTexture(function (ctx, w, h) {
-      ctx.clearRect(0, 0, w, h);
-      // Overlapping soft lobes avoid the hard circular points used by sparks.
-      for (var lobe = 0; lobe < 7; lobe++) {
-        var angle = lobe * 2.399;
-        var cx = w * (0.5 + Math.cos(angle) * 0.12);
-        var cy = h * (0.5 + Math.sin(angle) * 0.12);
-        var fog = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.31);
-        fog.addColorStop(0, 'rgba(255,255,255,0.3)');
-        fog.addColorStop(0.42, 'rgba(255,255,255,0.15)');
-        fog.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.fillStyle = fog; ctx.fillRect(0, 0, w, h);
-      }
-    }, 64, 64);
-    var count = lowPower ? 8 : 16;
-    var geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
-    geometry.setAttribute('puffSize', new THREE.BufferAttribute(new Float32Array(count), 1));
-    geometry.setAttribute('puffAlpha', new THREE.BufferAttribute(new Float32Array(count), 1));
-    geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0.5, 0), 1.3);
-    var material = new THREE.ShaderMaterial({
-      uniforms: {puffMap: {value: puffTexture}, viewportHeight: {value: height * renderDpr}},
-      vertexShader: [
-        'uniform float viewportHeight;',
-        'attribute float puffSize; attribute float puffAlpha; varying float alpha;',
-        'void main(){',
-        'vec4 p = modelViewMatrix * vec4(position, 1.0);',
-        'gl_Position = projectionMatrix * p;',
-        'gl_PointSize = clamp(puffSize * viewportHeight * 0.5 * projectionMatrix[1][1] / max(0.1, -p.z), 1.0, 128.0);',
-        'alpha = puffAlpha; }'
-      ].join('\n'),
-      fragmentShader: [
-        'uniform sampler2D puffMap; varying float alpha;',
-        'void main(){ float a = texture2D(puffMap, gl_PointCoord).a * alpha;',
-        'gl_FragColor = vec4(0.82, 0.86, 0.84, a); }'
-      ].join('\n'),
-      transparent: true, depthWrite: false, depthTest: true,
-      blending: THREE.NormalBlending, toneMapped: false
-    });
-    var plume = new THREE.Points(geometry, material);
-    plume.name = 'soft quench-contact vapor';
-    plume.position.y = 1.235;
-    plume.visible = false;
-    parent.add(plume);
-    var births = new Float64Array(count);
-    births.fill(-100);
-    return {mesh: plume, births: births, emitting: false, live: 0, scratch: new THREE.Vector3()};
+  // Foundry process physics. Every effect below is preallocated, integrates
+  // on the simulation clock (never wall time), and is cleared in AUTO/HELD and
+  // under reduced motion, so the render loop still sleeps between cycles.
+  var QUENCH_WATER_Y = 1.22;
+  var QUENCH_BATH_HALF_X = 0.49;
+  var QUENCH_BATH_HALF_Z = 0.45;
+  var QUENCH_WAVE_SPEED = 0.55;
+  var QUENCH_WAVE_DAMPING = 1.5;
+  var QUENCH_WATER_STEP = 1 / 120;
+  // Scales the pool-boiling curve so a 330 C casting reaches saturation in
+  // roughly the 1.8 s it spends below the waterline.
+  var QUENCH_RATE_SCALE = 1.25;
+  var FX_GRAVITY = 9.81;
+  var fxSeed = 7919;
+  var fxClock = 0;
+  var fxMaxPointSize = 192;
+  var fxLightDirectionView = new THREE.Vector3(0, 1, 0);
+  var fxLightDirectionWorld = new THREE.Vector3();
+  var fxCameraForward = new THREE.Vector3(0, 0, -1);
+  var fxScratch = new THREE.Vector3();
+  var fxScratchB = new THREE.Vector3();
+  var fxPlateNormal = new THREE.Vector3();
+  var fxPlateAxisX = new THREE.Vector3();
+  var fxPlateAxisY = new THREE.Vector3();
+  var fxWorldUp = new THREE.Vector3(0, 1, 0);
+  var fxCastBox = new THREE.Box3();
+  var fxVaporTexture = null;
+  var quenchSteam = null;
+  var processVapor = null;
+  var waterDroplets = null;
+  var castThermal = {
+    temperature: 25,
+    wetness: 0,
+    submerged: 0,
+    boilRate: 0,
+    regime: 'ambient',
+    tracking: false,
+    lastCenterX: 0,
+    lastCenterY: 0,
+    lastCenterZ: 0,
+    velocityX: 0,
+    velocityY: 0,
+    velocityZ: 0,
+    steamAccumulator: 0,
+    bubbleAccumulator: 0,
+    dripAccumulator: 0,
+    smokeAccumulator: 0,
+    waterline: {
+      valid: false,
+      x: 0,
+      z: 0,
+      dirX: 1,
+      dirZ: 0,
+      normalX: 0,
+      normalZ: 1,
+      halfLength: 0.2,
+      halfThickness: 0.035
+    }
+  };
+  var fxWake = { active: false, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, radius: 0.45, strength: 5 };
+  var fxBlockedCells = [];
+
+  function fxRandom() {
+    fxSeed = (fxSeed * 16807) % 2147483647;
+    return (fxSeed - 1) / 2147483646;
   }
 
-  function updateQuenchSteam() {
-    if (!quenchRig || !quenchRig.steam) return;
-    var steam = quenchRig.steam;
-    if (reducedMotion || state === STATE.AUTO || state === STATE.HELD) {
-      steam.mesh.visible = false; steam.emitting = false; steam.live = 0;
-      steam.births.fill(-100);
-      return;
+  function fxRange(minimum, maximum) {
+    return minimum + (maximum - minimum) * fxRandom();
+  }
+
+  function makeVaporTexture() {
+    return makeTexture(function (ctx, w, h) {
+      ctx.clearRect(0, 0, w, h);
+      var seed = 311;
+      function random() {
+        seed = (seed * 16807) % 2147483647;
+        return (seed - 1) / 2147483646;
+      }
+      // A billow is many condensed lobes inside one soft envelope: the lobes
+      // give it structure, the envelope keeps the sprite border invisible.
+      for (var lobe = 0; lobe < 38; lobe++) {
+        var angle = random() * Math.PI * 2;
+        var reach = Math.sqrt(random()) * 0.27;
+        var cx = w * (0.5 + Math.cos(angle) * reach);
+        var cy = h * (0.5 + Math.sin(angle) * reach);
+        var radius = w * (0.07 + random() * 0.15);
+        var strength = 0.1 + random() * 0.17;
+        var lobeGradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+        lobeGradient.addColorStop(0, 'rgba(255,255,255,' + strength + ')');
+        lobeGradient.addColorStop(0.6, 'rgba(255,255,255,' + strength * 0.42 + ')');
+        lobeGradient.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = lobeGradient;
+        ctx.fillRect(0, 0, w, h);
+      }
+      ctx.globalCompositeOperation = 'destination-in';
+      var envelope = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.5);
+      envelope.addColorStop(0, 'rgba(255,255,255,1)');
+      envelope.addColorStop(0.55, 'rgba(255,255,255,0.78)');
+      envelope.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = envelope;
+      ctx.fillRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'source-over';
+    }, 128, 128);
+  }
+
+  var VAPOR_VERTEX_SHADER = [
+    'attribute float fxSize;',
+    'attribute float fxAlpha;',
+    'attribute float fxSpin;',
+    'attribute float fxWarm;',
+    'uniform float viewportHeight;',
+    'uniform float maxPointSize;',
+    'varying float vAlpha;',
+    'varying float vSpin;',
+    'varying float vWarm;',
+    'void main() {',
+    '  vec4 viewPosition = modelViewMatrix * vec4( position, 1.0 );',
+    '  gl_Position = projectionMatrix * viewPosition;',
+    '  float projected = fxSize * viewportHeight * 0.5 * projectionMatrix[ 1 ][ 1 ] / max( 0.1, -viewPosition.z );',
+    '  gl_PointSize = clamp( projected, 2.0, maxPointSize );',
+    // Sub-2 px parcels keep their optical energy as coverage instead of popping.
+    '  vAlpha = fxAlpha * clamp( projected * 0.5, 0.0, 1.0 );',
+    '  vSpin = fxSpin;',
+    '  vWarm = fxWarm;',
+    '}'
+  ].join('\n');
+
+  var VAPOR_FRAGMENT_SHADER = [
+    'uniform sampler2D puffMap;',
+    'uniform vec3 lightDirection;',
+    'uniform vec3 litColor;',
+    'uniform vec3 shadeColor;',
+    'uniform vec3 warmColor;',
+    'varying float vAlpha;',
+    'varying float vSpin;',
+    'varying float vWarm;',
+    'void main() {',
+    '  vec2 centered = gl_PointCoord - 0.5;',
+    '  float c = cos( vSpin );',
+    '  float s = sin( vSpin );',
+    '  vec2 rotated = vec2( c * centered.x - s * centered.y, s * centered.x + c * centered.y );',
+    '  float density = texture2D( puffMap, rotated + 0.5 ).a;',
+    '  vec2 q = centered * 2.0;',
+    '  q.y = -q.y;',
+    '  vec3 normal = normalize( vec3( q, sqrt( max( 0.0, 1.0 - dot( q, q ) ) ) + 0.35 ) );',
+    // Wrapped diffuse approximates multiple scattering inside a vapor billow.
+    '  float light = clamp( dot( normal, lightDirection ) * 0.55 + 0.45, 0.0, 1.0 );',
+    '  vec3 color = mix( shadeColor, litColor, light ) + warmColor * vWarm;',
+    '  float alpha = density * vAlpha;',
+    '  if ( alpha < 0.003 ) discard;',
+    '  gl_FragColor = vec4( color, alpha );',
+    '  #include <tonemapping_fragment>',
+    '  #include <colorspace_fragment>',
+    '}'
+  ].join('\n');
+
+  var VAPOR_FIELDS = [
+    'px', 'py', 'pz', 'vx', 'vy', 'vz', 'age', 'life', 'size0', 'size1',
+    'alpha0', 'heat', 'spin', 'spinRate', 'warm0', 'seed'
+  ];
+
+  function fxDynamicAttribute(geometry, name, count, itemSize) {
+    var attribute = new THREE.BufferAttribute(new Float32Array(count * itemSize), itemSize);
+    if (attribute.setUsage && THREE.DynamicDrawUsage !== undefined) {
+      attribute.setUsage(THREE.DynamicDrawUsage);
     }
-    var inBathMove = state === STATE.CAST_QUENCH_DIP || state === STATE.CAST_QUENCH_DWELL || state === STATE.CAST_QUENCH_LIFT;
-    var contact = false;
-    if (inBathMove && activeTraveler && activeTraveler.attached) {
-      robotRig.gripperTip.getWorldPosition(steam.scratch);
-      // Downward-oriented casting extends below its TCP. Emission begins
-      // only after its leading edge has crossed the 1.22 m water surface.
-      contact = steam.scratch.y < 1.52;
+    geometry.setAttribute(name, attribute);
+    return attribute;
+  }
+
+  function createVaporSystem(options) {
+    var capacity = options.capacity;
+    var geometry = new THREE.BufferGeometry();
+    var system = {
+      name: options.name,
+      capacity: capacity,
+      live: 0,
+      emitted: 0,
+      params: options,
+      anchor: options.anchor.clone(),
+      depth: new Float32Array(capacity),
+      order: [],
+      compare: null,
+      positionAttribute: fxDynamicAttribute(geometry, 'position', capacity, 3),
+      sizeAttribute: fxDynamicAttribute(geometry, 'fxSize', capacity, 1),
+      alphaAttribute: fxDynamicAttribute(geometry, 'fxAlpha', capacity, 1),
+      spinAttribute: fxDynamicAttribute(geometry, 'fxSpin', capacity, 1),
+      warmAttribute: fxDynamicAttribute(geometry, 'fxWarm', capacity, 1),
+      mesh: null
+    };
+    for (var field = 0; field < VAPOR_FIELDS.length; field++) {
+      system[VAPOR_FIELDS[field]] = new Float32Array(capacity);
     }
-    if (contact && !steam.emitting) {
-      for (var onset = 0; onset < steam.births.length; onset++) {
-        steam.births[onset] = simulationClock + onset * 0.035;
+    system.compare = function (a, b) {
+      return system.depth[b] - system.depth[a];
+    };
+    geometry.setDrawRange(0, 0);
+    var litColor = new THREE.Color(options.litColor).multiplyScalar(options.litIntensity || 1);
+    var material = new THREE.ShaderMaterial({
+      uniforms: {
+        puffMap: { value: fxVaporTexture },
+        viewportHeight: { value: height * renderDpr },
+        maxPointSize: { value: fxMaxPointSize },
+        lightDirection: { value: fxLightDirectionView },
+        litColor: { value: litColor },
+        shadeColor: { value: new THREE.Color(options.shadeColor) },
+        warmColor: { value: new THREE.Color(options.warmColor || 0x000000) }
+      },
+      vertexShader: VAPOR_VERTEX_SHADER,
+      fragmentShader: VAPOR_FRAGMENT_SHADER,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      blending: THREE.NormalBlending
+    });
+    system.mesh = new THREE.Points(geometry, material);
+    system.mesh.name = options.name;
+    // Particles are stored relative to one anchor so transparent sorting
+    // places the whole plume behind the guard glazing it is seen through.
+    system.mesh.position.copy(system.anchor);
+    system.mesh.frustumCulled = false;
+    system.mesh.visible = false;
+    scene.add(system.mesh);
+    return system;
+  }
+
+  function emitVapor(system, x, y, z, vx, vy, vz, size0, size1, life, alpha, heat, warm) {
+    var index = system.live;
+    if (index >= system.capacity) {
+      // A saturated plume recycles its oldest parcel instead of dropping the
+      // newest emission, so the source never visibly stalls.
+      var oldestAge = -1;
+      for (var candidate = 0; candidate < system.live; candidate++) {
+        var relativeAge = system.age[candidate] / system.life[candidate];
+        if (relativeAge > oldestAge) {
+          oldestAge = relativeAge;
+          index = candidate;
+        }
+      }
+    } else {
+      system.live += 1;
+    }
+    system.px[index] = x;
+    system.py[index] = y;
+    system.pz[index] = z;
+    system.vx[index] = vx;
+    system.vy[index] = vy;
+    system.vz[index] = vz;
+    system.age[index] = 0;
+    system.life[index] = life;
+    system.size0[index] = size0;
+    system.size1[index] = size1;
+    system.alpha0[index] = alpha;
+    system.heat[index] = heat;
+    system.spin[index] = fxRandom() * Math.PI * 2;
+    system.spinRate[index] = fxRange(-0.55, 0.55);
+    system.warm0[index] = warm || 0;
+    system.seed[index] = fxRandom() * Math.PI * 2;
+    system.emitted += 1;
+  }
+
+  function removeVapor(system, index) {
+    var last = system.live - 1;
+    if (index !== last) {
+      for (var field = 0; field < VAPOR_FIELDS.length; field++) {
+        var values = system[VAPOR_FIELDS[field]];
+        values[index] = values[last];
       }
     }
-    steam.emitting = contact;
-    var position = steam.mesh.geometry.getAttribute('position');
-    var sizes = steam.mesh.geometry.getAttribute('puffSize');
-    var alphas = steam.mesh.geometry.getAttribute('puffAlpha');
-    steam.live = 0;
-    for (var puff = 0; puff < steam.births.length; puff++) {
-      var life = 1.2 + (puff % 4) * 0.1;
-      var age = simulationClock - steam.births[puff];
-      if (age > life && contact) { steam.births[puff] = simulationClock; age = 0; }
-      var t = clamp(age / life, 0, 1);
-      var alive = age >= 0 && age < life;
-      var seed = puff * 2.399;
-      position.setXYZ(puff,
-        Math.cos(seed) * (0.075 + t * 0.18) + t * 0.08,
-        0.02 + t * 0.85,
-        Math.sin(seed) * (0.075 + t * 0.13));
-      sizes.setX(puff, 0.17 + t * 0.36);
-      alphas.setX(puff, alive ? Math.sin(Math.PI * t) * 0.44 : 0);
-      if (alive) steam.live++;
+    system.live = last;
+  }
+
+  function updateVaporSystem(system, dt, time, wake) {
+    if (!system || !system.live || dt <= 0) return;
+    var params = system.params;
+    var drag = 1 - Math.exp(-params.drag * dt);
+    var mixing = Math.exp(-dt / params.mixTime);
+    var index = 0;
+    while (index < system.live) {
+      var age = system.age[index] + dt;
+      if (age >= system.life[index]) {
+        removeVapor(system, index);
+        continue;
+      }
+      system.age[index] = age;
+      // Entrainment dilutes each parcel with ambient air, so its excess
+      // temperature and therefore its buoyant acceleration decay together.
+      var heat = system.heat[index] * mixing;
+      system.heat[index] = heat;
+      var x = system.px[index];
+      var y = system.py[index];
+      var z = system.pz[index];
+      var seed = system.seed[index];
+      // Smooth, spatially coherent eddies; convective parcels churn harder.
+      var eddy = params.turbulence * (0.3 + heat);
+      var ax = (Math.sin(y * 3.3 + time * 1.9 + seed) +
+        0.5 * Math.sin(z * 4.1 - time * 1.3 + seed * 2.0)) * eddy;
+      var az = (Math.cos(y * 2.9 - time * 1.5 + seed * 1.7) +
+        0.5 * Math.cos(x * 3.7 + time * 1.1 + seed)) * eddy;
+      var ay = params.buoyancy * heat +
+        Math.sin(x * 2.3 + z * 1.9 + time * 2.1 + seed) * eddy * 0.35;
+      var vx = system.vx[index] + ax * dt;
+      var vy = system.vy[index] + ay * dt;
+      var vz = system.vz[index] + az * dt;
+      // Quadratic-free linear drag relaxes each parcel toward the cell draft.
+      vx += (params.windX - vx) * drag;
+      vy += (params.windY - vy) * drag;
+      vz += (params.windZ - vz) * drag;
+      if (wake && wake.active) {
+        var dx = x - wake.x;
+        var dy = y - wake.y;
+        var dz = z - wake.z;
+        var distanceSquared = dx * dx + dy * dy + dz * dz;
+        if (distanceSquared < wake.radius * wake.radius) {
+          var coupling = (1 - Math.sqrt(distanceSquared) / wake.radius) *
+            (1 - Math.exp(-wake.strength * dt));
+          vx += (wake.vx - vx) * coupling;
+          vy += (wake.vy - vy) * coupling;
+          vz += (wake.vz - vz) * coupling;
+        }
+      }
+      system.vx[index] = vx;
+      system.vy[index] = vy;
+      system.vz[index] = vz;
+      system.px[index] = x + vx * dt;
+      system.py[index] = Math.max(params.floorY, y + vy * dt);
+      system.pz[index] = z + vz * dt;
+      system.spin[index] += system.spinRate[index] * dt;
+      index += 1;
     }
-    steam.mesh.visible = steam.live > 0;
-    if (steam.mesh.visible) {
-      position.needsUpdate = true; sizes.needsUpdate = true; alphas.needsUpdate = true;
-      steam.mesh.material.uniforms.viewportHeight.value = height * renderDpr;
+  }
+
+  function uploadVaporSystem(system) {
+    if (!system) return;
+    var live = system.live;
+    system.mesh.visible = live > 0;
+    system.mesh.geometry.setDrawRange(0, live);
+    if (!live) return;
+    var params = system.params;
+    var order = system.order;
+    order.length = live;
+    var cameraX = camera.position.x;
+    var cameraY = camera.position.y;
+    var cameraZ = camera.position.z;
+    for (var particle = 0; particle < live; particle++) {
+      order[particle] = particle;
+      system.depth[particle] =
+        (system.px[particle] - cameraX) * fxCameraForward.x +
+        (system.py[particle] - cameraY) * fxCameraForward.y +
+        (system.pz[particle] - cameraZ) * fxCameraForward.z;
     }
+    order.sort(system.compare);
+    var positions = system.positionAttribute.array;
+    var sizes = system.sizeAttribute.array;
+    var alphas = system.alphaAttribute.array;
+    var spins = system.spinAttribute.array;
+    var warmth = system.warmAttribute.array;
+    for (var slot = 0; slot < live; slot++) {
+      var index = order[slot];
+      var age = system.age[index];
+      var lifeProgress = age / system.life[index];
+      var growth = 1 - Math.exp(-age / params.growTime);
+      var size = system.size0[index] + (system.size1[index] - system.size0[index]) * growth;
+      var fadeIn = Math.min(1, age / params.fadeIn);
+      // Optical depth falls as the same condensed water spreads over a
+      // larger volume; the tail fade retires parcels before they are culled.
+      var dilution = Math.pow(system.size0[index] / size, params.dilution);
+      var fadeOut = 1 - smoothstep((lifeProgress - 0.55) / 0.45);
+      positions[slot * 3] = system.px[index] - system.anchor.x;
+      positions[slot * 3 + 1] = system.py[index] - system.anchor.y;
+      positions[slot * 3 + 2] = system.pz[index] - system.anchor.z;
+      sizes[slot] = size;
+      alphas[slot] = system.alpha0[index] * fadeIn * dilution * fadeOut;
+      spins[slot] = system.spin[index];
+      warmth[slot] = system.warm0[index] * Math.exp(-age / params.warmDecay);
+    }
+    system.positionAttribute.needsUpdate = true;
+    system.sizeAttribute.needsUpdate = true;
+    system.alphaAttribute.needsUpdate = true;
+    system.spinAttribute.needsUpdate = true;
+    system.warmAttribute.needsUpdate = true;
+    system.mesh.material.uniforms.viewportHeight.value = height * renderDpr;
+  }
+
+  var DROPLET_FIELDS = ['px', 'py', 'pz', 'vx', 'vy', 'vz', 'age', 'life', 'floor', 'glow'];
+
+  function createDropletSystem(options) {
+    var capacity = options.capacity;
+    var geometry = new THREE.BufferGeometry();
+    var system = {
+      name: options.name,
+      capacity: capacity,
+      live: 0,
+      emitted: 0,
+      landed: 0,
+      params: options,
+      anchor: options.anchor.clone(),
+      color: new THREE.Color(options.color).multiplyScalar(options.intensity || 1),
+      positionAttribute: fxDynamicAttribute(geometry, 'position', capacity * 2, 3),
+      colorAttribute: fxDynamicAttribute(geometry, 'color', capacity * 2, 4),
+      mesh: null
+    };
+    for (var field = 0; field < DROPLET_FIELDS.length; field++) {
+      system[DROPLET_FIELDS[field]] = new Float32Array(capacity);
+    }
+    geometry.setDrawRange(0, 0);
+    system.mesh = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      depthWrite: false,
+      fog: false,
+      blending: options.additive ? THREE.AdditiveBlending : THREE.NormalBlending
+    }));
+    system.mesh.name = options.name;
+    system.mesh.position.copy(system.anchor);
+    system.mesh.frustumCulled = false;
+    system.mesh.visible = false;
+    scene.add(system.mesh);
+    return system;
+  }
+
+  function emitDroplet(system, x, y, z, vx, vy, vz, life, floorY, glow) {
+    if (system.live >= system.capacity) return;
+    var index = system.live;
+    system.live += 1;
+    system.px[index] = x;
+    system.py[index] = y;
+    system.pz[index] = z;
+    system.vx[index] = vx;
+    system.vy[index] = vy;
+    system.vz[index] = vz;
+    system.age[index] = 0;
+    system.life[index] = life;
+    system.floor[index] = floorY;
+    system.glow[index] = glow === undefined ? 1 : glow;
+    system.emitted += 1;
+  }
+
+  function removeDroplet(system, index) {
+    var last = system.live - 1;
+    if (index !== last) {
+      for (var field = 0; field < DROPLET_FIELDS.length; field++) {
+        var values = system[DROPLET_FIELDS[field]];
+        values[index] = values[last];
+      }
+    }
+    system.live = last;
+  }
+
+  function updateDropletSystem(system, dt, onLand) {
+    if (!system || !system.live || dt <= 0) return;
+    var params = system.params;
+    var drag = Math.exp(-params.drag * dt);
+    var cooling = params.glowDecay ? Math.exp(-dt / params.glowDecay) : 1;
+    var index = 0;
+    while (index < system.live) {
+      var age = system.age[index] + dt;
+      var vy = (system.vy[index] - FX_GRAVITY * dt) * drag;
+      var vx = system.vx[index] * drag;
+      var vz = system.vz[index] * drag;
+      var y = system.py[index] + vy * dt;
+      system.px[index] += vx * dt;
+      system.pz[index] += vz * dt;
+      if (y <= system.floor[index] && vy < 0) {
+        system.landed += 1;
+        if (onLand) {
+          onLand(system.px[index], system.floor[index], system.pz[index],
+            Math.sqrt(vx * vx + vy * vy + vz * vz), system.glow[index]);
+        }
+        removeDroplet(system, index);
+        continue;
+      }
+      if (age >= system.life[index]) {
+        removeDroplet(system, index);
+        continue;
+      }
+      system.age[index] = age;
+      system.py[index] = y;
+      system.vx[index] = vx;
+      system.vy[index] = vy;
+      system.vz[index] = vz;
+      system.glow[index] *= cooling;
+      index += 1;
+    }
+  }
+
+  function uploadDropletSystem(system) {
+    if (!system) return;
+    var live = system.live;
+    system.mesh.visible = live > 0;
+    system.mesh.geometry.setDrawRange(0, live * 2);
+    if (!live) return;
+    var params = system.params;
+    var positions = system.positionAttribute.array;
+    var colors = system.colorAttribute.array;
+    for (var index = 0; index < live; index++) {
+      var x = system.px[index] - system.anchor.x;
+      var y = system.py[index] - system.anchor.y;
+      var z = system.pz[index] - system.anchor.z;
+      // Each droplet is drawn as its exposure streak: the distance it travels
+      // during one 1/60 s shutter, capped so slow drips stay round.
+      var vx = system.vx[index];
+      var vy = system.vy[index];
+      var vz = system.vz[index];
+      var speed = Math.sqrt(vx * vx + vy * vy + vz * vz);
+      var streak = speed > 1e-4
+        ? Math.min(params.maxStreak, speed * params.shutter) / speed
+        : 0;
+      var fade = 1 - smoothstep((system.age[index] / system.life[index] - 0.7) / 0.3);
+      var glow = system.glow[index];
+      var base = index * 6;
+      positions[base] = x;
+      positions[base + 1] = y;
+      positions[base + 2] = z;
+      positions[base + 3] = x - vx * streak;
+      positions[base + 4] = y - vy * streak;
+      positions[base + 5] = z - vz * streak;
+      var colorBase = index * 8;
+      colors[colorBase] = system.color.r * glow;
+      colors[colorBase + 1] = system.color.g * glow;
+      colors[colorBase + 2] = system.color.b * glow;
+      colors[colorBase + 3] = params.alpha * fade;
+      colors[colorBase + 4] = system.color.r * glow;
+      colors[colorBase + 5] = system.color.g * glow;
+      colors[colorBase + 6] = system.color.b * glow;
+      colors[colorBase + 7] = params.alpha * fade * params.tailAlpha;
+    }
+    system.positionAttribute.needsUpdate = true;
+    system.colorAttribute.needsUpdate = true;
+  }
+
+  function createQuenchWater(bath, waterY) {
+    var cellsX = lowPower ? 26 : 42;
+    var cellsZ = lowPower ? 24 : 38;
+    var sizeX = QUENCH_BATH_HALF_X * 2;
+    var sizeZ = QUENCH_BATH_HALF_Z * 2;
+    var geometry = new THREE.PlaneGeometry(sizeX, sizeZ, cellsX - 1, cellsZ - 1);
+    if (geometry.attributes.position.setUsage && THREE.DynamicDrawUsage !== undefined) {
+      geometry.attributes.position.setUsage(THREE.DynamicDrawUsage);
+      geometry.attributes.normal.setUsage(THREE.DynamicDrawUsage);
+    }
+    // Water is a dielectric (F0 ~ 0.02). At this low operator viewpoint the
+    // Fresnel term alone turns the surface into a mirror of the high bay.
+    var material = new THREE.MeshPhysicalMaterial({
+      color: 0x163033,
+      roughness: 0.05,
+      metalness: 0,
+      ior: 1.333,
+      envMapIntensity: 1.3,
+      transparent: true,
+      opacity: 0.94,
+      depthWrite: false
+    });
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.name = 'simulated quench bath surface';
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.y = waterY;
+    // Drawn first among transparent passes so vapor and droplets composite
+    // over it; it writes no depth, so steam is never clipped at the surface.
+    mesh.renderOrder = -1;
+    bath.add(mesh);
+    var count = cellsX * cellsZ;
+    return {
+      mesh: mesh,
+      cellsX: cellsX,
+      cellsZ: cellsZ,
+      sizeX: sizeX,
+      sizeZ: sizeZ,
+      dx: sizeX / (cellsX - 1),
+      dz: sizeZ / (cellsZ - 1),
+      height: new Float32Array(count),
+      velocity: new Float32Array(count),
+      blocked: new Uint8Array(count),
+      originX: bath.position.x,
+      originZ: bath.position.z,
+      waterY: waterY,
+      accumulator: 0,
+      active: false,
+      dirty: false,
+      quietTime: 0,
+      peak: 0,
+      steps: 0
+    };
+  }
+
+  function quenchWaterCell(surface, worldX, worldZ) {
+    // Plane rows run toward world +Z after the -90 degree X rotation.
+    return {
+      i: (worldX - surface.originX + surface.sizeX * 0.5) / surface.dx,
+      j: (worldZ - surface.originZ + surface.sizeZ * 0.5) / surface.dz
+    };
+  }
+
+  function disturbQuenchWater(surface, worldX, worldZ, radius, amount) {
+    if (!surface) return;
+    var cell = quenchWaterCell(surface, worldX, worldZ);
+    var reachI = Math.ceil(radius * 2 / surface.dx);
+    var reachJ = Math.ceil(radius * 2 / surface.dz);
+    var minI = Math.max(0, Math.floor(cell.i - reachI));
+    var maxI = Math.min(surface.cellsX - 1, Math.ceil(cell.i + reachI));
+    var minJ = Math.max(0, Math.floor(cell.j - reachJ));
+    var maxJ = Math.min(surface.cellsZ - 1, Math.ceil(cell.j + reachJ));
+    if (minI > maxI || minJ > maxJ) return;
+    var inverseRadiusSquared = 1 / Math.max(1e-6, radius * radius);
+    for (var j = minJ; j <= maxJ; j++) {
+      var offsetZ = (j - cell.j) * surface.dz;
+      for (var i = minI; i <= maxI; i++) {
+        var offsetX = (i - cell.i) * surface.dx;
+        var falloff = Math.exp(-(offsetX * offsetX + offsetZ * offsetZ) * inverseRadiusSquared);
+        surface.velocity[j * surface.cellsX + i] += amount * falloff;
+      }
+    }
+    surface.active = true;
+    surface.quietTime = 0;
+  }
+
+  function resetQuenchWater(surface) {
+    if (!surface) return;
+    surface.height.fill(0);
+    surface.velocity.fill(0);
+    surface.blocked.fill(0);
+    surface.accumulator = 0;
+    surface.active = false;
+    surface.quietTime = 0;
+    surface.peak = 0;
+    var position = surface.mesh.geometry.attributes.position;
+    var normal = surface.mesh.geometry.attributes.normal;
+    for (var index = 0; index < position.count; index++) {
+      position.array[index * 3 + 2] = 0;
+      normal.array[index * 3] = 0;
+      normal.array[index * 3 + 1] = 0;
+      normal.array[index * 3 + 2] = 1;
+    }
+    position.needsUpdate = true;
+    normal.needsUpdate = true;
+  }
+
+  // Linear shallow-water wave equation on a staggered-free grid with mirror
+  // (zero-gradient) walls: h_tt = c^2 lap(h), with viscous damping. Cells
+  // occupied by the casting are pinned, so waves reflect off the part.
+  function stepQuenchWater(surface, dt) {
+    if (!surface || !surface.active) return;
+    surface.accumulator = Math.min(surface.accumulator + dt, QUENCH_WATER_STEP * 12);
+    var cellsX = surface.cellsX;
+    var cellsZ = surface.cellsZ;
+    var heightField = surface.height;
+    var velocity = surface.velocity;
+    var blocked = surface.blocked;
+    var coefficientX = QUENCH_WAVE_SPEED * QUENCH_WAVE_SPEED / (surface.dx * surface.dx);
+    var coefficientZ = QUENCH_WAVE_SPEED * QUENCH_WAVE_SPEED / (surface.dz * surface.dz);
+    var damping = Math.exp(-QUENCH_WAVE_DAMPING * QUENCH_WATER_STEP);
+    var count = heightField.length;
+    while (surface.accumulator >= QUENCH_WATER_STEP) {
+      surface.accumulator -= QUENCH_WATER_STEP;
+      surface.steps += 1;
+      for (var j = 0; j < cellsZ; j++) {
+        var row = j * cellsX;
+        var up = (j > 0 ? j - 1 : 1) * cellsX;
+        var down = (j < cellsZ - 1 ? j + 1 : cellsZ - 2) * cellsX;
+        for (var i = 0; i < cellsX; i++) {
+          var index = row + i;
+          if (blocked[index]) {
+            velocity[index] = 0;
+            continue;
+          }
+          var left = i > 0 ? i - 1 : 1;
+          var right = i < cellsX - 1 ? i + 1 : cellsX - 2;
+          var center = heightField[index];
+          var acceleration =
+            (heightField[row + left] + heightField[row + right] - 2 * center) * coefficientX +
+            (heightField[up + i] + heightField[down + i] - 2 * center) * coefficientZ;
+          velocity[index] = (velocity[index] + acceleration * QUENCH_WATER_STEP) * damping;
+        }
+      }
+      // Impulses are not volume-conserving, so the mean level is removed each
+      // step; only the propagating wave field is kept.
+      var mean = 0;
+      for (var cell = 0; cell < count; cell++) {
+        heightField[cell] += velocity[cell] * QUENCH_WATER_STEP;
+        if (blocked[cell]) heightField[cell] *= 0.5;
+        mean += heightField[cell];
+      }
+      mean /= count;
+      var peak = 0;
+      for (var level = 0; level < count; level++) {
+        heightField[level] -= mean;
+        var magnitude = Math.abs(heightField[level]) + Math.abs(velocity[level]) * 0.05;
+        if (magnitude > peak) peak = magnitude;
+      }
+      surface.peak = peak;
+    }
+    surface.dirty = true;
+    if (surface.peak < 2e-5) {
+      surface.quietTime += dt;
+      if (surface.quietTime > 0.4) resetQuenchWater(surface);
+    } else {
+      surface.quietTime = 0;
+    }
+  }
+
+  function uploadQuenchWater(surface) {
+    if (!surface || !surface.dirty) return;
+    surface.dirty = false;
+    var cellsX = surface.cellsX;
+    var cellsZ = surface.cellsZ;
+    var heightField = surface.height;
+    var position = surface.mesh.geometry.attributes.position;
+    var normal = surface.mesh.geometry.attributes.normal;
+    for (var j = 0; j < cellsZ; j++) {
+      var row = j * cellsX;
+      var up = j > 0 ? j - 1 : j;
+      var down = j < cellsZ - 1 ? j + 1 : j;
+      for (var i = 0; i < cellsX; i++) {
+        var index = row + i;
+        var left = i > 0 ? i - 1 : i;
+        var right = i < cellsX - 1 ? i + 1 : i;
+        var slopeX = (heightField[row + right] - heightField[row + left]) /
+          ((right - left) * surface.dx);
+        var slopeZ = (heightField[down * cellsX + i] - heightField[up * cellsX + i]) /
+          ((down - up) * surface.dz);
+        // Local +Y is world -Z, so the world Z slope enters with a + sign.
+        var nx = -slopeX;
+        var ny = slopeZ;
+        var inverseLength = 1 / Math.sqrt(nx * nx + ny * ny + 1);
+        position.array[index * 3 + 2] = heightField[index];
+        normal.array[index * 3] = nx * inverseLength;
+        normal.array[index * 3 + 1] = ny * inverseLength;
+        normal.array[index * 3 + 2] = inverseLength;
+      }
+    }
+    position.needsUpdate = true;
+    normal.needsUpdate = true;
+  }
+
+  function buildQuenchSteam() {
+    if (!fxVaporTexture) fxVaporTexture = makeVaporTexture();
+    try {
+      var gl = renderer.getContext();
+      var pointRange = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE);
+      if (pointRange && pointRange[1]) fxMaxPointSize = Math.min(192, pointRange[1]);
+    } catch (ignorePointRange) {}
+    var bathAnchor = new THREE.Vector3(-1.8, QUENCH_WATER_Y + 0.4, -3.8);
+    quenchSteam = createVaporSystem({
+      name: 'quench boiling vapor plume',
+      capacity: lowPower ? 80 : 220,
+      anchor: bathAnchor,
+      litColor: 0xf1f0ea,
+      litIntensity: 1.15,
+      shadeColor: 0x6a767a,
+      warmColor: 0x000000,
+      buoyancy: 3.2,
+      drag: 1.6,
+      mixTime: 0.85,
+      turbulence: 0.55,
+      windX: 0.05,
+      windY: 0,
+      windZ: 0.02,
+      floorY: QUENCH_WATER_Y,
+      growTime: 0.9,
+      fadeIn: 0.08,
+      dilution: 0.85,
+      warmDecay: 0.5
+    });
+    // Release-agent flash vapor at the die and burnt-lubricant smoke from the
+    // hot casting share one slightly cooler, grayer plume.
+    var dieAnchor = new THREE.Vector3(1.7, 3.0, -5.1);
+    if (dieSprayer && dieSprayer.head) {
+      scene.updateMatrixWorld(true);
+      dieSprayer.head.getWorldPosition(dieAnchor);
+      dieAnchor.y -= 1.2;
+    }
+    processVapor = createVaporSystem({
+      name: 'die spray flash vapor and casting smoke',
+      capacity: lowPower ? 56 : 140,
+      anchor: dieAnchor,
+      litColor: 0xe6e8e6,
+      litIntensity: 1.05,
+      shadeColor: 0x5c666b,
+      warmColor: 0x000000,
+      buoyancy: 3.1,
+      drag: 1.4,
+      mixTime: 0.9,
+      turbulence: 0.7,
+      windX: 0.06,
+      windY: 0,
+      windZ: 0.03,
+      floorY: 0.1,
+      growTime: 1.0,
+      fadeIn: 0.1,
+      dilution: 0.9,
+      warmDecay: 0.4
+    });
+    waterDroplets = createDropletSystem({
+      name: 'quench splash and drip droplets',
+      capacity: lowPower ? 48 : 120,
+      anchor: bathAnchor,
+      color: 0xd8ecef,
+      intensity: 1.1,
+      alpha: 0.75,
+      tailAlpha: 0.1,
+      additive: false,
+      drag: 0.35,
+      shutter: 1 / 60,
+      maxStreak: 0.09
+    });
+    return quenchSteam;
+  }
+
+  // Quench heat removal (C/s at full immersion) follows the pool-boiling
+  // curve: a vapor blanket insulates the hot part (film boiling), collapses
+  // through transition boiling to the critical-heat-flux peak, nucleate
+  // boiling ends near saturation, and plain convection remains below it.
+  function quenchCoolingRate(temperature) {
+    var rate;
+    if (temperature >= 260) {
+      rate = 70 + (temperature - 260) * 0.35;
+    } else if (temperature >= 150) {
+      rate = 70 + (260 - temperature) / 110 * 330;
+    } else if (temperature >= 103) {
+      rate = 400 * Math.pow((temperature - 100) / 50, 1.6);
+    } else {
+      rate = Math.max(0, (temperature - 30) * 1.4);
+    }
+    return rate * QUENCH_RATE_SCALE;
+  }
+
+  function boilingRegime(temperature) {
+    if (temperature >= 260) return 'film';
+    if (temperature >= 150) return 'transition';
+    if (temperature >= 101) return 'nucleate';
+    return temperature > 35 ? 'convection' : 'ambient';
+  }
+
+  function stateProgressNow() {
+    if (!isFinite(activeStateDuration) || activeStateDuration <= 0) return 1;
+    return clamp((simulationClock - stateEntered) / activeStateDuration, 0, 1);
+  }
+
+  function updateCastThermal(dt) {
+    var thermal = castThermal;
+    if (
+      state === STATE.REQUESTED ||
+      state === STATE.DIE_CLOSE ||
+      state === STATE.CLAMP_LOCK ||
+      state === STATE.LADLE_LIFT ||
+      state === STATE.LADLE_POUR ||
+      state === STATE.LADLE_RETURN
+    ) {
+      thermal.temperature = 25;
+      thermal.wetness = 0;
+      thermal.boilRate = 0;
+      thermal.regime = 'ambient';
+      return;
+    }
+    if (state === STATE.INJECT_SLOW || state === STATE.INJECT_FAST || state === STATE.INTENSIFY) {
+      thermal.temperature = 670;
+      thermal.regime = 'liquid';
+      return;
+    }
+    if (state === STATE.COOL) {
+      // Conduction into the tempered die: lumped-capacitance decay toward
+      // the die face, reaching a typical ~390 C ejection temperature.
+      thermal.temperature = 250 + (670 - 250) * Math.exp(-1.1 * stateProgressNow());
+      thermal.regime = 'solidifying';
+      return;
+    }
+    if (thermal.temperature <= 25.01) return;
+    var boiling = quenchCoolingRate(thermal.temperature) * thermal.submerged;
+    // Still-air convection plus radiation from bare aluminum: tau ~ 140 s.
+    var air = (thermal.temperature - 25) / 140;
+    // A wet film evaporating off a hot part is its own strong heat sink.
+    var film = thermal.submerged <= 0 && thermal.temperature > 100 ? thermal.wetness * 45 : 0;
+    thermal.temperature = Math.max(25, thermal.temperature - (boiling + air + film) * dt);
+    thermal.boilRate = thermal.submerged > 0 && thermal.temperature > 100
+      ? clamp(boiling / (400 * QUENCH_RATE_SCALE), 0, 1)
+      : 0;
+    thermal.regime = thermal.submerged > 0 ? boilingRegime(thermal.temperature) : 'air';
+  }
+
+  function clearQuenchBlockedCells(surface) {
+    for (var index = 0; index < fxBlockedCells.length; index++) {
+      surface.blocked[fxBlockedCells[index]] = 0;
+    }
+    fxBlockedCells.length = 0;
+  }
+
+  function blockQuenchWaterline(surface, waterline) {
+    var steps = Math.ceil(waterline.halfLength * 2 / Math.min(surface.dx, surface.dz)) + 1;
+    for (var step = 0; step <= steps; step++) {
+      var along = (step / steps) * 2 - 1;
+      var worldX = waterline.x + waterline.dirX * along * waterline.halfLength;
+      var worldZ = waterline.z + waterline.dirZ * along * waterline.halfLength;
+      var cell = quenchWaterCell(surface, worldX, worldZ);
+      var i = Math.round(cell.i);
+      var j = Math.round(cell.j);
+      if (i < 0 || j < 0 || i >= surface.cellsX || j >= surface.cellsZ) continue;
+      var index = j * surface.cellsX + i;
+      if (!surface.blocked[index]) {
+        surface.blocked[index] = 1;
+        fxBlockedCells.push(index);
+      }
+    }
+  }
+
+  function waterlinePoint(waterline, along, side, target) {
+    target.x = waterline.x + waterline.dirX * along * waterline.halfLength +
+      waterline.normalX * side * waterline.halfThickness;
+    target.z = waterline.z + waterline.dirZ * along * waterline.halfLength +
+      waterline.normalZ * side * waterline.halfThickness;
+    return target;
+  }
+
+  function insideQuenchBath(worldX, worldZ) {
+    return Math.abs(worldX - (-1.8)) < QUENCH_BATH_HALF_X &&
+      Math.abs(worldZ - (-3.8)) < QUENCH_BATH_HALF_Z;
+  }
+
+  function onWaterDropletLand(x, y, z, speed) {
+    if (!quenchRig || !quenchRig.surface || Math.abs(y - QUENCH_WATER_Y) > 0.001) return;
+    // A falling drop presses a small crater that radiates as a ring wave.
+    disturbQuenchWater(quenchRig.surface, x, z, 0.022, -Math.min(0.14, speed * 0.04));
+  }
+
+  function quenchEntrySplash(waterline, speed) {
+    var surface = quenchRig.surface;
+    var count = Math.round(clamp(speed * 26, 8, lowPower ? 18 : 40));
+    for (var drop = 0; drop < count; drop++) {
+      var side = fxRandom() < 0.5 ? -1 : 1;
+      waterlinePoint(waterline, fxRange(-1, 1), side * fxRange(1, 2.2), fxScratch);
+      // A plate knifing into water throws two thin crown sheets off its faces.
+      var lift = speed * fxRange(0.35, 0.95);
+      var outward = speed * fxRange(0.12, 0.38) * side;
+      emitDroplet(
+        waterDroplets,
+        fxScratch.x,
+        QUENCH_WATER_Y + 0.01,
+        fxScratch.z,
+        waterline.normalX * outward + waterline.dirX * fxRange(-0.12, 0.12),
+        lift,
+        waterline.normalZ * outward + waterline.dirZ * fxRange(-0.12, 0.12),
+        1.4,
+        QUENCH_WATER_Y,
+        1
+      );
+    }
+    for (var ring = -2; ring <= 2; ring++) {
+      waterlinePoint(waterline, ring / 2, 0, fxScratch);
+      disturbQuenchWater(surface, fxScratch.x, fxScratch.z, 0.07, speed * 0.1);
+    }
+    // First contact flashes the water film on the hot face before the vapor
+    // blanket stabilizes: one short, dense burst at the entry line.
+    var flash = Math.round((lowPower ? 6 : 14) * clamp((castThermal.temperature - 100) / 250, 0, 1));
+    for (var puff = 0; puff < flash; puff++) {
+      waterlinePoint(waterline, fxRange(-1, 1), fxRange(-1.5, 1.5), fxScratch);
+      emitVapor(
+        quenchSteam,
+        fxScratch.x,
+        QUENCH_WATER_Y + fxRange(0.01, 0.05),
+        fxScratch.z,
+        fxRange(-0.25, 0.25),
+        fxRange(0.5, 0.9),
+        fxRange(-0.25, 0.25),
+        fxRange(0.07, 0.11),
+        fxRange(0.5, 0.8),
+        fxRange(1.4, 2.0),
+        fxRange(0.5, 0.7),
+        1.2,
+        0
+      );
+    }
+  }
+
+  function measureHeldCasting() {
+    var thermal = castThermal;
+    var waterline = thermal.waterline;
+    var group = activeTraveler.group;
+    group.updateWorldMatrix(true, true);
+    fxCastBox.setFromObject(group);
+    var elements = group.matrixWorld.elements;
+    // Plate axes from the world matrix: local X runs through the grip tabs,
+    // local Y along the plate height, local Z through its thickness.
+    fxPlateAxisX.set(elements[0], elements[1], elements[2]).normalize();
+    fxPlateAxisY.set(elements[4], elements[5], elements[6]).normalize();
+    fxPlateNormal.set(elements[8], elements[9], elements[10]).normalize();
+    // The waterline of a vertical plate is the horizontal line in its plane.
+    fxScratchB.crossVectors(fxWorldUp, fxPlateNormal);
+    var horizontalLength = Math.sqrt(fxScratchB.x * fxScratchB.x + fxScratchB.z * fxScratchB.z);
+    if (horizontalLength < 1e-4) {
+      fxScratchB.copy(fxPlateAxisX);
+      horizontalLength = Math.max(1e-4, Math.sqrt(fxScratchB.x * fxScratchB.x + fxScratchB.z * fxScratchB.z));
+    }
+    waterline.dirX = fxScratchB.x / horizontalLength;
+    waterline.dirZ = fxScratchB.z / horizontalLength;
+    waterline.normalX = -waterline.dirZ;
+    waterline.normalZ = waterline.dirX;
+    var scale = CAST_PLAQUE_SCALE;
+    waterline.halfLength = scale * (
+      0.34 * Math.abs(fxPlateAxisX.x * waterline.dirX + fxPlateAxisX.z * waterline.dirZ) +
+      0.4 * Math.abs(fxPlateAxisY.x * waterline.dirX + fxPlateAxisY.z * waterline.dirZ)
+    );
+    waterline.halfLength = Math.max(0.06, waterline.halfLength);
+    waterline.halfThickness = 0.045 * scale + 0.01;
+    group.getWorldPosition(fxScratch);
+    waterline.x = fxScratch.x;
+    waterline.z = fxScratch.z;
+    waterline.valid = true;
+    var centerX = (fxCastBox.min.x + fxCastBox.max.x) * 0.5;
+    var centerY = (fxCastBox.min.y + fxCastBox.max.y) * 0.5;
+    var centerZ = (fxCastBox.min.z + fxCastBox.max.z) * 0.5;
+    return { centerX: centerX, centerY: centerY, centerZ: centerZ };
+  }
+
+  function updateQuenchProcess(dt) {
+    var surface = quenchRig.surface;
+    var thermal = castThermal;
+    var waterline = thermal.waterline;
+    clearQuenchBlockedCells(surface);
+    fxWake.active = false;
+    var holding = !!(
+      activeTraveler &&
+      activeTraveler.attached &&
+      activeTraveler.group.visible &&
+      castPlaqueReady
+    );
+    if (!holding) {
+      thermal.submerged = 0;
+      thermal.tracking = false;
+      waterline.valid = false;
+      return;
+    }
+    var center = measureHeldCasting();
+    var minY = fxCastBox.min.y;
+    var maxY = fxCastBox.max.y;
+    var submerged = clamp((QUENCH_WATER_Y - minY) / Math.max(0.01, maxY - minY), 0, 1);
+    if (!insideQuenchBath(waterline.x, waterline.z)) submerged = 0;
+    if (thermal.tracking && dt > 0) {
+      // Finite-difference velocity, lightly filtered against frame jitter.
+      var blend = 1 - Math.exp(-dt / 0.05);
+      thermal.velocityX += ((center.centerX - thermal.lastCenterX) / dt - thermal.velocityX) * blend;
+      thermal.velocityY += ((center.centerY - thermal.lastCenterY) / dt - thermal.velocityY) * blend;
+      thermal.velocityZ += ((center.centerZ - thermal.lastCenterZ) / dt - thermal.velocityZ) * blend;
+    } else {
+      thermal.velocityX = thermal.velocityY = thermal.velocityZ = 0;
+    }
+    thermal.tracking = true;
+    thermal.lastCenterX = center.centerX;
+    thermal.lastCenterY = center.centerY;
+    thermal.lastCenterZ = center.centerZ;
+    var previousSubmerged = thermal.submerged;
+    thermal.submerged = submerged;
+    fxWake.active = true;
+    fxWake.x = center.centerX;
+    fxWake.y = center.centerY;
+    fxWake.z = center.centerZ;
+    fxWake.vx = thermal.velocityX;
+    fxWake.vy = thermal.velocityY;
+    fxWake.vz = thermal.velocityZ;
+
+    if (previousSubmerged <= 0 && submerged > 0) {
+      quenchEntrySplash(waterline, Math.max(0.3, -thermal.velocityY));
+      thermal.wetness = 1;
+    }
+    var crossing = submerged > 0 && submerged < 1;
+    if (crossing) {
+      blockQuenchWaterline(surface, waterline);
+      // The plate's changing immersed volume displaces the free surface on
+      // both faces; that source launches the wave train the bath carries.
+      var displacement = -thermal.velocityY * 0.25 * dt;
+      for (var sample = -2; sample <= 2; sample++) {
+        for (var face = -1; face <= 1; face += 2) {
+          waterlinePoint(waterline, sample / 2.2, face * 2.2, fxScratch);
+          disturbQuenchWater(surface, fxScratch.x, fxScratch.z, 0.045, displacement);
+        }
+      }
+    }
+
+    if (submerged > 0 && thermal.temperature > 100) {
+      thermal.wetness = 1;
+      var boil = thermal.boilRate;
+      var film = thermal.temperature >= 260;
+      var steamRate = (lowPower ? 0.45 : 1) * (24 + 250 * boil);
+      thermal.steamAccumulator += steamRate * dt;
+      while (thermal.steamAccumulator >= 1) {
+        thermal.steamAccumulator -= 1;
+        waterlinePoint(waterline, fxRange(-1.05, 1.05), fxRange(-1.6, 1.6), fxScratch);
+        emitVapor(
+          quenchSteam,
+          fxScratch.x,
+          QUENCH_WATER_Y + fxRange(0.005, 0.03),
+          fxScratch.z,
+          fxRange(-0.12, 0.12) + thermal.velocityX * 0.3,
+          fxRange(0.25, 0.45) + boil * 0.55,
+          fxRange(-0.12, 0.12) + thermal.velocityZ * 0.3,
+          fxRange(0.06, 0.1),
+          fxRange(0.45, 0.78) + boil * 0.3,
+          fxRange(1.8, 2.5),
+          film ? fxRange(0.4, 0.55) : fxRange(0.5, 0.72),
+          1,
+          0
+        );
+      }
+      // Collapsing vapor bubbles fling fine spray; nucleate boiling is the
+      // violent regime, the insulating film is comparatively quiet.
+      var bubbleRate = (lowPower ? 0.4 : 1) * (film ? 10 : 70) * boil;
+      thermal.bubbleAccumulator += bubbleRate * dt;
+      while (thermal.bubbleAccumulator >= 1) {
+        thermal.bubbleAccumulator -= 1;
+        waterlinePoint(waterline, fxRange(-1.1, 1.1), fxRange(-2.4, 2.4), fxScratch);
+        emitDroplet(
+          waterDroplets,
+          fxScratch.x,
+          QUENCH_WATER_Y + 0.005,
+          fxScratch.z,
+          fxRange(-0.18, 0.18),
+          fxRange(0.35, 1.0),
+          fxRange(-0.18, 0.18),
+          0.8,
+          QUENCH_WATER_Y,
+          0.8
+        );
+        disturbQuenchWater(surface, fxScratch.x, fxScratch.z, 0.025, fxRange(-0.08, 0.08) * (0.3 + boil));
+      }
+    } else if (submerged <= 0 && thermal.wetness > 0.01) {
+      // Out of the bath: the wet film drains in drips and flashes off a part
+      // that is still hotter than boiling.
+      thermal.wetness *= Math.exp(-dt / 0.85);
+      var dripRate = (lowPower ? 5 : 9) * thermal.wetness;
+      thermal.dripAccumulator += dripRate * dt;
+      while (thermal.dripAccumulator >= 1) {
+        thermal.dripAccumulator -= 1;
+        var along = fxRange(-0.9, 0.9);
+        var dripX = waterline.x + waterline.dirX * along * waterline.halfLength;
+        var dripZ = waterline.z + waterline.dirZ * along * waterline.halfLength;
+        emitDroplet(
+          waterDroplets,
+          dripX,
+          minY + 0.01,
+          dripZ,
+          thermal.velocityX,
+          Math.min(0, thermal.velocityY),
+          thermal.velocityZ,
+          2.2,
+          insideQuenchBath(dripX, dripZ) ? QUENCH_WATER_Y : 0.03,
+          1
+        );
+      }
+      var residual = thermal.temperature > 70
+        ? (lowPower ? 10 : 24) * thermal.wetness * clamp((thermal.temperature - 70) / 120, 0, 1)
+        : 0;
+      thermal.steamAccumulator += residual * dt;
+      while (thermal.steamAccumulator >= 1) {
+        thermal.steamAccumulator -= 1;
+        emitVapor(
+          quenchSteam,
+          fxRange(fxCastBox.min.x, fxCastBox.max.x),
+          fxRange(minY, maxY),
+          fxRange(fxCastBox.min.z, fxCastBox.max.z),
+          thermal.velocityX * 0.5,
+          0.2 + thermal.velocityY * 0.5,
+          thermal.velocityZ * 0.5,
+          fxRange(0.04, 0.07),
+          fxRange(0.22, 0.4),
+          fxRange(1.0, 1.5),
+          fxRange(0.28, 0.4),
+          0.8,
+          0
+        );
+      }
+    }
+  }
+
+  function emitCastingSmoke(dt) {
+    // Release-agent residue on a casting above ~250 C burns off as thin
+    // smoke; it stops naturally as the part cools in air or water.
+    var thermal = castThermal;
+    if (!thermal.waterline.valid || thermal.submerged > 0 || thermal.temperature < 250) return;
+    var rate = (lowPower ? 4 : 9) * clamp((thermal.temperature - 250) / 140, 0, 1);
+    thermal.smokeAccumulator += rate * dt;
+    while (thermal.smokeAccumulator >= 1) {
+      thermal.smokeAccumulator -= 1;
+      emitVapor(
+        processVapor,
+        fxRange(fxCastBox.min.x, fxCastBox.max.x),
+        fxRange(fxCastBox.min.y, fxCastBox.max.y),
+        fxRange(fxCastBox.min.z, fxCastBox.max.z),
+        thermal.velocityX * 0.4,
+        0.15 + thermal.velocityY * 0.4,
+        thermal.velocityZ * 0.4,
+        fxRange(0.03, 0.06),
+        fxRange(0.2, 0.34),
+        fxRange(1.1, 1.6),
+        fxRange(0.12, 0.2),
+        0.7,
+        0
+      );
+    }
+  }
+
+  var dieFxState = { lastState: null, sprayAccumulator: 0, flashHeat: 0 };
+
+  function updateDieVaporProcess(dt) {
+    if (state !== dieFxState.lastState) {
+      if (state === STATE.DIE_OPEN && castingRig && castingRig.plaqueSocket) {
+        // Opening the die exposes release agent baked onto a ~250 C face: one
+        // soft puff escapes the parting line as the halves separate.
+        castingRig.plaqueSocket.getWorldPosition(fxScratch);
+        var puffs = lowPower ? 7 : 16;
+        for (var puff = 0; puff < puffs; puff++) {
+          emitVapor(
+            processVapor,
+            fxScratch.x + fxRange(-0.08, 0.08),
+            fxScratch.y + fxRange(-0.3, 0.3),
+            fxScratch.z + fxRange(-0.25, 0.25),
+            fxRange(-0.15, 0.15),
+            fxRange(0.1, 0.35),
+            fxRange(0.3, 0.6),
+            fxRange(0.06, 0.1),
+            fxRange(0.35, 0.55),
+            fxRange(1.3, 1.9),
+            fxRange(0.22, 0.32),
+            0.9,
+            0
+          );
+        }
+      }
+      dieFxState.lastState = state;
+    }
+    if (!dieSprayer || !dieSprayer.head) return;
+    if (dieSprayer.spraying) {
+      dieFxState.flashHeat = 1;
+    } else {
+      dieFxState.flashHeat *= Math.exp(-dt / 0.35);
+    }
+    var envelope = dieSprayer.fans && dieSprayer.fans.material && dieSprayer.fans.material.uniforms
+      ? dieSprayer.fans.material.uniforms.strength.value / Math.max(postOverlayOpacityScale, 1e-3)
+      : 0;
+    var activity = dieSprayer.spraying ? Math.max(0.25, envelope) : dieFxState.flashHeat * 0.4;
+    if (activity < 0.02) return;
+    // Water-based release agent flashes to vapor on the hot die faces; the
+    // cloud rebounds into the parting gap and rises out of the open die.
+    var rate = (lowPower ? 20 : 54) * activity;
+    dieFxState.sprayAccumulator += rate * dt;
+    var head = dieSprayer.head;
+    head.updateWorldMatrix(true, false);
+    while (dieFxState.sprayAccumulator >= 1) {
+      dieFxState.sprayAccumulator -= 1;
+      var face = fxRandom() < 0.5 ? -1 : 1;
+      fxScratch.set(face * fxRange(0.36, 0.43), fxRange(-0.26, 0.06), fxRange(-0.34, 0.34));
+      head.localToWorld(fxScratch);
+      fxScratchB.set(-face * fxRange(0.12, 0.35), fxRange(0.05, 0.25), fxRange(-0.08, 0.08));
+      fxScratchB.transformDirection(head.matrixWorld).multiplyScalar(fxRange(0.3, 0.55));
+      // The housing roofs the die, so the expanding cloud spills out of the
+      // open operator-side tooling bay (+Z) before it can rise.
+      emitVapor(
+        processVapor,
+        fxScratch.x,
+        fxScratch.y,
+        fxScratch.z,
+        fxScratchB.x,
+        fxScratchB.y + 0.12,
+        fxScratchB.z + fxRange(0.35, 0.75),
+        fxRange(0.06, 0.1),
+        fxRange(0.5, 0.85),
+        fxRange(1.3, 1.9),
+        fxRange(0.3, 0.44),
+        1,
+        0
+      );
+    }
+  }
+
+  function clearFoundryFx() {
+    if (quenchSteam) quenchSteam.live = 0;
+    if (processVapor) processVapor.live = 0;
+    if (waterDroplets) waterDroplets.live = 0;
+    uploadVaporSystem(quenchSteam);
+    uploadVaporSystem(processVapor);
+    uploadDropletSystem(waterDroplets);
+    if (quenchRig && quenchRig.surface) {
+      if (quenchRig.surface.active) resetQuenchWater(quenchRig.surface);
+      clearQuenchBlockedCells(quenchRig.surface);
+    }
+    castThermal.submerged = 0;
+    castThermal.tracking = false;
+    castThermal.boilRate = 0;
+    castThermal.wetness = 0;
+    castThermal.waterline.valid = false;
+    castThermal.steamAccumulator = 0;
+    castThermal.bubbleAccumulator = 0;
+    castThermal.dripAccumulator = 0;
+    castThermal.smokeAccumulator = 0;
+    dieFxState.sprayAccumulator = 0;
+    dieFxState.flashHeat = 0;
+    dieFxState.lastState = state;
+    fxWake.active = false;
+  }
+
+  function updateFoundryFx() {
+    if (!quenchRig || !quenchSteam) return;
+    var dt = clamp(simulationClock - fxClock, 0, 0.1);
+    fxClock = simulationClock;
+    moltenTimeUniform.value = simulationClock;
+    updateLadleSlosh(dt);
+    updateHeatHaze();
+    if (reducedMotion || state === STATE.AUTO || state === STATE.HELD) {
+      if (
+        quenchSteam.live || processVapor.live || waterDroplets.live ||
+        quenchRig.surface.active || castThermal.waterline.valid
+      ) {
+        clearFoundryFx();
+      }
+      if (state !== STATE.HELD) castThermal.temperature = 25;
+      return;
+    }
+    if (dt > 0) {
+      updateQuenchProcess(dt);
+      updateCastThermal(dt);
+      emitCastingSmoke(dt);
+      updateDieVaporProcess(dt);
+      updateVaporSystem(quenchSteam, dt, simulationClock, fxWake);
+      updateVaporSystem(processVapor, dt, simulationClock, null);
+      updateDropletSystem(waterDroplets, dt, onWaterDropletLand);
+      stepQuenchWater(quenchRig.surface, dt);
+    }
+    camera.getWorldDirection(fxCameraForward);
+    fxLightDirectionWorld.copy(keyLight.position).sub(keyLight.target.position).normalize();
+    fxLightDirectionView.copy(fxLightDirectionWorld).transformDirection(camera.matrixWorldInverse);
+    uploadVaporSystem(quenchSteam);
+    uploadVaporSystem(processVapor);
+    uploadDropletSystem(waterDroplets);
+    uploadQuenchWater(quenchRig.surface);
+  }
+
+  // Pour stream. Metal leaves the ladle lip as a train of fluid parcels, each
+  // on its own closed-form ballistic path, so there is no integration error at
+  // any frame rate. The tube through them necks as the stream accelerates
+  // (continuity: A v = Q), thickens with the lip flow rate, carries capillary
+  // varicose ripples, and detaches from the lip when feeding stops so its tail
+  // visibly falls into the sleeve port.
+  var POUR_PARCEL_SPACING = 1 / 90;
+  // A pouring spout sheds metal nearly vertically: a small along-lip
+  // component plus the head-driven downward exit speed.
+  var POUR_EXIT_ALONG_LIP = 0.18;
+  var POUR_EXIT_DOWNWARD = 0.5;
+  var POUR_MAX_RADIUS = 0.05;
+  var POUR_EMISSION_START = 0.06;
+  var POUR_LANDING_MARGIN_SECONDS = 0.06;
+  var POUR_FIELDS = ['time', 'px', 'py', 'pz', 'vx', 'vy', 'vz', 'radius'];
+  var pourStream = null;
+  var moltenSpatter = null;
+  var pourImpactWorld = new THREE.Vector3();
+
+  function createPourStream(parent) {
+    var capacity = lowPower ? 40 : 64;
+    var sides = lowPower ? 7 : 10;
+    var ringCapacity = capacity + 1;
+    var geometry = new THREE.BufferGeometry();
+    var positionAttribute = fxDynamicAttribute(geometry, 'position', ringCapacity * sides, 3);
+    var normalAttribute = fxDynamicAttribute(geometry, 'normal', ringCapacity * sides, 3);
+    var indices = [];
+    for (var ring = 0; ring < ringCapacity - 1; ring++) {
+      for (var side = 0; side < sides; side++) {
+        var a = ring * sides + side;
+        var b = ring * sides + (side + 1) % sides;
+        indices.push(a, a + sides, b, b, a + sides, b + sides);
+      }
+    }
+    geometry.setIndex(indices);
+    geometry.setDrawRange(0, 0);
+    var material = M.molten.clone();
+    material.side = THREE.DoubleSide;
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.name = 'ballistic molten aluminum pour stream';
+    mesh.frustumCulled = false;
+    mesh.visible = false;
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
+    parent.add(mesh);
+    var stream = {
+      mesh: mesh,
+      material: material,
+      capacity: capacity,
+      sides: sides,
+      positionAttribute: positionAttribute,
+      normalAttribute: normalAttribute,
+      start: 0,
+      count: 0,
+      emitted: 0,
+      nextEmit: 0,
+      emitting: false,
+      lipValid: false,
+      lipX: 0,
+      lipY: 0,
+      lipZ: 0,
+      lipTime: 0,
+      lastUpdate: 0,
+      headLanded: false,
+      impactSpeed: 0,
+      impactRadius: 0,
+      spatterAccumulator: 0,
+      rings: 0,
+      ringX: new Float32Array(ringCapacity),
+      ringY: new Float32Array(ringCapacity),
+      ringZ: new Float32Array(ringCapacity),
+      ringR: new Float32Array(ringCapacity)
+    };
+    for (var field = 0; field < POUR_FIELDS.length; field++) {
+      stream[POUR_FIELDS[field]] = new Float64Array(capacity);
+    }
+    return stream;
+  }
+
+  // Free-fall time from the pour lip datum to the sleeve port for a parcel
+  // leaving along the fully tipped lip at the exit speed.
+  function pourFallSeconds() {
+    var drop = Math.max(0.05, castingRig.ladlePourPosition.y - castingRig.streamHoleScratch.y);
+    var downward = POUR_EXIT_DOWNWARD;
+    return (-downward + Math.sqrt(downward * downward + 2 * FX_GRAVITY * drop)) / FX_GRAVITY;
+  }
+
+  // Normalized feeding window inside LADLE_POUR. Feeding stops one fall time
+  // (plus margin) before the state ends, so the detached tail lands in the
+  // port while the stream is still a permitted pour-transfer authority.
+  function pourEmissionWindow(duration) {
+    var seconds = isFinite(duration) && duration > 0 ? duration : DCM_TIMING_SECONDS[STATE.LADLE_POUR];
+    var fall = pourFallSeconds() / seconds;
+    var end = 1 - fall - POUR_LANDING_MARGIN_SECONDS / seconds;
+    end = Math.max(POUR_EMISSION_START + 0.12, end);
+    return { start: POUR_EMISSION_START, end: end, fall: fall };
+  }
+
+  function pourParcelY(stream, slot, time) {
+    var tau = time - stream.time[slot];
+    return stream.py[slot] + stream.vy[slot] * tau - 0.5 * FX_GRAVITY * tau * tau;
+  }
+
+  function resetPourStream(stream) {
+    stream.start = 0;
+    stream.count = 0;
+    stream.rings = 0;
+    stream.emitting = false;
+    stream.lipValid = false;
+    stream.headLanded = false;
+    stream.spatterAccumulator = 0;
+    stream.mesh.visible = false;
+    stream.mesh.geometry.setDrawRange(0, 0);
+  }
+
+  function stepPourStream(stream, time, emitting, flow, lip, tip, holeY) {
+    var lipVX = 0;
+    var lipVY = 0;
+    var lipVZ = 0;
+    if (stream.lipValid && time > stream.lipTime + 1e-5) {
+      var lipDt = time - stream.lipTime;
+      lipVX = (lip.x - stream.lipX) / lipDt;
+      lipVY = (lip.y - stream.lipY) / lipDt;
+      lipVZ = (lip.z - stream.lipZ) / lipDt;
+    }
+    stream.lipX = lip.x;
+    stream.lipY = lip.y;
+    stream.lipZ = lip.z;
+    stream.lipTime = time;
+    stream.lipValid = true;
+    if (emitting && !stream.emitting) stream.nextEmit = time;
+    stream.emitting = emitting;
+    if (emitting) {
+      // Metal leaves the spout carried by the lip's own motion; the
+      // cross-section follows the flow rate.
+      var alongLip = Math.cos(tip) * POUR_EXIT_ALONG_LIP;
+      var radius = POUR_MAX_RADIUS * Math.sqrt(clamp(flow / 1.5, 0, 1));
+      while (stream.nextEmit <= time) {
+        if (stream.count === stream.capacity) {
+          stream.start = (stream.start + 1) % stream.capacity;
+          stream.count -= 1;
+        }
+        var slot = (stream.start + stream.count) % stream.capacity;
+        var rewind = time - stream.nextEmit;
+        stream.time[slot] = stream.nextEmit;
+        stream.px[slot] = lip.x - lipVX * rewind;
+        stream.py[slot] = lip.y - lipVY * rewind;
+        stream.pz[slot] = lip.z - lipVZ * rewind;
+        stream.vx[slot] = lipVX + alongLip;
+        stream.vy[slot] = lipVY - POUR_EXIT_DOWNWARD;
+        stream.vz[slot] = lipVZ;
+        stream.radius[slot] = radius;
+        stream.count += 1;
+        stream.emitted += 1;
+        stream.nextEmit += POUR_PARCEL_SPACING;
+      }
+    }
+    // Retire parcels already inside the port, keeping one landed parcel as
+    // the head so the tube is clipped exactly at the port plane.
+    while (stream.count > 1) {
+      var secondSlot = (stream.start + 1) % stream.capacity;
+      if (pourParcelY(stream, secondSlot, time) > holeY) break;
+      stream.start = secondSlot;
+      stream.count -= 1;
+    }
+    if (stream.count === 1 && !emitting && pourParcelY(stream, stream.start, time) <= holeY) {
+      stream.count = 0;
+    }
+
+    var rings = 0;
+    var landed = false;
+    for (var order = stream.count - 1; order >= 0; order--) {
+      var parcel = (stream.start + order) % stream.capacity;
+      var tau = time - stream.time[parcel];
+      var x = stream.px[parcel] + stream.vx[parcel] * tau;
+      var y = stream.py[parcel] + stream.vy[parcel] * tau - 0.5 * FX_GRAVITY * tau * tau;
+      var z = stream.pz[parcel] + stream.vz[parcel] * tau;
+      var vy = stream.vy[parcel] - FX_GRAVITY * tau;
+      var exitSpeed = Math.sqrt(
+        stream.vx[parcel] * stream.vx[parcel] +
+        stream.vy[parcel] * stream.vy[parcel] +
+        stream.vz[parcel] * stream.vz[parcel]
+      );
+      var speed = Math.sqrt(
+        stream.vx[parcel] * stream.vx[parcel] + vy * vy + stream.vz[parcel] * stream.vz[parcel]
+      );
+      if (y <= holeY) {
+        if (rings > 0) {
+          var previousY = stream.ringY[rings - 1];
+          var blend = (previousY - holeY) / Math.max(1e-5, previousY - y);
+          x = stream.ringX[rings - 1] + (x - stream.ringX[rings - 1]) * blend;
+          z = stream.ringZ[rings - 1] + (z - stream.ringZ[rings - 1]) * blend;
+        }
+        y = holeY;
+        landed = true;
+        stream.impactSpeed = speed;
+      }
+      var fallen = stream.py[parcel] - y;
+      // Continuity necks the accelerating jet; a small capillary varicose
+      // mode travels down it with the flow.
+      var necking = Math.sqrt(Math.max(0.3, exitSpeed) / Math.max(0.3, speed));
+      var varicose = 1 + 0.09 * Math.sin(fallen * 52 - time * 36 + parcel * 0.7);
+      stream.ringX[rings] = x;
+      stream.ringY[rings] = y;
+      stream.ringZ[rings] = z;
+      stream.ringR[rings] = stream.radius[parcel] * necking * varicose;
+      rings += 1;
+      if (landed) break;
+    }
+    stream.headLanded = landed;
+    stream.rings = rings;
+    if (rings >= 2) {
+      if (!emitting) stream.ringR[0] *= 0.35;
+      if (!landed) stream.ringR[rings - 1] *= 0.55;
+      stream.impactRadius = stream.ringR[rings - 1];
+    }
+    writePourStreamGeometry(stream);
+  }
+
+  function writePourStreamGeometry(stream) {
+    var rings = stream.rings;
+    var visible = rings >= 2;
+    stream.mesh.visible = visible;
+    if (!visible) {
+      stream.mesh.geometry.setDrawRange(0, 0);
+      return;
+    }
+    var sides = stream.sides;
+    var positions = stream.positionAttribute.array;
+    var normals = stream.normalAttribute.array;
+    for (var ring = 0; ring < rings; ring++) {
+      var ahead = Math.min(rings - 1, ring + 1);
+      var behind = Math.max(0, ring - 1);
+      var tx = stream.ringX[ahead] - stream.ringX[behind];
+      var ty = stream.ringY[ahead] - stream.ringY[behind];
+      var tz = stream.ringZ[ahead] - stream.ringZ[behind];
+      var tangentLength = Math.sqrt(tx * tx + ty * ty + tz * tz);
+      if (tangentLength < 1e-6) {
+        tx = 0;
+        ty = -1;
+        tz = 0;
+      } else {
+        tx /= tangentLength;
+        ty /= tangentLength;
+        tz /= tangentLength;
+      }
+      // Frame from a fixed +Z reference; the stream is never parallel to Z.
+      var ax = -ty;
+      var ay = tx;
+      var az = 0;
+      var axisLength = Math.sqrt(ax * ax + ay * ay) || 1;
+      ax /= axisLength;
+      ay /= axisLength;
+      var bx = ty * az - tz * ay;
+      var by = tz * ax - tx * az;
+      var bz = tx * ay - ty * ax;
+      var radius = stream.ringR[ring];
+      for (var side = 0; side < sides; side++) {
+        var angle = side / sides * Math.PI * 2;
+        var c = Math.cos(angle);
+        var s = Math.sin(angle);
+        var nx = ax * c + bx * s;
+        var ny = ay * c + by * s;
+        var nz = az * c + bz * s;
+        var vertex = (ring * sides + side) * 3;
+        positions[vertex] = stream.ringX[ring] + nx * radius;
+        positions[vertex + 1] = stream.ringY[ring] + ny * radius;
+        positions[vertex + 2] = stream.ringZ[ring] + nz * radius;
+        normals[vertex] = nx;
+        normals[vertex + 1] = ny;
+        normals[vertex + 2] = nz;
+      }
+    }
+    stream.positionAttribute.needsUpdate = true;
+    stream.normalAttribute.needsUpdate = true;
+    stream.mesh.geometry.setDrawRange(0, (rings - 1) * sides * 6);
+  }
+
+  function emitPourSpatter(stream, dt) {
+    if (!moltenSpatter || !stream.headLanded || stream.rings < 2) return;
+    // Impact of the necked jet on the port throws a few ballistic droplets;
+    // their count scales with the jet's momentum flux at the impact.
+    var impactShare = clamp(stream.impactRadius / (POUR_MAX_RADIUS * 0.6), 0, 1.5);
+    var rate = (lowPower ? 22 : 60) * impactShare * clamp(stream.impactSpeed / 3.2, 0, 1.3);
+    stream.spatterAccumulator += rate * dt;
+    if (stream.spatterAccumulator < 1) return;
+    var head = stream.rings - 1;
+    pourImpactWorld.set(stream.ringX[head], stream.ringY[head], stream.ringZ[head]);
+    castingRig.group.localToWorld(pourImpactWorld);
+    while (stream.spatterAccumulator >= 1) {
+      stream.spatterAccumulator -= 1;
+      var heading = fxRandom() * Math.PI * 2;
+      var horizontal = stream.impactSpeed * fxRange(0.06, 0.22);
+      emitDroplet(
+        moltenSpatter,
+        pourImpactWorld.x + Math.cos(heading) * 0.02,
+        pourImpactWorld.y + 0.01,
+        pourImpactWorld.z + Math.sin(heading) * 0.02,
+        Math.cos(heading) * horizontal,
+        stream.impactSpeed * fxRange(0.12, 0.38),
+        Math.sin(heading) * horizontal,
+        0.7,
+        pourImpactWorld.y - 0.012,
+        fxRange(0.7, 1)
+      );
+    }
+  }
+
+  function buildPourStream(group) {
+    pourStream = createPourStream(group);
+    var anchor = new THREE.Vector3(-2.28, 1.5, 0.32);
+    group.updateMatrixWorld(true);
+    group.localToWorld(anchor);
+    moltenSpatter = createDropletSystem({
+      name: 'molten aluminum pour spatter',
+      capacity: lowPower ? 24 : 64,
+      anchor: anchor,
+      color: 0xff7c30,
+      intensity: 6,
+      alpha: 1,
+      tailAlpha: 0.2,
+      additive: true,
+      drag: 0.5,
+      shutter: 1 / 60,
+      maxStreak: 0.06,
+      // Millimetre droplets radiate their heat away within a few tenths of
+      // a second, dimming from incandescent to dull red as they fly.
+      glowDecay: 0.22
+    });
+    return pourStream.mesh;
+  }
+
+  function updateMoltenStream(emitting, pouring, flow, tip) {
+    if (!castingRig || !pourStream) return;
+    var dt = clamp(simulationClock - pourStream.lastUpdate, 0, 0.1);
+    pourStream.lastUpdate = simulationClock;
+    if (!pouring) {
+      if (pourStream.count || pourStream.mesh.visible) resetPourStream(pourStream);
+      if (moltenSpatter && moltenSpatter.live) {
+        moltenSpatter.live = 0;
+        uploadDropletSystem(moltenSpatter);
+      }
+      return;
+    }
+    castingRig.group.updateMatrixWorld(true);
+    var lip = castingRig.ladleLip.getWorldPosition(castingRig.streamLipScratch);
+    castingRig.group.worldToLocal(lip);
+    stepPourStream(
+      pourStream,
+      simulationClock,
+      !!emitting,
+      flow || 0,
+      lip,
+      tip || 0,
+      castingRig.streamHoleScratch.y
+    );
+    emitPourSpatter(pourStream, dt);
+    updateDropletSystem(moltenSpatter, dt, null);
+    uploadDropletSystem(moltenSpatter);
+  }
+
+  // Free-surface slosh of the ladle charge: the first sloshing mode of a
+  // ~0.3 m bowl is a lightly damped oscillator (omega = sqrt(g k tanh kh),
+  // about 1 Hz) that relaxes the surface toward the effective gravity
+  // g - a, where a is the vessel's own acceleration.
+  var LADLE_SLOSH_OMEGA = 6.5;
+  var LADLE_SLOSH_DAMPING = 0.07;
+  var LADLE_SLOSH_LIMIT = 0.075;
+  var ladleSlosh = {
+    valid: false,
+    x: 0,
+    y: 0,
+    z: 0,
+    vx: 0,
+    vy: 0,
+    vz: 0,
+    angleX: 0,
+    angleZ: 0,
+    rateX: 0,
+    rateZ: 0,
+    position: new THREE.Vector3(),
+    tilt: new THREE.Quaternion(),
+    base: new THREE.Quaternion(),
+    euler: new THREE.Euler(),
+    axisZ: new THREE.Vector3(0, 0, 1)
+  };
+
+  function updateLadleSlosh(dt) {
+    if (!castingRig || !castingRig.ladleVessel || !castingRig.ladleMetal) return;
+    var slosh = ladleSlosh;
+    if (reducedMotion) {
+      if (slosh.valid || slosh.angleX || slosh.angleZ) {
+        slosh.valid = false;
+        slosh.angleX = slosh.angleZ = slosh.rateX = slosh.rateZ = 0;
+        applyLadleSloshTilt();
+      }
+      return;
+    }
+    if (dt <= 0) {
+      applyLadleSloshTilt();
+      return;
+    }
+    castingRig.ladleVessel.getWorldPosition(slosh.position);
+    castingRig.group.worldToLocal(slosh.position);
+    var ax = 0;
+    var ay = 0;
+    var az = 0;
+    if (slosh.valid) {
+      var vx = (slosh.position.x - slosh.x) / dt;
+      var vy = (slosh.position.y - slosh.y) / dt;
+      var vz = (slosh.position.z - slosh.z) / dt;
+      ax = (vx - slosh.vx) / dt;
+      ay = (vy - slosh.vy) / dt;
+      az = (vz - slosh.vz) / dt;
+      slosh.vx = vx;
+      slosh.vy = vy;
+      slosh.vz = vz;
+    } else {
+      slosh.vx = slosh.vy = slosh.vz = 0;
+    }
+    slosh.x = slosh.position.x;
+    slosh.y = slosh.position.y;
+    slosh.z = slosh.position.z;
+    slosh.valid = true;
+    // A state change can snap the vessel; clamp the finite-difference kick
+    // to the ~1 g a servo ladle can actually impose.
+    ax = clamp(ax, -9, 9);
+    az = clamp(az, -9, 9);
+    var effectiveGravity = Math.max(2, FX_GRAVITY + clamp(ay, -6, 6));
+    var targetZ = Math.atan(ax / effectiveGravity);
+    var targetX = -Math.atan(az / effectiveGravity);
+    var omegaSquared = LADLE_SLOSH_OMEGA * LADLE_SLOSH_OMEGA;
+    var dampingTerm = 2 * LADLE_SLOSH_DAMPING * LADLE_SLOSH_OMEGA;
+    // Semi-implicit Euler in small substeps keeps the oscillator stable.
+    var steps = Math.max(1, Math.ceil(dt / (1 / 240)));
+    var h = dt / steps;
+    for (var step = 0; step < steps; step++) {
+      slosh.rateZ += (omegaSquared * (targetZ - slosh.angleZ) - dampingTerm * slosh.rateZ) * h;
+      slosh.rateX += (omegaSquared * (targetX - slosh.angleX) - dampingTerm * slosh.rateX) * h;
+      slosh.angleZ += slosh.rateZ * h;
+      slosh.angleX += slosh.rateX * h;
+    }
+    slosh.angleZ = clamp(slosh.angleZ, -LADLE_SLOSH_LIMIT, LADLE_SLOSH_LIMIT);
+    slosh.angleX = clamp(slosh.angleX, -LADLE_SLOSH_LIMIT, LADLE_SLOSH_LIMIT);
+    applyLadleSloshTilt();
+  }
+
+  function applyLadleSloshTilt() {
+    var slosh = ladleSlosh;
+    var metal = castingRig.ladleMetal;
+    // The authored disk is level in the casting-group frame (rotation.z =
+    // -tip). Express the slosh tilt in that frame, then bring it back into
+    // the tipped vessel frame so the tip compensation is preserved.
+    slosh.base.setFromAxisAngle(slosh.axisZ, -castingRig.ladleVessel.rotation.z);
+    slosh.euler.set(slosh.angleX, 0, slosh.angleZ, 'XYZ');
+    slosh.tilt.setFromEuler(slosh.euler);
+    metal.quaternion.copy(slosh.base).multiply(slosh.tilt);
+  }
+
+  // Molten A380 surface. Liquid aluminum is a bright, low-emissivity metal
+  // under a thin, continuously re-forming oxide skin: the skin is duller and
+  // cooler, and incandescence shows mostly where flow tears it open. Object-
+  // space value noise advected along each surface's flow drives both.
+  var moltenTimeUniform = { value: 0 };
+  var MOLTEN_FRAGMENT_PARS = [
+    'uniform float crMoltenTime;',
+    'uniform vec3 crMoltenFlow;',
+    'uniform float crMoltenScale;',
+    'uniform float crSkinCoverage;',
+    'uniform float crSkinEmission;',
+    'uniform float crSkinRoughness;',
+    'uniform vec3 crSkinColor;',
+    'varying vec3 vCrMoltenPosition;',
+    'float crHash3( vec3 p ) {',
+    '  p = fract( p * 0.3183099 + 0.1 );',
+    '  p *= 17.0;',
+    '  return fract( p.x * p.y * p.z * ( p.x + p.y + p.z ) );',
+    '}',
+    'float crNoise3( vec3 x ) {',
+    '  vec3 i = floor( x );',
+    '  vec3 f = fract( x );',
+    '  f = f * f * ( 3.0 - 2.0 * f );',
+    '  return mix(',
+    '    mix( mix( crHash3( i ), crHash3( i + vec3( 1.0, 0.0, 0.0 ) ), f.x ),',
+    '      mix( crHash3( i + vec3( 0.0, 1.0, 0.0 ) ), crHash3( i + vec3( 1.0, 1.0, 0.0 ) ), f.x ), f.y ),',
+    '    mix( mix( crHash3( i + vec3( 0.0, 0.0, 1.0 ) ), crHash3( i + vec3( 1.0, 0.0, 1.0 ) ), f.x ),',
+    '      mix( crHash3( i + vec3( 0.0, 1.0, 1.0 ) ), crHash3( i + vec3( 1.0 ) ), f.x ), f.y ), f.z );',
+    '}',
+    'float crFbm3( vec3 p ) {',
+    '  return crNoise3( p ) * 0.55 + crNoise3( p * 2.03 + 11.7 ) * 0.3 + crNoise3( p * 4.1 + 3.1 ) * 0.15;',
+    '}',
+    ''
+  ].join('\n');
+  var MOLTEN_SURFACE_CHUNK = [
+    '\tvec3 crFlowPosition = vCrMoltenPosition * crMoltenScale - crMoltenFlow * crMoltenTime;',
+    '\tfloat crPattern = crFbm3( crFlowPosition );',
+    '\tfloat crThreshold = 0.72 - 0.4 * crSkinCoverage;',
+    '\tfloat crSkin = smoothstep( crThreshold - 0.07, crThreshold + 0.07, crPattern );',
+    '\troughnessFactor = mix( roughnessFactor, crSkinRoughness, crSkin );',
+    '\tdiffuseColor.rgb = mix( diffuseColor.rgb, crSkinColor, crSkin );'
+  ].join('\n');
+  var MOLTEN_EMISSION_CHUNK = [
+    '\tfloat crTear = 0.75 + 0.5 * crNoise3( crFlowPosition * 3.1 + 5.3 );',
+    '\ttotalEmissiveRadiance *= mix( 1.0, crSkinEmission, crSkin ) * crTear;'
+  ].join('\n');
+
+  function applyMoltenFlowShader(material, settings) {
+    if (!material || (material.userData && material.userData.crMolten)) return;
+    material.color.setHex(settings.color);
+    material.emissive.setHex(settings.emissive);
+    material.emissiveIntensity = settings.emissiveIntensity;
+    material.roughness = settings.roughness;
+    material.metalness = settings.metalness;
+    material.envMapIntensity = settings.envMapIntensity;
+    if (material.isMeshPhysicalMaterial) material.clearcoat = 0;
+    var uniforms = {
+      crMoltenTime: moltenTimeUniform,
+      crMoltenFlow: { value: new THREE.Vector3().fromArray(settings.flow) },
+      crMoltenScale: { value: settings.scale },
+      crSkinCoverage: { value: settings.coverage },
+      crSkinEmission: { value: settings.skinEmission },
+      crSkinRoughness: { value: settings.skinRoughness },
+      crSkinColor: { value: new THREE.Color(settings.skinColor) }
+    };
+    material.userData.crMolten = uniforms;
+    material.onBeforeCompile = function (shader) {
+      for (var key in uniforms) shader.uniforms[key] = uniforms[key];
+      shader.vertexShader = 'varying vec3 vCrMoltenPosition;\n' + shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\n\tvCrMoltenPosition = transformed;'
+      );
+      shader.fragmentShader = MOLTEN_FRAGMENT_PARS + shader.fragmentShader
+        .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n' + MOLTEN_SURFACE_CHUNK)
+        .replace(
+          '#include <metalnessmap_fragment>',
+          '#include <metalnessmap_fragment>\n\tmetalnessFactor = mix( metalnessFactor, 0.3, crSkin );'
+        )
+        .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n' + MOLTEN_EMISSION_CHUNK);
+    };
+    material.customProgramCacheKey = function () {
+      return 'crMoltenFlow';
+    };
+    material.needsUpdate = true;
+  }
+
+  function configureMoltenMaterials() {
+    var resting = {
+      color: 0x8f8c87,
+      emissive: 0xff5a16,
+      emissiveIntensity: 2.8,
+      roughness: 0.22,
+      metalness: 0.7,
+      envMapIntensity: 0.55,
+      // Resting melt (furnace well, ladle, sleeve pool) is mostly skinned.
+      coverage: 0.7,
+      skinEmission: 0.08,
+      skinRoughness: 0.78,
+      skinColor: 0x55524f,
+      scale: 9,
+      flow: [0.04, 0, 0.025]
+    };
+    applyMoltenFlowShader(M.molten, resting);
+    if (castingRig && castingRig.metalWitness) {
+      var slug = castingRig.metalWitness.sleeveSlugMaterial;
+      applyMoltenFlowShader(slug, {
+        color: resting.color,
+        emissive: resting.emissive,
+        emissiveIntensity: 2.2,
+        roughness: 0.22,
+        metalness: 0.7,
+        envMapIntensity: 0.5,
+        coverage: 0.45,
+        skinEmission: 0.14,
+        skinRoughness: 0.58,
+        skinColor: resting.skinColor,
+        scale: 11,
+        flow: [0.5, 0, 0]
+      });
+    }
+    if (pourStream) {
+      applyMoltenFlowShader(pourStream.material, {
+        color: 0xa7a39c,
+        emissive: 0xff7424,
+        emissiveIntensity: 6,
+        roughness: 0.14,
+        metalness: 0.55,
+        envMapIntensity: 0.45,
+        // A falling jet constantly exposes fresh metal; skin is sparse.
+        coverage: 0.22,
+        skinEmission: 0.2,
+        skinRoughness: 0.5,
+        skinColor: 0x6b6762,
+        scale: 15,
+        flow: [0, -2.8, 0]
+      });
+    }
+  }
+
+  // Convective heat haze. Each source is projected to the screen as a rising
+  // lobe; the composite refracts the scene through advected value noise.
+  // Amplitudes are ~1 px: shimmer you notice only over the melt.
+  var heatHazePoint = new THREE.Vector3();
+  var heatHazeView = new THREE.Vector3();
+
+  function setHeatSource(index, radiusWorld, strength) {
+    var source = post.compositeMaterial.uniforms.heatSources.value[index];
+    if (strength <= 0) {
+      source.set(0, 0, 0, 0);
+      return false;
+    }
+    heatHazeView.copy(heatHazePoint).applyMatrix4(camera.matrixWorldInverse);
+    var depth = -heatHazeView.z;
+    if (depth < 0.2) {
+      source.set(0, 0, 0, 0);
+      return false;
+    }
+    heatHazeView.copy(heatHazePoint).project(camera);
+    var radius = 0.5 * camera.projectionMatrix.elements[5] * radiusWorld / depth;
+    source.set(heatHazeView.x * 0.5 + 0.5, heatHazeView.y * 0.5 + 0.5, radius, strength);
+    return true;
+  }
+
+  function updateHeatHaze() {
+    if (!post || !castingRig || !camera) return;
+    var uniforms = post.compositeMaterial.uniforms;
+    uniforms.heatTime.value = simulationClock;
+    if (reducedMotion) {
+      setHeatSource(0, 0, 0);
+      setHeatSource(1, 0, 0);
+      setHeatSource(2, 0, 0);
+      post.heatSourceCount = 0;
+      return;
+    }
+    var count = 0;
+    // The open dosing well of the holding furnace is always at melt heat.
+    castingRig.furnace.updateWorldMatrix(true, false);
+    heatHazePoint.set(-0.34, 1.62, 0);
+    castingRig.furnace.localToWorld(heatHazePoint);
+    if (setHeatSource(0, 0.42, 0.0009)) count += 1;
+    // Pour and shot: the stream and the charged sleeve port.
+    var pourHeat = 0;
+    if (state === STATE.LADLE_POUR) pourHeat = 1;
+    else if (state === STATE.LADLE_RETURN || state === STATE.INJECT_SLOW) pourHeat = 0.65;
+    else if (state === STATE.INJECT_FAST || state === STATE.INTENSIFY) pourHeat = 0.3;
+    heatHazePoint.set(-2.28, 1.72, 0.32);
+    castingRig.group.localToWorld(heatHazePoint);
+    if (setHeatSource(1, 0.34, 0.0018 * pourHeat)) count += 1;
+    // A freshly ejected casting still carries ~350 C into the cell air.
+    var castingHeat = castThermal.waterline.valid && castThermal.submerged <= 0
+      ? clamp((castThermal.temperature - 140) / 240, 0, 1)
+      : 0;
+    heatHazePoint.set(
+      (fxCastBox.min.x + fxCastBox.max.x) * 0.5,
+      fxCastBox.max.y,
+      (fxCastBox.min.z + fxCastBox.max.z) * 0.5
+    );
+    if (setHeatSource(2, 0.3, 0.0016 * castingHeat)) count += 1;
+    post.heatSourceCount = count;
   }
 
   function buildSceneFinishing() {
@@ -10426,38 +12658,6 @@
     castingSteam.material.opacity = 0.1 + 0.2 * (1 - smoothstep(progress));
   }
 
-  function updateMoltenStream(visible) {
-    if (!castingRig || !moltenStream) return;
-    moltenStream.visible = !!visible;
-    if (moltenDrops) moltenDrops.visible = !!visible;
-    if (!visible) return;
-    castingRig.group.updateMatrixWorld(true);
-    var lip = castingRig.ladleLip.getWorldPosition(castingRig.streamLipScratch);
-    castingRig.group.worldToLocal(lip);
-    var pourHole = castingRig.streamHoleScratch;
-    var height = Math.max(0.08, lip.y - pourHole.y);
-    moltenStream.position.set(
-      lip.x,
-      pourHole.y + height * 0.5,
-      lip.z
-    );
-    moltenStream.rotation.set(0, 0, 0);
-    var streamPulse = 0.88 + Math.sin(simulationClock * 23) * 0.09;
-    moltenStream.scale.set(streamPulse, height / 0.84, streamPulse * 0.92);
-    if (moltenDrops) {
-      var dropAttribute = moltenDrops.geometry.getAttribute('position');
-      for (var dropIndex = 0; dropIndex < dropAttribute.count; dropIndex++) {
-        var seed = dropIndex * 0.381966;
-        var dropLife = (simulationClock * 1.42 + seed) % 1;
-        var lateral = Math.sin(dropIndex * 4.73 + simulationClock * 5.4) * 0.018 * dropLife;
-        dropAttribute.array[dropIndex * 3] = lerp(lip.x, pourHole.x, dropLife) + lateral;
-        dropAttribute.array[dropIndex * 3 + 1] = lerp(lip.y, pourHole.y, dropLife);
-        dropAttribute.array[dropIndex * 3 + 2] = lerp(lip.z, pourHole.z, dropLife) - lateral * 0.55;
-      }
-      dropAttribute.needsUpdate = true;
-    }
-  }
-
   function metalAuthorityLabel(mask) {
     if (mask === 0) return 'none';
     if (mask === 1) return 'ladle';
@@ -10815,24 +13015,38 @@
         -1.08 * ladleSupport.minimumJerk(progress),
         'pour'
       );
-      var ladleVolume = clamp(1 - smoothstep((amount - 0.04) / 0.8), 0, 1);
-      ladleSupport.setSurfaceFill(
-        ladleVolume,
-        -1.08 * ladleSupport.minimumJerk(progress)
-      );
+      var pourTip = -1.08 * ladleSupport.minimumJerk(progress);
+      // One charge is conserved across three authorities: the ladle drains
+      // exactly as the stream is fed, and the sleeve fills exactly as that
+      // same flow lands one free-fall time later. Feeding ends early enough
+      // that the detached tail is inside the port before LADLE_RETURN.
+      var pourWindow = pourEmissionWindow(activeStateDuration);
+      var pourSpan = pourWindow.end - pourWindow.start;
+      var pourPhase = clamp((progress - pourWindow.start) / pourSpan, 0, 1);
+      var ladleVolume = 1 - smoothstep(pourPhase);
+      ladleSupport.setSurfaceFill(ladleVolume, pourTip);
       castingRig.ladleMetal.visible = ladleVolume > 0.025;
-      // Keep the one physical pour witness readable for roughly 0.45 s of the
-      // compressed 0.65 s state. The stream still begins after tilt and ends
-      // before the vessel is empty; no second metal authority is introduced.
-      updateMoltenStream(amount > 0.04 && amount < 0.98);
-      var sleeveFill = smoothstep((amount - 0.08) / 0.78);
-      castingRig.sleevePool.visible = amount > 0.08;
+      updateMoltenStream(
+        progress >= pourWindow.start && progress < pourWindow.end,
+        true,
+        6 * pourPhase * (1 - pourPhase),
+        pourTip
+      );
+      var landedPhase = clamp((progress - pourWindow.start - pourWindow.fall) / pourSpan, 0, 1);
+      var sleeveFill = smoothstep(landedPhase);
+      castingRig.sleevePool.visible = sleeveFill > 0.01;
       castingRig.sleevePool.scale.set(
         Math.max(0.12, sleeveFill),
         1,
         Math.max(0.12, sleeveFill)
       );
-      castingGlow.intensity = (lowPower ? 0.52 : 0.84) * Math.sin(amount * Math.PI) + 0.14;
+      var streamPresence = clamp(
+        (progress - pourWindow.start) / Math.max(0.01, pourSpan + pourWindow.fall),
+        0,
+        1
+      );
+      castingGlow.intensity =
+        (lowPower ? 0.7 : 1.15) * Math.sin(streamPresence * Math.PI) + 0.14 + 0.3 * sleeveFill;
     } else if (state === STATE.LADLE_RETURN) {
       ladleSupport.applyJoints(
         ladleSupport.pourJoints,
@@ -10957,9 +13171,13 @@
 
   function setStacklight(mode) {
     if (!machineRig) return;
-    machineRig.towerGreen.emissiveIntensity = mode === "run" ? 0.92 : 0.08;
-    machineRig.towerAmber.emissiveIntensity = mode === "hold" || mode === "access" ? 1.15 : 0.08;
-    machineRig.towerRed.emissiveIntensity = mode === "fault" ? 1.45 : 0.06;
+    // In the HDR pipeline a lit LED segment is a true light source: brighter
+    // than any painted surface and just past the bloom knee, as a camera
+    // sees it. The direct path keeps its display-referred values.
+    var lampGain = post ? 4 : 1;
+    machineRig.towerGreen.emissiveIntensity = mode === "run" ? 0.92 * lampGain : 0.08;
+    machineRig.towerAmber.emissiveIntensity = mode === "hold" || mode === "access" ? 1.15 * lampGain : 0.08;
+    machineRig.towerRed.emissiveIntensity = mode === "fault" ? 1.45 * lampGain : 0.06;
   }
 
   function holdSafetyFault(message) {
@@ -17654,11 +19872,13 @@
       ladleSupport.pin.parent !== castingRig.ladle ||
       castingRig.ladleLip.parent !== castingRig.ladleVessel ||
       castingRig.ladleLip.position.distanceTo(new THREE.Vector3(0.03, 0.13, 0)) > 0.000001 ||
-      !ladleSupport.mast.castShadow ||
-      !ladleSupport.foot.castShadow ||
-      !ladleSupport.gusset.castShadow ||
-      !ladleSupport.link.castShadow ||
-      !ladleSupport.yoke.castShadow ||
+      // Load-bearing parts cast shadows exactly when the device renders a
+      // shadow map; low-power and high-DPR tiers legitimately have none.
+      ladleSupport.mast.castShadow !== dynamicShadows ||
+      ladleSupport.foot.castShadow !== dynamicShadows ||
+      ladleSupport.gusset.castShadow !== dynamicShadows ||
+      ladleSupport.link.castShadow !== dynamicShadows ||
+      ladleSupport.yoke.castShadow !== dynamicShadows ||
       ladleSupport.pivot.castShadow ||
       (ladleSupport.anchors && ladleSupport.anchors.castShadow) ||
       ladleSupport.pin.castShadow
@@ -18278,6 +20498,8 @@
     buildRobot();
     buildStaging();
     buildSceneFinishing();
+    configureMoltenMaterials();
+    patchDisplayMaterials(scene);
     applyPose(HERO_POSE);
     // The bounded production proof covers recipe identity, press/fence
     // separation, robot reach, die-normal reversal, sensor baseline, and the
@@ -18741,7 +20963,8 @@
 
   function renderSceneFrame(now, idleFrame) {
     var renderStartedAt = performance.now();
-    renderer.render(scene, camera);
+    if (post) renderPostFrame();
+    else renderer.render(scene, camera);
     var renderFinishedAt = performance.now();
     recordRenderCost(renderFinishedAt - renderStartedAt);
     if (!startupDiagnostics.firstRenderAt) {
@@ -19341,6 +21564,17 @@
           heroTerminalScreenBounds: startupDiagnostics.heroTerminalScreenBounds
         })
       }),
+      post: Object.freeze({
+        requested: postRequested,
+        enabled: !!post,
+        samples: post ? post.samples : 0,
+        bloomLevels: post ? post.mips.length : 0,
+        width: post ? post.width : 0,
+        height: post ? post.height : 0,
+        patchedDisplayMaterials: post ? post.patchedDisplayMaterials : 0,
+        compensatedOverlays: post ? post.compensatedOverlays : 0,
+        heatSources: post ? post.heatSourceCount : 0
+      }),
       castingProcess: Object.freeze({
         dieSprayer: dieSprayer ? Object.freeze({
           descent: Number(dieSprayer.amount.toFixed(3)),
@@ -19349,13 +21583,53 @@
           maximumParticles: dieSprayer.jets.geometry.getAttribute('position').count,
           addedDraws: 2
         }) : null,
-        quenchSteam: quenchRig && quenchRig.steam ? Object.freeze({
-          visible: quenchRig.steam.mesh.visible,
-          emitting: quenchRig.steam.emitting,
-          liveParticles: quenchRig.steam.live,
-          maximumParticles: quenchRig.steam.births.length,
+        quenchSteam: quenchSteam ? Object.freeze({
+          visible: quenchSteam.mesh.visible,
+          emitting: castThermal.boilRate > 0,
+          liveParticles: quenchSteam.live,
+          maximumParticles: quenchSteam.capacity,
+          emittedParticles: quenchSteam.emitted,
           addedDraws: 1
         }) : null,
+        processVapor: processVapor ? Object.freeze({
+          visible: processVapor.mesh.visible,
+          liveParticles: processVapor.live,
+          maximumParticles: processVapor.capacity,
+          emittedParticles: processVapor.emitted,
+          addedDraws: 1
+        }) : null,
+        waterDroplets: waterDroplets ? Object.freeze({
+          liveParticles: waterDroplets.live,
+          maximumParticles: waterDroplets.capacity,
+          emittedParticles: waterDroplets.emitted,
+          landedParticles: waterDroplets.landed,
+          addedDraws: 1
+        }) : null,
+        quenchSurface: quenchRig && quenchRig.surface ? Object.freeze({
+          active: quenchRig.surface.active,
+          cells: quenchRig.surface.cellsX * quenchRig.surface.cellsZ,
+          solverSteps: quenchRig.surface.steps,
+          peakAmplitudeMm: Number((quenchRig.surface.peak * 1000).toFixed(2))
+        }) : null,
+        pourStream: pourStream ? Object.freeze({
+          visible: pourStream.mesh.visible,
+          emitting: pourStream.emitting,
+          liveParcels: pourStream.count,
+          emittedParcels: pourStream.emitted,
+          headLanded: pourStream.headLanded,
+          spatterLive: moltenSpatter ? moltenSpatter.live : 0
+        }) : null,
+        ladleSlosh: Object.freeze({
+          angleXDeg: Number((ladleSlosh.angleX * 180 / Math.PI).toFixed(2)),
+          angleZDeg: Number((ladleSlosh.angleZ * 180 / Math.PI).toFixed(2))
+        }),
+        castThermal: Object.freeze({
+          temperatureC: Number(castThermal.temperature.toFixed(1)),
+          regime: castThermal.regime,
+          submerged: Number(castThermal.submerged.toFixed(3)),
+          boilRate: Number(castThermal.boilRate.toFixed(3)),
+          wetness: Number(castThermal.wetness.toFixed(3))
+        }),
         state: state,
         dieOpen: castingRig ? Number(castingRig.dieOpen.toFixed(3)) : null,
         clampProved: !!(castingRig && castingRig.clampProved),
@@ -19606,6 +21880,7 @@
     renderDpr = bounded;
     renderer.setPixelRatio(renderDpr);
     renderer.setSize(width, height, false);
+    resizePostPipeline();
     renderDirty = true;
     perfLastAdjustment = reason;
     perfCooldownUntil = now + (reason === "settled restore" ? PERF_UP_COOLDOWN_MS : PERF_DOWN_COOLDOWN_MS);
@@ -19750,17 +22025,7 @@
       }
     }
 
-    if (quenchRig) {
-      var quenching = !reducedMotion && (state === STATE.CAST_QUENCH_DIP || state === STATE.CAST_QUENCH_DWELL || state === STATE.CAST_QUENCH_LIFT);
-      for (var waterRing = 0; waterRing < quenchRig.ripples.length; waterRing++) {
-        var ripplePhase = (simulationClock * 0.9 + waterRing / 3) % 1;
-        var waterRipple = quenchRig.ripples[waterRing];
-        waterRipple.visible = quenching;
-        waterRipple.scale.setScalar(0.5 + ripplePhase * 1.7);
-        waterRipple.material.opacity = quenching ? (1 - ripplePhase) * 0.32 : 0;
-      }
-    }
-    updateQuenchSteam();
+    updateFoundryFx();
     updateGuardGlare(simulationClock);
     updateHover(delta);
     var animationStillActive = renderLoopMotionActive();
@@ -19793,6 +22058,7 @@
     height = window.innerHeight || 720;
     renderer.setPixelRatio(renderDpr);
     renderer.setSize(width, height, false);
+    resizePostPipeline();
     frameCamera();
     resetPerformanceWindow(!perfBaseline.complete);
     perfMotionElapsed = 0;
