@@ -1,7 +1,7 @@
 /**
- * Automated CNC Cell portfolio
+ * Cold-chamber die-casting portfolio cell.
  * Static Three.js, classic-script implementation for GitHub Pages.
- * The local photographic floor is loaded asynchronously over a procedural
+ * The local clean-foundry plate is loaded asynchronously over a procedural
  * fallback; every interactive and fallback resume path works without a server.
  */
 (function () {
@@ -22,6 +22,14 @@
     requestEntrySamples: 0,
     requestEntryFailedPhase: null,
     requestEntryFailureStage: "",
+    processContractValid: null,
+    processIssueCount: null,
+    outboundTimingValid: null,
+    outboundNominalDurationMs: null,
+    outboundStaticDurationMs: null,
+    outboundWorstCaseDurationMs: null,
+    outboundStaticBreakdown: null,
+    shotTemporalLaw: null,
     proofScheduled: false,
     proofRunning: false,
     proofComplete: false,
@@ -32,7 +40,107 @@
     shutterClearanceMm: null,
     projectedValid: null,
     requestEntryValid: null,
-    projectedMinimumClearancePx: null
+    projectedMinimumClearancePx: null,
+    heroTerminalDieSeparationPx: null,
+    heroTerminalDieSeparationValid: null,
+    ejectOcclusionCalls: 0,
+    ejectOcclusionValid: null,
+    ejectOcclusionOverlapCount: null,
+    ejectOcclusionMinimumSeparationPx: null,
+    ejectCastingScreenBounds: null,
+    gripOpticalCalls: 0,
+    gripOpticalValid: null,
+    gripPadOverlapPx: null,
+    gripCentralVisibleSpanPx: null,
+    gripRibWitnessVisible: null,
+    gripPhysicalOverlapMm: null,
+    gripHousingOcclusionCount: null,
+    gripHousingOcclusionNames: null,
+    pressAnatomyValid: null,
+    pressAnatomyAddedDraws: 0,
+    pressAnatomyFastenerCount: 0,
+    pressAnatomyBounds: null,
+    robotAnatomyValid: null,
+    robotAnatomyAddedDraws: 0,
+    robotAnatomyBounds: null,
+    guardDoorValid: null,
+    guardDoorDraws: 0,
+    guardDoorBounds: null,
+    guardDoorHandlePx652: null,
+    guardDoorHandleBoundsPx652: null,
+    guardDoorInterlockBoundsPx652: null,
+    guardDoorHmiSeparationPx652: null,
+    guardDoorWristSeparationPx652: null,
+    guardDoorMaterialAudit: null,
+    clampToggleValid: null,
+    clampToggleSamples: 0,
+    clampToggleMaximumLengthErrorMm: null,
+    clampToggleMaximumPinErrorMm: null,
+    clampDriveValid: null,
+    clampDriveSamples: 0,
+    clampDriveStrokeMm: null,
+    clampDriveLockSeatMm: null,
+    clampDriveMaximumEndpointErrorMm: null,
+    clampDriveMonotonic: null,
+    clampDriveMaximumStageStrokeMm: null,
+    clampDriveMinimumStageOverlapMm: null,
+    clampDriveTelescopicSumErrorMm: null,
+    clampDriveYokeEndpointErrorMm: null,
+    clampDriveYokeReactionErrorMm: null,
+    clampDriveBridgeYokeGapMm: null,
+    clampDriveBridgeCheekOverlapMm: null,
+    clampDriveBridgeCheekBearingMm: null,
+    clampDriveBellevilleSpanErrorMm: null,
+    clampDriveBellevilleCompressionMm: null,
+    clampDriveBellevilleMaximumDeflectionMm: null,
+    clampDriveBellevilleLockedReserveMm: null,
+    clampDriveBellevilleContactGapMm: null,
+    clampDriveBellevillePenetrationMm: null,
+    clampDriveBellevilleFreeRiseMm: null,
+    clampDriveBellevilleLockedRiseMm: null,
+    clampDriveCouplingErrorMm: null,
+    clampDriveMaximumActiveStages: null,
+    clampDriveStageOrderValid: null,
+    clampToggleOpenKneeHeightMm: null,
+    clampToggleSeatedKneeHeightMm: null,
+    clampToggleLockedKneeHeightMm: null,
+    clampToggleLockedAngleDeg: null,
+    clampToggleReducerShellMarginMm: null,
+    clampTelescopeMinimumWallMm: null,
+    clampTelescopeMinimumHousingMarginMm: null,
+    clampTelescopeGlandCoaxialityMm: null,
+    clampTelescopeRunningClearanceMm: null,
+    clampTelescopePistonCoaxialityMm: null,
+    clampTelescopePistonSealClearanceMm: null,
+    clampTelescopePistonStopInterferenceMm: null,
+    clampTelescopePistonMinimumGlandSetbackMm: null,
+    clampTelescopeRearHeadLeakGapMm: null,
+    clampTelescopeRearHeadBearingOverlapMm: null,
+    clampTelescopeRearHeadPathClearanceMm: null,
+    clampTelescopeInletChamberIntersectionMm: null,
+    clampTelescopeInletEndpointErrorMm: null,
+    clampTelescopeInletCenterlineOcclusionCount: null,
+    clampTelescopeRearSleeveLigamentMm: null,
+    clampTelescopeRetractBoreWallMm: null,
+    clampTelescopeRetractOutletOcclusionCount: null,
+    clampTelescopeRetractOutletIntersectionMm: null,
+    clampHydraulicEndpointErrorMm: null,
+    clampHydraulicSupportErrorMm: null,
+    clampHydraulicMinimumBendRadiusMm: null,
+    clampHydraulicStaticSegments: null,
+    clampHydraulicDistinctPorts: null,
+    clampHydraulicJumperEndpointErrorMm: null,
+    clampHydraulicJumperMinimumBendRadiusMm: null,
+    clampHydraulicJumperMinimumClearanceMm: null,
+    clampHydraulicJumperMaximumSupportedSpanMm: null,
+    clampEnergyCarrierMaximumLinkGapMm: null,
+    clampEnergyCarrierTroughBearingMm: null,
+    clampEnergyCarrierBracketGapMm: null,
+    ejectorMechanismValid: null,
+    ejectorMechanismSamples: 0,
+    ejectorMechanismStrokeMm: null,
+    ejectorMechanismMaximumEndpointErrorMm: null,
+    ejectorMechanismMonotonic: null
   };
   var exhaustiveProofRequested = false;
   var startupLongTaskObserver = null;
@@ -77,6 +185,10 @@
   var safetyDatum = document.getElementById("cr-safety-datum");
   var safetyStatusElement = document.getElementById("cr-safety-status");
   var safetyValueElement = document.getElementById("cr-safety-value");
+  var guardAnnunciator = document.querySelector(".cr-guard-annunciator");
+  var guardCellLabelElement = guardAnnunciator && guardAnnunciator.querySelector("[data-guard-cell-label]");
+  var guardCellStatusElement = guardAnnunciator && guardAnnunciator.querySelector("[data-guard-cell-status]");
+  var guardSafetyStatusElement = guardAnnunciator && guardAnnunciator.querySelector("[data-guard-safety-status]");
   var transferStatusElement = document.getElementById("cr-transfer-status");
   var transferInnerElement = document.getElementById("cr-transfer-inner");
   var transferOuterElement = document.getElementById("cr-transfer-outer");
@@ -96,6 +208,37 @@
   ];
 
   var STATE = {
+    DIE_CLOSE: 'DIE CLOSE',
+    CLAMP_LOCK: 'CLAMP LOCK',
+    LADLE_LIFT: 'LADLE LIFT',
+    LADLE_POUR: 'LADLE POUR',
+    LADLE_RETURN: 'LADLE RETURN',
+    INJECT_SLOW: 'SLOW SHOT',
+    INJECT_FAST: 'FAST SHOT',
+    INTENSIFY: 'INTENSIFY',
+    COOL: 'SOLIDIFY',
+    CLAMP_RELEASE: 'CLAMP RELEASE',
+    DIE_OPEN: 'DIE OPEN',
+    EJECT: 'EJECT',
+    CAST_ENTRY_CLEAR: 'CAST ENTRY CLEAR',
+    CAST_FRONT_CLEAR: 'CAST FRONT CLEAR',
+    CAST_APPROACH: 'CAST APPROACH',
+    CAST_INSERT: 'CAST INSERT',
+    CAST_GRIP: 'CAST GRIP',
+    CAST_EXTRACT: 'CAST EXTRACT',
+    CAST_EXIT_FRONT_CLEAR: 'CAST EXIT FRONT CLEAR',
+    CAST_EXIT_ENTRY_CLEAR: 'CAST EXIT ENTRY CLEAR',
+    CAST_TRANSIT: 'CAST TRANSIT',
+    CAST_QUENCH_APPROACH: 'QUENCH APPROACH',
+    CAST_QUENCH_CLEAR: 'QUENCH CLEAR',
+    CAST_QUENCH_EXIT: 'QUENCH EXIT',
+    CAST_QUENCH_DIP: 'QUENCH DIP',
+    CAST_QUENCH_DWELL: 'QUENCH DWELL',
+    CAST_QUENCH_LIFT: 'QUENCH LIFT',
+    CAST_PRESENT: 'CAST PRESENT',
+    CAST_RETURN: 'CAST RETURN',
+    CAST_RELEASE: 'CAST RELEASE',
+    CAST_RESET: 'CAST RESET',
     LIFT_CLEAR: 'LIFT CLEAR',
     INSERT: 'INSERT',
     AUTO: "AUTO",
@@ -135,7 +278,86 @@
     RESUME_CHECKPOINT: "RESUME CHECKPOINT"
   };
 
+  // The presentation cycle includes extraction, quench and drainage. Dwell
+  // times are compressed for the portfolio; boundedStateDuration() lengthens
+  // moves to preserve the existing guarded-axis velocity limits.
+  var DCM_OUTBOUND_SEQUENCE = Object.freeze([
+    STATE.REQUESTED,
+    STATE.DIE_CLOSE,
+    STATE.CLAMP_LOCK,
+    STATE.LADLE_LIFT,
+    STATE.LADLE_POUR,
+    STATE.LADLE_RETURN,
+    STATE.INJECT_SLOW,
+    STATE.INJECT_FAST,
+    STATE.INTENSIFY,
+    STATE.COOL,
+    STATE.CLAMP_RELEASE,
+    STATE.DIE_OPEN,
+    STATE.EJECT,
+    STATE.CAST_ENTRY_CLEAR,
+    STATE.CAST_FRONT_CLEAR,
+    STATE.CAST_APPROACH,
+    STATE.CAST_INSERT,
+    STATE.CAST_GRIP,
+    STATE.CAST_EXTRACT,
+    STATE.CAST_EXIT_FRONT_CLEAR,
+    STATE.CAST_EXIT_ENTRY_CLEAR,
+    STATE.CAST_TRANSIT,
+    STATE.CAST_QUENCH_CLEAR,
+    STATE.CAST_QUENCH_APPROACH,
+    STATE.CAST_QUENCH_DIP,
+    STATE.CAST_QUENCH_DWELL,
+    STATE.CAST_QUENCH_LIFT,
+    STATE.CAST_QUENCH_EXIT,
+    STATE.CAST_PRESENT
+  ]);
+  var DCM_TIMING_SECONDS = {};
+  var DCM_SHOT_SLOW_SECONDS = 0.83;
+  var DCM_SHOT_FAST_SECONDS = 0.22;
+  var DCM_SHOT_TOTAL_SECONDS = 1.05;
+  var DCM_SHOT_SWITCH_VELOCITY = 2.2;
+  DCM_TIMING_SECONDS[STATE.DIE_CLOSE] = 0.48;
+  DCM_TIMING_SECONDS[STATE.CLAMP_LOCK] = 0.28;
+  DCM_TIMING_SECONDS[STATE.LADLE_LIFT] = 0.4;
+  DCM_TIMING_SECONDS[STATE.LADLE_POUR] = 0.65;
+  DCM_TIMING_SECONDS[STATE.LADLE_RETURN] = 0.4;
+  DCM_TIMING_SECONDS[STATE.INJECT_SLOW] = DCM_SHOT_SLOW_SECONDS;
+  DCM_TIMING_SECONDS[STATE.INJECT_FAST] = DCM_SHOT_FAST_SECONDS;
+  DCM_TIMING_SECONDS[STATE.INTENSIFY] = 0.5;
+  DCM_TIMING_SECONDS[STATE.COOL] = 1.1;
+  DCM_TIMING_SECONDS[STATE.CLAMP_RELEASE] = 0.28;
+  DCM_TIMING_SECONDS[STATE.DIE_OPEN] = 0.55;
+  DCM_TIMING_SECONDS[STATE.EJECT] = 0.5;
+  DCM_TIMING_SECONDS[STATE.CAST_ENTRY_CLEAR] = 0.68;
+  DCM_TIMING_SECONDS[STATE.CAST_FRONT_CLEAR] = 0.66;
+  DCM_TIMING_SECONDS[STATE.CAST_APPROACH] = 0.45;
+  DCM_TIMING_SECONDS[STATE.CAST_INSERT] = 0.22;
+  DCM_TIMING_SECONDS[STATE.CAST_GRIP] = 0.5;
+  DCM_TIMING_SECONDS[STATE.CAST_EXTRACT] = 0.22;
+  DCM_TIMING_SECONDS[STATE.CAST_EXIT_FRONT_CLEAR] = 0.45;
+  DCM_TIMING_SECONDS[STATE.CAST_EXIT_ENTRY_CLEAR] = 0.66;
+  DCM_TIMING_SECONDS[STATE.CAST_TRANSIT] = 0.2;
+  DCM_TIMING_SECONDS[STATE.CAST_QUENCH_APPROACH] = 1.2;
+  DCM_TIMING_SECONDS[STATE.CAST_QUENCH_CLEAR] = 0.45;
+  DCM_TIMING_SECONDS[STATE.CAST_QUENCH_EXIT] = 1.2;
+  DCM_TIMING_SECONDS[STATE.CAST_QUENCH_DIP] = 1.35;
+  DCM_TIMING_SECONDS[STATE.CAST_QUENCH_DWELL] = 0.85;
+  DCM_TIMING_SECONDS[STATE.CAST_QUENCH_LIFT] = 1.2;
+  DCM_TIMING_SECONDS[STATE.CAST_PRESENT] = 0.65;
+  Object.freeze(DCM_TIMING_SECONDS);
+  var DCM_PREVIOUS_NOMINAL_SECONDS = 18.51;
+  var DCM_PREVIOUS_LIVE_REFERENCE_SECONDS = 18.723;
+  // Edited portfolio cycle, now including the reference cell's quench. Real
+  // process dwell depends on tooling/alloy and is not inferred from the video.
+  var DCM_FETCH_TARGET_MIN_SECONDS = 15;
+  var DCM_FETCH_TARGET_MAX_SECONDS = 22;
+  var DCM_READABLE_STAGE_MIN_SECONDS = 0.45;
+  var DCM_READABLE_STAGE_MAX_SECONDS = 0.7;
+
   var state = STATE.AUTO;
+  var quenchRig = null;
+  var dieSprayer = null;
   // Rack fixture dimensions are explicit so visual clearances and TCP proofs
   // are checked against the same physical envelope used by the choreography.
   var RACK_STATION_PITCH_LOCAL = 0.72;
@@ -151,9 +373,25 @@
   // The robot and rack live at negative Z; the operator/camera is positive Z.
   var FRONT_GUARD_Z = -2.3;
   var FRONT_GUARD_MIN_X = -3.27;
-  var FRONT_GUARD_MAX_X = 2.39;
-  var SIDE_GUARD_X = 3.85;
+  // The DCM-900 rear toggle cover resolves to world x=4.98. Keep the complete
+  // safety boundary at least 370 mm beyond that AABB, including the HMI arm.
+  var FRONT_GUARD_MAX_X = 5.35;
+  var SIDE_GUARD_X = 5.35;
   var SIDE_GUARD_MIN_Z = -5.42;
+  // Pass 55 mirrors the complete cold-chamber ownership topology and then
+  // translates it left so the injection package remains inside the unchanged
+  // guard.  Keeping this as one explicit world mapping prevents the shot end,
+  // furnace/ladle, fixed die, ejector half, and extraction robot from drifting
+  // into independently-authored (and mechanically impossible) layouts.
+  var DCM_TOPOLOGY_SUM_X = 3.035;
+  var DCM_PRESS_ROOT_X = 0.585;
+  var DCM_ROBOT_ROOT_X = 0.185;
+  function mirrorDcmWorldX(x) {
+    return DCM_TOPOLOGY_SUM_X - x;
+  }
+  function mirrorDcmBoundsX(minX, maxX) {
+    return { minX: mirrorDcmWorldX(maxX), maxX: mirrorDcmWorldX(minX) };
+  }
   var GUARD_HEIGHT = 3.45;
   var GUARD_POST_RADIUS = 0.061;
   // Guarded-cell axis limits (rad/s). They track a mid-payload industrial
@@ -217,6 +455,15 @@
   };
   var robotRig = null;
   var machineRig = null;
+  var castingRig = null;
+  var castingSteam = null;
+  var castingGlow = null;
+  var moltenStream = null;
+  var moltenDrops = null;
+  var castPlaqueReady = false;
+  var castRecycleProved = false;
+  var castingChargeLoaded = true;
+  var castingBootChargeComplete = false;
   var workpiece = null;
   var rawWorkpiece = null;
   var finishedWorkpiece = null;
@@ -226,20 +473,24 @@
   var coolantMist = null;
   var ambientDust = null;
   var guardGlare = null;
+  var guardAccessDoor = null;
   var shadowReceiver = null;
+  var contactShadowEntries = [];
   var requestSceneRender = function () {};
 
-  // The authored 14.4 s machine trajectory already contains an exact SAFE
-  // plateau from phase 6.0 through 9.15. Treat 7.35 as the logical loop
-  // origin: every AUTO loop therefore opens on 1.8 s of the validated hero
-  // pose, while every existing machine/robot phase remains byte-for-byte in
-  // the same physical order and duration.
+  // AUTO is an optical robot showcase only while the press is idle: PARK
+  // rises into one guarded S-curve, holds for 1.65 s, then folds back into
+  // the unchanged DCM optical PARK. The long parked portion sleeps the WebGL
+  // loop; a bounded timer wakes only the next PARK-to-HERO transition.
   var AUTO_CYCLE_SECONDS = 14.4;
-  var AUTO_SAFE_PHASE_START = 6.0;
-  var AUTO_SAFE_PHASE_END = 9.15;
+  var AUTO_PARK_TO_HERO_START = 6.35;
   var AUTO_HERO_PHASE_START = 7.35;
-  var AUTO_HERO_PHASE_END = 9.15;
+  var AUTO_HERO_PHASE_END = 9.0;
+  var AUTO_HERO_TO_PARK_END = 10.0;
   var AUTO_HERO_DWELL_SECONDS = AUTO_HERO_PHASE_END - AUTO_HERO_PHASE_START;
+  // Boot at the furnace scoop instead of halfway through a legacy machining
+  // loop. AUTO settles with a visibly full ladle before the first recipe can
+  // command the press.
   var productionClock = AUTO_HERO_PHASE_START;
   var autoHeroLoopCount = 1;
   var autoHeroCompletedDwells = 0;
@@ -258,6 +509,8 @@
   var savedProductionClock = 0;
   var requestEgressStartPhase = AUTO_HERO_PHASE_START;
   var requestEgressEndPhase = AUTO_HERO_PHASE_START;
+  var requestEgressFromPose = null;
+  var requestEgressToPose = null;
   var requestEgressDuration = 0.12;
   var requestEgressProofValid = true;
   var requestEgressFailureStage = "";
@@ -268,6 +521,7 @@
   var interruptedPartFinished = false;
   var interruptedAtCncMouth = false;
   var bufferedPart = false;
+  var autoHeroWakeTimer = 0;
 
   try {
     motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -302,13 +556,33 @@
     return -1;
   }
 
+  function castingChargeReady() {
+    return !!(
+      castingRig &&
+      castingBootChargeComplete &&
+      castingChargeLoaded &&
+      castingRig.chargeLoaded &&
+      castingRig.ladleHome
+    );
+  }
+
+  function syncCastingChargeUi() {
+    setStacklight(controllerMode());
+    setBodyState();
+    setDockState();
+    updateHmiHitMode();
+    updateStateStatus();
+    updateSafetyDom();
+    drawHmi();
+  }
+
   function controllerMode() {
     if (
       safetyFault ||
       !safetySensors.estopHealthy ||
       !safetySensors.maintenanceGateLocked
     ) return "fault";
-    if (state === STATE.AUTO) return "run";
+    if (state === STATE.AUTO) return castingChargeReady() ? "run" : "hold";
     if (state === STATE.HELD) return "access";
     return "hold";
   }
@@ -330,25 +604,35 @@
 
   function setCellStatus(label, value) {
     if (!cellStatus) return;
+    var mode = controllerMode();
     var labelNode = cellStatus.querySelector("small");
     if (labelNode) labelNode.textContent = label;
     var valueNode = statusValueNode(cellStatus, "cr-led__value");
     if (valueNode) valueNode.textContent = value;
-    cellStatus.setAttribute("data-mode", controllerMode());
+    cellStatus.setAttribute("data-mode", mode);
+    if (guardCellLabelElement) guardCellLabelElement.textContent = label;
+    if (guardCellStatusElement) guardCellStatusElement.textContent = value;
+    if (guardAnnunciator) guardAnnunciator.setAttribute("data-mode", mode);
   }
 
   function updateSafetyDom() {
     var mode = controllerMode();
-    var innerValue = safetySensors.innerOpen
-      ? "OPEN"
-      : safetySensors.innerLocked ? "LOCKED" : "UNLOCKED";
-    var outerValue = safetySensors.outerPresented
-      ? "ENABLED"
-      : safetySensors.outerLocked ? "LOCKED" : "UNLOCKED";
+    var innerValue = castingRig
+      ? castingRig.dieOpen >= 0.995
+        ? "DIE OPEN"
+        : castingRig.clampProved ? "CLAMPED" : "DIE CLOSED"
+      : "PROVING";
+    var outerValue = castingRig && castingRig.pinsExtended
+      ? "PINS EXTENDED"
+      : "PINS RETRACTED";
     var robotValue = safetySensors.robotClear ? "CLEAR" : "IN ENVELOPE";
-    var transferValue = safetySensors.boardInBay
-      ? safetySensors.outerPresented ? "OUTER ACCESS ENABLED" : "BOARD SECURED"
-      : activeTraveler && activeTraveler.custody === "robot" ? "ROBOT CUSTODY" : "BAY READY";
+    var transferValue = activeTraveler && activeTraveler.custody === "robot"
+      ? "ROBOT HOLDS CASTING"
+      : activeTraveler && activeTraveler.custody === "ejector-half"
+        ? "CASTING ON EJECTOR HALF"
+        : castingChargeReady()
+          ? "LADLE CHARGED"
+          : state === STATE.AUTO ? "LADLE CHARGING" : "CAST CYCLE ACTIVE";
 
     if (safetyStatusElement) {
       safetyStatusElement.setAttribute("data-safety-state", mode === "fault" ? "fault" : "proved");
@@ -358,17 +642,18 @@
         mode === "fault" ? "Safety circuit fault, cell stopped" : "Safety circuit proved"
       );
     }
-    if (safetyValueElement) {
-      safetyValueElement.textContent = mode === "fault"
-        ? "SAFETY STOP"
-        : mode === "access" ? "ACCESS PROVED" : mode === "hold" ? "CONTROLLED HOLD" : "GUARD LOCKED";
-    }
+    var safetyValue = mode === "fault"
+      ? "SAFETY STOP"
+      : mode === "access" ? "ACCESS PROVED" : mode === "hold" ? "CONTROLLED HOLD" : "GUARD LOCKED";
+    if (safetyValueElement) safetyValueElement.textContent = safetyValue;
+    if (guardSafetyStatusElement) guardSafetyStatusElement.textContent = safetyValue;
+    if (guardAnnunciator) guardAnnunciator.setAttribute("data-mode", mode);
     if (transferStatusElement) {
       transferStatusElement.setAttribute("data-transfer-state", transferValue.toLowerCase().replace(/\s+/g, "-"));
       transferStatusElement.setAttribute("data-mode", mode);
       transferStatusElement.setAttribute(
         "aria-label",
-        transferValue + "; inner " + innerValue + "; outer " + outerValue + "; robot " + robotValue
+        transferValue + "; " + innerValue + "; " + outerValue + "; robot " + robotValue
       );
     }
     if (transferInnerElement) transferInnerElement.textContent = innerValue;
@@ -397,7 +682,7 @@
       safetyDatum.setAttribute("data-mode", mode);
       safetyDatum.setAttribute(
         "aria-label",
-        "Transfer safety: inner " + innerValue + ", outer " + outerValue + ", robot " + robotValue
+        "Casting safety: " + innerValue + ", " + outerValue + ", robot " + robotValue
       );
     }
   }
@@ -405,7 +690,7 @@
   function setBodyState() {
     if (!document.body) return;
     var travelerHeld = state === STATE.HELD;
-    var serviceBusy = state !== STATE.AUTO;
+    var serviceBusy = sceneReady && (state !== STATE.AUTO || !castingChargeReady());
     document.body.classList.toggle("cr-hmi-inspect", hmiInspect);
     document.body.classList.toggle(
       "cr-requested",
@@ -430,6 +715,7 @@
 
   function setDockState() {
     if (!dock) return;
+    var controlsReady = !sceneReady || (state === STATE.AUTO && castingChargeReady());
     var buttons = dock.querySelectorAll("button[data-station]");
     for (var i = 0; i < buttons.length; i++) {
       var id = buttons[i].getAttribute("data-station");
@@ -440,12 +726,13 @@
       buttons[i].classList.toggle("is-queued", isQueued);
       buttons[i].setAttribute("aria-expanded", isActive && state === STATE.HELD ? "true" : "false");
       buttons[i].setAttribute("aria-pressed", isActive || isQueued ? "true" : "false");
-      buttons[i].setAttribute('aria-disabled', state === STATE.AUTO ? 'false' : 'true');
-      buttons[i].disabled = state !== STATE.AUTO;
+      buttons[i].setAttribute('aria-disabled', controlsReady ? 'false' : 'true');
+      buttons[i].disabled = !controlsReady;
       if (stateCopy) {
         if (isQueued) stateCopy.textContent = "Queued";
         else if (isActive && state === STATE.HELD) stateCopy.textContent = "Held";
         else if (isActive && state !== STATE.AUTO) stateCopy.textContent = "Retrieving";
+        else if (state === STATE.AUTO && !castingChargeReady()) stateCopy.textContent = "Charging";
         else stateCopy.textContent = "Ready";
       }
     }
@@ -557,11 +844,11 @@
     var meta = stationMeta(id);
     var template = templates && templates.querySelector('[data-station="' + id + '"]');
     if (!meta || !template || !plate) return false;
-    if (plateTag) plateTag.textContent = "FENCE CLIPBOARD " + meta.key + " / " + meta.label;
+    if (plateTag) plateTag.textContent = "AS-CAST RECIPE 0" + meta.key + " / " + meta.label;
     if (plateTitle) plateTitle.textContent = template.getAttribute("data-title") || meta.label;
     if (plateBody) plateBody.innerHTML = template.innerHTML;
     if (plateFoot) {
-      plateFoot.textContent = "Secured in interlocked transfer bay - Close to begin verified return custody";
+      plateFoot.textContent = "Robot-held behind the proved guard - Close to return this casting to the trim nest";
     }
     return true;
   }
@@ -673,7 +960,9 @@
   }
 
   function productionPhaseHasHeldPart(phase) {
-    return (phase >= 2 && phase < 4.55) || (phase >= 10.72 && phase < 12.7);
+    // AUTO owns no payload. A resume casting is created only after a selected
+    // recipe has filled, intensified, and cooled in the closed die.
+    return false;
   }
 
   function requestStation(id, source) {
@@ -688,22 +977,30 @@
 
     if (state !== STATE.AUTO) {
       var busyMeta = stationMeta(activeRequest);
-      setCellStatus("Busy", "Clipboard " + (busyMeta ? busyMeta.key : "--") + " already in process");
+      setCellStatus("Busy", "Die recipe 0" + (busyMeta ? busyMeta.key : "--") + " already in process");
       drawHmi();
       requestSceneRender();
       return;
     }
 
+    if (!castingChargeReady()) {
+      setCellStatus('Charge', 'Ladle is charging - recipe unlocks when full');
+      requestSceneRender();
+      return;
+    }
+
     if (
-      !safetySensors.outerLocked ||
-      !safetySensors.innerLocked ||
-      safetySensors.innerOpen ||
-      safetySensors.boardInBay ||
       !safetySensors.maintenanceGateLocked ||
-      !safetySensors.estopHealthy
+      !safetySensors.estopHealthy ||
+      castingRig.dieOpen < 0.995 ||
+      !castingRig.clampReleased ||
+      castingRig.pinsExtended ||
+      castingRig.sleeveCharged ||
+      Math.abs(castingRig.plunger.position.x - castingRig.plungerHomeX) > 0.005 ||
+      castPlaqueReady
     ) {
       safetyFault = true;
-      setCellStatus("Safety fault", "Transfer bay is not proved empty and locked");
+      setCellStatus("Safety fault", "Press is not open, empty, and guarded for a new recipe");
       setStacklight("fault");
       updateSafetyDom();
       requestSceneRender();
@@ -711,7 +1008,7 @@
     }
 
     if (!validateStationReach(id)) {
-      setCellStatus("Reach fault", "Clipboard " + meta.key + " lies outside the verified TCP envelope");
+      setCellStatus("Reach fault", "Recipe 0" + meta.key + " failed the cast TCP or jaw-clearance proof");
       requestSceneRender();
       return;
     }
@@ -719,11 +1016,9 @@
     activeRequest = id;
     queuedRequest = null;
     savedProductionClock = productionClock;
-    interruptedPartHeld = productionPhaseHasHeldPart(savedProductionClock);
-    interruptedPartFinished = savedProductionClock >= 8.4;
-    scene.updateMatrixWorld(true);
-    robotRig.gripperTip.getWorldPosition(tempPosition);
-    interruptedAtCncMouth = tempPosition.x > 2.05 && tempPosition.z < -4.95;
+    interruptedPartHeld = false;
+    interruptedPartFinished = false;
+    interruptedAtCncMouth = false;
     configureRequestEgress(savedProductionClock);
     var requestProofStartedAt = performance.now();
     var requestProofPassed = validateRequestEgressSafety();
@@ -733,7 +1028,7 @@
       activeRequest = null;
       queuedRequest = null;
       safetyFault = true;
-      setCellStatus("Safety fault", "No collision-free route from the live AUTO pose");
+      setCellStatus("Safety fault", "Robot is not at the proved press-safe park pose");
       setStacklight("fault");
       updateSafetyDom();
       drawHmi();
@@ -753,11 +1048,10 @@
     autoHeroCurrentPoseError = 0;
     autoHeroMaxPoseError = 0;
     bufferedPart = false;
-    updateMachiningSpray(0, false);
     setStacklight("hold");
     setCellStatus(
       "Request",
-      meta.key + (interruptedPartHeld ? " acknowledged - buffering held part" : " acknowledged - controlled stop")
+      "Recipe 0" + meta.key + " acknowledged - closing die under interlock"
     );
     // Move focus out of a dock button before REQUESTED makes the dock inert.
     // This runs only for a validated request that is actually starting; busy
@@ -777,7 +1071,7 @@
       focusViewport();
       hidePlate(false);
       transferDirection = "return";
-      setState(STATE.OUTER_CLOSE);
+      setState(STATE.CAST_RETURN);
       return;
     }
   }
@@ -845,11 +1139,11 @@
   window.setTimeout(hideBoot, 2400);
 
   if (!THREE) {
-    showError("Three.js failed to load. Resume clipboards remain available below.");
+    showError("Three.js failed to load. Resume die recipes remain available below.");
     return;
   }
   if (!canvas) {
-    showError("3D viewport is unavailable. Resume clipboards remain available below.");
+    showError("3D viewport is unavailable. Resume die recipes remain available below.");
     return;
   }
 
@@ -1000,7 +1294,7 @@
       preserveDrawingBuffer: false
     });
   } catch (error) {
-    showError("WebGL could not start. Resume clipboards remain available below.");
+    showError("WebGL could not start. Resume die recipes remain available below.");
     return;
   }
 
@@ -1016,27 +1310,43 @@
   }
   if (THREE.ACESFilmicToneMapping !== undefined) {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    // Plate and modeled cell share one exposure below. Keeping this slightly
-    // under unity protects the white machine panels and high-bay fixtures.
-    renderer.toneMappingExposure = 0.9;
+    // The factory plate is exposed separately below. The modeled foreground
+    // keeps a full tonal range for warm paint and long steel reflections.
+    renderer.toneMappingExposure = 1.02;
   }
   canvas.style.width = "100%";
   canvas.style.height = "100%";
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x12171a);
-  // A shallow industrial haze softens distant proxy edges into the plate and
-  // restores the depth cue that otherwise makes WebGL geometry look pasted on.
-  scene.fog = new THREE.Fog(0x8d999b, 11.5, 31.5);
+  // Cool distance haze joins the far cell to the factory while keeping the
+  // foreground's silhouette, labels, and metallic highlights crisp.
+  scene.fog = new THREE.Fog(0x394b50, 17, 39);
 
   camera = new THREE.PerspectiveCamera(43, width / height, 0.08, 70);
   scene.add(camera);
+  // One physical process viewpoint serves AUTO, service, and pendant inspect.
+  // The shared operator view keeps enough process-axis depth to expose both
+  // physical grip lands and the central casting rib at native scale while the
+  // shot cylinder, sleeve, die split, and extractor remain one readable chain.
+  // Responsive branches change only optical fit on this fixed view vector.
+  var PROCESS_CAMERA_TARGET = new THREE.Vector3(1.3, 2.2, -5.2);
+  var PROCESS_CAMERA_DIRECTION = new THREE.Vector3(
+    -0.6392663519,
+    0.1045284633,
+    0.7618479715
+  ).normalize();
+  var PROCESS_CAMERA_STANDARD_DISTANCE = Math.sqrt(
+    6.3 * 6.3 + 0.35 * 0.35 + 10.9 * 10.9
+  );
+  var processCameraDistance = PROCESS_CAMERA_STANDARD_DISTANCE;
   baseCameraPosition = new THREE.Vector3();
   baseCameraTarget = new THREE.Vector3();
   inspectCameraPosition = new THREE.Vector3();
   inspectCameraTarget = new THREE.Vector3(4.62, 2.74, -3.08);
   cameraPositionScratch = new THREE.Vector3();
   cameraTargetScratch = new THREE.Vector3();
+  var cameraEditorialOffset = 0;
 
   function applyCameraPose() {
     if (!camera || !baseCameraPosition || !inspectCameraPosition) return;
@@ -1044,33 +1354,42 @@
     cameraTargetScratch.lerpVectors(baseCameraTarget, inspectCameraTarget, cameraInspection);
     camera.position.copy(cameraPositionScratch);
     camera.lookAt(cameraTargetScratch);
+    // A shifted frustum gives the introduction real negative space while
+    // retaining physical perspective and correct raycaster unprojection.
+    // Inspection eases back to a centered lens for the pendant's optical fit.
+    var aspect = width / Math.max(1, height);
+    var wideLayout = width >= 900 ? Math.min(1, Math.max(0, (aspect - 1.25) / 0.3)) : 0;
+    cameraEditorialOffset = -0.1 * width * wideLayout * (1 - cameraInspection);
+    if (camera.setViewOffset) {
+      camera.setViewOffset(width, height, cameraEditorialOffset, 0, width, height);
+    }
+    updateBackdropScale();
   }
 
   function frameCamera() {
     var aspect = width / Math.max(1, height);
     if (aspect < 0.78) {
-      // Portrait keeps the same right-biased path through rack, robot, bay,
-      // and HMI, but moves the camera modestly closer and raises its aim. The
-      // hero cell grows about 16-20% and settles onto previously empty floor;
-      // the camera plate itself keeps its exact cover crop below.
+      // Portrait retains the exact process azimuth and only changes distance
+      // and FOV to keep furnace, robot, receiver, and fixed HMI inside crop.
       if (height <= 650) {
         camera.fov = 60.5;
-        baseCameraPosition.set(1.78, 2.62, 9.78);
-        baseCameraTarget.set(1.68, 2.54, -5.25);
+        processCameraDistance = 19.8;
       } else {
         camera.fov = 61;
-        baseCameraPosition.set(1.88, 2.64, 10.05);
-        baseCameraTarget.set(1.72, 2.6, -5.25);
+        processCameraDistance = 20.6;
       }
     } else if (aspect < 1.25) {
       camera.fov = 51;
-      baseCameraPosition.set(0.55, 2.52, 8.2);
-      baseCameraTarget.set(0.65, 2.18, -5.6);
+      processCameraDistance = PROCESS_CAMERA_STANDARD_DISTANCE;
     } else {
       camera.fov = 43;
-      baseCameraPosition.set(0, 2.35, 7.15);
-      baseCameraTarget.set(0.35, 2.12, -5.7);
+      processCameraDistance = PROCESS_CAMERA_STANDARD_DISTANCE;
     }
+    baseCameraTarget.copy(PROCESS_CAMERA_TARGET);
+    baseCameraPosition
+      .copy(PROCESS_CAMERA_DIRECTION)
+      .multiplyScalar(processCameraDistance)
+      .add(baseCameraTarget);
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
     var verticalTangent = Math.tan((camera.fov * Math.PI / 180) * 0.5);
@@ -1086,9 +1405,7 @@
     var verticalFit = 0.925 / Math.max(0.01, verticalTangent * usableY);
     var inspectDistance = Math.max(horizontalFit, verticalFit) * 1.025;
     inspectCameraPosition
-      .copy(baseCameraPosition)
-      .sub(inspectCameraTarget)
-      .normalize()
+      .copy(PROCESS_CAMERA_DIRECTION)
       .multiplyScalar(inspectDistance)
       .add(inspectCameraTarget);
     applyCameraPose();
@@ -1151,16 +1468,19 @@
       offsetY = (1 - repeatY) * 0.5;
     } else if (viewportAspect < imageAspect) {
       repeatX = viewportAspect / imageAspect;
-      // Preserve the CNC opening and HMI in narrow crops while retaining
-      // enough of the left staging area to explain the complete cycle.
-      offsetX = (1 - repeatX) * 0.65;
+      // Preserve the clean center-right press bay and operator HMI in narrow
+      // crops while retaining enough of the left furnace aisle to explain the
+      // charge path.
+      offsetX = (1 - repeatX) * 0.62;
     }
 
+    var wrappingChanged = texture.wrapS !== THREE.ClampToEdgeWrapping ||
+      texture.wrapT !== THREE.ClampToEdgeWrapping;
     texture.wrapS = THREE.ClampToEdgeWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
     texture.repeat.set(repeatX, repeatY);
     texture.offset.set(offsetX, offsetY);
-    texture.needsUpdate = true;
+    if (wrappingChanged) texture.needsUpdate = true;
   }
 
   function prefilterBackdropTexture(image) {
@@ -1172,7 +1492,11 @@
     var outputScale = Math.min(1, maxWidth / sourceWidth);
     var outputWidth = Math.max(2, Math.round(sourceWidth * outputScale));
     var outputHeight = Math.max(2, Math.round(sourceHeight * outputScale));
-    var softScale = economicalPlate ? 0.58 : 0.68;
+    // Focus is on the working cell. A gentle distance blur removes the busy
+    // high-frequency roof and fence detail before reaching the contact floor.
+    var softScale = economicalPlate ? 0.58 : 0.65;
+    var farBlurPx = economicalPlate ? 1.7 : 2.3;
+    var farContrast = 0.88;
     var softWidth = Math.max(2, Math.round(outputWidth * softScale));
     var softHeight = Math.max(2, Math.round(outputHeight * softScale));
     var outputCanvas = document.createElement("canvas");
@@ -1204,19 +1528,50 @@
     // once, so it adds no per-frame post-processing or extra scene draw call.
     outputContext.imageSmoothingEnabled = true;
     outputContext.imageSmoothingQuality = "high";
+    // Expose for the cell, with the distant factory falling into cool shade.
+    // This grade is baked once; controls and resume text remain native DOM.
+    var supportsBaseFilter = typeof outputContext.filter === "string";
+    if (supportsBaseFilter) {
+      outputContext.filter = "saturate(0.5) brightness(0.46) contrast(1.08)";
+    }
     outputContext.drawImage(image, 0, 0, outputWidth, outputHeight);
+    if (supportsBaseFilter) outputContext.filter = "none";
+    else {
+      outputContext.fillStyle = "rgba(9,19,25,0.52)";
+      outputContext.fillRect(0, 0, outputWidth, outputHeight);
+    }
     softContext.imageSmoothingEnabled = true;
     softContext.imageSmoothingQuality = "high";
-    softContext.drawImage(image, 0, 0, softWidth, softHeight);
+    softContext.drawImage(outputCanvas, 0, 0, softWidth, softHeight);
     layerContext.imageSmoothingEnabled = true;
     layerContext.imageSmoothingQuality = "high";
-    layerContext.drawImage(softCanvas, 0, 0, outputWidth, outputHeight);
+    // Filter only the throwaway upper-depth layer. A small overscan keeps the
+    // blur kernel from sampling transparency at the plate edge, preventing a
+    // dark halo while leaving the crop registration effectively unchanged.
+    var supportsCanvasFilter = typeof layerContext.filter === "string";
+    if (supportsCanvasFilter) {
+      var filterOverscan = 2;
+      layerContext.filter =
+        "blur(" + farBlurPx + "px) contrast(" + farContrast + ")";
+      layerContext.drawImage(
+        softCanvas,
+        -filterOverscan,
+        -filterOverscan,
+        outputWidth + filterOverscan * 2,
+        outputHeight + filterOverscan * 2
+      );
+      layerContext.filter = "none";
+    } else {
+      // Down/up-sampling remains a deterministic no-filter fallback.
+      layerContext.drawImage(softCanvas, 0, 0, outputWidth, outputHeight);
+    }
     layerContext.globalCompositeOperation = "destination-in";
     var focusMask = layerContext.createLinearGradient(0, 0, 0, outputHeight);
-    focusMask.addColorStop(0, "rgba(0,0,0,0.46)");
-    focusMask.addColorStop(0.32, "rgba(0,0,0,0.42)");
-    focusMask.addColorStop(0.58, "rgba(0,0,0,0.28)");
-    focusMask.addColorStop(0.7, "rgba(0,0,0,0)");
+    focusMask.addColorStop(0, "rgba(0,0,0,0.94)");
+    focusMask.addColorStop(0.32, "rgba(0,0,0,0.92)");
+    focusMask.addColorStop(0.56, "rgba(0,0,0,0.78)");
+    focusMask.addColorStop(0.64, "rgba(0,0,0,0.32)");
+    focusMask.addColorStop(0.68, "rgba(0,0,0,0)");
     focusMask.addColorStop(1, "rgba(0,0,0,0)");
     layerContext.fillStyle = focusMask;
     layerContext.fillRect(0, 0, outputWidth, outputHeight);
@@ -1226,12 +1581,34 @@
     // fades completely before the floor/contact region. The restrained alpha
     // binds plate and geometry without lifting black levels or washing labels.
     var haze = outputContext.createLinearGradient(0, 0, 0, outputHeight);
-    haze.addColorStop(0, "rgba(141,153,155,0.012)");
-    haze.addColorStop(0.42, "rgba(141,153,155,0.032)");
-    haze.addColorStop(0.66, "rgba(141,153,155,0.012)");
-    haze.addColorStop(0.72, "rgba(141,153,155,0)");
-    haze.addColorStop(1, "rgba(141,153,155,0)");
+    haze.addColorStop(0, "rgba(25,48,59,0.16)");
+    haze.addColorStop(0.42, "rgba(40,64,73,0.14)");
+    haze.addColorStop(0.66, "rgba(31,52,60,0.08)");
+    haze.addColorStop(0.72, "rgba(31,52,60,0)");
+    haze.addColorStop(1, "rgba(31,52,60,0)");
     outputContext.fillStyle = haze;
+    outputContext.fillRect(0, 0, outputWidth, outputHeight);
+
+    // The high windows share the modeled key's warm direction. A broad pool
+    // and lens-edge falloff establish a focal hierarchy without drawn rays or
+    // particles competing with the actual moving machinery.
+    var windowLight = outputContext.createRadialGradient(
+      outputWidth * 0.22, outputHeight * 0.12, 0,
+      outputWidth * 0.22, outputHeight * 0.12, outputWidth * 0.64
+    );
+    windowLight.addColorStop(0, "rgba(248,199,124,0.19)");
+    windowLight.addColorStop(0.42, "rgba(209,160,98,0.075)");
+    windowLight.addColorStop(1, "rgba(209,160,98,0)");
+    outputContext.fillStyle = windowLight;
+    outputContext.fillRect(0, 0, outputWidth, outputHeight);
+    var lensFalloff = outputContext.createRadialGradient(
+      outputWidth * 0.53, outputHeight * 0.52, outputHeight * 0.16,
+      outputWidth * 0.53, outputHeight * 0.52, outputWidth * 0.67
+    );
+    lensFalloff.addColorStop(0, "rgba(5,12,17,0)");
+    lensFalloff.addColorStop(0.58, "rgba(5,12,17,0.12)");
+    lensFalloff.addColorStop(1, "rgba(5,12,17,0.6)");
+    outputContext.fillStyle = lensFalloff;
     outputContext.fillRect(0, 0, outputWidth, outputHeight);
 
     var texture = new THREE.CanvasTexture(outputCanvas);
@@ -1239,6 +1616,18 @@
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.userData.prefilteredCameraPlate = true;
+    texture.userData.opticalDepthPrefilter = Object.freeze({
+      farBlurPx: farBlurPx,
+      farContrast: farContrast,
+      maskClearAtNormalizedY: 0.68,
+      outputWidth: outputWidth,
+      outputHeight: outputHeight,
+      retainedBytes: outputWidth * outputHeight * 4,
+      peakCanvasBytes:
+        (outputWidth * outputHeight * 2 + softWidth * softHeight) * 4,
+      animatedPasses: 0,
+      extraSceneDraws: 0
+    });
     setTextureSRGB(texture);
 
     // CanvasTexture retains only outputCanvas. Release the two transient pixel
@@ -1254,9 +1643,8 @@
   function buildBackdrop() {
     var material = new THREE.MeshBasicMaterial({
       map: proceduralBackdropTexture(),
-      // A nearly neutral cool multiplier places the plate under the same
-      // overhead white balance as the geometry without obvious grading.
-      color: 0xf4f8f7,
+      // A cool multiplier keeps the factory recessive behind the warm cell.
+      color: 0xe2e8e5,
       toneMapped: true,
       depthTest: false,
       depthWrite: false,
@@ -1272,7 +1660,7 @@
 
     var loader = new THREE.TextureLoader();
     loader.load(
-      "assets/cnc-cell-floor.webp",
+      "assets/dcm-cell-floor.webp",
       function (texture) {
         var filteredTexture = prefilterBackdropTexture(texture.image);
         var nextTexture = filteredTexture || texture;
@@ -1301,6 +1689,9 @@
     var spanY = 2 * Math.tan((camera.fov * Math.PI / 180) * 0.5) * distance;
     var spanX = spanY * camera.aspect;
     backdrop.scale.set(spanX * 0.515, spanY * 0.515, 1);
+    // Camera-locked photography follows the asymmetric optical crop so the
+    // left edge never exposes the clear color during editorial framing.
+    backdrop.position.x = spanX * cameraEditorialOffset / Math.max(1, width);
     applyBackdropCover(backdrop.material.map);
   }
 
@@ -1309,9 +1700,9 @@
   function buildIndustrialEnvironment() {
     if (!THREE.WebGLCubeRenderTarget || !THREE.CubeCamera || !THREE.PMREMGenerator) return;
     var environmentScene = new THREE.Scene();
-    environmentScene.background = new THREE.Color(0x555d60);
+    environmentScene.background = new THREE.Color(0x26343a);
     var roomMaterials = [
-      0x7f8789, 0x60686b, 0xd5d4c9, 0x343a3c, 0x8b9191, 0x777e80
+      0x394952, 0x28383e, 0xa5a69a, 0x171e23, 0x607078, 0x39474d
     ].map(function (color) {
       return new THREE.MeshBasicMaterial({ color: color, side: THREE.BackSide });
     });
@@ -1339,18 +1730,19 @@
         0.62,
         [fixtureX[lightIndex], 7.8, -2.8 - Math.abs(lightIndex - 1) * 0.35],
         [fixtureX[lightIndex] * 0.35, 0, -3.8],
-        0xf3faf8
+        0xffe9c7
       );
     }
-    // Broad operator- and machine-side sources remain reflection-only. Their
-    // rectangular PMREM lobes add gradients without adding a shadow direction.
-    environmentPanel(6.8, 1.15, [0.2, 5.9, 8.6], [0.4, 2.0, -3.9], 0xcddfdd);
-    environmentPanel(5.4, 1.35, [9.2, 4.5, -3.6], [2.6, 2.0, -4.4], 0xc1d7d9);
-    environmentPanel(7.8, 2.8, [-8.8, 3.1, -4.6], [-0.2, 1.8, -4.0], 0x8d9697);
+    // The broad upper-left lobe shares the real key/crane direction. It is a
+    // reflection-only rectangle, so rough paint receives a wide warm gradient
+    // while polished tie bars retain the photographed white fixture strips.
+    environmentPanel(6.8, 1.15, [-4.1, 7.9, -0.65], [-0.15, 1.7, -3.75], 0xffc47d);
+    environmentPanel(5.4, 1.35, [9.2, 4.5, -3.6], [2.6, 2.0, -4.4], 0xa9cedd);
+    environmentPanel(7.8, 2.8, [-8.8, 3.1, -4.6], [-0.2, 1.8, -4.0], 0x53646b);
 
     var safetyReflection = new THREE.Mesh(
       new THREE.PlaneGeometry(10, 0.55),
-      new THREE.MeshBasicMaterial({ color: 0xb78108, side: THREE.DoubleSide, toneMapped: false })
+      new THREE.MeshBasicMaterial({ color: 0x9f791e, side: THREE.DoubleSide, toneMapped: false })
     );
     safetyReflection.position.set(0, 4.8, -10.8);
     environmentScene.add(safetyReflection);
@@ -1382,15 +1774,15 @@
 
   buildIndustrialEnvironment();
 
-  // Pale concrete contributes a real upward fill in the photographed cell;
-  // using it as the hemisphere ground lobe prevents pitch-black undersides.
-  var ambientLight = new THREE.HemisphereLight(0xf2f8f5, 0x858d89, 0.68);
+  // Cool sky and low concrete fill leave readable shadow faces without the
+  // uniform gray ambient response that flattens machine volumes.
+  var ambientLight = new THREE.HemisphereLight(0xb9d4e1, 0x28363e, 0.3);
   ambientLight.position.set(0, 7, -3.5);
   scene.add(ambientLight);
 
-  // One neutral-cool high-bay direction drives every cast shadow. Normalized
+  // One warm-neutral high-bay direction drives every cast shadow. Normalized
   // light-ray vector (source to cell) is approximately +0.325,-0.779,-0.535.
-  var keyLight = new THREE.DirectionalLight(0xf1f6ef, 1.95);
+  var keyLight = new THREE.DirectionalLight(0xffebd2, 3.1);
   keyLight.position.set(-4.0, 12.5, 3.8);
   keyLight.target.position.set(0.8, 1.0, -4.1);
   keyLight.castShadow = dynamicShadows;
@@ -1406,37 +1798,37 @@
   keyLight.shadow.camera.bottom = -4.3;
   keyLight.shadow.camera.updateProjectionMatrix();
   keyLight.shadow.bias = -0.00022;
-  keyLight.shadow.normalBias = 0.018;
-  keyLight.shadow.radius = 1.8;
+  keyLight.shadow.normalBias = 0.016;
+  keyLight.shadow.radius = 2.1;
   scene.add(keyLight);
   scene.add(keyLight.target);
 
   // Low-energy machine fill follows the same overhead vector, so it cannot
   // introduce a contradictory second shadow/read direction.
-  var machineLight = new THREE.DirectionalLight(0xcbe7ec, 0.26);
+  var machineLight = new THREE.DirectionalLight(0xb6d5e6, 0.42);
   machineLight.position.set(-2.2, 13.5, 2.1);
   machineLight.target.position.set(2.6, 2.0, -5.8);
   scene.add(machineLight);
   scene.add(machineLight.target);
 
-  var workLight = new THREE.PointLight(0xdff4ff, 0.62, 8, 2);
+  var workLight = new THREE.PointLight(0xe6f1ed, 0.52, 8, 2);
   workLight.position.set(3.15, 3.75, -4.7);
   scene.add(workLight);
 
-  var cavityLight = new THREE.SpotLight(0xd9f3ff, 2.4, 5.5, 0.62, 0.7, 2);
+  var cavityLight = new THREE.SpotLight(0xe1efeb, 3.0, 5.5, 0.62, 0.7, 2);
   cavityLight.position.set(3.45, 3.35, -5.35);
   cavityLight.target.position.set(3.1, 1.75, -6.25);
   scene.add(cavityLight);
   scene.add(cavityLight.target);
 
-  var cavityBounce = new THREE.PointLight(0x8ecbd3, 0.22, 3.2, 2);
+  var cavityBounce = new THREE.PointLight(0xa9c8c6, 0.18, 3.2, 2);
   cavityBounce.position.set(3.25, 2.0, -5.95);
   scene.add(cavityBounce);
 
-  // A restrained cool practical separates the robot's yellow castings from
-  // the warm machine and black safety mesh without flattening the whole cell.
-  var robotRimLight = new THREE.SpotLight(0xc7efff, 0.56, 8, 0.52, 0.86, 2);
-  robotRimLight.position.set(-1.3, 6.15, -1.35);
+  // A cool rear practical gives the robot's yellow castings a clean edge
+  // against the warm machine without filling their forward shadow faces.
+  var robotRimLight = new THREE.DirectionalLight(0x94c9e2, 1.65);
+  robotRimLight.position.set(5.8, 4.6, -8.0);
   robotRimLight.target.position.set(0.3, 2.35, -4.0);
   scene.add(robotRimLight);
   scene.add(robotRimLight.target);
@@ -1447,8 +1839,8 @@
   // cones are centered on rack/robot/load-lock, leaving the HMI phosphor and
   // paper's deliberately low emissive response in control of their legibility.
   var craneReflectionLight = new THREE.SpotLight(
-    0xffcf95,
-    lowPower ? 0.24 : 0.34,
+    0xffd89b,
+    lowPower ? 0.2 : 0.3,
     13,
     0.94,
     1,
@@ -1461,8 +1853,8 @@
   scene.add(craneReflectionLight.target);
 
   var concreteBounceLight = new THREE.SpotLight(
-    0xd8eceb,
-    lowPower ? 0.14 : 0.2,
+    0xcbdad8,
+    lowPower ? 0.15 : 0.22,
     7.6,
     1.04,
     1,
@@ -1506,44 +1898,74 @@
   }
 
   var contactShadowTexture = makeTexture(function (ctx, w, h) {
-    var gradient = ctx.createRadialGradient(w * 0.5, h * 0.5, 2, w * 0.5, h * 0.5, w * 0.48);
-    gradient.addColorStop(0, "rgba(5,8,9,0.78)");
-    gradient.addColorStop(0.28, "rgba(5,8,9,0.5)");
-    gradient.addColorStop(0.62, "rgba(5,8,9,0.16)");
-    gradient.addColorStop(1, "rgba(5,8,9,0)");
+    ctx.clearRect(0, 0, w, h);
+    // The high-bay ray travels +X/-Z toward the floor. Plane UV +U/+V maps
+    // to world +X/-Z, so this offset outer gradient gives every static contact
+    // the same restrained shadow tail instead of an unrelated radial decal.
+    var gradient = ctx.createRadialGradient(
+      w * 0.5,
+      h * 0.5,
+      2,
+      w * 0.64,
+      h * 0.64,
+      w * 0.53
+    );
+    gradient.addColorStop(0, "rgba(22,30,33,0.4)");
+    gradient.addColorStop(0.34, "rgba(22,30,33,0.27)");
+    gradient.addColorStop(0.72, "rgba(22,30,33,0.07)");
+    gradient.addColorStop(1, "rgba(22,30,33,0)");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, w, h);
-  }, 256, 256);
+
+    // A second, tight elliptical core supplies floor-edge/anchor AO while the
+    // broad lobe remains cool gray and soft on the photographed concrete.
+    ctx.save();
+    ctx.translate(w * 0.5, h * 0.5);
+    ctx.scale(1, 0.7);
+    var core = ctx.createRadialGradient(0, 0, 1, 0, 0, w * 0.22);
+    core.addColorStop(0, "rgba(5,9,11,0.92)");
+    core.addColorStop(0.42, "rgba(10,16,18,0.58)");
+    core.addColorStop(1, "rgba(18,25,27,0)");
+    ctx.fillStyle = core;
+    ctx.fillRect(-w * 0.24, -w * 0.24, w * 0.48, w * 0.48);
+    ctx.restore();
+  }, lowPower ? 128 : 256, lowPower ? 128 : 256);
 
   var M = {
     yellow: standard(0xc78d05, 0x160d00, 0.012, 0.54, 0.05, {
-      physical: true, clearcoat: 0.07, clearcoatRoughness: 0.76, envMapIntensity: 0.74
+      physical: true, clearcoat: 0.28, clearcoatRoughness: 0.4, envMapIntensity: 0.95
     }),
     yellowDark: standard(0x875503, 0x110900, 0.008, 0.6, 0.08, {
-      physical: true, clearcoat: 0.04, clearcoatRoughness: 0.82, envMapIntensity: 0.66
+      physical: true, clearcoat: 0.04, clearcoatRoughness: 0.82, envMapIntensity: 0.72
     }),
-    robotYellow: standard(0xbf8607, 0x120a00, 0.006, 0.72, 0.045, {
-      physical: true, clearcoat: 0.045, clearcoatRoughness: 0.8, envMapIntensity: 0.76
+    robotYellow: standard(0xc28a08, 0x120a00, 0.006, 0.7, 0.045, {
+      physical: true, clearcoat: 0.34, clearcoatRoughness: 0.32, envMapIntensity: 1.05
     }),
-    robotYellowDark: standard(0x7d4d03, 0x0b0600, 0.004, 0.78, 0.07, {
-      physical: true, clearcoat: 0.025, clearcoatRoughness: 0.86, envMapIntensity: 0.67
+    robotYellowDark: standard(0x825004, 0x0b0600, 0.004, 0.76, 0.07, {
+      physical: true, clearcoat: 0.2, clearcoatRoughness: 0.42, envMapIntensity: 0.9
     }),
     joint: standard(0x272f33, 0x000000, 0, 0.42, 0.62, { envMapIntensity: 0.86 }),
-    cable: standard(0x101315, 0x000000, 0, 0.76, 0.04, { envMapIntensity: 0.4 }),
-    robotCable: standard(0x111415, 0x000000, 0, 0.7, 0.015, { envMapIntensity: 0.32 }),
-    robotToolPolymer: standard(0x202629, 0x000000, 0, 0.62, 0.08, { envMapIntensity: 0.48 }),
-    steel: standard(0xaeb4b5, 0x000000, 0, 0.2, 0.92, { envMapIntensity: 1.18 }),
+    cable: standard(0x101315, 0x000000, 0, 0.84, 0.012, {
+      physical: true, clearcoat: 0.025, clearcoatRoughness: 0.82, envMapIntensity: 0.3
+    }),
+    robotCable: standard(0x111415, 0x000000, 0, 0.78, 0.01, {
+      physical: true, clearcoat: 0.035, clearcoatRoughness: 0.72, envMapIntensity: 0.34
+    }),
+    robotToolPolymer: standard(0x202629, 0x000000, 0, 0.69, 0.025, {
+      physical: true, clearcoat: 0.045, clearcoatRoughness: 0.7, envMapIntensity: 0.42
+    }),
+    steel: standard(0xaeb4b5, 0x000000, 0, 0.27, 0.92, { envMapIntensity: 1.16 }),
     brushed: standard(0x707a7e, 0x000000, 0, 0.31, 0.86, { envMapIntensity: 1.08 }),
     robotFlange: standard(0x969fa1, 0x000000, 0, 0.36, 0.9, { envMapIntensity: 1.12 }),
     robotFastener: standard(0xc1c6c5, 0x000000, 0, 0.2, 0.94, { envMapIntensity: 1.2 }),
-    robotEdgeBurnish: standard(0x9b906f, 0x000000, 0, 0.4, 0.68, { envMapIntensity: 0.88 }),
+    robotEdgeBurnish: standard(0x999680, 0x000000, 0, 0.32, 0.74, { envMapIntensity: 0.94 }),
     dark: standard(0x1c2225, 0x000000, 0, 0.55, 0.22, { envMapIntensity: 0.52 }),
     black: standard(0x080b0c, 0x000000, 0, 0.45, 0.18, { envMapIntensity: 0.42 }),
     machine: standard(0xaeb4b4, 0x000000, 0, 0.41, 0.12, {
-      physical: true, clearcoat: 0.18, clearcoatRoughness: 0.58, envMapIntensity: 0.8
+      physical: true, clearcoat: 0.18, clearcoatRoughness: 0.58, envMapIntensity: 0.9
     }),
-    machineDark: standard(0x30373a, 0x000000, 0, 0.48, 0.2, { envMapIntensity: 0.74 }),
-    machineEdge: standard(0x465055, 0x000000, 0, 0.46, 0.48, { envMapIntensity: 0.86 }),
+    machineDark: standard(0x30373a, 0x000000, 0, 0.48, 0.2, { envMapIntensity: 0.8 }),
+    machineEdge: standard(0x465055, 0x000000, 0, 0.46, 0.48, { envMapIntensity: 0.92 }),
     burnished: standard(0xb8c0c0, 0x000000, 0, 0.24, 0.88, { envMapIntensity: 1.1 }),
     grease: standard(0x171b18, 0x030504, 0.012, 0.2, 0.08, {
       physical: true, clearcoat: 0.42, clearcoatRoughness: 0.24, envMapIntensity: 0.66
@@ -1552,11 +1974,14 @@
       physical: true, clearcoat: 0.5, clearcoatRoughness: 0.2, envMapIntensity: 0.6
     }),
     contactAo: standard(0x14191a, 0x000000, 0, 0.78, 0.16, { envMapIntensity: 0.24 }),
-    jawPad: standard(0x171b1b, 0x000000, 0, 0.42, 0.02, {
-      physical: true, clearcoat: 0.16, clearcoatRoughness: 0.34, envMapIntensity: 0.46
+    jawPad: standard(0x171b1b, 0x000000, 0, 0.78, 0.008, {
+      physical: true, clearcoat: 0.035, clearcoatRoughness: 0.76, envMapIntensity: 0.24
     }),
-    robotJawPad: standard(0x111515, 0x000000, 0, 0.46, 0.01, {
-      physical: true, clearcoat: 0.12, clearcoatRoughness: 0.3, envMapIntensity: 0.4
+    // Compressed jaw/receiver elastomer is deliberately matte and near-black:
+    // against the bright casting tab it reads as real contact, not another
+    // reflective steel edge competing with a 19 px workpiece silhouette.
+    robotJawPad: standard(0x07090a, 0x000000, 0, 0.82, 0.005, {
+      physical: true, clearcoat: 0.025, clearcoatRoughness: 0.84, envMapIntensity: 0.18
     }),
     cavity: new THREE.MeshStandardMaterial({
       color: 0x182227,
@@ -1593,6 +2018,23 @@
       side: THREE.DoubleSide
     }),
     white: standard(0xe4e7e5, 0x000000, 0, 0.52, 0.04, { envMapIntensity: 0.58 }),
+    pressWhite: standard(0xbcc2ba, 0x000000, 0, 0.46, 0.16, {
+      physical: true, clearcoat: 0.3, clearcoatRoughness: 0.38, envMapIntensity: 1.08
+    }),
+    furnaceShell: standard(0x343633, 0x000000, 0, 0.86, 0.14, {
+      physical: true, clearcoat: 0.025, clearcoatRoughness: 0.86, envMapIntensity: 0.6
+    }),
+    dieSteel: standard(0x555e61, 0x000000, 0, 0.22, 0.88, { envMapIntensity: 1.18 }),
+    tieBar: standard(0xb9c1c1, 0x000000, 0, 0.16, 0.94, { envMapIntensity: 1.28 }),
+    copper: standard(0x956442, 0x160602, 0.012, 0.3, 0.84, { envMapIntensity: 1.06 }),
+    refractory: standard(0x38332d, 0x090301, 0.02, 0.92, 0.02, { envMapIntensity: 0.28 }),
+    castAluminum: standard(0xaeb6b6, 0x0a0704, 0.008, 0.46, 0.72, {
+      envMapIntensity: 1.06
+    }),
+    castHot: standard(0xb99879, 0x8f2d0b, 0.16, 0.34, 0.74, { envMapIntensity: 1.08 }),
+    molten: standard(0xe29a52, 0x9a320c, 0.82, 0.24, 0.34, {
+      physical: true, clearcoat: 0.34, clearcoatRoughness: 0.2, envMapIntensity: 0.86
+    }),
     green: standard(0x174b2e, 0x22d47a, 0.72, 0.3, 0.18),
     amber: standard(0x6d4307, 0xffa51d, 0.85, 0.3, 0.18),
     red: standard(0x5d1712, 0xe2392d, 0.42, 0.3, 0.18),
@@ -1651,13 +2093,18 @@
     }
     powdercoatAssignedTextures.length = 0;
     var profiles = [
-      { material: M.yellow, repeat: 8, roughness: 0.82, bump: 0.007 },
+      { material: M.yellow, repeat: 8, roughness: 0.64, bump: 0.007 },
       { material: M.yellowDark, repeat: 9, roughness: 0.86, bump: 0.006 },
-      { material: M.robotYellow, repeat: 8.5, roughness: 0.76, bump: 0.0065 },
-      { material: M.robotYellowDark, repeat: 9.5, roughness: 0.82, bump: 0.0055 },
-      { material: M.machine, repeat: 5, roughness: 0.72, bump: 0.003 },
+      { material: M.robotYellow, repeat: 8.5, roughness: 0.48, bump: 0.0065 },
+      { material: M.robotYellowDark, repeat: 9.5, roughness: 0.6, bump: 0.0055 },
+      { material: M.machine, repeat: 5, roughness: 0.52, bump: 0.003 },
       { material: M.machineDark, repeat: 6, roughness: 0.8, bump: 0.0035 },
-      { material: M.machineEdge, repeat: 10, roughness: 0.76, bump: 0.0028 }
+      { material: M.machineEdge, repeat: 10, roughness: 0.76, bump: 0.0028 },
+      // Large clean platen/toggle covers carry a finer orange-peel than guard
+      // frames, while the thermally cycled furnace shell is coarser and duller.
+      { material: M.pressWhite, repeat: 7.5, roughness: 0.46, bump: 0.0042 },
+      { material: M.furnaceShell, repeat: 10.5, roughness: 0.88, bump: 0.005 },
+      { material: M.refractory, repeat: 13, roughness: 0.95, bump: 0.009 }
     ];
     for (var profileIndex = 0; profileIndex < profiles.length; profileIndex++) {
       var profile = profiles[profileIndex];
@@ -1704,19 +2151,29 @@
     brushedContext.fillRect(0, brushedLine, 64, 1);
   }
   var brushedTexture = configureNonColorTexture(new THREE.CanvasTexture(brushedCanvas), 2, 14);
-  M.brushed.roughness = 0.5;
-  M.brushed.roughnessMap = brushedTexture;
-  M.brushed.bumpMap = brushedTexture;
-  M.brushed.bumpScale = 0.0012;
-  M.brushed.needsUpdate = true;
-  M.robotFlange.roughnessMap = brushedTexture;
-  M.robotFlange.bumpMap = brushedTexture;
-  M.robotFlange.bumpScale = 0.0008;
-  M.robotFlange.needsUpdate = true;
-  M.robotEdgeBurnish.roughnessMap = brushedTexture;
-  M.robotEdgeBurnish.bumpMap = brushedTexture;
-  M.robotEdgeBurnish.bumpScale = 0.00055;
-  M.robotEdgeBurnish.needsUpdate = true;
+  var axialBrushedTexture = configureNonColorTexture(brushedTexture.clone(), 12, 2);
+  axialBrushedTexture.center.set(0.5, 0.5);
+  axialBrushedTexture.rotation = Math.PI / 2;
+  axialBrushedTexture.needsUpdate = true;
+
+  function applyBrushedResponse(material, texture, roughness, bumpScale) {
+    material.roughness = roughness;
+    material.roughnessMap = texture;
+    material.bumpMap = texture;
+    material.bumpScale = bumpScale;
+    material.needsUpdate = true;
+  }
+
+  applyBrushedResponse(M.brushed, brushedTexture, 0.48, 0.0012);
+  applyBrushedResponse(M.steel, brushedTexture, 0.27, 0.00055);
+  applyBrushedResponse(M.burnished, brushedTexture, 0.29, 0.00045);
+  applyBrushedResponse(M.dieSteel, brushedTexture, 0.28, 0.00065);
+  // Tie bars, the shot rod, and the J6 flange all have a real travel axis;
+  // rotating the existing 64 px map makes scratches run with, not around, it.
+  applyBrushedResponse(M.tieBar, axialBrushedTexture, 0.2, 0.0004);
+  applyBrushedResponse(M.copper, axialBrushedTexture, 0.36, 0.00055);
+  applyBrushedResponse(M.robotFlange, axialBrushedTexture, 0.34, 0.00065);
+  applyBrushedResponse(M.robotEdgeBurnish, brushedTexture, 0.32, 0.00045);
 
   // Polycarbonate stays optically clear through its working center. Dust only
   // builds along the lower capture rail and short wiped arcs sit where an
@@ -1762,9 +2219,9 @@
   M.guardGlass.ior = 1.585;
   M.guardGlass.thickness = 0.035;
   M.guardGlass.reflectivity = 0.34;
-  M.guardGlass.clearcoat = 0.56;
+  M.guardGlass.clearcoat = 0.28;
   M.guardGlass.clearcoatRoughness = 0.32;
-  M.guardGlass.envMapIntensity = 0.84;
+  M.guardGlass.envMapIntensity = 0.5;
   M.guardGlass.needsUpdate = true;
   M.polyEdge = M.guardGlass.clone();
   M.polyEdge.color.setHex(0x6b9fa2);
@@ -1772,7 +2229,7 @@
   M.polyEdge.roughness = 0.3;
   M.polyEdge.reflectivity = 0.48;
   M.polyEdge.clearcoat = 0.64;
-  M.polyEdge.envMapIntensity = 0.98;
+  M.polyEdge.envMapIntensity = 1.02;
   M.polyEdge.roughnessMap = null;
   M.polyEdge.needsUpdate = true;
   // The exposed top edge is optically present but cannot become a continuous
@@ -1784,7 +2241,7 @@
   M.polyUpperEdge.roughness = 0.4;
   M.polyUpperEdge.reflectivity = 0.34;
   M.polyUpperEdge.clearcoat = 0.42;
-  M.polyUpperEdge.envMapIntensity = 0.64;
+  M.polyUpperEdge.envMapIntensity = 0.7;
   M.polyUpperEdge.needsUpdate = true;
 
   var guardGlareTexture = makeTexture(function (ctx, w, h) {
@@ -1890,6 +2347,104 @@
     return geometry;
   }
 
+  function loadGussetGeometry(widthValue, heightValue, depthValue, bevelValue) {
+    if (!THREE.ExtrudeGeometry || !THREE.Shape) {
+      return roundedBoxGeometry(widthValue, heightValue, depthValue, bevelValue);
+    }
+    var edge = Math.min(
+      bevelValue || 0.015,
+      widthValue * 0.08,
+      heightValue * 0.08,
+      depthValue * 0.18
+    );
+    var key = "gusset|" + [widthValue, heightValue, depthValue, edge].join("|");
+    if (geometryCache[key]) return geometryCache[key];
+    var halfWidth = widthValue * 0.5 - edge;
+    var halfHeight = heightValue * 0.5 - edge;
+    var shape = new THREE.Shape();
+    shape.moveTo(-halfWidth, -halfHeight);
+    shape.lineTo(halfWidth, -halfHeight);
+    shape.lineTo(0, halfHeight);
+    shape.closePath();
+    var geometry = new THREE.ExtrudeGeometry(shape, {
+      depth: Math.max(0.002, depthValue - edge * 2),
+      steps: 1,
+      bevelEnabled: true,
+      bevelSegments: 1,
+      bevelSize: edge,
+      bevelThickness: edge,
+      curveSegments: 1
+    });
+    geometry.center();
+    geometry.computeVertexNormals();
+    geometryCache[key] = geometry;
+    return geometry;
+  }
+
+  function chamferedServiceFrameGeometry(
+    widthValue,
+    heightValue,
+    depthValue,
+    borderValue,
+    bevelValue
+  ) {
+    if (!THREE.ExtrudeGeometry || !THREE.Shape || !THREE.Path) {
+      return roundedBoxGeometry(widthValue, heightValue, depthValue, bevelValue);
+    }
+    var edge = Math.min(bevelValue || 0.015, borderValue * 0.22);
+    var key = "service-frame|" + [
+      widthValue,
+      heightValue,
+      depthValue,
+      borderValue,
+      edge
+    ].join("|");
+    if (geometryCache[key]) return geometryCache[key];
+    var outerX = widthValue * 0.5 - edge;
+    var outerY = heightValue * 0.5 - edge;
+    var outerChamfer = Math.min(0.075, outerX * 0.16, outerY * 0.08);
+    var shape = new THREE.Shape();
+    shape.moveTo(-outerX + outerChamfer, -outerY);
+    shape.lineTo(outerX - outerChamfer, -outerY);
+    shape.lineTo(outerX, -outerY + outerChamfer);
+    shape.lineTo(outerX, outerY - outerChamfer);
+    shape.lineTo(outerX - outerChamfer, outerY);
+    shape.lineTo(-outerX + outerChamfer, outerY);
+    shape.lineTo(-outerX, outerY - outerChamfer);
+    shape.lineTo(-outerX, -outerY + outerChamfer);
+    shape.closePath();
+
+    var innerX = Math.max(0.04, outerX - borderValue);
+    var innerY = Math.max(0.04, outerY - borderValue);
+    var innerChamfer = Math.min(0.045, innerX * 0.15, innerY * 0.06);
+    var opening = new THREE.Path();
+    // Clockwise winding identifies this contour as the recessed opening.
+    opening.moveTo(-innerX + innerChamfer, -innerY);
+    opening.lineTo(-innerX, -innerY + innerChamfer);
+    opening.lineTo(-innerX, innerY - innerChamfer);
+    opening.lineTo(-innerX + innerChamfer, innerY);
+    opening.lineTo(innerX - innerChamfer, innerY);
+    opening.lineTo(innerX, innerY - innerChamfer);
+    opening.lineTo(innerX, -innerY + innerChamfer);
+    opening.lineTo(innerX - innerChamfer, -innerY);
+    opening.closePath();
+    shape.holes.push(opening);
+
+    var geometry = new THREE.ExtrudeGeometry(shape, {
+      depth: Math.max(0.002, depthValue - edge * 2),
+      steps: 1,
+      bevelEnabled: true,
+      bevelSegments: 1,
+      bevelSize: edge,
+      bevelThickness: edge,
+      curveSegments: 1
+    });
+    geometry.center();
+    geometry.computeVertexNormals();
+    geometryCache[key] = geometry;
+    return geometry;
+  }
+
   function capsuleGeometry(widthValue, heightValue, depthValue) {
     var key = "cap|" + widthValue + "|" + heightValue + "|" + depthValue;
     if (geometryCache[key]) return geometryCache[key];
@@ -1955,15 +2510,44 @@
     positions.push(0, lengthValue, 0);
     uvs.push(0.5, 0.5);
     var topRingStart = (profiles.length - 1) * ringSize;
+    // Give end caps their own vertices so cap normals cannot pull a long
+    // casting face into diagonal lighting wedges at the shoulder and wrist.
+    var capRingStart = positions.length / 3;
+    for (var capRing = 0; capRing < 2; capRing++) {
+      for (var capVertex = 0; capVertex < ringSize; capVertex++) {
+        var sourceVertex = (capRing ? topRingStart : 0) + capVertex;
+        positions.push(positions[sourceVertex * 3], positions[sourceVertex * 3 + 1], positions[sourceVertex * 3 + 2]);
+        uvs.push(0.5, 0.5);
+      }
+    }
     for (var capSide = 0; capSide < 8; capSide++) {
-      indices.push(bottomCenter, capSide, capSide + 1);
-      indices.push(topCenter, topRingStart + capSide + 1, topRingStart + capSide);
+      indices.push(bottomCenter, capRingStart + capSide, capRingStart + capSide + 1);
+      indices.push(topCenter, capRingStart + ringSize + capSide + 1, capRingStart + ringSize + capSide);
     }
     var geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
     geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
     geometry.setIndex(indices);
     geometry.computeVertexNormals();
+    // Symmetric profile tangents produce continuous cast-metal highlights,
+    // independent of which diagonal triangulates each rectangular face.
+    var castNormals = geometry.getAttribute('normal');
+    var castAround = new THREE.Vector3();
+    var castAlong = new THREE.Vector3();
+    var castNormal = new THREE.Vector3();
+    for (var normalRing = 0; normalRing < profiles.length; normalRing++) {
+      for (var normalSide = 0; normalSide < ringSize; normalSide++) {
+        var side = normalSide % 8;
+        var before = (normalRing * ringSize + (side + 7) % 8) * 3;
+        var after = (normalRing * ringSize + (side + 1) % 8) * 3;
+        var lowerRing = (Math.max(0, normalRing - 1) * ringSize + side) * 3;
+        var upperRing = (Math.min(profiles.length - 1, normalRing + 1) * ringSize + side) * 3;
+        castAround.set(positions[after] - positions[before], 0, positions[after + 2] - positions[before + 2]);
+        castAlong.set(positions[upperRing] - positions[lowerRing], positions[upperRing + 1] - positions[lowerRing + 1], positions[upperRing + 2] - positions[lowerRing + 2]);
+        castNormal.crossVectors(castAlong, castAround).normalize();
+        castNormals.setXYZ(normalRing * ringSize + normalSide, castNormal.x, castNormal.y, castNormal.z);
+      }
+    }
     geometry.computeBoundingSphere();
     geometryCache[key] = geometry;
     return geometry;
@@ -2139,10 +2723,109 @@
     return mesh;
   }
 
-  function addContactShadow(x, z, widthValue, depthValue, opacity, parent) {
-    var material = M.shadow.clone();
-    material.opacity = opacity === undefined ? 0.72 : opacity;
-    return horizontalPlane(widthValue, depthValue, material, x, 0.018, z, parent);
+  function addContactShadow(x, z, widthValue, depthValue, opacity, parent, visibilityOwner) {
+    var entry = {
+      x: x,
+      z: z,
+      width: widthValue,
+      depth: depthValue,
+      opacity: opacity === undefined ? 0.72 : opacity,
+      parent: parent || scene,
+      visibilityOwner: visibilityOwner || null
+    };
+    contactShadowEntries.push(entry);
+    return entry;
+  }
+
+  function contactShadowOwnerVisible(entry) {
+    var owner = entry.visibilityOwner || entry.parent;
+    while (owner) {
+      if (owner.visible === false) return false;
+      owner = owner.parent;
+    }
+    return true;
+  }
+
+  function buildContactShadowSystem() {
+    if (!contactShadowEntries.length) return;
+    scene.updateMatrixWorld(true);
+    var buckets = [
+      { minimum: 0.64, opacity: 0.7, entries: [] },
+      { minimum: 0.46, opacity: 0.52, entries: [] },
+      { minimum: 0, opacity: 0.34, entries: [] }
+    ];
+    var visibleCount = 0;
+    for (var entryIndex = 0; entryIndex < contactShadowEntries.length; entryIndex++) {
+      var entry = contactShadowEntries[entryIndex];
+      if (!contactShadowOwnerVisible(entry)) continue;
+      visibleCount++;
+      for (var bucketIndex = 0; bucketIndex < buckets.length; bucketIndex++) {
+        if (entry.opacity >= buckets[bucketIndex].minimum) {
+          buckets[bucketIndex].entries.push(entry);
+          break;
+        }
+      }
+    }
+
+    var planeGeometry = new THREE.PlaneGeometry(1, 1);
+    var localPosition = new THREE.Vector3();
+    var localScale = new THREE.Vector3();
+    var localQuaternion = new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(-Math.PI / 2, 0, 0)
+    );
+    var localMatrix = new THREE.Matrix4();
+    var worldMatrix = new THREE.Matrix4();
+    var drawCount = 0;
+    for (var shadowBucketIndex = 0; shadowBucketIndex < buckets.length; shadowBucketIndex++) {
+      var bucket = buckets[shadowBucketIndex];
+      if (!bucket.entries.length) continue;
+      var bucketMaterial = M.shadow.clone();
+      bucketMaterial.opacity = bucket.opacity;
+      var batch;
+      if (THREE.InstancedMesh) {
+        batch = new THREE.InstancedMesh(planeGeometry, bucketMaterial, bucket.entries.length);
+        for (var instanceIndex = 0; instanceIndex < bucket.entries.length; instanceIndex++) {
+          var shadowEntry = bucket.entries[instanceIndex];
+          localPosition.set(shadowEntry.x, 0.018, shadowEntry.z);
+          localScale.set(shadowEntry.width, shadowEntry.depth, 1);
+          localMatrix.compose(localPosition, localQuaternion, localScale);
+          worldMatrix.multiplyMatrices(shadowEntry.parent.matrixWorld, localMatrix);
+          batch.setMatrixAt(instanceIndex, worldMatrix);
+        }
+        batch.instanceMatrix.needsUpdate = true;
+        if (THREE.StaticDrawUsage) batch.instanceMatrix.setUsage(THREE.StaticDrawUsage);
+        batch.frustumCulled = false;
+        batch.castShadow = false;
+        batch.receiveShadow = false;
+        batch.renderOrder = -1;
+        batch.name = 'Batched floor contact shadows';
+        scene.add(batch);
+        drawCount++;
+      } else {
+        for (var fallbackIndex = 0; fallbackIndex < bucket.entries.length; fallbackIndex++) {
+          var fallbackEntry = bucket.entries[fallbackIndex];
+          var fallbackMesh = new THREE.Mesh(planeGeometry, bucketMaterial);
+          localPosition.set(fallbackEntry.x, 0.018, fallbackEntry.z);
+          localScale.set(fallbackEntry.width, fallbackEntry.depth, 1);
+          localMatrix.compose(localPosition, localQuaternion, localScale);
+          worldMatrix.multiplyMatrices(fallbackEntry.parent.matrixWorld, localMatrix);
+          worldMatrix.decompose(fallbackMesh.position, fallbackMesh.quaternion, fallbackMesh.scale);
+          fallbackMesh.castShadow = false;
+          fallbackMesh.receiveShadow = false;
+          fallbackMesh.renderOrder = -1;
+          scene.add(fallbackMesh);
+          drawCount++;
+        }
+      }
+    }
+    scene.userData.contactShadowAudit = {
+      queued: contactShadowEntries.length,
+      visibleInstances: visibleCount,
+      drawCalls: drawCount,
+      dynamicCastersAdded: 0,
+      textureSize: lowPower ? 128 : 256
+    };
+    contactShadowEntries.length = 0;
   }
 
   function makeLabelTexture(lines, foreground, background, widthValue, heightValue) {
@@ -2171,6 +2854,7 @@
     });
     var mesh = new THREE.Mesh(new THREE.PlaneGeometry(widthValue, heightValue), material);
     mesh.position.set(x, y, z);
+    mesh.userData.screenLabel = true;
     parent.add(mesh);
     return mesh;
   }
@@ -2257,9 +2941,189 @@
     guardGlare.material.opacity = 0.045 + grazing * grazing * 0.065;
   }
 
+  function makeGuardLatchMaterials() {
+    function forceNonEmissive(material) {
+      if (material.emissive) material.emissive.setHex(0x000000);
+      material.emissiveIntensity = 0;
+      material.needsUpdate = true;
+      return material;
+    }
+    var handle = forceNonEmissive(M.burnished.clone());
+    handle.color.setHex(0x7e8788);
+    handle.roughness = 0.5;
+    handle.metalness = 0.7;
+    handle.envMapIntensity = 0.72;
+
+    var housing = forceNonEmissive(M.yellowDark.clone());
+    housing.color.setHex(0xc89405);
+    housing.roughness = 0.64;
+    housing.metalness = 0.055;
+    housing.envMapIntensity = 0.66;
+
+    var keyInsert = forceNonEmissive(M.red.clone());
+    keyInsert.color.setHex(0xa62b22);
+    keyInsert.roughness = 0.52;
+    keyInsert.metalness = 0.12;
+    keyInsert.envMapIntensity = 0.54;
+
+    var backplate = forceNonEmissive(M.machineDark.clone());
+    backplate.color.setHex(0x191e20);
+    backplate.roughness = 0.72;
+    backplate.metalness = 0.12;
+    backplate.envMapIntensity = 0.42;
+    return {
+      handle: handle,
+      housing: housing,
+      keyInsert: keyInsert,
+      backplate: backplate
+    };
+  }
+
+  function buildGuardAccessDoor(parent, latchMaterials, mountingBackplates) {
+    // The front 1.42 m of the existing machine-side polycarbonate bay is one
+    // closed maintenance door. No second glass sheet is created: this group is
+    // only its captive edge, gasket, and hardware, so the surveyed X collision
+    // plane remains continuous and cannot read as an open/traversable gap.
+    var group = new THREE.Group();
+    group.name = 'Closed interlocked guard access door';
+    parent.add(group);
+
+    var planeX = SIDE_GUARD_X;
+    var hingeZ = -3.72;
+    var latchZ = FRONT_GUARD_Z;
+    var lowerY = 0.3;
+    var upperY = GUARD_HEIGHT - 0.08;
+    var middleY = (lowerY + upperY) * 0.5;
+    var middleZ = (hingeZ + latchZ) * 0.5;
+    var heightValue = upperY - lowerY;
+    var widthValue = latchZ - hingeZ;
+    var postFrontZ = latchZ + 0.0425;
+    var moduleCenterX = planeX - 0.15;
+
+    var edgeBatch = instanceBoxes([
+      [planeX + 0.019, middleY, hingeZ + 0.035, 0.026, heightValue, 0.03],
+      [planeX + 0.019, middleY, latchZ - 0.035, 0.026, heightValue, 0.03],
+      [planeX + 0.019, lowerY, middleZ, 0.026, 0.03, widthValue - 0.07],
+      [planeX + 0.019, upperY, middleZ, 0.026, 0.03, widthValue - 0.07]
+    ], M.polyEdge, group);
+    if (edgeBatch) edgeBatch.name = 'Door thickness edge batch';
+
+    var gasketBatch = instanceBoxes([
+      [planeX + 0.029, middleY, hingeZ + 0.065, 0.012, heightValue - 0.12, 0.016],
+      [planeX + 0.029, middleY, latchZ - 0.065, 0.012, heightValue - 0.12, 0.016],
+      [planeX + 0.029, lowerY + 0.055, middleZ, 0.012, 0.016, widthValue - 0.13],
+      [planeX + 0.029, upperY - 0.055, middleZ, 0.012, 0.016, widthValue - 0.13]
+    ], M.cable, group);
+    if (gasketBatch) gasketBatch.name = 'Compressed door gasket batch';
+
+    var hingeBatch = instanceCylinders([
+      [planeX, 0.98, hingeZ + 0.038, 0.036, 0.24, 0, 0, 0],
+      [planeX, 2.5, hingeZ + 0.038, 0.036, 0.24, 0, 0, 0]
+    ], M.burnished, group, 14);
+    if (hingeBatch) hingeBatch.name = 'Captive guard door hinges';
+
+    // One 40 mm raised backplate bolts to the existing 85 mm corner post and
+    // carries both latch functions. It is operator-side only; the continuous
+    // glass/collision datum remains at x=SIDE_GUARD_X.
+    var raisedBackplate = roundedBox(
+      0.36,
+      0.7,
+      0.04,
+      0.012,
+      latchMaterials.backplate,
+      moduleCenterX,
+      1.67,
+      postFrontZ + 0.02,
+      group
+    );
+    raisedBackplate.name = 'Raised 40mm latch mounting backplate';
+
+    // The same three-piece U-pull sits below the key box on the raised face.
+    // A 75 mm body width resolves to roughly 5.2 native pixels at 652.
+    var handleBatch = instanceBoxes([
+      [moduleCenterX + 0.04, 1.48, postFrontZ + 0.08, 0.075, 0.2, 0.028],
+      [moduleCenterX + 0.04, 1.39, postFrontZ + 0.0575, 0.075, 0.026, 0.035],
+      [moduleCenterX + 0.04, 1.57, postFrontZ + 0.0575, 0.075, 0.026, 0.035]
+    ], latchMaterials.handle, group);
+    if (handleBatch) handleBatch.name = 'Guard door pull handle';
+
+    // The monitored latch is bolted to the existing front-right corner post.
+    // Its trapped-key cylinder now faces the operator along +Z with the pull,
+    // keeping the yellow block clear of the robot/HMI sightline.
+    var interlockBox = roundedBox(
+      0.32, 0.24, 0.035, 0.012, latchMaterials.housing,
+      moduleCenterX, 1.86, postFrontZ + 0.0575, group
+    );
+    interlockBox.name = 'Trapped-key guard interlock';
+    var trappedKey = cylinder(
+      0.026, 0.018, latchMaterials.keyInsert,
+      moduleCenterX + 0.09, 1.86, postFrontZ + 0.0835,
+      group, Math.PI / 2, 0, 0, 12
+    );
+    trappedKey.name = 'Interlock trapped key';
+
+    var doorReflectionMaterial = guardGlareMaterial.clone();
+    doorReflectionMaterial.opacity = 0.038;
+    doorReflectionMaterial.depthWrite = false;
+    var reflection = new THREE.Mesh(
+      new THREE.PlaneGeometry(widthValue * 0.7, 0.28),
+      doorReflectionMaterial
+    );
+    reflection.name = 'Guard door overhead reflection';
+    reflection.position.set(planeX + 0.038, 2.58, middleZ);
+    reflection.rotation.y = -Math.PI / 2;
+    reflection.renderOrder = 4;
+    reflection.castShadow = false;
+    reflection.receiveShadow = false;
+    group.add(reflection);
+
+    var drawMeshes = [];
+    group.traverse(function (object) {
+      if (!object.isMesh) return;
+      object.castShadow = false;
+      drawMeshes.push(object);
+    });
+    group.userData.closed = true;
+    group.userData.animated = false;
+    group.userData.panelMeshesCreated = 0;
+    group.userData.collisionPlaneX = SIDE_GUARD_X;
+    group.userData.frontDatumZ = FRONT_GUARD_Z;
+    group.userData.hingeZ = hingeZ;
+    group.userData.latchZ = latchZ;
+    group.userData.latchFaceNormal = Object.freeze([0, 0, 1]);
+    group.userData.moduleStandOffMm = 40;
+    group.userData.operatorEnvelopeFrontZ = FRONT_GUARD_Z + 0.145;
+    guardAccessDoor = {
+      group: group,
+      parent: parent,
+      edgeBatch: edgeBatch,
+      gasketBatch: gasketBatch,
+      hingeBatch: hingeBatch,
+      handleBatch: handleBatch,
+      interlockBox: interlockBox,
+      interlockMaterial: latchMaterials.housing,
+      trappedKey: trappedKey,
+      raisedBackplate: raisedBackplate,
+      latchMaterials: latchMaterials,
+      mountingBackplates: mountingBackplates,
+      reflection: reflection,
+      drawMeshes: drawMeshes,
+      expectedInstancedDraws: 8,
+      fallbackDrawBudget: 17,
+      frozenProjection: Object.freeze({
+        handleWidthPx652: 5.61,
+        handleHeightPx652: 12.5,
+        interlockWidthPx652: 13.0,
+        interlockHeightPx652: 15.56
+      })
+    };
+  }
+
   function buildSafetyPerimeter(parent) {
     var guard = new THREE.Group();
     parent.add(guard);
+    var latchMaterials = makeGuardLatchMaterials();
+    var mountingBackplates = [];
 
     // A single coplanar sheet replaces the former rack mesh plus two slightly
     // skewed glass layers. The cassette bank sits visibly behind this surveyed
@@ -2299,13 +3163,31 @@
       [SIDE_GUARD_X, SIDE_GUARD_MIN_Z]
     ];
     for (var postIndex = 0; postIndex < posts.length; postIndex++) {
-      roundedBox(0.085, 3.55, 0.085, 0.022, M.machineEdge, posts[postIndex][0], 1.78, posts[postIndex][1], guard);
+      var isLatchPost =
+        posts[postIndex][0] === SIDE_GUARD_X &&
+        posts[postIndex][1] === FRONT_GUARD_Z;
+      var guardPost = roundedBox(
+        0.085,
+        3.55,
+        0.085,
+        0.022,
+        isLatchPost ? latchMaterials.backplate : M.machineEdge,
+        posts[postIndex][0],
+        1.78,
+        posts[postIndex][1],
+        guard
+      );
+      if (isLatchPost) {
+        guardPost.name = 'Dark guard latch mounting backplate';
+        mountingBackplates.push(guardPost);
+      }
       roundedBox(0.34, 0.07, 0.32, 0.022, M.machineEdge, posts[postIndex][0], 0.06, posts[postIndex][1], guard);
       for (var anchorSide = -1; anchorSide <= 1; anchorSide += 2) {
         cylinder(0.021, 0.035, M.steel, posts[postIndex][0] + anchorSide * 0.11, 0.105, posts[postIndex][1], guard, 0, 0, 0, 10);
       }
       addContactShadow(posts[postIndex][0], posts[postIndex][1], 0.42, 0.38, 0.5, guard);
     }
+    buildGuardAccessDoor(guard, latchMaterials, mountingBackplates);
 
     // TB-04 is a steel load-lock cabinet, not another transparent guard panel.
     // It is aligned behind the operator document plate and away from the robot
@@ -2323,8 +3205,8 @@
     };
     transferBay.group.position.set(3.12, 1.45, -2.25);
     guard.add(transferBay.group);
-    addContactShadow(2.58, -2.23, 0.56, 0.5, 0.64, guard);
-    addContactShadow(3.66, -2.23, 0.56, 0.5, 0.64, guard);
+    addContactShadow(2.58, -2.23, 0.56, 0.5, 0.64, guard, transferBay.group);
+    addContactShadow(3.66, -2.23, 0.56, 0.5, 0.64, guard, transferBay.group);
 
     // Continuous powder-coated shell and black cavity liners establish depth.
     // The opaque operator cabinet keeps its depth, but its central cell-side
@@ -2417,12 +3299,6 @@
       cylinder(0.024, 0.04, M.steel, cabinetFoot * 0.54 + 0.12, -1.335, 0.12, transferBay.group, 0, 0, 0, 10);
     }
 
-    // Gate hardware and monitored latch on the machine-side panel.
-    cylinder(0.036, 1.05, M.steel, 2.65, 2.2, -4.42, guard, 0, 0, 0, 14);
-    cylinder(0.036, 1.05, M.steel, 2.65, 0.92, -4.42, guard, 0, 0, 0, 14);
-    roundedBox(0.2, 0.34, 0.14, 0.035, M.yellowDark, 3.0, 1.72, -3.72, guard);
-    roundedBox(0.1, 0.19, 0.08, 0.025, M.joint, 2.93, 1.72, -3.62, guard);
-
     // Operator-side mushroom stop is independent of the stacklight material.
     roundedBox(0.25, 0.34, 0.16, 0.04, M.yellow, -0.78, 0.42, 0.58, transferBay.group);
     cylinder(0.085, 0.09, M.red, -0.78, 0.56, 0.7, transferBay.group, Math.PI / 2, 0, 0, 20);
@@ -2437,7 +3313,7 @@
     );
   }
 
-  function buildMachineProxy() {
+  function buildCncMachineProxyLegacy() {
     var group = new THREE.Group();
     scene.add(group);
 
@@ -2625,23 +3501,3675 @@
     };
   }
 
+  // Reference-led exterior: a cold-chamber production machine reads first as
+  // a long enclosed press, an open tooling bay, and tall hydraulic equipment.
+  // These fixed skins sit outside the die and extraction corridor; the
+  // original actuators below still own every process movement.
+  function buildProductionMachineExterior(parent) {
+    var exterior = new THREE.Group();
+    exterior.name = 'reference cold-chamber production-machine exterior';
+    parent.add(exterior);
+    var cabinetPaint = M.pressWhite.clone();
+    cabinetPaint.color.setHex(0xc9d1d3);
+    cabinetPaint.roughness = 0.36;
+    cabinetPaint.bumpScale = 0.0012;
+    cabinetPaint.clearcoat = 0.28;
+    cabinetPaint.envMapIntensity = 0.92;
+    var cobalt = standard(0x173f8f, 0, 0, 0.4, 0.16, {
+      physical: true, clearcoat: 0.28, clearcoatRoughness: 0.38, envMapIntensity: 0.92
+    });
+
+    function panel(widthValue, heightValue, depthValue, x, y, z, name, material) {
+      var mesh = roundedBox(widthValue, heightValue, depthValue, 0.024,
+        material || cabinetPaint, x, y, z, exterior);
+      mesh.name = name;
+      // Painted livery does not create a separate physical shadow.
+      if (material === cobalt) mesh.castShadow = false;
+      return mesh;
+    }
+
+    // Black continuous skid and raised cabinet feet establish the heavy, low
+    // horizontal proportion of the photographed machine before any detail.
+    panel(8.18, 0.38, 1.88, -0.25, 0.24, -0.04,
+      'continuous dark machine foundation', M.machineDark);
+    addContactShadow(-0.25, -0.04, 8.4, 2.05, 0.7, parent);
+    instanceBoxes([
+      [3.42, 0.065, 0.66, 0.58, 0.13, 0.52],
+      [3.42, 0.065, -0.7, 0.58, 0.13, 0.52],
+      [-3.95, 0.065, 0.66, 0.58, 0.13, 0.52],
+      [-3.95, 0.065, -0.7, 0.58, 0.13, 0.52]
+    ], M.black, exterior);
+
+    // Broad clamp doors hide the rear toggle mechanism as on the reference.
+    // The central x=-0.82..0.94 tooling window remains physically open.
+    panel(2.68, 2.78, 0.12, 2.32, 1.91, -0.98,
+      'full-height rear clamp enclosure');
+    panel(2.72, 0.12, 2.12, 2.32, 3.34, 0,
+      'long clamp cabinet roof');
+    panel(0.12, 2.82, 2.08, 3.72, 1.92, 0,
+      'clamp electrical-end enclosure');
+    var clampDoors = [
+      { x: 1.53, width: 1.12 },
+      { x: 2.69, width: 1.12 },
+      { x: 3.44, width: 0.34 }
+    ];
+    var doorHandles = [];
+    var doorHinges = [];
+    clampDoors.forEach(function (door, index) {
+      panel(door.width, 2.68, 0.075, door.x, 1.91, 1.06,
+        'broad clamp safety access door ' + (index + 1));
+      panel(door.width - 0.012, 0.43, 0.012, door.x, 1.62, 1.105,
+        'continuous cobalt clamp stripe ' + (index + 1), cobalt);
+      panel(door.width - 0.012, 0.047, 0.014, door.x, 1.345, 1.108,
+        'lower cobalt clamp pinstripe ' + (index + 1), cobalt);
+      doorHandles.push([door.x - door.width * 0.31, 2.14, 1.143, 0.045, 0.34, 0.062]);
+      doorHinges.push([door.x + door.width * 0.43, 2.88, 1.11, 0.052, 0.16, 0.035]);
+      doorHinges.push([door.x + door.width * 0.43, 0.89, 1.11, 0.052, 0.16, 0.035]);
+    });
+    instanceBoxes(doorHandles, M.burnished, exterior);
+    instanceBoxes(doorHinges, M.machineEdge, exterior);
+    // Stripe wraps around the electrical end instead of stopping as a decal.
+    panel(0.014, 0.43, 2.04, 3.787, 1.62, 0, 'cobalt cabinet end wrap', cobalt);
+    panel(0.014, 0.047, 2.04, 3.789, 1.345, 0, 'cobalt cabinet end pinstripe', cobalt);
+
+    // Reference-style electrical controls occupy one large, quiet door plane.
+    panel(0.62, 0.82, 0.055, 2.64, 2.64, 1.123,
+      'recessed electrical cabinet control bezel', M.machineDark);
+    var cabinetDisplay = new THREE.MeshBasicMaterial({map: makeTexture(function (ctx, w, h) {
+      ctx.fillStyle = '#0b1c21'; ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#233b41'; ctx.fillRect(12, 12, w - 24, 39);
+      ctx.fillStyle = '#d2e5df'; ctx.font = 'bold 16px monospace';
+      ctx.fillText('SHOT PROFILE', 22, 38);
+      ctx.strokeStyle = '#2c4449'; ctx.lineWidth = 1;
+      for (var line = 0; line < 5; line++) {
+        ctx.beginPath(); ctx.moveTo(22, 74 + line * 28); ctx.lineTo(w - 20, 74 + line * 28); ctx.stroke();
+      }
+      ctx.strokeStyle = '#80c4b0'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(23, 179); ctx.lineTo(66, 169); ctx.lineTo(104, 161);
+      ctx.lineTo(130, 87); ctx.lineTo(192, 83); ctx.lineTo(221, 106); ctx.stroke();
+      ctx.fillStyle = '#9bb8b7'; ctx.font = '12px monospace';
+      ctx.fillText('SLOW  /  FAST  /  HOLD', 22, 219);
+      ctx.fillStyle = '#325b58'; ctx.fillRect(22, 234, 64, 7); ctx.fillRect(98, 234, 53, 7);
+    }, 256, 256), toneMapped: false});
+    panel(0.5, 0.51, 0.012, 2.64, 2.72, 1.158,
+      'cabinet shot-profile display', cabinetDisplay).castShadow = false;
+    var cabinetVents = [];
+    for (var vent = 0; vent < 12; vent++) {
+      cabinetVents.push([3.789, 0.83 + vent * 0.035, 0, 0.008, 0.013, 0.68]);
+    }
+    instanceBoxes(cabinetVents, M.machineDark, exterior).castShadow = false;
+    instanceCylinders([
+      [2.47, 2.16, 1.168, 0.043, 0.042, Math.PI / 2, 0, 0],
+      [2.64, 2.16, 1.168, 0.043, 0.042, Math.PI / 2, 0, 0],
+      [2.81, 2.16, 1.168, 0.043, 0.042, Math.PI / 2, 0, 0]
+    ], M.black, exterior, 12);
+    cylinder(0.058, 0.06, M.red, 2.81, 2.16, 1.192,
+      exterior, Math.PI / 2, 0, 0, 12);
+    labelPlane(makeLabelTexture(['COLD CHAMBER', 'DC / 350'], '#214b8c', '#d2d5ca', 384, 128),
+      0.82, 0.27, 1.57, 2.86, 1.104, exterior);
+
+    // The injection-side hydraulic cabinet sits behind the charge apparatus.
+    // It is a separate pair of doors, with the same stripe datum and open
+    // black support legs seen in the supplied machine photograph.
+    panel(2.2, 0.1, 1.38, -3.19, 2.8, -0.29,
+      'hydraulic cabinet roof');
+    panel(0.1, 2.08, 1.38, -4.33, 1.72, -0.29,
+      'hydraulic cabinet end');
+    panel(2.2, 2.1, 0.1, -3.19, 1.73, -0.99,
+      'hydraulic cabinet rear');
+    [-3.77, -2.66].forEach(function (x, index) {
+      panel(1.065, 2.04, 0.075, x, 1.73, 0.44,
+        'hydraulic power-pack front door ' + (index + 1));
+      panel(1.05, 0.43, 0.012, x, 1.62, 0.485,
+        'cobalt hydraulic stripe ' + (index + 1), cobalt);
+      panel(1.05, 0.047, 0.014, x, 1.345, 0.487,
+        'cobalt hydraulic pinstripe ' + (index + 1), cobalt);
+    });
+    instanceBoxes([
+      [-3.35, 2.18, 0.515, 0.045, 0.34, 0.062],
+      [-3.08, 2.18, 0.515, 0.045, 0.34, 0.062],
+      [-4.07, 0.44, 0.13, 0.2, 0.52, 0.2],
+      [-2.3, 0.44, 0.13, 0.2, 0.52, 0.2]
+    ], M.machineEdge, exterior);
+
+    // Two tall pressure bottles, with dished ends, restrained retaining bands,
+    // bolted top valves and a common supporting cross-bracket.
+    [-3.82, -3.13].forEach(function (x, index) {
+      cylinder(0.25, 2.2, cabinetPaint, x, 3.84, -0.67, exterior, 0, 0, 0, 24);
+      sphere(0.25, cabinetPaint, x, 4.94, -0.67, exterior);
+      sphere(0.25, cabinetPaint, x, 2.74, -0.67, exterior);
+      cylinder(0.13, 0.2, M.burnished, x, 5.21, -0.67, exterior, 0, 0, 0, 16);
+      panel(0.4, 0.24, 0.38, x, 5.41, -0.67,
+        'accumulator top valve ' + (index + 1));
+      cylinder(0.272, 0.072, M.burnished, x, 4.11, -0.67, exterior, 0, 0, 0, 24);
+      cylinder(0.272, 0.072, M.burnished, x, 2.96, -0.67, exterior, 0, 0, 0, 24);
+    });
+    panel(1.36, 0.13, 0.14, -3.48, 4.1, -0.925,
+      'common accumulator upper restraint', M.machineEdge);
+    panel(1.36, 0.13, 0.14, -3.48, 2.95, -0.925,
+      'common accumulator lower restraint', M.machineEdge);
+
+    // Articulated die spray hardware is parked behind and above the open
+    // tooling bay, so the front approach remains free for the extractor.
+    function boomBetween(a, b, thickness, name) {
+      var start = new THREE.Vector3(a[0], a[1], a[2]);
+      var end = new THREE.Vector3(b[0], b[1], b[2]);
+      var beam = panel(thickness, start.distanceTo(end), thickness * 0.8,
+        0, 0, 0, name);
+      beam.position.copy(start).add(end).multiplyScalar(0.5);
+      beam.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0),
+        end.sub(start).normalize());
+    }
+    panel(0.32, 3.5, 0.38, -1.33, 2.33, -0.88,
+      'die-spray vertical service mast');
+    panel(0.68, 0.18, 0.66, -1.33, 0.54, -0.88,
+      'die-spray mast sole', M.machineDark);
+    cylinder(0.22, 0.52, M.burnished, -1.33, 4.1, -0.88,
+      exterior, Math.PI / 2, 0, 0, 18);
+    boomBetween([-1.33, 4.15, -0.88], [0.06, 4.96, -0.88], 0.27,
+      'inclined die-spray upper arm');
+    boomBetween([0.06, 4.96, -0.88], [0.3, 4.45, 0], 0.2,
+      'die-spray articulated wrist');
+    cylinder(0.17, 0.38, M.burnished, 0.06, 4.96, -0.88,
+      exterior, Math.PI / 2, 0, 0, 18);
+    dieSprayer = buildDieSprayer(exterior);
+    [-0.73, -1.01].forEach(function (z, index) {
+      var hoseCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-1.33, 3.81, z),
+        new THREE.Vector3(-1.5, 4.87, z),
+        new THREE.Vector3(-0.25, 5.7, z),
+        new THREE.Vector3(0.38, 5.28, z),
+        new THREE.Vector3(0.3, 4.45, (z + 0.88) * 0.4)
+      ], false, 'centripetal');
+      var hose = new THREE.Mesh(new THREE.TubeGeometry(hoseCurve,
+        lowPower ? 20 : 32, 0.047, 8, false), M.robotCable);
+      hose.name = 'arched die-spray supply hose ' + (index + 1);
+      exterior.add(hose);
+      applyMeshShadows(hose, M.robotCable);
+    });
+    parent.userData.productionExterior = exterior;
+  }
+
+  function buildDieSprayer(parent) {
+    var head = new THREE.Group();
+    head.name = 'descending twin-face die lubrication head';
+    head.position.set(0.3, 4.12, 0);
+    parent.add(head);
+    box(0.16, 0.18, 0.82, M.machineEdge, 0, 0, 0, head);
+    var nozzles = [];
+    [-1, 1].forEach(function (side) {
+      for (var n = 0; n < 6; n++) {
+        nozzles.push([side * 0.103, -0.045, -0.32 + n * 0.128,
+          0.018, 0.055, 0, 0, Math.PI / 2]);
+      }
+    });
+    instanceCylinders(nozzles, M.copper, head, 10);
+    var slide = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 1, 12), M.burnished);
+    slide.name = 'telescoping spray supply lance';
+    slide.position.set(0.3, 4.285, 0);
+    parent.add(slide);
+    var count = lowPower ? 144 : 288;
+    var geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+    geometry.setAttribute('sprayAlpha', new THREE.BufferAttribute(new Float32Array(count), 1));
+    geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1.1);
+    var material = new THREE.ShaderMaterial({
+      uniforms: { pixelRatio: { value: 1 } },
+      vertexShader: 'attribute float sprayAlpha; varying float a; uniform float pixelRatio; void main(){a=sprayAlpha; vec4 p=modelViewMatrix*vec4(position,1.); gl_Position=projectionMatrix*p; gl_PointSize=clamp((2.+(1.-a)*3.)*pixelRatio,2.,9.);}',
+      fragmentShader: 'varying float a; void main(){float r=length(gl_PointCoord-.5)*2.; float soft=1.-smoothstep(.15,1.,r); gl_FragColor=vec4(.78,.86,.88,soft*a);}',
+      transparent: true, depthWrite: false, depthTest: true,
+      blending: THREE.NormalBlending, toneMapped: false
+    });
+    var jets = new THREE.Points(geometry, material);
+    jets.name = 'opposed die release-agent nozzle fans';
+    jets.visible = false;
+    head.add(jets);
+    var fanPositions = [], fanUvs = [];
+    [-1, 1].forEach(function (side) {
+      for (var fan = 0; fan < 6; fan++) {
+        var z = -0.32 + fan * 0.128;
+        var corners = [
+          [side * 0.133, -0.037, z], [side * 0.433, 0.08, z],
+          [side * 0.433, -0.26, z], [side * 0.133, -0.053, z]
+        ];
+        var uv = [[0, 1], [1, 1], [1, 0], [0, 0]];
+        [0, 1, 2, 0, 2, 3].forEach(function (corner) {
+          fanPositions.push.apply(fanPositions, corners[corner]);
+          fanUvs.push.apply(fanUvs, uv[corner]);
+        });
+      }
+    });
+    var fanGeometry = new THREE.BufferGeometry();
+    fanGeometry.setAttribute('position', new THREE.Float32BufferAttribute(fanPositions, 3));
+    fanGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(fanUvs, 2));
+    var fans = new THREE.Mesh(fanGeometry, new THREE.ShaderMaterial({
+      uniforms: { strength: { value: 0 } },
+      vertexShader: 'varying vec2 v; void main(){v=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+      fragmentShader: 'varying vec2 v; uniform float strength; void main(){float edge=1.-smoothstep(.2,1.,abs(v.y-.5)*2.); float flight=smoothstep(0.,.08,v.x)*(1.-smoothstep(.65,1.,v.x)); gl_FragColor=vec4(.78,.86,.88,edge*flight*strength*.14);}',
+      transparent: true, depthWrite: false, depthTest: true,
+      side: THREE.DoubleSide, blending: THREE.NormalBlending, toneMapped: false
+    }));
+    fans.name = 'soft continuous nozzle atomization fans';
+    fans.visible = false;
+    head.add(fans);
+    return { head: head, slide: slide, jets: jets, fans: fans, amount: 0, spraying: false };
+  }
+
+  function updateDieSprayer(progress) {
+    if (!dieSprayer) return;
+    if (safetyFault || !safetySensors.estopHealthy || !safetySensors.maintenanceGateLocked) {
+      dieSprayer.spraying = false;
+      dieSprayer.jets.visible = false;
+      dieSprayer.fans.visible = false;
+      return;
+    }
+    // The extractor has cleared the tooling and is at the separate quench bath.
+    // Start atomization during descent; stop before the head leaves the cavity.
+    var active = state === STATE.CAST_QUENCH_DIP || state === STATE.CAST_QUENCH_DWELL ||
+      state === STATE.CAST_QUENCH_LIFT;
+    progress = state === STATE.CAST_QUENCH_DIP ? progress * 0.36
+      : state === STATE.CAST_QUENCH_DWELL ? 0.36 + progress * 0.30
+      : state === STATE.CAST_QUENCH_LIFT ? 0.66 + progress * 0.34 : 0;
+    active = active && castingRig.ejectorDrive.amount <= 0.005 && castingRig.dieOpen > 0.99;
+    var stage = !active ? 'parked' : state === STATE.CAST_QUENCH_DIP ? 'lowering'
+      : state === STATE.CAST_QUENCH_DWELL ? 'spraying' : 'raising';
+    if (stage !== dieSprayer.stage) {
+      dieSprayer.stage = stage;
+      if (active) setCellStatus('Quench / Die spray', stage === 'lowering' ? 'Lowering the die sprayer'
+        : stage === 'spraying' ? 'Spraying both die faces' : 'Raising the die sprayer');
+    }
+    var drop = active ? (progress < 0.36 ? smootherstep(progress / 0.36)
+      : progress < 0.66 ? 1 : 1 - smootherstep((progress - 0.66) / 0.34)) : 0;
+    dieSprayer.amount = drop;
+    dieSprayer.head.position.y = lerp(4.12, 2.45, drop);
+    var length = 4.45 - dieSprayer.head.position.y;
+    dieSprayer.slide.scale.y = length;
+    dieSprayer.slide.position.y = 4.45 - length * 0.5;
+    var spraying = active && progress > 0.16 && progress < 0.78 && !reducedMotion;
+    dieSprayer.spraying = spraying;
+    dieSprayer.jets.visible = spraying;
+    dieSprayer.fans.visible = spraying;
+    if (!spraying) return;
+    var positions = dieSprayer.jets.geometry.getAttribute('position');
+    var alpha = dieSprayer.jets.geometry.getAttribute('sprayAlpha');
+    var envelope = smoothstep(clamp((progress - 0.16) / 0.06, 0, 1)) *
+      (1 - smoothstep(clamp((progress - 0.70) / 0.08, 0, 1)));
+    dieSprayer.fans.material.uniforms.strength.value = envelope;
+    for (var i = 0; i < positions.count; i++) {
+      var side = i % 2 ? 1 : -1;
+      var nozzle = Math.floor(i / 2) % 6;
+      var flight = (simulationClock * 4.8 + i * 0.61803398875) % 1;
+      var spread = flight * flight;
+      var angle = i * 2.39996323;
+      positions.setXYZ(i, side * (0.133 + flight * 0.30),
+        -0.045 + Math.sin(angle) * spread * 0.17 - flight * flight * 0.045,
+        -0.32 + nozzle * 0.128 + Math.cos(angle) * spread * 0.065);
+      alpha.setX(i, envelope * (0.72 - flight * 0.48));
+    }
+    positions.needsUpdate = true;
+    alpha.needsUpdate = true;
+    dieSprayer.jets.material.uniforms.pixelRatio.value = renderDpr;
+  }
+
+  function buildMachineProxy() {
+    var group = new THREE.Group();
+    group.position.set(DCM_PRESS_ROOT_X, 0, -5.65);
+    // Reflect the entire fixed/injection and moving/extraction machine as one
+    // rigid ownership graph. Three.js resolves the negative determinant for
+    // mesh winding/normals; label planes are counter-reflected below so their
+    // printed safety text remains readable.
+    group.scale.set(-1, 1, 1);
+    scene.add(group);
+    buildProductionMachineExterior(group);
+
+    // Cold-chamber press footprint. The clamp axis runs left-to-right so the
+    // moving platen and four polished tie bars remain legible from the hero
+    // camera, while the robot approaches the open parting line from the front.
+    // The static contact footprint follows the real 4.75 x 1.86 m skid rather
+    // than floating beyond it as a dark rectangular decal. Dynamic silhouettes
+    // from the platens/toggle continue to land on the single floor receiver.
+    addContactShadow(0.05, 0, 5.08, 2.12, 0.52, group);
+    // The lower casting is a deep boxed bed inside the existing proved base
+    // envelope.  A restrained inset web makes the reaction path read at the
+    // hero camera without extending the collision datum or floor footprint.
+    var foundationBed = roundedBox(4.75, 0.5, 1.86, 0.075, M.machineDark, 0, 0.29, 0, group);
+    var bedSideWebs = instanceBoxes([
+      [0, 0.27, 0.875, 4.45, 0.32, 0.09],
+      [0, 0.27, -0.875, 4.45, 0.32, 0.09],
+      [-2.325, 0.27, 0, 0.1, 0.32, 1.66],
+      [2.325, 0.27, 0, 0.1, 0.32, 1.66]
+    ], M.machineEdge, group);
+    if (bedSideWebs) {
+      bedSideWebs.name = 'boxed press-bed perimeter webs';
+      // The existing bed remains the one broad shadow caster; inset webs only
+      // receive its contact response and do not multiply static shadow cost.
+      bedSideWebs.castShadow = false;
+    }
+    roundedBox(4.35, 0.12, 1.54, 0.035, M.machineEdge, 0.08, 0.5, 0, group);
+    roundedBox(1.26, 0.24, 1.92, 0.055, M.pressWhite, -1.82, 0.69, 0, group);
+    roundedBox(1.18, 0.24, 1.92, 0.055, M.pressWhite, 1.77, 0.69, 0, group);
+
+    var fixedPlaten = new THREE.Group();
+    fixedPlaten.position.set(-0.55, 0, 0);
+    group.add(fixedPlaten);
+    // Four massive cast members retain the exact frozen outer envelope while
+    // opening a real throat around the tooling: top/bottom crossheads plus two
+    // deep side cheeks. A darker inner C-frame makes the load path legible.
+    var fixedPlatenShell = instanceBoxes([
+      [0.045, 3.37, 0, 0.4, 0.68, 1.92],
+      [0.045, 0.91, 0, 0.4, 0.76, 1.92],
+      [0.045, 2.12, 0.78, 0.4, 1.94, 0.36],
+      [0.045, 2.12, -0.82, 0.4, 1.94, 0.28]
+    ], M.pressWhite, fixedPlaten);
+    fixedPlatenShell.name = 'massive fixed-platen cast C-frame';
+    var fixedPlatenInnerFrame = instanceBoxes([
+      [0.18, 3.31, 0, 0.37, 0.38, 1.62],
+      [0.18, 0.99, 0, 0.37, 0.46, 1.62],
+      [0.18, 2.12, 0.69, 0.37, 1.9, 0.24],
+      [0.18, 2.12, -0.69, 0.37, 1.9, 0.24]
+    ], M.machineDark, fixedPlaten);
+    fixedPlatenInnerFrame.name = 'recessed fixed-platen throat C-frame';
+    roundedBox(0.25, 1.62, 1.22, 0.052, M.dieSteel, 0.28, 2.12, 0, fixedPlaten);
+    roundedBox(0.055, 1.22, 0.86, 0.018, M.contactAo, 0.418, 2.12, 0, fixedPlaten);
+    roundedBox(0.035, 1.06, 0.72, 0.014, M.copper, 0.451, 2.12, 0, fixedPlaten);
+
+    var movingHalf = new THREE.Group();
+    movingHalf.position.set(0.92, 0, 0);
+    group.add(movingHalf);
+    var movingPlatenShell = instanceBoxes([
+      [0.49, 3.3, 0, 0.48, 0.68, 1.88],
+      [0.49, 0.98, 0, 0.48, 0.76, 1.88],
+      [0.49, 2.12, 0.76, 0.48, 1.84, 0.36],
+      [0.49, 2.12, -0.8, 0.48, 1.84, 0.28]
+    ], M.pressWhite, movingHalf);
+    movingPlatenShell.name = 'massive moving-platen cast C-frame';
+    var movingPlatenInnerFrame = instanceBoxes([
+      [0.34, 3.22, 0, 0.39, 0.36, 1.58],
+      [0.34, 1.04, 0, 0.39, 0.44, 1.58],
+      [0.34, 2.12, 0.67, 0.39, 1.72, 0.24],
+      [0.34, 2.12, -0.67, 0.39, 1.72, 0.24]
+    ], M.machineDark, movingHalf);
+    movingPlatenInnerFrame.name = 'recessed moving-platen throat C-frame';
+    roundedBox(0.25, 1.62, 1.22, 0.052, M.dieSteel, -0.04, 2.12, 0, movingHalf);
+    roundedBox(0.055, 1.22, 0.86, 0.018, M.contactAo, -0.181, 2.12, 0, movingHalf);
+    roundedBox(0.035, 1.06, 0.72, 0.014, M.copper, -0.214, 2.12, 0, movingHalf);
+
+    // Camera-side tapered ribs connect the tie-bar bearing zones into the
+    // crossheads without altering a pivot, die face, or collision envelope.
+    var fixedPlatenLoadFlowRibs = instanceFixedGeometry(
+      loadGussetGeometry(0.4, 0.58, 0.34, 0.022), M.machineEdge,
+      [[0.045, 1.4, 0.77, 0, 0, 0], [0.045, 2.84, 0.77, 0, 0, Math.PI]],
+      fixedPlaten
+    );
+    fixedPlatenLoadFlowRibs.name = 'fixed-platen tapered tie-bar load-flow ribs';
+    fixedPlatenLoadFlowRibs.castShadow = false;
+    var movingPlatenLoadFlowRibs = instanceFixedGeometry(
+      loadGussetGeometry(0.46, 0.56, 0.34, 0.022), M.machineEdge,
+      [[0.49, 1.44, 0.75, 0, 0, 0], [0.49, 2.8, 0.75, 0, 0, Math.PI]],
+      movingHalf
+    );
+    movingPlatenLoadFlowRibs.name = 'moving-platen tapered tie-bar load-flow ribs';
+    movingPlatenLoadFlowRibs.castShadow = false;
+
+    // Gap-facing cast carriers give both platens a load-bearing shoulder
+    // around the tooling.  The smaller dark rims keep the two die faces
+    // visually separate across the unchanged 0.92 m open gap.
+    // Thick seated tooling blocks replace the visually thin carrier frames.
+    // Both grow rearward into their owning platens; the two gap-facing planes
+    // retain a surveyed 2 mm closed separation and the unchanged .92 m stroke.
+    var fixedDieCarrier = new THREE.Mesh(
+      roundedBoxGeometry(0.155, 1.64, 1.26, 0.052),
+      M.machineEdge
+    );
+    fixedDieCarrier.position.set(0.2775, 2.12, 0);
+    fixedDieCarrier.name = 'fixed thick tool-steel backing block';
+    fixedPlaten.add(fixedDieCarrier);
+    applyMeshShadows(fixedDieCarrier, M.machineEdge);
+    fixedDieCarrier.castShadow = false;
+
+    var movingDieCarrier = new THREE.Mesh(
+      roundedBoxGeometry(0.213, 1.64, 1.26, 0.052),
+      M.machineEdge
+    );
+    movingDieCarrier.position.set(-0.0265, 2.12, 0);
+    movingDieCarrier.name = 'moving thick tool-steel backing block';
+    movingHalf.add(movingDieCarrier);
+    applyMeshShadows(movingDieCarrier, M.machineEdge);
+    movingDieCarrier.castShadow = false;
+
+    // Keep the surveyed die planes, but turn their former flat slabs into
+    // bright beveled perimeter bands. The darker cavity inserts behind them
+    // remain visible, preserving a continuous open-air throat.
+    var dieFaceGeometry = chamferedServiceFrameGeometry(
+      0.84, 1.2, 0.03, 0.065, 0.012
+    );
+    dieFaceGeometry.userData.dcmBeveledPerimeter = true;
+    var fixedDieFaceRim = new THREE.Mesh(dieFaceGeometry, M.burnished);
+    fixedDieFaceRim.position.set(0.37, 2.12, 0);
+    fixedDieFaceRim.rotation.y = Math.PI / 2;
+    fixedDieFaceRim.name = 'bright beveled fixed die-face perimeter band';
+    fixedPlaten.add(fixedDieFaceRim);
+    applyMeshShadows(fixedDieFaceRim, M.burnished);
+    fixedDieFaceRim.castShadow = false;
+
+    var movingDieFaceRim = new THREE.Mesh(dieFaceGeometry, M.burnished);
+    movingDieFaceRim.position.set(-0.148, 2.12, 0);
+    movingDieFaceRim.rotation.y = Math.PI / 2;
+    movingDieFaceRim.name = 'bright beveled moving die-face perimeter band';
+    movingHalf.add(movingDieFaceRim);
+    applyMeshShadows(movingDieFaceRim, M.dieSteel);
+    movingDieFaceRim.castShadow = false;
+
+    var leaderTransforms = [
+      [0.415, 1.64, -0.62, 0.035, 0.08, 0, 0, Math.PI / 2],
+      [0.415, 2.6, -0.62, 0.035, 0.08, 0, 0, Math.PI / 2],
+      [0.415, 1.64, 0.62, 0.035, 0.08, 0, 0, Math.PI / 2],
+      [0.415, 2.6, 0.62, 0.035, 0.08, 0, 0, Math.PI / 2]
+    ];
+    var bushingTransforms = [
+      [-0.193, 1.64, -0.62, 0.052, 0.035, 0, 0, Math.PI / 2],
+      [-0.193, 2.6, -0.62, 0.052, 0.035, 0, 0, Math.PI / 2],
+      [-0.193, 1.64, 0.62, 0.052, 0.035, 0, 0, Math.PI / 2],
+      [-0.193, 2.6, 0.62, 0.052, 0.035, 0, 0, Math.PI / 2]
+    ];
+    var dieLeaderPins = instanceCylinders(leaderTransforms, M.burnished, fixedPlaten, 14);
+    var dieLeaderBushings = instanceCylinders(bushingTransforms, M.contactAo, movingHalf, 14);
+    if (dieLeaderPins) {
+      dieLeaderPins.name = 'four short fixed-die leader pins';
+      dieLeaderPins.castShadow = false;
+    }
+    if (dieLeaderBushings) {
+      dieLeaderBushings.name = 'four moving-die leader bushings';
+      dieLeaderBushings.castShadow = false;
+    }
+
+    // Four through tie bars communicate the press load path. Their end nuts,
+    // grease collars, and platen bushings are separate profiles rather than
+    // decorative rods floating around the machine.
+    var tieCoordinates = [
+      [1.19, -0.67], [3.05, -0.67], [1.19, 0.67], [3.05, 0.67]
+    ];
+    var tieBarTransforms = [];
+    var tieNutTransforms = [];
+    var tieGreaseTransforms = [];
+    for (var tieIndex = 0; tieIndex < tieCoordinates.length; tieIndex++) {
+      var tieY = tieCoordinates[tieIndex][0];
+      var tieZ = tieCoordinates[tieIndex][1];
+      tieBarTransforms.push([0.24, tieY, tieZ, 0.075, 3.62, 0, 0, Math.PI / 2]);
+      tieNutTransforms.push([-1.58, tieY, tieZ, 0.142, 0.16, 0, 0, Math.PI / 2]);
+      tieNutTransforms.push([2.06, tieY, tieZ, 0.142, 0.16, 0, 0, Math.PI / 2]);
+      tieGreaseTransforms.push([-1.46, tieY, tieZ, 0.105, 0.055, 0, 0, Math.PI / 2]);
+      tieGreaseTransforms.push([1.94, tieY, tieZ, 0.105, 0.055, 0, 0, Math.PI / 2]);
+    }
+    var structuralTieBars = instanceCylinders(tieBarTransforms, M.tieBar, group, 22);
+    var tieBarEndNuts = instanceCylinders(tieNutTransforms, M.machineEdge, group, 18);
+    var tieBarGreaseCollars = instanceCylinders(tieGreaseTransforms, M.grease, group, 18);
+    if (structuralTieBars) structuralTieBars.name = 'four structural through tie bars';
+    if (tieBarEndNuts) tieBarEndNuts.name = 'eight tie-bar reaction nuts';
+    if (tieBarGreaseCollars) tieBarGreaseCollars.name = 'eight tie-bar grease collars';
+
+    // Deep cast bearing bosses terminate the polished bars at the actual
+    // platen faces. They remain parented to their respective halves, so the
+    // moving set follows the already-proved die travel without any new
+    // animation or change to the four surveyed bar centerlines.
+    var fixedBearingTransforms = [];
+    var movingBearingTransforms = [];
+    for (var bearingIndex = 0; bearingIndex < tieCoordinates.length; bearingIndex++) {
+      fixedBearingTransforms.push([
+        -0.08,
+        tieCoordinates[bearingIndex][0],
+        tieCoordinates[bearingIndex][1],
+        0.205,
+        0.15,
+        0,
+        0,
+        Math.PI / 2
+      ]);
+      movingBearingTransforms.push([
+        0.655,
+        tieCoordinates[bearingIndex][0],
+        tieCoordinates[bearingIndex][1],
+        0.205,
+        0.15,
+        0,
+        0,
+        Math.PI / 2
+      ]);
+    }
+    var fixedBearingLands = instanceCylinders(
+      fixedBearingTransforms,
+      M.machineEdge,
+      fixedPlaten,
+      18
+    );
+    var movingBearingLands = instanceCylinders(
+      movingBearingTransforms,
+      M.machineEdge,
+      movingHalf,
+      18
+    );
+    if (fixedBearingLands) {
+      fixedBearingLands.name = 'four deep fixed-platen cast bearing bosses';
+      if (fixedBearingLands.computeBoundingBox) fixedBearingLands.computeBoundingBox();
+      if (fixedBearingLands.computeBoundingSphere) fixedBearingLands.computeBoundingSphere();
+    }
+    if (movingBearingLands) {
+      movingBearingLands.name = 'four deep moving-platen cast bearing bosses';
+      if (movingBearingLands.computeBoundingBox) movingBearingLands.computeBoundingBox();
+      if (movingBearingLands.computeBoundingSphere) movingBearingLands.computeBoundingSphere();
+    }
+
+    // Stepped bronze bushings, substantial hex reaction nuts, and restrained
+    // wipe collars make the bar-to-platen force transfer readable at the hero
+    // camera. Each family is instanced per platen; all profiles remain nested
+    // inside the existing fixed and moving shell envelopes.
+    var fixedTieBushingTransforms = [];
+    var movingTieBushingTransforms = [];
+    var fixedTieReactionNutTransforms = [];
+    var movingTieReactionNutTransforms = [];
+    var fixedTieWipeTransforms = [];
+    var movingTieWipeTransforms = [];
+    for (var terminationIndex = 0; terminationIndex < tieCoordinates.length; terminationIndex++) {
+      var terminationY = tieCoordinates[terminationIndex][0];
+      var terminationZ = tieCoordinates[terminationIndex][1];
+      fixedTieBushingTransforms.push([-0.1375, terminationY, terminationZ, 0.16, 0.035, 0, 0, Math.PI / 2]);
+      movingTieBushingTransforms.push([0.7125, terminationY, terminationZ, 0.16, 0.035, 0, 0, Math.PI / 2]);
+      fixedTieReactionNutTransforms.push([-0.105, terminationY, terminationZ, 0.19, 0.075, 0, 0, Math.PI / 2]);
+      movingTieReactionNutTransforms.push([0.68, terminationY, terminationZ, 0.19, 0.075, 0, 0, Math.PI / 2]);
+      fixedTieWipeTransforms.push([-0.148, terminationY, terminationZ, 0.125, 0.014, 0, 0, Math.PI / 2]);
+      movingTieWipeTransforms.push([0.723, terminationY, terminationZ, 0.125, 0.014, 0, 0, Math.PI / 2]);
+    }
+    var fixedTieBushings = instanceCylinders(fixedTieBushingTransforms, M.copper, fixedPlaten, 24);
+    var movingTieBushings = instanceCylinders(movingTieBushingTransforms, M.copper, movingHalf, 24);
+    var fixedTieReactionNuts = instanceCylinders(fixedTieReactionNutTransforms, M.burnished, fixedPlaten, 6);
+    var movingTieReactionNuts = instanceCylinders(movingTieReactionNutTransforms, M.burnished, movingHalf, 6);
+    var fixedTieWipeCollars = instanceCylinders(fixedTieWipeTransforms, M.grease, fixedPlaten, 20);
+    var movingTieWipeCollars = instanceCylinders(movingTieWipeTransforms, M.grease, movingHalf, 20);
+    var tieTerminationBatches = [
+      fixedBearingLands,
+      movingBearingLands,
+      fixedTieBushings,
+      movingTieBushings,
+      fixedTieReactionNuts,
+      movingTieReactionNuts,
+      fixedTieWipeCollars,
+      movingTieWipeCollars
+    ];
+    var tieTerminationNames = [
+      'fixed stepped bronze tie-bar bushings',
+      'moving stepped bronze tie-bar bushings',
+      'fixed hydraulic hex reaction nuts',
+      'moving hydraulic hex reaction nuts',
+      'fixed grease and wipe collars',
+      'moving grease and wipe collars'
+    ];
+    for (var tieTerminationIndex = 2; tieTerminationIndex < tieTerminationBatches.length; tieTerminationIndex++) {
+      var tieTerminationBatch = tieTerminationBatches[tieTerminationIndex];
+      if (!tieTerminationBatch) continue;
+      tieTerminationBatch.name = tieTerminationNames[tieTerminationIndex - 2];
+      tieTerminationBatch.castShadow = false;
+    }
+
+    // Two longitudinal box ways carry the moving platen's gravity load into
+    // the boxed bed. Four platen-owned slide shoes and their compact wipers
+    // remain in continuous bearing contact throughout the unchanged .92 m
+    // OPEN/CLOSED stroke; no tie bar or clamp datum is used as a visual crutch.
+    var movingPlatenGuideWays = instanceBoxes([
+      [0.95, 0.56, -0.69, 1.9, 0.04, 0.18],
+      [0.95, 0.56, 0.69, 1.9, 0.04, 0.18]
+    ], M.machineDark, group);
+    var movingPlatenGuideWearStrips = instanceBoxes([
+      [0.95, 0.578, -0.69, 1.9, 0.004, 0.12],
+      [0.95, 0.578, 0.69, 1.9, 0.004, 0.12]
+    ], M.burnished, group);
+    var movingPlatenSlideShoes = instanceBoxes([
+      [0.32, 0.619, -0.69, 0.24, 0.078, 0.24],
+      [0.66, 0.619, -0.69, 0.24, 0.078, 0.24],
+      [0.32, 0.619, 0.69, 0.24, 0.078, 0.24],
+      [0.66, 0.619, 0.69, 0.24, 0.078, 0.24]
+    ], M.copper, movingHalf);
+    var movingPlatenShoeWipers = instanceBoxes([
+      [0.19, 0.603, -0.69, 0.025, 0.046, 0.25],
+      [0.79, 0.603, -0.69, 0.025, 0.046, 0.25],
+      [0.19, 0.603, 0.69, 0.025, 0.046, 0.25],
+      [0.79, 0.603, 0.69, 0.025, 0.046, 0.25]
+    ], M.grease, movingHalf);
+    var movingPlatenBearingShadows = instanceBoxes([
+      [0.32, 0.5805, -0.69, 0.2, 0.001, 0.13],
+      [0.66, 0.5805, -0.69, 0.2, 0.001, 0.13],
+      [0.32, 0.5805, 0.69, 0.2, 0.001, 0.13],
+      [0.66, 0.5805, 0.69, 0.2, 0.001, 0.13]
+    ], M.contactAo, movingHalf);
+    if (movingPlatenGuideWays) {
+      movingPlatenGuideWays.name = 'paired bed-mounted moving-platen box ways';
+      movingPlatenGuideWays.castShadow = false;
+    }
+    if (movingPlatenSlideShoes) {
+      movingPlatenSlideShoes.name = 'four moving-platen bronze slide shoes';
+      movingPlatenSlideShoes.castShadow = false;
+    }
+    if (movingPlatenGuideWearStrips) {
+      movingPlatenGuideWearStrips.name = 'paired burnished moving-platen way strips';
+      movingPlatenGuideWearStrips.castShadow = false;
+    }
+    if (movingPlatenShoeWipers) {
+      movingPlatenShoeWipers.name = 'four moving-platen guide-way wipers';
+      movingPlatenShoeWipers.castShadow = false;
+    }
+    if (movingPlatenBearingShadows) {
+      movingPlatenBearingShadows.name = 'four localized platen-way bearing shadows';
+      movingPlatenBearingShadows.castShadow = false;
+    }
+
+    // The fixed platen transfers clamp and shot reaction into the boxed bed
+    // through a two-step keyed sole. Its lower plate retains the exact Pass68
+    // footprint/contact datum while the narrower upper key makes the load
+    // path visibly continuous into the platen casting.
+    var fixedPlatenSole = instanceBoxes([
+      [0.1, 0.575, 0, 0.52, 0.07, 1.88],
+      [0.1, 0.625, 0, 0.34, 0.03, 1.58]
+    ], M.machineDark, fixedPlaten);
+    fixedPlatenSole.name = 'two-step keyed fixed-platen sole plate';
+
+    // One broad external rib is deliberately placed on the camera/operator
+    // side (+Z) so the fixed-platen reaction triangle survives the hero view.
+    // The opposite instance shares the same geometry/material batch but is
+    // scaled subordinate; both remain inside the original sole footprint.
+    var fixedPlatenLoadRibs = new THREE.InstancedMesh(
+      loadGussetGeometry(0.5, 0.9, 0.32, 0.024),
+      M.machineDark,
+      2
+    );
+    var fixedPlatenRibDummy = new THREE.Object3D();
+    fixedPlatenRibDummy.position.set(0.1, 1.08, 0.78);
+    fixedPlatenRibDummy.scale.set(1, 1, 1);
+    fixedPlatenRibDummy.updateMatrix();
+    fixedPlatenLoadRibs.setMatrixAt(0, fixedPlatenRibDummy.matrix);
+    fixedPlatenRibDummy.position.set(0.06, 0.91, -0.81);
+    fixedPlatenRibDummy.scale.set(0.68, 0.64, 0.5);
+    fixedPlatenRibDummy.updateMatrix();
+    fixedPlatenLoadRibs.setMatrixAt(1, fixedPlatenRibDummy.matrix);
+    fixedPlatenLoadRibs.instanceMatrix.needsUpdate = true;
+    fixedPlaten.add(fixedPlatenLoadRibs);
+    applyMeshShadows(fixedPlatenLoadRibs, M.machineDark);
+    fixedPlatenLoadRibs.name = 'asymmetric camera-side fixed-platen load ribs';
+    fixedPlatenLoadRibs.castShadow = false;
+    if (fixedPlatenLoadRibs.computeBoundingBox) fixedPlatenLoadRibs.computeBoundingBox();
+    if (fixedPlatenLoadRibs.computeBoundingSphere) fixedPlatenLoadRibs.computeBoundingSphere();
+
+    var fixedPlatenKeepers = instanceBoxes([
+      [-0.07, 0.64, -0.82, 0.17, 0.14, 0.12],
+      [-0.07, 0.64, 0.82, 0.17, 0.14, 0.12]
+    ], M.burnished, fixedPlaten);
+    var fixedPlatenAnchors = instanceCylinders([
+      [-0.09, 0.64, -0.72, 0.042, 0.12],
+      [0.25, 0.64, -0.72, 0.042, 0.12],
+      [-0.09, 0.64, 0.72, 0.042, 0.12],
+      [0.25, 0.64, 0.72, 0.042, 0.12]
+    ], M.burnished, fixedPlaten, 6);
+    var fixedPlatenRibBearingShadow = box(
+      0.42, 0.008, 0.32, M.contactAo,
+      0.1, 0.644, 0.78, fixedPlaten
+    );
+    fixedPlatenRibBearingShadow.name = 'camera-side fixed-platen rib bearing shadow';
+    fixedPlatenRibBearingShadow.castShadow = false;
+    var fixedPlatenAnchorageMeshes = [
+      fixedPlatenSole,
+      fixedPlatenLoadRibs,
+      fixedPlatenKeepers,
+      fixedPlatenAnchors,
+      fixedPlatenRibBearingShadow
+    ];
+    var fixedPlatenAnchorageNames = [
+      'two-step keyed fixed-platen sole plate',
+      'asymmetric camera-side fixed-platen load ribs',
+      'paired fixed-platen bed-web keepers',
+      'four fixed-platen sole anchor bolts',
+      'camera-side fixed-platen rib bearing shadow'
+    ];
+    for (var fixedAnchorMeshIndex = 0; fixedAnchorMeshIndex < fixedPlatenAnchorageMeshes.length; fixedAnchorMeshIndex++) {
+      var fixedAnchorMesh = fixedPlatenAnchorageMeshes[fixedAnchorMeshIndex];
+      if (!fixedAnchorMesh) continue;
+      fixedAnchorMesh.name = fixedPlatenAnchorageNames[fixedAnchorMeshIndex];
+      if (fixedAnchorMeshIndex > 0) fixedAnchorMesh.castShadow = false;
+    }
+
+    // The reference machine is organized around a long, low clamp cabinet,
+    // not a full-height electrical refrigerator.  Keep only a narrow raised
+    // rear service tower; the camera-side skin below it is a continuous,
+    // landscape enclosure that terminates at the platen throat.  This stays
+    // outside the real platen/toggle travel volume and inside the frozen
+    // Pass73 exterior footprint.
+    var rearToggleShell = roundedBox(
+      0.47,
+      1.8,
+      1.5,
+      0.09,
+      M.pressWhite,
+      2.295,
+      1.44,
+      -0.08,
+      group
+    );
+    rearToggleShell.name = 'narrow raised rear clamp service tower';
+
+    var clampServiceSkirt = roundedBox(
+      1.6, 0.62, 0.12, 0.018, M.machineDark,
+      1.72, 0.85, 0.91, group
+    );
+    clampServiceSkirt.name = 'continuous long-low camera-side clamp shell';
+    clampServiceSkirt.castShadow = false;
+    var clampServiceTopRail = roundedBox(
+      1.6, 0.16, 0.12, 0.018, M.pressWhite,
+      1.72, 1.22, 0.91, group
+    );
+    clampServiceTopRail.name = 'uninterrupted long-low clamp top datum';
+    clampServiceTopRail.castShadow = false;
+    var clampServicePosts = instanceBoxes([
+      [0.98, 0.88, 0.965, 0.12, 0.58, 0.026],
+      [2.46, 0.88, 0.965, 0.12, 0.58, 0.026]
+    ], M.pressWhite, group);
+    clampServicePosts.name = 'paired long-low clamp enclosure end posts';
+    clampServicePosts.castShadow = false;
+
+    // Two broad access doors flank one true open service window. Their dark
+    // recesses, pale covers and small horizontal pulls remain one restrained
+    // industrial pattern instead of a field of decorative greebles.
+    var serviceFrame = new THREE.Mesh(
+      chamferedServiceFrameGeometry(0.3, 0.46, 0.018, 0.055, 0.016),
+      M.pressWhite
+    );
+    serviceFrame.position.set(1.08, 0.89, 0.968);
+    serviceFrame.name = 'throat-side open pinned-toggle inspection frame';
+    group.add(serviceFrame);
+    applyMeshShadows(serviceFrame, M.pressWhite);
+    serviceFrame.castShadow = false;
+    var serviceRecess = instanceBoxes([
+      [1.5, 0.89, 0.956, 0.54, 0.44, 0.012],
+      [2.08, 0.89, 0.956, 0.68, 0.44, 0.012],
+      [1.45, 0.74, 0.976, 0.25, 0.014, 0.008],
+      [1.45, 0.78, 0.976, 0.25, 0.014, 0.008],
+      [1.45, 0.82, 0.976, 0.25, 0.014, 0.008],
+      [2.03, 0.74, 0.976, 0.36, 0.014, 0.008],
+      [2.03, 0.78, 0.976, 0.36, 0.014, 0.008],
+      [2.03, 0.82, 0.976, 0.36, 0.014, 0.008]
+    ], M.machineDark, group);
+    serviceRecess.name = 'two recessed landscape clamp service-panel seams';
+    serviceRecess.castShadow = false;
+    var serviceCover = instanceBoxes([
+      [1.5, 0.89, 0.967, 0.5, 0.4, 0.012],
+      [2.08, 0.89, 0.967, 0.64, 0.4, 0.012]
+    ], M.pressWhite, group);
+    serviceCover.name = 'two flush landscape clamp service access panels';
+    serviceCover.castShadow = false;
+    var clampServiceHandles = instanceBoxes([
+      [1.66, 0.99, 0.97, 0.085, 0.035, 0.018],
+      [2.3, 0.99, 0.97, 0.085, 0.035, 0.018]
+    ], M.burnished, group);
+    clampServiceHandles.name = 'paired clamp service-panel pull handles';
+    clampServiceHandles.castShadow = false;
+    var toggleLoadGussets = instanceFixedGeometry(
+      loadGussetGeometry(0.32, 0.5, 0.14, 0.018),
+      M.machineEdge,
+      [
+        [1.68, 0.73, 0.72],
+        [2.26, 0.73, 0.72]
+      ],
+      group
+    );
+    if (toggleLoadGussets) toggleLoadGussets.name = 'paired toggle-housing base gussets';
+    roundedBox(0.86, 2.62, 1.42, 0.055, M.machineDark, 1.76, 2.08, 0, group);
+    var clampToggle = new THREE.Group();
+    clampToggle.position.set(1.22, 2.12, 0);
+    group.add(clampToggle);
+    var clampLinkLength = 0.64;
+    var clampRearPivotX = 1.075;
+    var clampClevisHomeX = -0.17;
+    var clampDieTravel = 0.92;
+    var clampLockSeatTravel = 0.024;
+    var upperKnee = roundedBox(0.16, clampLinkLength, 0.2, 0.045, M.tieBar, 0, 0, 0, clampToggle);
+    upperKnee.name = 'fixed-pivot rigid toggle link';
+    var lowerKnee = roundedBox(0.16, clampLinkLength, 0.2, 0.045, M.tieBar, 0, 0, 0, clampToggle);
+    lowerKnee.name = 'platen-clevis rigid toggle link';
+    var clampReducerLand = cylinder(
+      0.22,
+      0.12,
+      M.machineEdge,
+      0,
+      0,
+      0,
+      clampToggle,
+      Math.PI / 2,
+      0,
+      0,
+      20
+    );
+    clampReducerLand.position.x = clampRearPivotX;
+    clampReducerLand.name = 'fixed rear toggle reducer flange';
+    var clampMovingClevis = roundedBox(0.22, 0.34, 0.38, 0.045, M.machineEdge, clampClevisHomeX, 0, 0, clampToggle);
+    clampMovingClevis.name = 'moving platen toggle clevis';
+    var clampPins = new THREE.InstancedMesh(cylinderGeometry(1, 1, 18), M.joint, 3);
+    clampPins.name = 'fixed knee and moving toggle pins';
+    clampToggle.add(clampPins);
+    applyMeshShadows(clampPins, M.joint);
+    var clampPinDummy = new THREE.Object3D();
+    var clampSolveScratch = { rearX: 0, rearY: 0, jointX: 0, jointY: 0, clevisX: 0, clevisY: 0, lockAmount: 0 };
+    function solveClampToggle(movingX, lockAmount, result) {
+      var solved = result || clampSolveScratch;
+      var lock = clamp(lockAmount, 0, 1);
+      var clevisX = clampClevisHomeX + movingX - clampLockSeatTravel * lock;
+      var halfSpan = (clampRearPivotX - clevisX) * 0.5;
+      solved.rearX = clampRearPivotX;
+      solved.rearY = 0;
+      solved.clevisX = clevisX;
+      solved.clevisY = 0;
+      solved.jointX = (clampRearPivotX + clevisX) * 0.5;
+      solved.jointY = Math.sqrt(Math.max(0, clampLinkLength * clampLinkLength - halfSpan * halfSpan));
+      solved.lockAmount = lock;
+      return solved;
+    }
+    function placeClampLink(mesh, ax, ay, bx, by) {
+      mesh.position.set((ax + bx) * 0.5, (ay + by) * 0.5, 0);
+      mesh.rotation.z = Math.atan2(-(bx - ax), by - ay);
+    }
+    function setClampPin(index, x, y, radius, length) {
+      clampPinDummy.position.set(x, y, 0);
+      clampPinDummy.rotation.set(Math.PI / 2, 0, 0);
+      clampPinDummy.scale.set(radius, length, radius);
+      clampPinDummy.updateMatrix();
+      clampPins.setMatrixAt(index, clampPinDummy.matrix);
+    }
+    var clampKinematicState = { movingX: movingHalf.position.x, lockAmount: 0, jointX: 0, jointY: 0 };
+    function applyClampToggle(movingX, lockAmount) {
+      var solved = solveClampToggle(movingX, lockAmount, clampSolveScratch);
+      placeClampLink(upperKnee, solved.rearX, 0, solved.jointX, solved.jointY);
+      placeClampLink(lowerKnee, solved.jointX, solved.jointY, solved.clevisX, 0);
+      clampMovingClevis.position.x = solved.clevisX;
+      setClampPin(0, solved.rearX, 0, 0.15, 0.3);
+      setClampPin(1, solved.jointX, solved.jointY, 0.12, 0.28);
+      setClampPin(2, solved.clevisX, 0, 0.12, 0.34);
+      clampPins.instanceMatrix.needsUpdate = true;
+      clampKinematicState.movingX = movingX;
+      clampKinematicState.lockAmount = solved.lockAmount;
+      clampKinematicState.jointX = solved.jointX;
+      clampKinematicState.jointY = solved.jointY;
+    }
+    // A rear-housing hydraulic cylinder drives the existing pinned toggle via
+    // three contained telescopic stages, a short coupling, and crosshead. Its scalar stroke is the sole
+    // platen/lock-seat authority: 0..920 mm closes the die, then the final
+    // 24 mm seats the clamp without deforming either constant-length link.
+    function clampAnnularTubeGeometry(outerRadius, innerRadius, length, segments, capped) {
+      var positions = [];
+      function addTriangle(ax, ay, az, bx, by, bz, cx, cy, cz) {
+        positions.push(ax, ay, az, bx, by, bz, cx, cy, cz);
+      }
+      for (var tubeSegment = 0; tubeSegment < segments; tubeSegment++) {
+        var a = tubeSegment / segments * Math.PI * 2;
+        var b = (tubeSegment + 1) / segments * Math.PI * 2;
+        var ca = Math.cos(a), sa = Math.sin(a);
+        var cb = Math.cos(b), sb = Math.sin(b);
+        var x0 = -length * 0.5, x1 = length * 0.5;
+        addTriangle(x0, ca * outerRadius, sa * outerRadius, x1, ca * outerRadius, sa * outerRadius, x1, cb * outerRadius, sb * outerRadius);
+        addTriangle(x0, ca * outerRadius, sa * outerRadius, x1, cb * outerRadius, sb * outerRadius, x0, cb * outerRadius, sb * outerRadius);
+        addTriangle(x0, ca * innerRadius, sa * innerRadius, x1, cb * innerRadius, sb * innerRadius, x1, ca * innerRadius, sa * innerRadius);
+        addTriangle(x0, ca * innerRadius, sa * innerRadius, x0, cb * innerRadius, sb * innerRadius, x1, cb * innerRadius, sb * innerRadius);
+        if (capped) {
+          addTriangle(x0, ca * innerRadius, sa * innerRadius, x0, ca * outerRadius, sa * outerRadius, x0, cb * outerRadius, sb * outerRadius);
+          addTriangle(x0, ca * innerRadius, sa * innerRadius, x0, cb * outerRadius, sb * outerRadius, x0, cb * innerRadius, sb * innerRadius);
+          addTriangle(x1, ca * innerRadius, sa * innerRadius, x1, cb * outerRadius, sb * outerRadius, x1, ca * outerRadius, sa * outerRadius);
+          addTriangle(x1, ca * innerRadius, sa * innerRadius, x1, cb * innerRadius, sb * innerRadius, x1, cb * outerRadius, sb * outerRadius);
+        }
+      }
+      var tubeGeometry = new THREE.BufferGeometry();
+      tubeGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      tubeGeometry.computeVertexNormals();
+      tubeGeometry.computeBoundingBox();
+      tubeGeometry.computeBoundingSphere();
+      tubeGeometry.userData.outerRadius = outerRadius;
+      tubeGeometry.userData.innerRadius = innerRadius;
+      tubeGeometry.userData.length = length;
+      tubeGeometry.userData.openBore = !capped;
+      return tubeGeometry;
+    }
+    function clampRadialPortSleeveGeometry(
+      outerRadius,
+      innerRadius,
+      length,
+      portRadius,
+      axialSegments,
+      radialSegments,
+      portCenterX,
+      twoSided
+    ) {
+      portCenterX = portCenterX || 0;
+      twoSided = !!twoSided;
+      var positions = [];
+      function tri(a, b, c) {
+        positions.push(
+          a[0], a[1], a[2],
+          b[0], b[1], b[2],
+          c[0], c[1], c[2]
+        );
+      }
+      function point(x, radius, angle) {
+        return [x, Math.cos(angle) * radius, Math.sin(angle) * radius];
+      }
+      function insidePort(x, z, y) {
+        return (twoSided ? Math.abs(y) > 0 : y > 0) &&
+          (x - portCenterX) * (x - portCenterX) + z * z <
+            portRadius * portRadius;
+      }
+      for (var radialIndex = 0; radialIndex < radialSegments; radialIndex++) {
+        var angle0 = radialIndex / radialSegments * Math.PI * 2;
+        var angle1 = (radialIndex + 1) / radialSegments * Math.PI * 2;
+        for (var axialIndex = 0; axialIndex < axialSegments; axialIndex++) {
+          var x0 = -length * 0.5 + length * axialIndex / axialSegments;
+          var x1 = -length * 0.5 + length * (axialIndex + 1) / axialSegments;
+          var xm = (x0 + x1) * 0.5;
+          var am = (angle0 + angle1) * 0.5;
+          var outerMidY = Math.cos(am) * outerRadius;
+          var outerMidZ = Math.sin(am) * outerRadius;
+          if (!insidePort(xm, outerMidZ, outerMidY)) {
+            var oo0 = point(x0, outerRadius, angle0);
+            var oo1 = point(x1, outerRadius, angle0);
+            var oo2 = point(x1, outerRadius, angle1);
+            var oo3 = point(x0, outerRadius, angle1);
+            tri(oo0, oo1, oo2); tri(oo0, oo2, oo3);
+          }
+          var innerMidY = Math.cos(am) * innerRadius;
+          var innerMidZ = Math.sin(am) * innerRadius;
+          if (!insidePort(xm, innerMidZ, innerMidY)) {
+            var io0 = point(x0, innerRadius, angle0);
+            var io1 = point(x0, innerRadius, angle1);
+            var io2 = point(x1, innerRadius, angle1);
+            var io3 = point(x1, innerRadius, angle0);
+            tri(io0, io1, io2); tri(io0, io2, io3);
+          }
+        }
+        var rearInner0 = point(-length * 0.5, innerRadius, angle0);
+        var rearOuter0 = point(-length * 0.5, outerRadius, angle0);
+        var rearOuter1 = point(-length * 0.5, outerRadius, angle1);
+        var rearInner1 = point(-length * 0.5, innerRadius, angle1);
+        tri(rearInner0, rearOuter0, rearOuter1);
+        tri(rearInner0, rearOuter1, rearInner1);
+        var frontInner0 = point(length * 0.5, innerRadius, angle0);
+        var frontInner1 = point(length * 0.5, innerRadius, angle1);
+        var frontOuter1 = point(length * 0.5, outerRadius, angle1);
+        var frontOuter0 = point(length * 0.5, outerRadius, angle0);
+        tri(frontInner0, frontInner1, frontOuter1);
+        tri(frontInner0, frontOuter1, frontOuter0);
+      }
+      // Cylindrical drill wall joins the chamber ID to the exterior OD.
+      var boreSides = twoSided ? [1, -1] : [1];
+      for (var boreSideIndex = 0; boreSideIndex < boreSides.length; boreSideIndex++) {
+       var boreSide = boreSides[boreSideIndex];
+       for (var boreIndex = 0; boreIndex < radialSegments; boreIndex++) {
+        var boreA = boreIndex / radialSegments * Math.PI * 2;
+        var boreB = (boreIndex + 1) / radialSegments * Math.PI * 2;
+        var boreXA = portCenterX + Math.cos(boreA) * portRadius;
+        var boreZA = Math.sin(boreA) * portRadius;
+        var boreXB = portCenterX + Math.cos(boreB) * portRadius;
+        var boreZB = Math.sin(boreB) * portRadius;
+        var boreInnerYA = boreSide * Math.sqrt(Math.max(0, innerRadius * innerRadius - boreZA * boreZA));
+        var boreOuterYA = boreSide * Math.sqrt(Math.max(0, outerRadius * outerRadius - boreZA * boreZA));
+        var boreInnerYB = boreSide * Math.sqrt(Math.max(0, innerRadius * innerRadius - boreZB * boreZB));
+        var boreOuterYB = boreSide * Math.sqrt(Math.max(0, outerRadius * outerRadius - boreZB * boreZB));
+        var biA = [boreXA, boreInnerYA, boreZA];
+        var boA = [boreXA, boreOuterYA, boreZA];
+        var boB = [boreXB, boreOuterYB, boreZB];
+        var biB = [boreXB, boreInnerYB, boreZB];
+        if (boreSide > 0) {
+          tri(biA, boA, boB); tri(biA, boB, biB);
+        } else {
+          tri(biA, boB, boA); tri(biA, biB, boB);
+        }
+       }
+      }
+      var geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.computeVertexNormals();
+      geometry.computeBoundingBox();
+      geometry.computeBoundingSphere();
+      geometry.userData.outerRadius = outerRadius;
+      geometry.userData.innerRadius = innerRadius;
+      geometry.userData.length = length;
+      geometry.userData.radialBoreRadius = portRadius;
+      geometry.userData.radialBoreCenterX = portCenterX;
+      geometry.userData.continuousRadialBore = true;
+      geometry.userData.openBore = true;
+      geometry.userData.axialLigament = length * 0.5 - portRadius;
+      geometry.userData.radialBoreCount = boreSides.length;
+      return geometry;
+    }
+    var clampDriveCylinder = new THREE.Mesh(
+      clampAnnularTubeGeometry(0.16, 0.066, 0.36, 24, false),
+      M.machineEdge
+    );
+    clampDriveCylinder.position.set(1.1, 0, 0);
+    clampToggle.add(clampDriveCylinder);
+    applyMeshShadows(clampDriveCylinder, M.machineEdge);
+    clampDriveCylinder.name = 'rear-housing clamp drive cylinder';
+    var clampDriveRearAnchorX = 0.92;
+    var clampDriveCrossheadOffsetX = 0;
+    var clampStageLength = 0.35;
+    var clampStageMaximumStroke =
+      (clampDieTravel + clampLockSeatTravel) / 3;
+    var clampStageRetractedCenterX = 1.095;
+    var clampStageRadii = [0.06, 0.047, 0.035];
+    var clampStageInnerRadii = [0.052, 0.039, 0.012];
+    var clampDriveStages = [];
+    for (var clampStageIndex = 0; clampStageIndex < 3; clampStageIndex++) {
+      var clampStage = new THREE.Mesh(
+        clampStageIndex < 2
+          ? clampAnnularTubeGeometry(
+              clampStageRadii[clampStageIndex],
+              clampStageInnerRadii[clampStageIndex],
+              clampStageLength,
+              18,
+              false
+            )
+          : clampRadialPortSleeveGeometry(
+              clampStageRadii[clampStageIndex],
+              clampStageInnerRadii[clampStageIndex],
+              clampStageLength,
+              0.003,
+              70,
+              32,
+              0.15,
+              true
+            ),
+        M.brushed
+      );
+      clampStage.position.set(clampStageRetractedCenterX, 0, 0);
+      clampToggle.add(clampStage);
+      applyMeshShadows(clampStage, M.brushed);
+      clampStage.name = 'nested clamp telescope stage ' + (clampStageIndex + 1);
+      clampStage.castShadow = false;
+      clampDriveStages.push(clampStage);
+    }
+    var clampGlandInnerRadii = [0.061, 0.048, 0.036];
+    var clampGlandOuterRadii = [0.09, 0.071, 0.056];
+    var clampDriveGlands = [];
+    for (var glandIndex = 0; glandIndex < 3; glandIndex++) {
+      var clampGland = new THREE.Mesh(
+        clampAnnularTubeGeometry(
+          clampGlandOuterRadii[glandIndex],
+          clampGlandInnerRadii[glandIndex],
+          0.018,
+          18,
+          true
+        ),
+        M.burnished
+      );
+      clampGland.name = 'telescopic clamp front gland ' + (glandIndex + 1);
+      clampGland.castShadow = false;
+      clampToggle.add(clampGland);
+      clampDriveGlands.push(clampGland);
+    }
+    // One dynamic batch carries all three physical piston/retention heads.
+    // A per-instance inner-radius attribute reshapes the shared annulus in the
+    // vertex shader; the final head collapses its bore to a solid pressure face.
+    function clampVariablePistonHeadGeometry(length, segments) {
+      var positions = [];
+      var innerVertices = [];
+      var baseInnerRadius = 0.5;
+      function vertex(x, radius, angle, inner) {
+        positions.push(x, Math.cos(angle) * radius, Math.sin(angle) * radius);
+        innerVertices.push(inner ? 1 : 0);
+      }
+      function triangle(a, b, c) {
+        vertex(a[0], a[1], a[2], a[3]);
+        vertex(b[0], b[1], b[2], b[3]);
+        vertex(c[0], c[1], c[2], c[3]);
+      }
+      for (var pistonSegment = 0; pistonSegment < segments; pistonSegment++) {
+        var pistonA = pistonSegment / segments * Math.PI * 2;
+        var pistonB = (pistonSegment + 1) / segments * Math.PI * 2;
+        var rearX = -length * 0.5;
+        var frontX = length * 0.5;
+        var roA = [rearX, 1, pistonA, 0];
+        var roB = [rearX, 1, pistonB, 0];
+        var foA = [frontX, 1, pistonA, 0];
+        var foB = [frontX, 1, pistonB, 0];
+        var riA = [rearX, baseInnerRadius, pistonA, 1];
+        var riB = [rearX, baseInnerRadius, pistonB, 1];
+        var fiA = [frontX, baseInnerRadius, pistonA, 1];
+        var fiB = [frontX, baseInnerRadius, pistonB, 1];
+        triangle(roA, foA, foB); triangle(roA, foB, roB);
+        triangle(riA, fiB, fiA); triangle(riA, riB, fiB);
+        triangle(riA, roA, roB); triangle(riA, roB, riB);
+        triangle(fiA, foB, foA); triangle(fiA, fiB, foB);
+      }
+      var geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setAttribute(
+        'pistonInnerVertex',
+        new THREE.Float32BufferAttribute(innerVertices, 1)
+      );
+      geometry.setAttribute(
+        'pistonInnerRatio',
+        new THREE.InstancedBufferAttribute(
+          new Float32Array([0.052 / 0.065, 0.039 / 0.051, 0]),
+          1
+        )
+      );
+      geometry.computeVertexNormals();
+      geometry.computeBoundingBox();
+      geometry.computeBoundingSphere();
+      geometry.userData.length = length;
+      geometry.userData.baseInnerRadius = baseInnerRadius;
+      geometry.userData.positivePressureFace = true;
+      return geometry;
+    }
+    var clampPistonHeadMaterial = M.burnished.clone();
+    clampPistonHeadMaterial.onBeforeCompile = function (shader) {
+      shader.vertexShader = shader.vertexShader
+        .replace(
+          '#include <common>',
+          '#include <common>\nattribute float pistonInnerVertex;\nattribute float pistonInnerRatio;'
+        )
+        .replace(
+          '#include <begin_vertex>',
+          '#include <begin_vertex>\nif (pistonInnerVertex > 0.5) { transformed.yz *= pistonInnerRatio / 0.5; }'
+        );
+    };
+    clampPistonHeadMaterial.customProgramCacheKey = function () {
+      return 'dcm89-variable-annular-piston-head';
+    };
+    var clampPistonHeadOuterRadii = [0.065, 0.051, 0.038];
+    var clampPistonHeadInnerRadii = [0.052, 0.039, 0];
+    var clampPistonHeadThickness = 0.018;
+    var clampPistonHeads = new THREE.InstancedMesh(
+      clampVariablePistonHeadGeometry(clampPistonHeadThickness, 24),
+      clampPistonHeadMaterial,
+      3
+    );
+    clampPistonHeads.name = 'three nested telescope piston retention heads';
+    clampPistonHeads.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    clampPistonHeads.castShadow = false;
+    clampPistonHeads.receiveShadow = false;
+    clampPistonHeads.frustumCulled = false;
+    clampToggle.add(clampPistonHeads);
+    var clampPistonHeadDummy = new THREE.Object3D();
+    // The fixed barrel terminates in an annular bearing spigot and a full
+    // pressure face. The spigot overlaps the barrel wall while leaving the
+    // nested members' 66 mm bore open; the pressure face sits behind their
+    // fully retracted retention heads.
+    var clampRearHeadSleeve = new THREE.Mesh(
+      clampRadialPortSleeveGeometry(0.17, 0.068, 0.044, 0.012, 22, 64),
+      M.machineEdge
+    );
+    clampRearHeadSleeve.position.set(1.288, 0, 0);
+    clampRearHeadSleeve.name = 'clamp barrel rear-head bearing spigot';
+    clampRearHeadSleeve.castShadow = false;
+    clampToggle.add(clampRearHeadSleeve);
+    var clampRearHeadFace = cylinder(
+      0.17, 0.016, M.machineEdge,
+      1.302, 0, 0, clampToggle,
+      0, 0, Math.PI / 2, 24
+    );
+    clampRearHeadFace.name = 'clamp barrel pressure-rated rear closure';
+    clampRearHeadFace.castShadow = false;
+    var clampRearHeadPortLength = 0.17;
+    var clampRearHeadPort = new THREE.Mesh(
+      clampAnnularTubeGeometry(0.018, 0.012, clampRearHeadPortLength, 24, false),
+      M.brushed
+    );
+    clampRearHeadPort.position.set(1.288, 0.135, 0);
+    clampRearHeadPort.rotation.z = Math.PI / 2;
+    clampToggle.add(clampRearHeadPort);
+    clampRearHeadPort.name = 'clamp barrel rear hydraulic inlet port';
+    clampRearHeadPort.castShadow = false;
+    var clampDriveCoupling = cylinder(
+      0.032, 1, M.brushed,
+      0, 0, 0, clampToggle,
+      0, 0, Math.PI / 2, 14
+    );
+    clampDriveCoupling.name = 'short fixed-length clamp crosshead coupling';
+    clampDriveCoupling.castShadow = false;
+    var clampDriveCrosshead = roundedBox(
+      0.12, 0.44, 0.46, 0.03, M.machineEdge,
+      clampClevisHomeX, 0, 0, clampToggle
+    );
+    clampDriveCrosshead.name = 'translating clamp-drive crosshead';
+    var clampYokeReactionX = 0.84;
+    var clampReactionBridge = roundedBox(
+      0.11, 0.52, 1.4, 0.025, M.machineEdge,
+      0.675, 2.12, 0, movingHalf
+    );
+    clampReactionBridge.name = 'moving-platen full-width clamp reaction bridge';
+    var clampPressureYokeFrame = roundedBox(
+      0.11, 0.52, 0.5, 0.025, M.machineEdge,
+      0.785, 2.12, 0, movingHalf
+    );
+    clampPressureYokeFrame.name = 'moving-platen clamp reaction yoke frame';
+    function makeBellevilleDiscGeometry() {
+      var segments = 24;
+      var innerRadius = 0.045;
+      var outerRadius = 0.105;
+      var thickness = 0.008;
+      var coneRise = 0.006;
+      var positions = [];
+      var coneWeights = [];
+      var surfaceSigns = [];
+      function point(radius, angle, coneWeight, surfaceSign) {
+        return [
+          coneWeight * coneRise + surfaceSign * thickness * 0.5,
+          Math.cos(angle) * radius,
+          Math.sin(angle) * radius,
+          coneWeight,
+          surfaceSign
+        ];
+      }
+      function triangle(a, b, c) {
+        positions.push(a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2]);
+        coneWeights.push(a[3], b[3], c[3]);
+        surfaceSigns.push(a[4], b[4], c[4]);
+      }
+      function quad(a, b, c, d) {
+        triangle(a, b, c);
+        triangle(a, c, d);
+      }
+      for (var segment = 0; segment < segments; segment++) {
+        var angleA = segment / segments * Math.PI * 2;
+        var angleB = (segment + 1) / segments * Math.PI * 2;
+        var topInnerA = point(innerRadius, angleA, 0.5, 1);
+        var topInnerB = point(innerRadius, angleB, 0.5, 1);
+        var topOuterA = point(outerRadius, angleA, -0.5, 1);
+        var topOuterB = point(outerRadius, angleB, -0.5, 1);
+        var bottomInnerA = point(innerRadius, angleA, 0.5, -1);
+        var bottomInnerB = point(innerRadius, angleB, 0.5, -1);
+        var bottomOuterA = point(outerRadius, angleA, -0.5, -1);
+        var bottomOuterB = point(outerRadius, angleB, -0.5, -1);
+        quad(topInnerA, topOuterA, topOuterB, topInnerB);
+        quad(bottomInnerB, bottomOuterB, bottomOuterA, bottomInnerA);
+        quad(topOuterA, bottomOuterA, bottomOuterB, topOuterB);
+        quad(bottomInnerA, topInnerA, topInnerB, bottomInnerB);
+      }
+      var geometry = new THREE.BufferGeometry();
+      geometry.setAttribute(
+        'position',
+        new THREE.Float32BufferAttribute(positions, 3)
+      );
+      geometry.computeVertexNormals();
+      geometry.computeBoundingBox();
+      geometry.computeBoundingSphere();
+      geometry.userData.coneWeights = new Float32Array(coneWeights);
+      geometry.userData.surfaceSigns = new Float32Array(surfaceSigns);
+      geometry.userData.materialThickness = thickness;
+      return geometry;
+    }
+    var clampBellevilleCount = 12;
+    var clampBellevilleOpenPitch = 0.0175;
+    var clampBellevilleThickness = 0.008;
+    var clampPressureStack = new THREE.InstancedMesh(
+      makeBellevilleDiscGeometry(),
+      M.brushed,
+      clampBellevilleCount
+    );
+    clampPressureStack.name = 'six opposed pairs of actual Belleville discs';
+    clampPressureStack.castShadow = false;
+    clampPressureStack.receiveShadow = true;
+    if (clampPressureStack.instanceMatrix.setUsage && THREE.DynamicDrawUsage) {
+      clampPressureStack.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    }
+    movingHalf.add(clampPressureStack);
+    var clampBellevilleDummy = new THREE.Object3D();
+    function updateBellevilleDiscGeometry(coneRise) {
+      var geometry = clampPressureStack.geometry;
+      var attribute = geometry.attributes.position;
+      var values = attribute.array;
+      var coneWeights = geometry.userData.coneWeights;
+      var surfaceSigns = geometry.userData.surfaceSigns;
+      var thickness = geometry.userData.materialThickness;
+      for (var vertexIndex = 0; vertexIndex < coneWeights.length; vertexIndex++) {
+        values[vertexIndex * 3] =
+          coneWeights[vertexIndex] * coneRise +
+          surfaceSigns[vertexIndex] * thickness * 0.5;
+      }
+      attribute.needsUpdate = true;
+      var halfEnvelope = (coneRise + thickness) * 0.5;
+      geometry.boundingBox.min.set(-halfEnvelope, -0.105, -0.105);
+      geometry.boundingBox.max.set(halfEnvelope, 0.105, 0.105);
+      geometry.boundingSphere.radius = Math.sqrt(
+        0.105 * 0.105 + halfEnvelope * halfEnvelope
+      );
+    }
+    var clampPressureYokeHead = cylinder(
+      0.145, 0.08, M.machineEdge,
+      1.05, 2.12, 0, movingHalf,
+      Math.PI / 2, 0, 0, 18
+    );
+    clampPressureYokeHead.name = 'moving-platen pressure-yoke clevis head';
+    clampPressureYokeHead.castShadow = false;
+    var clampDriveState = {
+      stroke: 0,
+      movingX: movingHalf.position.x,
+      lockAmount: 0,
+      crossheadX: 0,
+      couplingLength: 0,
+      stageExtensions: [0, 0, 0],
+      stageCumulative: [0, 0, 0],
+      maximumStageExtension: 0,
+      telescopicSum: 0,
+      yokeEndpointX: 1.05,
+      yokeStackLength: 0.21,
+      bellevillePitch: clampBellevilleOpenPitch,
+      bellevilleDeflection: 0,
+      bellevilleConeRise: 0.0095,
+      bellevilleEnvelope: clampBellevilleOpenPitch,
+      updates: 0
+    };
+    var clampReturnJumper = null;
+    var clampReturnJumperPosition = null;
+    var clampReturnJumperNormal = null;
+    var clampReturnJumperGuides = null;
+    var clampReturnCarrierLinks = null;
+    var clampReturnCarrierDummy = new THREE.Object3D();
+    var clampReturnCarrierAxis = new THREE.Vector3(1, 0, 0);
+    var clampReturnCarrierStart = new THREE.Vector3();
+    var clampReturnCarrierEnd = new THREE.Vector3();
+    var clampReturnCarrierMid = new THREE.Vector3();
+    var clampReturnCarrierDirection = new THREE.Vector3();
+    var clampReturnCarrierLinkCount = 32;
+    var clampReturnJumperGuideDummy = new THREE.Object3D();
+    var clampReturnJumperStart = new THREE.Vector3(1.02, 2.12, -0.18);
+    var clampReturnJumperEnd = new THREE.Vector3();
+    var clampReturnJumperCenterScratch = new THREE.Vector3();
+    var clampReturnJumperTangent = new THREE.Vector3();
+    var clampReturnJumperNormalA = new THREE.Vector3();
+    var clampReturnJumperNormalB = new THREE.Vector3();
+    var clampReturnJumperReference = new THREE.Vector3(1, 0, 0);
+    var clampReturnJumperLoopRadius = 0.28;
+    var clampReturnJumperTubularSegments = 48;
+    var clampReturnJumperRadialSegments = 8;
+    var clampReturnJumperLast = null;
+    function clampReturnJumperCenter(t, target) {
+      var turn = t * Math.PI * 2;
+      target.set(
+        clampReturnJumperStart.x +
+          (clampReturnJumperEnd.x - clampReturnJumperStart.x) * t,
+        clampReturnJumperStart.y + clampReturnJumperLoopRadius * Math.sin(turn),
+        clampReturnJumperStart.z -
+          clampReturnJumperLoopRadius * (1 - Math.cos(turn))
+      );
+      return target;
+    }
+    function updateClampReturnJumper(crossheadX) {
+      if (!clampReturnJumper) return;
+      clampReturnJumperEnd.set(
+        clampToggle.position.x + crossheadX,
+        clampToggle.position.y,
+        -0.18
+      );
+      // Preserve all clamp state updates while avoiding identical hose and
+      // carrier buffer uploads on every frame of the robot's separate cycle.
+      var previousJumper = clampReturnJumperLast;
+      if (previousJumper && previousJumper.hose === clampReturnJumper &&
+          previousJumper.guides === clampReturnJumperGuides &&
+          previousJumper.carrier === clampReturnCarrierLinks &&
+          previousJumper.start.equals(clampReturnJumperStart) &&
+          previousJumper.end.equals(clampReturnJumperEnd)) return;
+      clampReturnJumperLast = {
+        hose: clampReturnJumper, guides: clampReturnJumperGuides,
+        carrier: clampReturnCarrierLinks,
+        start: clampReturnJumperStart.clone(), end: clampReturnJumperEnd.clone()
+      };
+      var deltaX = clampReturnJumperEnd.x - clampReturnJumperStart.x;
+      var positions = clampReturnJumperPosition.array;
+      var normals = clampReturnJumperNormal.array;
+      var center = clampReturnJumperCenterScratch;
+      var positionOffset = 0;
+      for (var jumperRing = 0; jumperRing <= clampReturnJumperTubularSegments; jumperRing++) {
+        var t = jumperRing / clampReturnJumperTubularSegments;
+        var turn = t * Math.PI * 2;
+        clampReturnJumperCenter(t, center);
+        clampReturnJumperTangent.set(
+          deltaX,
+          Math.PI * 2 * clampReturnJumperLoopRadius * Math.cos(turn),
+          -Math.PI * 2 * clampReturnJumperLoopRadius * Math.sin(turn)
+        ).normalize();
+        clampReturnJumperNormalA
+          .crossVectors(clampReturnJumperTangent, clampReturnJumperReference)
+          .normalize();
+        clampReturnJumperNormalB
+          .crossVectors(clampReturnJumperTangent, clampReturnJumperNormalA)
+          .normalize();
+        for (var jumperSide = 0; jumperSide < clampReturnJumperRadialSegments; jumperSide++) {
+          var radialAngle = jumperSide / clampReturnJumperRadialSegments * Math.PI * 2;
+          var radialA = Math.cos(radialAngle);
+          var radialB = Math.sin(radialAngle);
+          var normalX = clampReturnJumperNormalA.x * radialA + clampReturnJumperNormalB.x * radialB;
+          var normalY = clampReturnJumperNormalA.y * radialA + clampReturnJumperNormalB.y * radialB;
+          var normalZ = clampReturnJumperNormalA.z * radialA + clampReturnJumperNormalB.z * radialB;
+          positions[positionOffset] = center.x + normalX * 0.02;
+          normals[positionOffset++] = normalX;
+          positions[positionOffset] = center.y + normalY * 0.02;
+          normals[positionOffset++] = normalY;
+          positions[positionOffset] = center.z + normalZ * 0.02;
+          normals[positionOffset++] = normalZ;
+        }
+      }
+      clampReturnJumperPosition.needsUpdate = true;
+      clampReturnJumperNormal.needsUpdate = true;
+      clampReturnJumper.geometry.computeBoundingBox();
+      clampReturnJumper.geometry.computeBoundingSphere();
+      for (var guideIndex = 0; guideIndex < 3; guideIndex++) {
+        clampReturnJumperCenter((guideIndex + 1) * 0.25, clampReturnJumperCenterScratch);
+        clampReturnJumperGuideDummy.position.copy(clampReturnJumperCenterScratch);
+        clampReturnJumperGuideDummy.rotation.set(Math.PI / 2, 0, 0);
+        clampReturnJumperGuideDummy.scale.set(0.032, 0.06, 0.032);
+        clampReturnJumperGuideDummy.updateMatrix();
+        clampReturnJumperGuides.setMatrixAt(guideIndex, clampReturnJumperGuideDummy.matrix);
+      }
+      clampReturnJumperGuides.instanceMatrix.needsUpdate = true;
+      if (clampReturnCarrierLinks) {
+        clampReturnJumperCenter(0, clampReturnCarrierStart);
+        for (var carrierIndex = 0; carrierIndex < clampReturnCarrierLinkCount; carrierIndex++) {
+          clampReturnJumperCenter(
+            (carrierIndex + 1) / clampReturnCarrierLinkCount,
+            clampReturnCarrierEnd
+          );
+          clampReturnCarrierDirection
+            .subVectors(clampReturnCarrierEnd, clampReturnCarrierStart);
+          var carrierLength = clampReturnCarrierDirection.length();
+          clampReturnCarrierMid
+            .copy(clampReturnCarrierStart)
+            .add(clampReturnCarrierEnd)
+            .multiplyScalar(0.5);
+          clampReturnCarrierDummy.position.copy(clampReturnCarrierMid);
+          clampReturnCarrierDummy.quaternion.setFromUnitVectors(
+            clampReturnCarrierAxis,
+            clampReturnCarrierDirection.normalize()
+          );
+          clampReturnCarrierDummy.scale.set(carrierLength + 0.002, 1, 1);
+          clampReturnCarrierDummy.updateMatrix();
+          clampReturnCarrierLinks.setMatrixAt(
+            carrierIndex,
+            clampReturnCarrierDummy.matrix
+          );
+          clampReturnCarrierStart.copy(clampReturnCarrierEnd);
+        }
+        clampReturnCarrierLinks.instanceMatrix.needsUpdate = true;
+      }
+    }
+    function applyClampDrive(strokeValue) {
+      var fullStroke = clampDieTravel + clampLockSeatTravel;
+      var stroke = clamp(strokeValue, 0, fullStroke);
+      var movingX = Math.max(0, clampDieTravel - stroke);
+      var lockAmount = stroke <= clampDieTravel
+        ? 0
+        : (stroke - clampDieTravel) / clampLockSeatTravel;
+      movingHalf.position.x = movingX;
+      applyClampToggle(movingX, lockAmount);
+      var crossheadX = clampMovingClevis.position.x + clampDriveCrossheadOffsetX;
+      var stage0 = Math.min(clampStageMaximumStroke, stroke);
+      var stage1 = Math.min(
+        clampStageMaximumStroke,
+        Math.max(0, stroke - clampStageMaximumStroke)
+      );
+      var stage2 = Math.min(
+        clampStageMaximumStroke,
+        Math.max(0, stroke - clampStageMaximumStroke * 2)
+      );
+      clampDriveState.stageExtensions[0] = stage0;
+      clampDriveState.stageExtensions[1] = stage1;
+      clampDriveState.stageExtensions[2] = stage2;
+      clampDriveState.stageCumulative[0] = stage0;
+      clampDriveState.stageCumulative[1] = stage0 + stage1;
+      clampDriveState.stageCumulative[2] = stage0 + stage1 + stage2;
+      for (var stageIndex = 0; stageIndex < clampDriveStages.length; stageIndex++) {
+        clampDriveStages[stageIndex].position.x =
+          clampStageRetractedCenterX -
+          clampDriveState.stageCumulative[stageIndex];
+        clampPistonHeadDummy.position.set(
+          clampDriveStages[stageIndex].position.x +
+            clampStageLength * 0.5 - clampPistonHeadThickness * 0.5,
+          0,
+          0
+        );
+        clampPistonHeadDummy.rotation.set(0, 0, 0);
+        clampPistonHeadDummy.scale.set(
+          1,
+          clampPistonHeadOuterRadii[stageIndex],
+          clampPistonHeadOuterRadii[stageIndex]
+        );
+        clampPistonHeadDummy.updateMatrix();
+        clampPistonHeads.setMatrixAt(stageIndex, clampPistonHeadDummy.matrix);
+      }
+      clampPistonHeads.instanceMatrix.needsUpdate = true;
+      clampDriveGlands[0].position.set(clampDriveRearAnchorX, 0, 0);
+      clampDriveGlands[1].position.set(clampDriveRearAnchorX - stage0, 0, 0);
+      clampDriveGlands[2].position.set(
+        clampDriveRearAnchorX - stage0 - stage1,
+        0,
+        0
+      );
+      var telescopeTipX =
+        clampDriveRearAnchorX - clampDriveState.stageCumulative[2];
+      var couplingLength = telescopeTipX - crossheadX;
+      clampDriveCrosshead.position.set(crossheadX, 0, 0);
+      updateClampReturnJumper(crossheadX);
+      clampDriveCoupling.position.set((telescopeTipX + crossheadX) * 0.5, 0, 0);
+      clampDriveCoupling.scale.y = couplingLength;
+      var yokeEndpointX = 1.05 - clampLockSeatTravel * lockAmount;
+      var yokeStackLength = yokeEndpointX - clampYokeReactionX;
+      var bellevillePitch = yokeStackLength / clampBellevilleCount;
+      var bellevilleConeRise = bellevillePitch - clampBellevilleThickness;
+      updateBellevilleDiscGeometry(bellevilleConeRise);
+      for (var discIndex = 0; discIndex < clampBellevilleCount; discIndex++) {
+        clampBellevilleDummy.position.set(
+          clampYokeReactionX + (discIndex + 0.5) * bellevillePitch,
+          2.12,
+          0
+        );
+        clampBellevilleDummy.rotation.set(0, discIndex & 1 ? Math.PI : 0, 0);
+        clampBellevilleDummy.scale.set(1, 1, 1);
+        clampBellevilleDummy.updateMatrix();
+        clampPressureStack.setMatrixAt(discIndex, clampBellevilleDummy.matrix);
+      }
+      clampPressureStack.instanceMatrix.needsUpdate = true;
+      clampPressureYokeHead.position.x = yokeEndpointX;
+      clampDriveState.stroke = stroke;
+      clampDriveState.movingX = movingX;
+      clampDriveState.lockAmount = lockAmount;
+      clampDriveState.crossheadX = crossheadX;
+      clampDriveState.couplingLength = couplingLength;
+      clampDriveState.maximumStageExtension = Math.max(stage0, stage1, stage2);
+      clampDriveState.telescopicSum = clampDriveState.stageCumulative[2];
+      clampDriveState.yokeEndpointX = yokeEndpointX;
+      clampDriveState.yokeStackLength = yokeStackLength;
+      clampDriveState.bellevillePitch = bellevillePitch;
+      clampDriveState.bellevilleDeflection =
+        clampBellevilleOpenPitch - bellevillePitch;
+      clampDriveState.bellevilleConeRise = bellevilleConeRise;
+      clampDriveState.bellevilleEnvelope =
+        bellevilleConeRise + clampBellevilleThickness;
+      clampDriveState.updates += 1;
+      if (castingRig && castingRig.clampDrive) {
+        castingRig.dieOpen = movingX / clampDieTravel;
+      }
+      return stroke;
+    }
+    applyClampDrive(0);
+
+    // One restrained hardware batch services the large access cover and the
+    // hydraulic gland. Repetition is functional and remains a single draw.
+    var pressFastenerTransforms = [
+      [1.73, 1.05, 0.875, 0.024, 0.01, Math.PI / 2, 0, 0],
+      [2.27, 1.05, 0.875, 0.024, 0.01, Math.PI / 2, 0, 0],
+      [1.73, 2.08, 0.875, 0.024, 0.01, Math.PI / 2, 0, 0],
+      [2.27, 2.08, 0.875, 0.024, 0.01, Math.PI / 2, 0, 0],
+      [1.73, 3.11, 0.875, 0.024, 0.01, Math.PI / 2, 0, 0],
+      [2.27, 3.11, 0.875, 0.024, 0.01, Math.PI / 2, 0, 0]
+    ];
+
+    // Cold chamber: a ceramic-lined horizontal shot sleeve receives a ladled
+    // charge before the hydraulic ram performs slow shot, fast shot, and
+    // intensification. The plunger tip starts behind the exposed pour hole.
+    var shotSleeveOuter = cylinder(0.2, 2.25, M.machineEdge, -1.65, 1.22, 0.32, group, 0, 0, Math.PI / 2, 24);
+    var shotSleeveLiner = cylinder(0.155, 2.02, M.refractory, -1.62, 1.22, 0.32, group, 0, 0, Math.PI / 2, 22);
+    cylinder(0.235, 0.1, M.machineEdge, -2.28, 1.43, 0.32, group, 0, 0, 0, 20);
+    cylinder(0.155, 0.115, M.black, -2.28, 1.47, 0.32, group, 0, 0, 0, 20);
+    var pourRing = new THREE.Mesh(new THREE.TorusGeometry(0.182, 0.028, 7, 24), M.tieBar);
+    pourRing.position.set(-2.28, 1.5, 0.32);
+    pourRing.rotation.x = Math.PI / 2;
+    group.add(pourRing);
+    applyMeshShadows(pourRing, M.tieBar);
+
+    // The hydraulic cylinder and front gland are fixed to the machine frame;
+    // only the chrome rod and copper-alloy tip translate through the sleeve.
+    var shotCylinderShell = roundedBox(1.32, 0.62, 0.72, 0.08, M.pressWhite, -3.73, 1.22, 0.32, group);
+    cylinder(0.22, 0.22, M.machineEdge, -3.07, 1.22, 0.32, group, 0, 0, Math.PI / 2, 22);
+
+    // The unchanged sleeve/cylinder run now resolves into the boxed bed rather
+    // than floating between the hydraulic gland and fixed platen. Two saddles
+    // share one instance draw; their tops meet the 400 mm sleeve OD exactly at
+    // y=1.020 and their feet meet the existing bed top at y=0.540.
+    var shotSleeveSaddles = instanceBoxes([
+      [-1.15, 0.78, 0.32, 0.28, 0.48, 0.46],
+      [-2.15, 0.78, 0.32, 0.28, 0.48, 0.46]
+    ], M.machineEdge, group);
+    if (shotSleeveSaddles) {
+      shotSleeveSaddles.name = 'paired bed-mounted shot-sleeve saddles';
+      shotSleeveSaddles.castShadow = false;
+      shotSleeveSaddles.receiveShadow = true;
+    }
+    // The cylinder foot lands on the same bed-top datum. A single triangular
+    // web returns its rear overhang into the existing -2.375 m bed end without
+    // entering the plunger/rod bore above y=1.10.
+    var shotCylinderFoot = roundedBox(
+      0.42,
+      0.37,
+      0.58,
+      0.045,
+      M.machineEdge,
+      -3.73,
+      0.725,
+      0.32,
+      group
+    );
+    shotCylinderFoot.name = 'rear shot-cylinder bed foot';
+    // A real bearing rail bridges the outboard cylinder foot onto a finite
+    // area of the boxed bed.  The former triangular web only met the bed at
+    // one nominal corner, which was a visual connection but not a load path.
+    var shotCylinderBearingRail = roundedBox(
+      1.78,
+      0.16,
+      1.435,
+      0.0375,
+      M.machineDark,
+      -3.18,
+      0.62,
+      0.04,
+      group
+    );
+    shotCylinderBearingRail.name = 'rear cylinder finite bed-bearing rail';
+    var shotCylinderGusset = new THREE.Mesh(
+      loadGussetGeometry(1.46, 0.37, 0.36, 0.022),
+      M.machineEdge
+    );
+    shotCylinderGusset.position.set(-3.08, 0.725, 0.32);
+    shotCylinderGusset.name = 'rear cylinder-to-bed reaction gusset';
+    group.add(shotCylinderGusset);
+    applyMeshShadows(shotCylinderGusset, M.machineEdge);
+    shotCylinderGusset.castShadow = false;
+
+    // The injection cylinder now resolves into one supported hydraulic power
+    // unit rather than an unexplained standalone white ram. The enclosed
+    // reservoir/manifold sits just above and rearward of the existing
+    // cylinder, while both legs land on the already-proved rear bearing rail.
+    // Nothing in the shot line moves or changes size; this is the fixed source
+    // of pressure that makes the sleeve/intensifier load path legible.
+    var hydraulicPackBody = roundedBox(
+      1.08, 0.7, 0.5, 0.065, M.pressWhite,
+      -3.6, 2.38, -0.62, group
+    );
+    hydraulicPackBody.name = 'enclosed injection hydraulic reservoir and manifold';
+    var hydraulicPackLegs = instanceBoxes([
+      [-3.86, 1.365, -0.6, 0.18, 1.33, 0.16],
+      [-3.34, 1.365, -0.6, 0.18, 1.33, 0.16]
+    ], M.machineEdge, group);
+    if (hydraulicPackLegs) {
+      hydraulicPackLegs.name = 'paired power-pack legs tied to shot bearing rail';
+      hydraulicPackLegs.castShadow = false;
+      if (hydraulicPackLegs.computeBoundingBox) hydraulicPackLegs.computeBoundingBox();
+      if (hydraulicPackLegs.computeBoundingSphere) hydraulicPackLegs.computeBoundingSphere();
+    }
+
+    // Three compact vertical accumulators share one instanced draw. Short necks
+    // are included in the same batch so the bank reads as pressure vessels
+    // seated on the reservoir rather than decorative cylinders in space.
+    var hydraulicAccumulatorTransforms = [];
+    var hydraulicAccumulatorXs = [-3.9, -3.6, -3.3];
+    for (var accumulatorIndex = 0; accumulatorIndex < hydraulicAccumulatorXs.length; accumulatorIndex++) {
+      hydraulicAccumulatorTransforms.push([
+        hydraulicAccumulatorXs[accumulatorIndex], 3.15, -0.62, 0.13, 0.78
+      ]);
+      hydraulicAccumulatorTransforms.push([
+        hydraulicAccumulatorXs[accumulatorIndex], 3.59, -0.62, 0.06, 0.1
+      ]);
+    }
+    var hydraulicAccumulatorBank = instanceCylinders(
+      hydraulicAccumulatorTransforms,
+      M.pressWhite,
+      group,
+      18
+    );
+    if (hydraulicAccumulatorBank) {
+      hydraulicAccumulatorBank.name = 'three seated injection accumulator vessels and necks';
+      // Retained for the existing hydraulic datum diagnostics; the reference
+      // exterior supplies the visible pair of full-height pressure vessels.
+      hydraulicAccumulatorBank.visible = false;
+      hydraulicAccumulatorBank.castShadow = false;
+      if (hydraulicAccumulatorBank.computeBoundingBox) hydraulicAccumulatorBank.computeBoundingBox();
+      if (hydraulicAccumulatorBank.computeBoundingSphere) hydraulicAccumulatorBank.computeBoundingSphere();
+    }
+
+    // Two substantial pressure hoses terminate at actual points on the
+    // unchanged camera-side cylinder shell. Their restrained low loops stay
+    // inside the frozen press exterior and never enter the die/sleeve air.
+    var hydraulicBodyPorts = [
+      new THREE.Vector3(-3.88, 2.2, -0.35),
+      new THREE.Vector3(-3.52, 2.2, -0.35)
+    ];
+    var hydraulicCylinderPorts = [
+      new THREE.Vector3(-4.3, 1.42, 0.68),
+      new THREE.Vector3(-3.92, 1.34, 0.68)
+    ];
+    var hydraulicFittingTransforms = [
+      [-3.88, 2.2, -0.31, 0.06, 0.08, Math.PI / 2, 0, 0],
+      [-3.52, 2.2, -0.31, 0.06, 0.08, Math.PI / 2, 0, 0],
+      [-4.3, 1.42, 0.72, 0.06, 0.08, Math.PI / 2, 0, 0],
+      [-3.92, 1.34, 0.72, 0.06, 0.08, Math.PI / 2, 0, 0]
+    ];
+    var hydraulicPackFittings = instanceCylinders(
+      hydraulicFittingTransforms,
+      M.burnished,
+      group,
+      16
+    );
+    if (hydraulicPackFittings) {
+      hydraulicPackFittings.name = 'power-pack manifold and cylinder pressure fittings';
+      hydraulicPackFittings.castShadow = false;
+      if (hydraulicPackFittings.computeBoundingBox) hydraulicPackFittings.computeBoundingBox();
+      if (hydraulicPackFittings.computeBoundingSphere) hydraulicPackFittings.computeBoundingSphere();
+    }
+    function buildHydraulicHose(points, name) {
+      var curve = Array.isArray(points)
+        ? new THREE.CatmullRomCurve3(points, false, 'centripetal')
+        : points;
+      var hose = new THREE.Mesh(
+        new THREE.TubeGeometry(curve, 18, 0.034, 7, false),
+        M.robotCable
+      );
+      hose.name = name;
+      group.add(hose);
+      applyMeshShadows(hose, M.robotCable);
+      hose.castShadow = false;
+      hose.receiveShadow = true;
+      return hose;
+    }
+    var hydraulicPressureHose = buildHydraulicHose([
+      hydraulicBodyPorts[0],
+      new THREE.Vector3(-4.02, 2.02, -0.34),
+      new THREE.Vector3(-4.18, 1.74, -0.28),
+      new THREE.Vector3(-4.27, 1.52, 0),
+      hydraulicCylinderPorts[0]
+    ], 'primary hydraulic pressure hose to existing shot-cylinder port');
+    var hydraulicReturnHose = buildHydraulicHose(
+      new THREE.CubicBezierCurve3(
+        hydraulicBodyPorts[1],
+        new THREE.Vector3(-3.52, 1.7, -1.05),
+        new THREE.Vector3(-3.92, 1.15, -0.2),
+        hydraulicCylinderPorts[1]
+      ),
+      'hydraulic return hose to existing shot-cylinder port'
+    );
+    // A physically separate fixed circuit supplies the clamp telescope. Both
+    // hoses stay on the bed/rear side; no external segment follows the moving
+    // crosshead. Pressure lands on the real hollow rear-head port. Return
+    // lands on a stationary supported union into the internal S2 retract feed.
+    var clampPressureHoseMaterial = new THREE.MeshStandardMaterial({
+      color: 0x542b27,
+      roughness: 0.78,
+      metalness: 0.02,
+      emissive: 0x000000,
+      envMapIntensity: 0.52
+    });
+    var clampReturnHoseMaterial = new THREE.MeshStandardMaterial({
+      color: 0x253847,
+      roughness: 0.8,
+      metalness: 0.02,
+      emissive: 0x000000,
+      envMapIntensity: 0.48
+    });
+    var clampHydraulicHoseOuterDiameter = 0.04;
+    var clampHydraulicManifoldPorts = [
+      new THREE.Vector3(-3.82, 2.18, -0.88),
+      new THREE.Vector3(-3.38, 2.18, -0.88)
+    ];
+    var clampPressurePortWorldLocal = new THREE.Vector3(
+      clampToggle.position.x + clampRearHeadPort.position.x,
+      clampToggle.position.y +
+        clampRearHeadPort.position.y + clampRearHeadPortLength * 0.5,
+      0
+    );
+    var clampReturnUnionPoint = new THREE.Vector3(1.02, 2.12, -0.18);
+    var clampPressureCurve = new THREE.CatmullRomCurve3([
+      clampHydraulicManifoldPorts[0],
+      new THREE.Vector3(-3.82, 1.75, -0.95),
+      new THREE.Vector3(-2.7, 0.86, -0.82),
+      new THREE.Vector3(-0.55, 0.82, -0.82),
+      new THREE.Vector3(1.45, 1.2, -0.72),
+      new THREE.Vector3(2.35, 1.92, -0.42),
+      clampPressurePortWorldLocal
+    ], false, 'centripetal');
+    var clampReturnCurve = new THREE.CatmullRomCurve3([
+      clampHydraulicManifoldPorts[1],
+      new THREE.Vector3(-3.38, 1.7, -0.9),
+      new THREE.Vector3(-2.2, 0.72, -0.7),
+      new THREE.Vector3(-0.2, 0.72, -0.7),
+      new THREE.Vector3(0.72, 1.28, -0.52),
+      clampReturnUnionPoint
+    ], false, 'centripetal');
+    var clampPressureSupplyHose = new THREE.Mesh(
+      new THREE.TubeGeometry(clampPressureCurve, 72, 0.02, 10, false),
+      clampPressureHoseMaterial
+    );
+    clampPressureSupplyHose.name = 'fixed clamp pressure hose';
+    clampPressureSupplyHose.castShadow = false;
+    clampPressureSupplyHose.receiveShadow = true;
+    group.add(clampPressureSupplyHose);
+    var clampReturnSupplyHose = new THREE.Mesh(
+      new THREE.TubeGeometry(clampReturnCurve, 64, 0.02, 10, false),
+      clampReturnHoseMaterial
+    );
+    clampReturnSupplyHose.name = 'fixed clamp retract return hose';
+    clampReturnSupplyHose.castShadow = false;
+    clampReturnSupplyHose.receiveShadow = true;
+    group.add(clampReturnSupplyHose);
+    var clampHydraulicFittings = instanceCylinders([
+      [-3.82, 2.18, -0.88, 0.032, 0.09, Math.PI / 2, 0, 0],
+      [-3.38, 2.18, -0.88, 0.032, 0.09, Math.PI / 2, 0, 0],
+      [clampPressurePortWorldLocal.x, clampPressurePortWorldLocal.y, 0, 0.032, 0.09],
+      [clampReturnUnionPoint.x, clampReturnUnionPoint.y, clampReturnUnionPoint.z, 0.032, 0.09]
+    ], M.burnished, group, 18);
+    clampHydraulicFittings.name = 'four clamp-circuit swivel fittings';
+    clampHydraulicFittings.castShadow = false;
+    var clampHydraulicSupports = instanceCylinders([
+      [-2.7, 0.86, -0.82, 0.032, 0.055, Math.PI / 2, 0, 0],
+      [-0.55, 0.82, -0.82, 0.032, 0.055, Math.PI / 2, 0, 0],
+      [1.45, 1.2, -0.72, 0.032, 0.055, Math.PI / 2, 0, 0],
+      [-2.2, 0.72, -0.7, 0.032, 0.055, Math.PI / 2, 0, 0],
+      [-0.2, 0.72, -0.7, 0.032, 0.055, Math.PI / 2, 0, 0],
+      [0.72, 1.28, -0.52, 0.032, 0.055, Math.PI / 2, 0, 0]
+    ], M.machineEdge, group, 16);
+    clampHydraulicSupports.name = 'six fixed bed and enclosure P-clamps';
+    clampHydraulicSupports.castShadow = false;
+    var clampReturnUnion = new THREE.Mesh(
+      clampAnnularTubeGeometry(0.038, 0.012, 0.12, 20, false),
+      M.burnished
+    );
+    clampReturnUnion.position.copy(clampReturnUnionPoint);
+    clampReturnUnion.rotation.z = Math.PI / 2;
+    clampReturnUnion.name = 'stationary clamp retract-feed rotary union';
+    clampReturnUnion.castShadow = false;
+    group.add(clampReturnUnion);
+    var clampReturnJumperVertexCount =
+      (clampReturnJumperTubularSegments + 1) * clampReturnJumperRadialSegments;
+    var clampReturnJumperGeometry = new THREE.BufferGeometry();
+    clampReturnJumperPosition = new THREE.BufferAttribute(
+      new Float32Array(clampReturnJumperVertexCount * 3),
+      3
+    );
+    clampReturnJumperNormal = new THREE.BufferAttribute(
+      new Float32Array(clampReturnJumperVertexCount * 3),
+      3
+    );
+    clampReturnJumperPosition.setUsage(THREE.DynamicDrawUsage);
+    clampReturnJumperNormal.setUsage(THREE.DynamicDrawUsage);
+    var clampReturnJumperIndices = new Uint16Array(
+      clampReturnJumperTubularSegments * clampReturnJumperRadialSegments * 6
+    );
+    var jumperIndexOffset = 0;
+    for (var jumperTubeIndex = 0; jumperTubeIndex < clampReturnJumperTubularSegments; jumperTubeIndex++) {
+      for (var jumperRadialIndex = 0; jumperRadialIndex < clampReturnJumperRadialSegments; jumperRadialIndex++) {
+        var jumperNextRadial = (jumperRadialIndex + 1) % clampReturnJumperRadialSegments;
+        var jumperA = jumperTubeIndex * clampReturnJumperRadialSegments + jumperRadialIndex;
+        var jumperB = (jumperTubeIndex + 1) * clampReturnJumperRadialSegments + jumperRadialIndex;
+        var jumperC = (jumperTubeIndex + 1) * clampReturnJumperRadialSegments + jumperNextRadial;
+        var jumperD = jumperTubeIndex * clampReturnJumperRadialSegments + jumperNextRadial;
+        clampReturnJumperIndices[jumperIndexOffset++] = jumperA;
+        clampReturnJumperIndices[jumperIndexOffset++] = jumperB;
+        clampReturnJumperIndices[jumperIndexOffset++] = jumperD;
+        clampReturnJumperIndices[jumperIndexOffset++] = jumperB;
+        clampReturnJumperIndices[jumperIndexOffset++] = jumperC;
+        clampReturnJumperIndices[jumperIndexOffset++] = jumperD;
+      }
+    }
+    clampReturnJumperGeometry.setAttribute('position', clampReturnJumperPosition);
+    clampReturnJumperGeometry.setAttribute('normal', clampReturnJumperNormal);
+    clampReturnJumperGeometry.setIndex(
+      new THREE.BufferAttribute(clampReturnJumperIndices, 1)
+    );
+    clampReturnJumper = new THREE.Mesh(
+      clampReturnJumperGeometry,
+      clampReturnHoseMaterial
+    );
+    clampReturnJumper.name = 'dynamic pressure-rated clamp return jumper';
+    clampReturnJumper.castShadow = false;
+    clampReturnJumper.receiveShadow = true;
+    clampReturnJumper.frustumCulled = false;
+    group.add(clampReturnJumper);
+    clampReturnJumperGuides = new THREE.InstancedMesh(
+      cylinderGeometry(1, 1, 16),
+      M.machineEdge,
+      3
+    );
+    clampReturnJumperGuides.name = 'three tracked clamp-return jumper guides';
+    clampReturnJumperGuides.castShadow = false;
+    clampReturnJumperGuides.visible = false;
+    group.add(clampReturnJumperGuides);
+    // A fixed three-sided trough bears into the existing rear housing at two
+    // locations. The dynamic carrier chain nests in this channel at its low
+    // return and prevents the 944 mm service loop reading as unsupported hose.
+    var clampEnergyChainTrough = instanceBoxes([
+      [1.55, 1.79, -0.74, 1.18, 0.07, 0.22],
+      [1.55, 1.88, -0.84, 1.18, 0.18, 0.04],
+      [1.55, 1.88, -0.64, 1.18, 0.18, 0.04]
+    ], M.machineDark, group);
+    clampEnergyChainTrough.name = 'fixed three-sided clamp energy-chain trough';
+    clampEnergyChainTrough.castShadow = false;
+    var clampEnergyChainTroughSupports = instanceBoxes([
+      [1.42, 1.79, -0.705, 0.12, 0.2, 0.15],
+      [2.02, 1.79, -0.705, 0.12, 0.2, 0.15]
+    ], M.machineEdge, group);
+    clampEnergyChainTroughSupports.name = 'two rear-housing trough bearing brackets';
+    clampEnergyChainTroughSupports.castShadow = false;
+    clampReturnCarrierLinks = new THREE.InstancedMesh(
+      roundedBoxGeometry(1, 0.075, 0.12, 0.018),
+      M.robotCable,
+      clampReturnCarrierLinkCount
+    );
+    clampReturnCarrierLinks.name = 'connected dynamic clamp energy carrier links';
+    clampReturnCarrierLinks.castShadow = false;
+    clampReturnCarrierLinks.receiveShadow = true;
+    clampReturnCarrierLinks.frustumCulled = false;
+    clampReturnCarrierLinks.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    group.add(clampReturnCarrierLinks);
+    var clampReturnFeedFitting = new THREE.Mesh(
+      clampAnnularTubeGeometry(0.038, 0.012, 0.12, 20, false),
+      M.burnished
+    );
+    clampReturnFeedFitting.position.set(0, 0, -0.12);
+    clampReturnFeedFitting.rotation.y = Math.PI / 2;
+    clampReturnFeedFitting.name = 'moving crosshead S2 axial-feed fitting';
+    clampReturnFeedFitting.castShadow = false;
+    clampDriveCrosshead.add(clampReturnFeedFitting);
+    var clampReturnMovingBracket = roundedBox(
+      0.14, 0.22, 0.12, 0.025, M.machineEdge,
+      0, 0, -0.18, clampDriveCrosshead
+    );
+    clampReturnMovingBracket.name = 'moving crosshead energy-chain end bracket';
+    clampReturnMovingBracket.castShadow = false;
+    var clampPortManifold = roundedBox(
+      0.52, 0.2, 0.1, 0.025, M.burnished,
+      -3.6, 2.18, -0.9, group
+    );
+    clampPortManifold.name = 'camera-facing clamp two-port metal manifold';
+    clampPortManifold.castShadow = false;
+    updateClampReturnJumper(clampDriveState.crossheadX);
+    var clampExternalHydraulics = {
+      pressureHose: clampPressureSupplyHose,
+      returnHose: clampReturnSupplyHose,
+      fittings: clampHydraulicFittings,
+      supports: clampHydraulicSupports,
+      returnUnion: clampReturnUnion,
+      dynamicJumper: clampReturnJumper,
+      jumperGuides: clampReturnJumperGuides,
+      carrierLinks: clampReturnCarrierLinks,
+      carrierLinkCount: clampReturnCarrierLinkCount,
+      trough: clampEnergyChainTrough,
+      troughSupports: clampEnergyChainTroughSupports,
+      troughSupportBearing: 0.06,
+      movingEndBracket: clampReturnMovingBracket,
+      movingFeedFitting: clampReturnFeedFitting,
+      portManifold: clampPortManifold,
+      manifoldPorts: clampHydraulicManifoldPorts,
+      actuatorPorts: [clampPressurePortWorldLocal, clampReturnUnionPoint],
+      supportPoints: [
+        new THREE.Vector3(-2.7, 0.86, -0.82),
+        new THREE.Vector3(-0.55, 0.82, -0.82),
+        new THREE.Vector3(1.45, 1.2, -0.72),
+        new THREE.Vector3(-2.2, 0.72, -0.7),
+        new THREE.Vector3(-0.2, 0.72, -0.7),
+        new THREE.Vector3(0.72, 1.28, -0.52)
+      ],
+      hoseOuterDiameter: clampHydraulicHoseOuterDiameter,
+      minimumDesignBendRadius: 0.3,
+      jumperLoopRadius: clampReturnJumperLoopRadius,
+      jumperTubularSegments: clampReturnJumperTubularSegments,
+      jumperRadialSegments: clampReturnJumperRadialSegments,
+      jumperSupportedSpan: Math.PI * 2 * clampReturnJumperLoopRadius / 4,
+      jumperClearance: clampReturnJumperLoopRadius - 0.16 - 0.02,
+      staticParent: group,
+      pressureContinuity: true,
+      retractContinuity: true,
+      distinctFromShotCircuit: true,
+      addedDraws: 13
+    };
+    updateClampReturnJumper(clampDriveState.crossheadX);
+    var hydraulicPowerPackObjects = [
+      hydraulicPackBody,
+      hydraulicPackLegs,
+      hydraulicAccumulatorBank,
+      hydraulicPackFittings,
+      hydraulicPressureHose,
+      hydraulicReturnHose
+    ];
+
+    // The sleeve terminates in a real reaction bracket on the fixed platen,
+    // instead of visually floating through the die casting.  Both pieces sit
+    // wholly inside the already proved fixed-platen envelope.
+    var shotReactionBracket = new THREE.Mesh(
+      chamferedServiceFrameGeometry(0.48, 0.7, 0.16, 0.055, 0.012),
+      M.machineEdge
+    );
+    shotReactionBracket.position.set(-0.02, 1.22, 0.32);
+    shotReactionBracket.rotation.y = Math.PI / 2;
+    shotReactionBracket.name = 'fixed-platen shot-sleeve reaction bracket';
+    fixedPlaten.add(shotReactionBracket);
+    applyMeshShadows(shotReactionBracket, M.machineEdge);
+    var shotReactionCollar = cylinder(
+      0.255,
+      0.15,
+      M.tieBar,
+      0.02,
+      1.22,
+      0.32,
+      fixedPlaten,
+      0,
+      0,
+      Math.PI / 2,
+      22
+    );
+    shotReactionCollar.name = 'shot-sleeve fixed-platen reaction collar';
+    for (var glandBoltIndex = 0; glandBoltIndex < 6; glandBoltIndex++) {
+      var glandBoltAngle = glandBoltIndex / 6 * Math.PI * 2;
+      pressFastenerTransforms.push([
+        -3.171,
+        1.22 + Math.cos(glandBoltAngle) * 0.16,
+        0.32 + Math.sin(glandBoltAngle) * 0.16,
+        0.018,
+        0.018,
+        0,
+        0,
+        Math.PI / 2
+      ]);
+    }
+    var pressFasteners = instanceCylinders(
+      pressFastenerTransforms,
+      M.tieBar,
+      group,
+      12
+    );
+    if (pressFasteners) {
+      pressFasteners.name = 'batched service-cover and gland fasteners';
+      pressFasteners.castShadow = false;
+      pressFasteners.receiveShadow = true;
+      if (pressFasteners.computeBoundingBox) pressFasteners.computeBoundingBox();
+      if (pressFasteners.computeBoundingSphere) pressFasteners.computeBoundingSphere();
+    }
+    var plunger = new THREE.Group();
+    plunger.position.set(-2.55, 1.22, 0.32);
+    group.add(plunger);
+    // One real rod remains anchored at the hydraulic gland while its forward
+    // end follows the existing copper plunger authority. The former fixed-
+    // length child translated away from the gland and read as a disconnected
+    // chrome bar during slow shot.
+    var plungerRodRearX = -3.0;
+    var plungerRodTipInset = 0.08;
+    var plungerRodInitialFrontX = plunger.position.x - plungerRodTipInset;
+    var plungerRodInitialLength = plungerRodInitialFrontX - plungerRodRearX;
+    var plungerRod = cylinder(
+      0.12,
+      1,
+      M.tieBar,
+      (plungerRodRearX + plungerRodInitialFrontX) * 0.5,
+      1.22,
+      0.32,
+      group,
+      0,
+      0,
+      Math.PI / 2,
+      22
+    );
+    plungerRod.scale.y = plungerRodInitialLength;
+    plungerRod.name = 'gland-anchored external shot rod';
+
+    // The booster sleeve bridges the fixed gland and shot-sleeve mouth. It
+    // stays seated through slow/fast shot, then its rear face compresses 80 mm
+    // during intensification while the forward pressure seat remains fixed.
+    var intensifierSleeve = cylinder(
+      0.195,
+      0.38,
+      M.burnished,
+      -2.84,
+      1.22,
+      0.32,
+      group,
+      0,
+      0,
+      Math.PI / 2,
+      24
+    );
+    intensifierSleeve.name = 'external concentric intensifier sleeve';
+    intensifierSleeve.castShadow = false;
+    // One dull-bright witness band sits inside the sleeve's existing radial
+    // and axial envelope. Parenting it to the rear compression land makes its
+    // visible motion the real pressure-seat motion, not a screen-space marker.
+    var intensifierCollarMaterial = M.burnished.clone();
+    intensifierCollarMaterial.color.setHex(0xaeb3b1);
+    intensifierCollarMaterial.roughness = 0.42;
+    intensifierCollarMaterial.metalness = 0.82;
+    intensifierCollarMaterial.envMapIntensity = 0.94;
+    intensifierCollarMaterial.emissive.setHex(0x000000);
+    intensifierCollarMaterial.emissiveIntensity = 0;
+    intensifierCollarMaterial.needsUpdate = true;
+    var intensifierCollar = new THREE.Mesh(
+      new THREE.TorusGeometry(0.186, 0.019, 6, 24),
+      intensifierCollarMaterial
+    );
+    intensifierCollar.position.y = 0.16;
+    intensifierCollar.rotation.x = Math.PI / 2;
+    intensifierCollar.name = 'physical intensifier pressure witness collar';
+    intensifierCollar.castShadow = false;
+    intensifierCollar.receiveShadow = false;
+    intensifierSleeve.add(intensifierCollar);
+
+    // A press-mounted rack/pinion turns the sleeve's sub-4 px compression into
+    // a readable mechanical pointer sweep. It lives on the camera-facing shot
+    // housing, outside the robot collision volume, and has no independent
+    // state input: only the physical collar travel below can drive it.
+    var shotStrokeWitnessRoot = new THREE.Group();
+    shotStrokeWitnessRoot.position.set(-2.8, 1.53, 0.7);
+    group.add(shotStrokeWitnessRoot);
+
+    var rackLength = 0.42;
+    var rackBottom = -0.16;
+    var rackTop = -0.105;
+    var rackToothTop = -0.076;
+    var rackToothCount = 9;
+    var rackShape = new THREE.Shape();
+    rackShape.moveTo(-rackLength * 0.5, rackBottom);
+    rackShape.lineTo(rackLength * 0.5, rackBottom);
+    rackShape.lineTo(rackLength * 0.5, rackTop);
+    for (var rackTooth = rackToothCount - 1; rackTooth >= 0; rackTooth--) {
+      var toothRight = -rackLength * 0.5 + (rackTooth + 1) * rackLength / rackToothCount;
+      var toothMid = toothRight - rackLength / rackToothCount * 0.5;
+      var toothLeft = toothRight - rackLength / rackToothCount;
+      rackShape.lineTo(toothRight, rackTop);
+      rackShape.lineTo(toothMid, rackToothTop);
+      rackShape.lineTo(toothLeft, rackTop);
+    }
+    rackShape.lineTo(-rackLength * 0.5, rackBottom);
+    rackShape.closePath();
+    var rackGeometry = new THREE.ExtrudeGeometry(rackShape, {
+      depth: 0.026,
+      steps: 1,
+      bevelEnabled: true,
+      bevelSegments: 1,
+      bevelSize: 0.003,
+      bevelThickness: 0.003,
+      curveSegments: 1
+    });
+    rackGeometry.translate(0, 0, -0.013);
+    rackGeometry.computeVertexNormals();
+    var strokeSteelMaterial = M.burnished.clone();
+    strokeSteelMaterial.color.setHex(0x8e9696);
+    strokeSteelMaterial.roughness = 0.44;
+    strokeSteelMaterial.emissive.setHex(0x000000);
+    strokeSteelMaterial.emissiveIntensity = 0;
+    strokeSteelMaterial.needsUpdate = true;
+    var strokeRack = new THREE.Mesh(rackGeometry, strokeSteelMaterial);
+    strokeRack.position.x = -0.07;
+    strokeRack.name = 'sleeve-driven toothed witness rack';
+    strokeRack.castShadow = false;
+    strokeRack.receiveShadow = false;
+    shotStrokeWitnessRoot.add(strokeRack);
+
+    function witnessStopShape(centerX, centerY) {
+      var stopShape = new THREE.Shape();
+      stopShape.moveTo(centerX - 0.035, centerY - 0.04);
+      stopShape.lineTo(centerX + 0.035, centerY - 0.04);
+      stopShape.lineTo(centerX + 0.035, centerY + 0.04);
+      stopShape.lineTo(centerX - 0.035, centerY + 0.04);
+      stopShape.closePath();
+      return stopShape;
+    }
+
+    var strokePointerStart = -0.48;
+    var strokePointerSweep = 0.96;
+    // The complete shot end moved to the opposite side of the same fixed
+    // platen. Preserve the established 25-30 px mechanical witness read with
+    // a longer, still press-mounted lever rather than weakening the optical
+    // gate or adding a screen-space indicator.
+    var strokePointerLength = 0.79;
+    var stopRadius = 0.46;
+    var hubShape = new THREE.Shape();
+    hubShape.absarc(0, 0, 0.082, 0, Math.PI * 2, false);
+    var startStopAngle = strokePointerStart;
+    var endStopAngle = strokePointerStart + strokePointerSweep;
+    var staticStrokeGeometry = new THREE.ExtrudeGeometry([
+      hubShape,
+      witnessStopShape(
+        -Math.sin(startStopAngle) * stopRadius,
+        Math.cos(startStopAngle) * stopRadius
+      ),
+      witnessStopShape(
+        -Math.sin(endStopAngle) * stopRadius,
+        Math.cos(endStopAngle) * stopRadius
+      )
+    ], {
+      depth: 0.034,
+      steps: 1,
+      bevelEnabled: true,
+      bevelSegments: 1,
+      bevelSize: 0.004,
+      bevelThickness: 0.004,
+      curveSegments: 10
+    });
+    staticStrokeGeometry.translate(0, 0, -0.017);
+    staticStrokeGeometry.computeVertexNormals();
+    var strokeHardware = new THREE.Mesh(staticStrokeGeometry, strokeSteelMaterial);
+    strokeHardware.name = 'pinion hub and physical hard stops';
+    strokeHardware.castShadow = false;
+    strokeHardware.receiveShadow = false;
+    shotStrokeWitnessRoot.add(strokeHardware);
+
+    var pointerShape = new THREE.Shape();
+    pointerShape.moveTo(-0.024, 0);
+    pointerShape.lineTo(0.024, 0);
+    pointerShape.lineTo(0.021, strokePointerLength - 0.09);
+    pointerShape.lineTo(0.058, strokePointerLength - 0.055);
+    pointerShape.lineTo(0, strokePointerLength);
+    pointerShape.lineTo(-0.058, strokePointerLength - 0.055);
+    pointerShape.lineTo(-0.021, strokePointerLength - 0.09);
+    pointerShape.closePath();
+    var pointerGeometry = new THREE.ExtrudeGeometry(pointerShape, {
+      depth: 0.025,
+      steps: 1,
+      bevelEnabled: true,
+      bevelSegments: 1,
+      bevelSize: 0.003,
+      bevelThickness: 0.003,
+      curveSegments: 1
+    });
+    pointerGeometry.translate(0, 0, -0.0125);
+    pointerGeometry.computeVertexNormals();
+    var strokePointerMaterial = M.yellow.clone();
+    strokePointerMaterial.emissive.setHex(0x000000);
+    strokePointerMaterial.emissiveIntensity = 0;
+    strokePointerMaterial.roughness = 0.76;
+    strokePointerMaterial.needsUpdate = true;
+    var strokePointer = new THREE.Mesh(pointerGeometry, strokePointerMaterial);
+    strokePointer.position.z = 0.03;
+    strokePointer.rotation.z = strokePointerStart;
+    strokePointer.name = 'painted mechanical stroke pointer';
+    strokePointer.castShadow = false;
+    strokePointer.receiveShadow = false;
+    shotStrokeWitnessRoot.add(strokePointer);
+    cylinder(0.15, 0.16, M.copper, 0, 0, 0, plunger, 0, 0, Math.PI / 2, 22);
+
+    // External holding furnace and tracked ladle. The visible orange pool and
+    // ladle surface establish a charged-at-boot condition before any recipe is
+    // selected; the request cycle still performs a fresh measured pour.
+    var furnace = new THREE.Group();
+    furnace.position.set(-2.894, 0, 1.6);
+    group.add(furnace);
+    // Reference holding furnace: an insulated rectangular vessel on short
+    // leveling feet, with a stepped rear lid and an open dosing well. The
+    // original melt height and furnace/lip datums remain unchanged.
+    addContactShadow(-2.894, 1.6, 1.72, 1.55, 0.64, group);
+    var furnaceSilver = M.machine.clone();
+    furnaceSilver.color.setHex(0xc8ccc7);
+    furnaceSilver.metalness = 0.42;
+    furnaceSilver.roughness = 0.46;
+    furnaceSilver.clearcoat = 0.1;
+    furnaceSilver.envMapIntensity = 1.02;
+    var furnaceBodyGeometry = new THREE.BoxGeometry(1.68, 0.92, 1.28);
+    var furnaceBodyPositions = furnaceBodyGeometry.attributes.position;
+    for (var furnaceVertex = 0; furnaceVertex < furnaceBodyPositions.count; furnaceVertex++) {
+      if (furnaceBodyPositions.getZ(furnaceVertex) > 0) {
+        furnaceBodyPositions.setZ(furnaceVertex,
+          furnaceBodyPositions.getY(furnaceVertex) > 0 ? 0.71 : 0.56);
+      }
+    }
+    furnaceBodyPositions.needsUpdate = true;
+    furnaceBodyGeometry.computeVertexNormals();
+    var furnaceInsulatedBody = new THREE.Mesh(furnaceBodyGeometry, furnaceSilver);
+    furnaceInsulatedBody.position.y = 0.76;
+    furnaceInsulatedBody.name = 'rectangular insulated furnace with sloping service face';
+    furnace.add(furnaceInsulatedBody);
+    applyMeshShadows(furnaceInsulatedBody, furnaceSilver);
+    roundedBox(1.74, 0.1, 1.34, 0.025, M.machineEdge, 0, 0.27, 0, furnace);
+    instanceCylinders([
+      [-0.65, 0.15, -0.48, 0.055, 0.26], [0.65, 0.15, -0.48, 0.055, 0.26],
+      [-0.65, 0.15, 0.48, 0.055, 0.26], [0.65, 0.15, 0.48, 0.055, 0.26],
+      [-0.65, 0.025, -0.48, 0.092, 0.05], [0.65, 0.025, -0.48, 0.092, 0.05],
+      [-0.65, 0.025, 0.48, 0.092, 0.05], [0.65, 0.025, 0.48, 0.092, 0.05]
+    ], M.burnished, furnace, 12);
+    // Separate front sheets and a folded projecting edge make the insulation
+    // thickness visible, without turning the furnace into a smooth CG block.
+    var furnaceFrontSheet = roundedBox(1.67, 0.72, 0.026, 0.012,
+      furnaceSilver, 0, 0.77, 0.637, furnace);
+    furnaceFrontSheet.rotation.x = 0.162;
+    roundedBox(1.74, 0.16, 0.14, 0.018,
+      furnaceSilver, 0, 1.19, 0.65, furnace);
+    roundedBox(1.67, 0.25, 0.12, 0.015,
+      furnaceSilver, 0, 1.36, 0.6, furnace);
+    instanceBoxes([
+      [-0.812, 0.77, 0.637, 0.022, 0.72, 0.023],
+      [0.812, 0.77, 0.637, 0.022, 0.72, 0.023],
+      [0, 0.402, 0.59, 1.63, 0.018, 0.025]
+    ], M.burnished, furnace);
+
+    // The four deck edges leave a real opening rather than painting metal
+    // onto a solid lid. Taller insulation occupies only the rear and far side,
+    // clear of the tracked ladle approach over the central well.
+    instanceBoxes([
+      [-0.815, 1.305, 0, 0.05, 0.17, 1.14],
+      [0.53, 1.305, 0, 0.62, 0.17, 1.14],
+      [-0.16, 1.305, -0.605, 1.1, 0.17, 0.19],
+      [-0.16, 1.305, 0.565, 1.1, 0.17, 0.16]
+    ], furnaceSilver, furnace);
+    cylinder(0.465, 0.17, M.refractory, -0.34, 1.305, 0,
+      furnace, 0, 0, 0, 26);
+    cylinder(0.405, 0.035, M.molten, -0.34, 1.39, 0,
+      furnace, 0, 0, 0, 26);
+    var furnaceRim = new THREE.Mesh(new THREE.TorusGeometry(0.455, 0.035, 8, 32), M.burnished);
+    furnaceRim.position.set(-0.34, 1.408, 0);
+    furnaceRim.rotation.x = Math.PI / 2;
+    furnace.add(furnaceRim);
+    applyMeshShadows(furnaceRim, M.tieBar);
+    roundedBox(1.68, 0.49, 0.2, 0.018,
+      furnaceSilver, 0, 1.625, -0.59, furnace);
+    roundedBox(1.72, 0.065, 0.26, 0.012,
+      furnaceSilver, 0, 1.905, -0.59, furnace);
+    roundedBox(0.31, 0.27, 1.01, 0.018,
+      furnaceSilver, 0.675, 1.505, -0.015, furnace);
+    roundedBox(0.35, 0.065, 1.05, 0.012,
+      furnaceSilver, 0.675, 1.675, -0.015, furnace);
+    roundedBox(0.12, 0.25, 0.16, 0.016,
+      M.yellow, 0.745, 1.57, -0.43, furnace);
+    instanceBoxes([
+      [-0.38, 1.976, -0.59, 0.025, 0.09, 0.025],
+      [-0.1, 1.976, -0.59, 0.025, 0.09, 0.025],
+      [-0.24, 2.016, -0.59, 0.3, 0.025, 0.025],
+      [0.675, 1.746, -0.16, 0.025, 0.09, 0.025],
+      [0.675, 1.746, 0.12, 0.025, 0.09, 0.025],
+      [0.675, 1.786, -0.02, 0.025, 0.025, 0.3]
+    ], M.burnished, furnace);
+    var furnaceSafetyTexture = makeTexture(function (ctx, w, h) {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = '#e2b12d';
+      ctx.strokeStyle = '#202525';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(47, 10); ctx.lineTo(8, 83); ctx.lineTo(86, 83); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#202525';
+      ctx.font = 'bold 58px sans-serif';
+      ctx.textAlign = 'center'; ctx.fillText('!', 47, 72);
+      for (var marker = 0; marker < 2; marker++) {
+        var cx = 126 + marker * 74;
+        ctx.fillStyle = '#2677b5'; ctx.beginPath(); ctx.arc(cx, 49, 32, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#edf6f9'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.arc(cx, 37, 10, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx - 13, 72); ctx.lineTo(cx - 10, 54);
+        ctx.lineTo(cx + 10, 54); ctx.lineTo(cx + 13, 72); ctx.stroke();
+      }
+    }, 256, 96);
+    labelPlane(furnaceSafetyTexture, 0.42, 0.158, -0.48, 1.37, 0.666, furnace);
+    labelPlane(makeLabelTexture(['HF-01', 'ALUMINUM HOLD'], '#334044', '#bac3c2', 280, 100),
+      0.36, 0.13, 0.48, 0.91, 0.68, furnace);
+
+    // Ladle origin is the pouring lip/trunnion, not the bowl center. Rotation
+    // therefore produces a real tipping arc and the stream can follow the lip
+    // while remaining vertical under gravity.
+    var ladle = new THREE.Group();
+    ladle.position.set(-2.78, 2.03, 0.32);
+    group.add(ladle);
+    // Fabricated subparts are packed into the existing support meshes. This
+    // retains their draw budget and keeps every surface in the swept physical
+    // bounds, including the motor fins and the two yellow linkage cheeks.
+    function packLadleParts(parts) {
+      var positions = [], normals = [], uvs = [], colors = [];
+      parts.forEach(function (part) {
+        var source = part.geometry;
+        var geometry = source.index ? source.toNonIndexed() : source.clone();
+        var color = new THREE.Color(part.color === undefined ? 0xffffff : part.color);
+        var p = geometry.getAttribute('position');
+        var n = geometry.getAttribute('normal');
+        var uv = geometry.getAttribute('uv');
+        for (var i = 0; i < p.count; i++) {
+          positions.push(p.getX(i), p.getY(i), p.getZ(i));
+          normals.push(n.getX(i), n.getY(i), n.getZ(i));
+          uvs.push(uv ? uv.getX(i) : 0, uv ? uv.getY(i) : 0);
+          colors.push(color.r, color.g, color.b);
+        }
+        geometry.dispose();
+      });
+      var result = new THREE.BufferGeometry();
+      result.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      result.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+      result.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+      result.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      result.computeBoundingBox();
+      result.computeBoundingSphere();
+      return result;
+    }
+    var ladlePaint = M.yellow.clone();
+    ladlePaint.color.setHex(0xd5b52b);
+    ladlePaint.roughness = 0.42;
+    ladlePaint.metalness = 0.13;
+    var ladleVessel = new THREE.Group();
+    ladle.add(ladleVessel);
+    // One physical pouring-lip datum belongs to the rotating vessel. All
+    // dosing FK and the molten stream now reference this point, never the
+    // trunnion origin or an independently-authored world coordinate.
+    var ladleLipDatum = new THREE.Object3D();
+    ladleLipDatum.position.set(0.03, 0.13, 0);
+    ladleLipDatum.name = 'physical automatic-ladle pouring lip datum';
+    ladleVessel.add(ladleLipDatum);
+    // The transport ladle is an open, spun-metal cup, with a rounded taper
+    // and a real inner wall instead of a solid cylinder covering its charge.
+    var ladleCup = new THREE.Mesh(new THREE.LatheGeometry([
+      new THREE.Vector2(0, -0.19),
+      new THREE.Vector2(0.23, -0.19),
+      new THREE.Vector2(0.31, -0.15),
+      new THREE.Vector2(0.365, -0.06),
+      new THREE.Vector2(0.39, 0.13),
+      new THREE.Vector2(0.35, 0.13),
+      new THREE.Vector2(0.325, -0.07),
+      new THREE.Vector2(0.23, -0.13),
+      new THREE.Vector2(0, -0.13)
+    ], 32), M.burnished);
+    ladleCup.position.x = -0.34;
+    ladleCup.name = 'open stainless transport ladle with rounded refractory bowl';
+    ladleVessel.add(ladleCup);
+    applyMeshShadows(ladleCup, M.burnished);
+    var ladleMetal = cylinder(0.31, 0.045, M.molten, -0.34, 0.13, 0, ladleVessel, 0, 0, 0, 24);
+    var ladleRim = new THREE.Mesh(new THREE.TorusGeometry(0.37, 0.035, 7, 24), M.tieBar);
+    ladleRim.position.set(-0.34, 0.13, 0);
+    ladleRim.rotation.x = Math.PI / 2;
+    ladleVessel.add(ladleRim);
+    applyMeshShadows(ladleRim, M.tieBar);
+    roundedBox(0.42, 0.075, 0.1, 0.02, M.burnished, -0.2, 0.035, 0.32, ladleVessel);
+    cylinder(0.095, 0.11, ladlePaint, -0.02, 0.04, 0.32, ladleVessel, Math.PI / 2, 0, 0, 20);
+    cylinder(0.09, 0.52, M.machineEdge, 0, 0, 0, ladle, Math.PI / 2, 0, 0, 18);
+
+    // The automatic ladle is carried by a real two-axis servo mast, not a
+    // free-floating world group. The fixed mast is tied to the furnace slab;
+    // one telescoping load link always terminates at the existing trunnion.
+    // READY and POUR remain at the physical shot-hole approach; HOME follows
+    // the relocated furnace. The displaced mast keeps the complete dosing
+    // mechanism out of the shot cylinder while preserving a continuous FK
+    // chain through bootstrap, lift, pour, and return.
+    var ladleSupportAnchor = new THREE.Vector3(-2.094, 2.5, 1.1);
+    var ladleSupportMast = roundedBox(
+      0.34,
+      2.34,
+      0.32,
+      0.055,
+      M.machineEdge,
+      ladleSupportAnchor.x,
+      1.38,
+      ladleSupportAnchor.z,
+      group
+    );
+    ladleSupportMast.name = 'furnace-mounted automatic-ladle servo mast';
+    var ladleMastParts = [
+      { geometry: new THREE.CylinderGeometry(0.165, 0.205, 1.78, 24).translate(0, -0.28, 0), color: 0x303638 },
+      { geometry: roundedBoxGeometry(0.35, 0.1, 0.34, 0.025).clone().translate(0, 0.59, 0), color: 0xb0b4af },
+      { geometry: roundedBoxGeometry(0.33, 1.31, 0.11, 0.023).clone().translate(0, 1.2, -0.18), color: 0x959c99 },
+      { geometry: new THREE.CylinderGeometry(0.18, 0.18, 0.3, 24).rotateX(Math.PI / 2).translate(0, 0.88, -0.08), color: 0x6b7372 },
+      { geometry: new THREE.CylinderGeometry(0.135, 0.135, 0.39, 24).translate(0, 1.49, -0.055), color: 0x747c7b },
+      { geometry: new THREE.CylinderGeometry(0.15, 0.15, 0.065, 24).translate(0, 1.72, -0.055), color: 0x383f3f }
+    ];
+    for (var ladleFin = 0; ladleFin < 12; ladleFin++) {
+      var finAngle = ladleFin / 12 * Math.PI * 2;
+      ladleMastParts.push({
+        geometry: roundedBoxGeometry(0.021, 0.33, 0.035, 0.005).clone()
+          .translate(0.137, 0, 0).rotateY(finAngle)
+          .translate(0, 1.49, -0.055),
+        color: 0x929998
+      });
+    }
+    ladleSupportMast.geometry = packLadleParts(ladleMastParts);
+    ladleSupportMast.material = M.machine.clone();
+    ladleSupportMast.material.color.setHex(0xffffff);
+    ladleSupportMast.material.vertexColors = true;
+    ladleSupportMast.name = 'dark pedestal with tall gray drive backplate and finned servo motor';
+    // The mast is seated on a real base plate and locally grounded.  These
+    // parts do not change the kinematic anchor; they make the furnace-to-ladle
+    // bending load visible at both the production view and its thumbnail.
+    var ladleSupportFoot = roundedBox(
+      0.68,
+      0.2,
+      0.64,
+      0.055,
+      M.machineEdge,
+      ladleSupportAnchor.x,
+      0.11,
+      ladleSupportAnchor.z,
+      group
+    );
+    ladleSupportFoot.name = 'automatic-ladle mast foundation foot';
+    addContactShadow(
+      ladleSupportAnchor.x,
+      ladleSupportAnchor.z,
+      0.78,
+      0.74,
+      0.7,
+      group
+    );
+    var ladleSupportAnchors = instanceCylinders([
+      [ladleSupportAnchor.x - 0.23, 0.22, ladleSupportAnchor.z - 0.2, 0.048, 0.14],
+      [ladleSupportAnchor.x + 0.23, 0.22, ladleSupportAnchor.z - 0.2, 0.048, 0.14],
+      [ladleSupportAnchor.x - 0.23, 0.22, ladleSupportAnchor.z + 0.2, 0.048, 0.14],
+      [ladleSupportAnchor.x + 0.23, 0.22, ladleSupportAnchor.z + 0.2, 0.048, 0.14]
+    ], M.burnished, group, 14);
+    if (ladleSupportAnchors) {
+      ladleSupportAnchors.name = 'four automatic-ladle mast anchor bolts';
+      ladleSupportAnchors.castShadow = false;
+      ladleSupportAnchors.receiveShadow = false;
+    }
+    var ladleSupportGusset = new THREE.Mesh(
+      loadGussetGeometry(0.58, 0.5, 0.3, 0.025),
+      M.machineEdge
+    );
+    ladleSupportGusset.name = 'automatic-ladle mast-to-boom load gusset';
+    ladleSupportGusset.position.set(
+      ladleSupportAnchor.x - 0.17,
+      ladleSupportAnchor.y - 0.23,
+      ladleSupportAnchor.z
+    );
+    ladleSupportGusset.rotation.z = -Math.PI / 2;
+    group.add(ladleSupportGusset);
+    applyMeshShadows(ladleSupportGusset, M.machineEdge);
+    var ladleSupportPivot = cylinder(
+      0.24,
+      0.38,
+      M.burnished,
+      ladleSupportAnchor.x,
+      ladleSupportAnchor.y,
+      ladleSupportAnchor.z,
+      group,
+      Math.PI / 2,
+      0,
+      0,
+      20
+    );
+    ladleSupportPivot.name = 'automatic-ladle mast pivot housing';
+    ladleSupportPivot.castShadow = false;
+    var ladleLinkParts = [];
+    function ladleLinkBar(ax, ay, bx, by, z, width, depth) {
+      var dx = bx - ax, dy = by - ay;
+      ladleLinkParts.push({ geometry: roundedBoxGeometry(
+        Math.sqrt(dx * dx + dy * dy), width, depth, 0.024
+      ).clone().rotateZ(Math.atan2(dy, dx)).translate((ax + bx) * 0.5, (ay + by) * 0.5, z) });
+    }
+    // Paired yellow links, a broad lower forearm, and exposed circular joint
+    // bosses reproduce the automatic transport-ladler's folded silhouette.
+    // The existing -0.5/+0.5 endpoints remain the physical anchor/trunnion.
+    [-0.105, 0.105].forEach(function (cheekZ) {
+      ladleLinkBar(-0.5, 0, -0.04, 0.34, cheekZ, 0.135, 0.065);
+      ladleLinkBar(-0.5, 0.13, -0.04, 0.47, cheekZ, 0.09, 0.055);
+      ladleLinkBar(-0.5, 0, -0.5, 0.13, cheekZ, 0.12, 0.065);
+      ladleLinkBar(-0.04, 0.34, -0.04, 0.47, cheekZ, 0.12, 0.065);
+    });
+    ladleLinkBar(-0.04, 0.34, 0.5, 0, 0, 0.15, 0.19);
+    [[-0.5, 0], [-0.5, 0.13], [-0.04, 0.34], [-0.04, 0.47], [0.5, 0]].forEach(function (joint) {
+      ladleLinkParts.push({ geometry: new THREE.CylinderGeometry(
+        0.09, 0.09, 0.3, 24
+      ).rotateX(Math.PI / 2).translate(joint[0], joint[1], 0) });
+    });
+    var ladleSupportLink = new THREE.Mesh(packLadleParts(ladleLinkParts), ladlePaint);
+    ladleSupportLink.name = 'yellow paired-link automatic transport ladler and lower forearm';
+    group.add(ladleSupportLink);
+    applyMeshShadows(ladleSupportLink, ladlePaint);
+    var ladleSupportYoke = roundedBox(
+      0.38,
+      0.52,
+      0.58,
+      0.07,
+      ladlePaint,
+      0,
+      0,
+      0,
+      ladle
+    );
+    ladleSupportYoke.name = 'ladle trunnion support yoke';
+    ladleSupportYoke.geometry = packLadleParts([
+      { geometry: roundedBoxGeometry(0.22, 0.26, 0.065, 0.025).clone().translate(0, 0, -0.29) },
+      { geometry: roundedBoxGeometry(0.22, 0.26, 0.065, 0.025).clone().translate(0, 0, 0.29) },
+      { geometry: roundedBoxGeometry(0.09, 0.19, 0.58, 0.018).clone().translate(0.105, 0, 0) }
+    ]);
+    var ladleSupportPin = cylinder(
+      0.1,
+      0.64,
+      M.burnished,
+      0,
+      0,
+      0,
+      ladle,
+      Math.PI / 2,
+      0,
+      0,
+      18
+    );
+    ladleSupportPin.name = 'ladle trunnion bearing pin';
+    ladleSupportPin.castShadow = false;
+    var ladleSupportDirection = new THREE.Vector3();
+    var ladleSupportMidpoint = new THREE.Vector3();
+    var ladleLinkUpright = new THREE.Vector3();
+    var ladleLinkSide = new THREE.Vector3();
+    var ladleLinkFrame = new THREE.Matrix4();
+    function orientLadleLink(direction) {
+      // The folded linkage stays above its load axis as the servo changes
+      // yaw; its fixed -0.5/+0.5 endpoint datums remain exactly unchanged.
+      ladleLinkUpright.set(0, 1, 0).addScaledVector(direction, -direction.y).normalize();
+      ladleLinkSide.crossVectors(direction, ladleLinkUpright).normalize();
+      ladleLinkFrame.makeBasis(direction, ladleLinkUpright, ladleLinkSide);
+      ladleSupportLink.quaternion.setFromRotationMatrix(ladleLinkFrame);
+    }
+    var ladleCommandedLip = new THREE.Vector3();
+    var ladleRotatedLipOffset = new THREE.Vector3();
+    var ladleTrunnionTarget = new THREE.Vector3();
+    var ladleLipActualScratch = new THREE.Vector3();
+    var ladleBowlCenter = new THREE.Vector3(-0.34, -0.04, 0);
+    function setLadleSurfaceFill(volumeValue, tipAngle) {
+      var volume = clamp(volumeValue, 0, 1);
+      var rootVolume = Math.sqrt(volume);
+      // Place the free surface on the tilted vessel axis, then orient the disk
+      // against the vessel so it remains horizontal in world space.  Its radius
+      // is clipped by both the bowl wall and the nearest tilted end-cap; this
+      // prevents a level disk from cutting through the rim as the charge falls.
+      var axialHeight = lerp(-0.12, 0.1, rootVolume);
+      var desiredRadius = 0.31 * (0.2 + rootVolume * 0.8);
+      var sineTip = Math.abs(Math.sin(tipAngle || 0));
+      var capLimitedRadius = sineTip > 0.001
+        ? Math.max(0.018, (0.145 - Math.abs(axialHeight)) * 0.88 / sineTip)
+        : 0.31;
+      var surfaceRadius = Math.min(0.31, desiredRadius, capLimitedRadius);
+      ladleMetal.position.copy(ladleBowlCenter);
+      ladleMetal.position.y += axialHeight;
+      ladleMetal.rotation.z = -(tipAngle || 0);
+      ladleMetal.scale.set(
+        surfaceRadius / 0.31,
+        Math.max(0.1, 0.22 + volume * 0.78),
+        surfaceRadius / 0.31
+      );
+      ladleSupportState.surfaceVolume = volume;
+      ladleSupportState.surfaceRadiusMm = surfaceRadius * 1000;
+      ladleSupportState.surfaceAxialHeightMm = axialHeight * 1000;
+      ladleSupportState.surfaceCapMarginMm = Math.max(
+        0,
+        (0.145 - Math.abs(axialHeight)) * 1000 -
+          surfaceRadius * sineTip * 1000
+      );
+    }
+    var ladleSupportState = {
+      currentLength: 0,
+      minimumLength: Infinity,
+      maximumLength: 0,
+      currentYaw: 0,
+      currentElevation: 0,
+      positionErrorMm: 0,
+      maximumPositionErrorMm: 0,
+      lipPathErrorMm: 0,
+      maximumLipPathErrorMm: 0,
+      monotonicFailures: 0,
+      lastLeg: '',
+      lastLegProgress: 0
+    };
+    function ladleJointStateForPosition(positionValue, tipValue) {
+      var offset = positionValue.clone().sub(ladleSupportAnchor);
+      var supportLength = Math.max(0.001, offset.length());
+      var horizontalLength = Math.sqrt(offset.x * offset.x + offset.z * offset.z);
+      return Object.freeze({
+        yaw: Math.atan2(offset.z, offset.x),
+        elevation: Math.atan2(offset.y, horizontalLength),
+        extension: supportLength,
+        tip: tipValue || 0
+      });
+    }
+    function ladleMinimumJerk(value) {
+      var u = clamp(value, 0, 1);
+      return u * u * u * (10 + u * (-15 + u * 6));
+    }
+    var ladleFurnaceLipTarget = new THREE.Vector3(-2.864, 1.91, 1.6);
+    var ladleReadyLipTarget = new THREE.Vector3(-2.75, 2.16, 0.32);
+    var ladlePourLipTarget = new THREE.Vector3(-2.28, 2.06, 0.32);
+    var ladleFurnaceJointState = ladleJointStateForPosition(
+      ladleFurnaceLipTarget,
+      0
+    );
+    var ladleReadyJointState = ladleJointStateForPosition(
+      ladleReadyLipTarget,
+      0
+    );
+    var ladlePourJointState = ladleJointStateForPosition(
+      ladlePourLipTarget,
+      0
+    );
+    function applyLadleJointState(fromState, toState, rawProgress, tipAngle, legName) {
+      var jointProgress = ladleMinimumJerk(rawProgress);
+      var yaw = lerp(fromState.yaw, toState.yaw, jointProgress);
+      var elevation = lerp(fromState.elevation, toState.elevation, jointProgress);
+      var commandedLength = lerp(fromState.extension, toState.extension, jointProgress);
+      var vesselTip = tipAngle || 0;
+      ladleSupportDirection.set(
+        Math.cos(elevation) * Math.cos(yaw),
+        Math.sin(elevation),
+        Math.cos(elevation) * Math.sin(yaw)
+      );
+      // Q is the commanded lip path. The load-bearing trunnion is compensated
+      // by the rotating physical lip offset: T(theta) = Q - Rz(theta)L.
+      ladleCommandedLip.copy(ladleSupportAnchor).addScaledVector(
+        ladleSupportDirection,
+        commandedLength
+      );
+      ladleRotatedLipOffset.set(
+        Math.cos(vesselTip) * ladleLipDatum.position.x -
+          Math.sin(vesselTip) * ladleLipDatum.position.y,
+        Math.sin(vesselTip) * ladleLipDatum.position.x +
+          Math.cos(vesselTip) * ladleLipDatum.position.y,
+        ladleLipDatum.position.z
+      );
+      ladleTrunnionTarget.copy(ladleCommandedLip).sub(ladleRotatedLipOffset);
+      ladleSupportDirection.copy(ladleTrunnionTarget).sub(ladleSupportAnchor);
+      var supportLength = Math.max(0.001, ladleSupportDirection.length());
+      ladleSupportDirection.multiplyScalar(1 / supportLength);
+      ladleSupportMidpoint.copy(ladleSupportAnchor).addScaledVector(
+        ladleSupportDirection,
+        supportLength * 0.5
+      );
+      ladleSupportLink.position.copy(ladleSupportMidpoint);
+      ladleSupportLink.scale.set(supportLength, 1, 1);
+      orientLadleLink(ladleSupportDirection);
+      ladle.position.copy(ladleTrunnionTarget);
+      ladleVessel.rotation.z = vesselTip;
+      setLadleSurfaceFill(1, vesselTip);
+      var supportEnd = ladleSupportLink.localToWorld(new THREE.Vector3(0.5, 0, 0));
+      var trunnionWorld = ladle.getWorldPosition(new THREE.Vector3());
+      var positionErrorMm = supportEnd.distanceTo(trunnionWorld) * 1000;
+      ladleLipDatum.getWorldPosition(ladleLipActualScratch);
+      castingRig && castingRig.group.worldToLocal(ladleLipActualScratch);
+      var lipPathErrorMm = ladleLipActualScratch.distanceTo(ladleCommandedLip) * 1000;
+      ladleSupportState.positionErrorMm = positionErrorMm;
+      ladleSupportState.lipPathErrorMm = lipPathErrorMm;
+      ladleSupportState.maximumPositionErrorMm = Math.max(
+        ladleSupportState.maximumPositionErrorMm,
+        positionErrorMm
+      );
+      ladleSupportState.maximumLipPathErrorMm = Math.max(
+        ladleSupportState.maximumLipPathErrorMm,
+        lipPathErrorMm
+      );
+      if (
+        legName &&
+        ladleSupportState.lastLeg === legName &&
+        rawProgress + 0.0001 < ladleSupportState.lastLegProgress
+      ) {
+        ladleSupportState.monotonicFailures += 1;
+      }
+      ladleSupportState.lastLeg = legName || '';
+      ladleSupportState.lastLegProgress = rawProgress;
+      ladleSupportState.currentYaw = yaw;
+      ladleSupportState.currentElevation = elevation;
+      ladleSupportState.currentLength = supportLength;
+      ladleSupportState.minimumLength = Math.min(
+        ladleSupportState.minimumLength,
+        supportLength
+      );
+      ladleSupportState.maximumLength = Math.max(
+        ladleSupportState.maximumLength,
+        supportLength
+      );
+    }
+    function updateLadleSupport() {
+      ladleSupportDirection.copy(ladle.position).sub(ladleSupportAnchor);
+      var supportLength = Math.max(0.001, ladleSupportDirection.length());
+      ladleSupportMidpoint.copy(ladleSupportAnchor).addScaledVector(ladleSupportDirection, 0.5);
+      ladleSupportLink.position.copy(ladleSupportMidpoint);
+      ladleSupportLink.scale.set(supportLength, 1, 1);
+      orientLadleLink(ladleSupportDirection.normalize());
+      ladleSupportState.currentLength = supportLength;
+      ladleSupportState.minimumLength = Math.min(ladleSupportState.minimumLength, supportLength);
+      ladleSupportState.maximumLength = Math.max(ladleSupportState.maximumLength, supportLength);
+    }
+    updateLadleSupport();
+
+    moltenStream = cylinder(0.052, 0.84, M.molten, -2.28, 1.92, 0.32, group, 0, 0, 0, 14);
+    moltenStream.visible = false;
+    moltenStream.scale.y = 0.02;
+    var sleevePool = cylinder(0.135, 0.018, M.molten, -2.28, 1.493, 0.32, group, 0, 0, 0, 18);
+    sleevePool.visible = false;
+    sleevePool.scale.set(0.15, 1, 0.15);
+    // One batched droplet draw call breaks the perfect web-cylinder stream
+    // without a particle farm. Positions are rewritten in place only while
+    // metal is actually falling.
+    var moltenDropCount = lowPower ? 6 : 12;
+    var moltenDropGeometry = new THREE.BufferGeometry();
+    moltenDropGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(new Float32Array(moltenDropCount * 3), 3)
+    );
+    moltenDrops = new THREE.Points(
+      moltenDropGeometry,
+      new THREE.PointsMaterial({
+        color: 0xffb65a,
+        size: lowPower ? 0.025 : 0.038,
+        transparent: true,
+        opacity: 0.78,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        fog: true
+      })
+    );
+    moltenDrops.visible = false;
+    group.add(moltenDrops);
+    castingGlow = new THREE.PointLight(0xff7b24, 0.14, 3.4, 2.1);
+    castingGlow.position.set(-2.25, 1.66, 0.32);
+    group.add(castingGlow);
+
+    // A single camera-side refractory inspection hood makes the otherwise
+    // hidden cold-chamber charge readable without cutting away the physical
+    // sleeve. Its open center carries one meniscus/slug witness; the third and
+    // final added draw is a narrow highlight attached to the real shot rod.
+    // All three are deliberately excluded from the shadow map.
+    var hoodShape = new THREE.Shape();
+    hoodShape.moveTo(-0.84, -0.19);
+    hoodShape.lineTo(0.84, -0.19);
+    hoodShape.lineTo(0.84, 0.19);
+    hoodShape.lineTo(-0.84, 0.19);
+    hoodShape.lineTo(-0.84, -0.19);
+    var hoodWindow = new THREE.Path();
+    hoodWindow.moveTo(-0.72, -0.085);
+    hoodWindow.lineTo(-0.72, 0.085);
+    hoodWindow.lineTo(0.72, 0.085);
+    hoodWindow.lineTo(0.72, -0.085);
+    hoodWindow.lineTo(-0.72, -0.085);
+    hoodShape.holes.push(hoodWindow);
+    var hoodGeometry = new THREE.ExtrudeGeometry(hoodShape, {
+      depth: 0.07,
+      steps: 1,
+      bevelEnabled: true,
+      bevelSegments: 1,
+      bevelSize: 0.018,
+      bevelThickness: 0.018,
+      curveSegments: 1
+    });
+    hoodGeometry.center();
+    hoodGeometry.computeVertexNormals();
+    var inspectionHood = new THREE.Mesh(hoodGeometry, M.refractory);
+    inspectionHood.name = 'DCM camera-side refractory inspection hood';
+    inspectionHood.position.set(-1.46, 1.43, 0.565);
+    inspectionHood.castShadow = false;
+    inspectionHood.receiveShadow = false;
+    group.add(inspectionHood);
+
+    var sleeveSlugMaterial = M.molten.clone();
+    sleeveSlugMaterial.transparent = true;
+    sleeveSlugMaterial.opacity = 0.78;
+    sleeveSlugMaterial.depthWrite = false;
+    sleeveSlugMaterial.envMapIntensity = 0.72;
+    sleeveSlugMaterial.needsUpdate = true;
+    var sleeveSlug = new THREE.Mesh(
+      roundedBoxGeometry(1.56, 0.085, 0.018, 0.014),
+      sleeveSlugMaterial
+    );
+    sleeveSlug.name = 'DCM shot-sleeve meniscus witness';
+    sleeveSlug.position.set(-1.45, 1.43, 0.615);
+    sleeveSlug.visible = false;
+    sleeveSlug.castShadow = false;
+    sleeveSlug.receiveShadow = false;
+    group.add(sleeveSlug);
+
+    var shotSweepMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffedc4,
+      transparent: true,
+      opacity: 0.12,
+      depthWrite: false,
+      depthTest: true,
+      blending: THREE.NormalBlending,
+      fog: true,
+      toneMapped: true
+    });
+    var shotRodSweep = new THREE.Mesh(
+      roundedBoxGeometry(0.88, 0.018, 0.012, 0.006),
+      shotSweepMaterial
+    );
+    shotRodSweep.name = 'DCM real shot-rod specular witness';
+    shotRodSweep.position.set(-0.58, 0.13, 0.126);
+    shotRodSweep.visible = false;
+    shotRodSweep.castShadow = false;
+    shotRodSweep.receiveShadow = false;
+    plunger.add(shotRodSweep);
+
+    // The plaque is retained on the ejector half until pins advance. Its
+    // socket is the single world-space authority for spawn, ejection, and TCP
+    // validation; no resume object exists visibly anywhere else in the cell.
+    var ejectorPins = new THREE.Group();
+    ejectorPins.position.set(-0.18, 0, 0);
+    movingHalf.add(ejectorPins);
+    // Three pins land on the casting's actual diagonal ejector witnesses.
+    // Stroke/endpoints stay unchanged; only their face coordinates are made
+    // truthful so the bright rods visibly remain in contact during ejection.
+    var castPinLayout = [
+      [-0.16, 0.15],
+      [0, 0],
+      [0.16, -0.15]
+    ];
+    for (var pinIndex = 0; pinIndex < castPinLayout.length; pinIndex++) {
+      cylinder(
+        0.022,
+        0.28,
+        M.tieBar,
+        -0.14,
+        2.37 + castPinLayout[pinIndex][1] * CAST_PLAQUE_SCALE,
+        0.39 + castPinLayout[pinIndex][0] * CAST_PLAQUE_SCALE,
+        ejectorPins,
+        0,
+        0,
+        Math.PI / 2,
+        12
+      );
+    }
+    // One moving-platen ejector drive replaces the former three unsupported
+    // translating pins. The crosshead and pushrods ride the same authoritative
+    // group as the pins; the fixed cylinder and gland react into the moving
+    // C-frame through a platen-owned bridge.
+    var ejectorCrosshead = roundedBox(
+      0.08, 0.72, 0.305, 0.018, M.dieSteel,
+      0.52, 2.37, 0.39, ejectorPins
+    );
+    ejectorCrosshead.name = 'rigid ejector crosshead plate';
+    var ejectorPushrodItems = [];
+    for (var pushrodIndex = 0; pushrodIndex < castPinLayout.length; pushrodIndex++) {
+      ejectorPushrodItems.push([
+        0.24,
+        2.37 + castPinLayout[pushrodIndex][1] * CAST_PLAQUE_SCALE,
+        0.39 + castPinLayout[pushrodIndex][0] * CAST_PLAQUE_SCALE,
+        0.028,
+        0.48,
+        0,
+        0,
+        Math.PI / 2
+      ]);
+    }
+    var ejectorPushrods = instanceCylinders(
+      ejectorPushrodItems, M.tieBar, ejectorPins, 12
+    );
+    if (ejectorPushrods) ejectorPushrods.name = 'three crosshead-coupled ejector pushrods';
+    var ejectorReactionBridge = roundedBox(
+      0.08, 0.48, 1.4, 0.018, M.machineEdge,
+      0.7, 2.37, 0, movingHalf
+    );
+    ejectorReactionBridge.name = 'moving C-frame ejector reaction bridge';
+    var ejectorCylinder = cylinder(
+      0.16, 0.4, M.machineEdge,
+      0.94, 2.37, 0.39, movingHalf,
+      0, 0, Math.PI / 2, 24
+    );
+    ejectorCylinder.name = 'platen-owned hydraulic ejector cylinder';
+    var ejectorGland = cylinder(
+      0.19, 0.08, M.robotFlange,
+      0.7, 2.37, 0.39, movingHalf,
+      0, 0, Math.PI / 2, 24
+    );
+    ejectorGland.name = 'ejector cylinder seated gland';
+    var ejectorRam = cylinder(
+      0.055, 1, M.tieBar,
+      0.56, 2.37, 0.39, movingHalf,
+      0, 0, Math.PI / 2, 18
+    );
+    ejectorRam.name = 'dynamic chrome ejector ram';
+    var plaqueSocket = new THREE.Group();
+    plaqueSocket.position.set(-0.19, 2.37, 0.39);
+    plaqueSocket.rotation.y = -Math.PI / 2;
+    movingHalf.add(plaqueSocket);
+
+    var runnerGlow = new THREE.Group();
+    runnerGlow.position.set(-0.2, 2.37, 0.39);
+    movingHalf.add(runnerGlow);
+    cylinder(0.055, 0.62, M.castHot, 0, -0.52, 0, runnerGlow, 0, 0, 0, 16);
+    cylinder(0.12, 0.06, M.castHot, 0, -0.84, 0, runnerGlow, 0, 0, Math.PI / 2, 18);
+    runnerGlow.visible = false;
+
+    // Tempered-water manifolds and paired hoses tie both inserts into a real
+    // thermal circuit and add restrained color without turning the cell into a
+    // game prop.
+    cylinder(0.055, 1.42, M.copper, -0.92, 2.18, -0.9, group, 0, 0, 0, 14);
+    cylinder(0.055, 1.42, M.copper, 1.16, 2.18, -0.9, group, 0, 0, 0, 14);
+    addCable(group, [[-0.92, 2.75, -0.9], [-0.8, 2.9, -0.68], [-0.55, 2.72, -0.56]], -0.03);
+    addCable(group, [[1.16, 2.75, -0.9], [0.98, 2.9, -0.68], [0.72, 2.72, -0.56]], 0.03);
+
+    var tower = new THREE.Group();
+    tower.position.set(2.18, 4.08, -0.72);
+    group.add(tower);
+    cylinder(0.035, 0.5, M.machineEdge, 0, -0.28, 0, tower, 0, 0, 0, 12);
+    var towerRed = M.red.clone();
+    var towerAmber = M.amber.clone();
+    var towerGreen = M.green.clone();
+    cylinder(0.083, 0.13, towerRed, 0, 0.14, 0, tower, 0, 0, 0, 18);
+    cylinder(0.083, 0.13, towerAmber, 0, 0, 0, tower, 0, 0, 0, 18);
+    cylinder(0.083, 0.13, towerGreen, 0, -0.14, 0, tower, 0, 0, 0, 18);
+
+    labelPlane(makeLabelTexture(['DCM-900', 'COLD CHAMBER / CELL 04'], '#15191a', '#d8a50e', 420, 120), 1.05, 0.3, 0.02, 0.79, 0.947, group);
+    labelPlane(makeLabelTexture(['SHOT PROFILE', 'SLOW / FAST / INTENSIFY'], '#15191a', '#aebfc0', 420, 120), 0.94, 0.27, -1.52, 0.72, 0.947, group);
+
+    group.traverse(function (object) {
+      if (object.userData && object.userData.screenLabel) object.scale.x *= -1;
+    });
+
+    // Sparse release-agent vapor is updated in-place only while the die opens.
+    var steamCount = lowPower ? 10 : 24;
+    var steamGeometry = new THREE.BufferGeometry();
+    steamGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(steamCount * 3), 3));
+    castingSteam = new THREE.Points(
+      steamGeometry,
+      new THREE.PointsMaterial({
+        color: 0xdce9e7,
+        size: lowPower ? 0.055 : 0.082,
+        transparent: true,
+        opacity: 0.24,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        fog: true
+      })
+    );
+    castingSteam.position.set(-0.12, 2.37, 0.38);
+    castingSteam.visible = false;
+    group.add(castingSteam);
+
+    // Hidden recipe library only: buildTravelers creates seven mapped plaque
+    // meshes, but none is visible or preloaded. prepareCastPlaque materializes
+    // exactly one at this cycle's moving-half socket after solidification.
+    travelerRack = new THREE.Group();
+    travelerRack.visible = false;
+    scene.add(travelerRack);
+    buildTravelers();
+
+    var perimeter = new THREE.Group();
+    scene.add(perimeter);
+    buildSafetyPerimeter(perimeter);
+    if (transferBay) transferBay.group.visible = false;
+    buildHmi();
+
+    castingRig = {
+      group: group,
+      fixedPlaten: fixedPlaten,
+      movingHalf: movingHalf,
+      dieTravel: 0.92,
+      dieOpen: 1,
+      clampToggle: clampToggle,
+      clampKinematics: {
+        rearPivotX: clampRearPivotX,
+        clevisHomeX: clampClevisHomeX,
+        linkLength: clampLinkLength,
+        lockSeatTravel: clampLockSeatTravel,
+        upperLink: upperKnee,
+        lowerLink: lowerKnee,
+        movingClevis: clampMovingClevis,
+        pins: clampPins,
+        state: clampKinematicState,
+        solve: solveClampToggle,
+        apply: applyClampToggle,
+        addedDraws: 1
+      },
+      clampDrive: {
+        apply: applyClampDrive,
+        state: clampDriveState,
+        cylinder: clampDriveCylinder,
+        stages: clampDriveStages,
+        glands: clampDriveGlands,
+        pistonHeads: clampPistonHeads,
+        coupling: clampDriveCoupling,
+        crosshead: clampDriveCrosshead,
+        rearAnchorX: clampDriveRearAnchorX,
+        crossheadOffsetX: clampDriveCrossheadOffsetX,
+        stageLength: clampStageLength,
+        stageOuterRadii: clampStageRadii,
+        stageInnerRadii: clampStageInnerRadii,
+        glandInnerRadii: clampGlandInnerRadii,
+        pistonHeadOuterRadii: clampPistonHeadOuterRadii,
+        pistonHeadInnerRadii: clampPistonHeadInnerRadii,
+        pistonHeadThickness: clampPistonHeadThickness,
+        pistonHeadAddedDraws: 1,
+        rearHead: {
+          sleeve: clampRearHeadSleeve,
+          face: clampRearHeadFace,
+          inlet: clampRearHeadPort,
+          inletLength: clampRearHeadPortLength,
+          chamberRadius: 0.066,
+          expectedInletEndpoint: Object.freeze([1.288, 0.05, 0]),
+          addedDraws: 3
+        },
+        externalHydraulics: clampExternalHydraulics,
+        barrelOuterRadius: 0.16,
+        barrelInnerRadius: 0.066,
+        stageMaximumStroke: clampStageMaximumStroke,
+        stageRetractedCenterX: clampStageRetractedCenterX,
+        pressureYoke: {
+          bridge: clampReactionBridge,
+          frame: clampPressureYokeFrame,
+          stack: clampPressureStack,
+          head: clampPressureYokeHead,
+          reactionX: clampYokeReactionX,
+          discCount: clampBellevilleCount,
+          discThickness: clampBellevilleThickness,
+          openPitch: clampBellevilleOpenPitch,
+          freeConeRise: 0.0095,
+          lockedConeRise: 0.0075,
+          opposedPairs: 6,
+          orientationAlternations: 11,
+          addedDraws: 1
+        },
+        dieTravel: clampDieTravel,
+        lockSeatTravel: clampLockSeatTravel,
+        fullStroke: clampDieTravel + clampLockSeatTravel,
+        addedDraws: 9
+      },
+      clampProved: false,
+      pressAnatomy: {
+        foundationBed: foundationBed,
+        bedSideWebs: bedSideWebs,
+        fixedPlatenShell: fixedPlatenShell,
+        fixedPlatenInnerFrame: fixedPlatenInnerFrame,
+        fixedPlatenLoadFlowRibs: fixedPlatenLoadFlowRibs,
+        movingPlatenShell: movingPlatenShell,
+        movingPlatenInnerFrame: movingPlatenInnerFrame,
+        movingPlatenLoadFlowRibs: movingPlatenLoadFlowRibs,
+        platenFrameAddedDraws: 6,
+        platenFrameNetDrawDelta: 2,
+        fixedDieCarrier: fixedDieCarrier,
+        movingDieCarrier: movingDieCarrier,
+        fixedDieFaceRim: fixedDieFaceRim,
+        movingDieFaceRim: movingDieFaceRim,
+        dieLeaderPins: dieLeaderPins,
+        dieLeaderBushings: dieLeaderBushings,
+        dieToolingAddedDraws: dieLeaderPins && dieLeaderBushings ? 2 : 8,
+        dieToolingAddedShadowCasters: 0,
+        frozenClosedFaceGap: 0.002,
+        frozenOpenFaceGap: 0.922,
+        structuralTieBars: structuralTieBars,
+        tieBarEndNuts: tieBarEndNuts,
+        tieBarGreaseCollars: tieBarGreaseCollars,
+        shotSleeveOuter: shotSleeveOuter,
+        shotSleeveLiner: shotSleeveLiner,
+        shotCylinderShell: shotCylinderShell,
+        shotReactionBracket: shotReactionBracket,
+        shotReactionCollar: shotReactionCollar,
+        shotSleeveSaddles: shotSleeveSaddles,
+        shotCylinderFoot: shotCylinderFoot,
+        shotCylinderBearingRail: shotCylinderBearingRail,
+        shotCylinderGusset: shotCylinderGusset,
+        shotLoadPathAddedDraws: shotSleeveSaddles ? 4 : 5,
+        shotLoadPathAddedShadowCasters: 1,
+        hydraulicPackBody: hydraulicPackBody,
+        hydraulicPackLegs: hydraulicPackLegs,
+        hydraulicAccumulatorBank: hydraulicAccumulatorBank,
+        hydraulicPackFittings: hydraulicPackFittings,
+        hydraulicPressureHose: hydraulicPressureHose,
+        hydraulicReturnHose: hydraulicReturnHose,
+        hydraulicBodyPorts: hydraulicBodyPorts,
+        hydraulicCylinderPorts: hydraulicCylinderPorts,
+        hydraulicPowerPackObjects: hydraulicPowerPackObjects,
+        hydraulicPowerPackAddedDraws: 6,
+        hydraulicPowerPackAddedShadowCasters: 1,
+        hydraulicPowerPackSupportContactErrorMm: 0,
+        hydraulicPowerPackHoseEndpointErrorMm: 0,
+        rearToggleShell: rearToggleShell,
+        clampServiceSkirt: clampServiceSkirt,
+        clampServiceTopRail: clampServiceTopRail,
+        clampServicePosts: clampServicePosts,
+        clampServiceHandles: clampServiceHandles,
+        serviceFrame: serviceFrame,
+        serviceRecess: serviceRecess,
+        serviceCover: serviceCover,
+        toggleLoadGussets: toggleLoadGussets,
+        fixedBearingLands: fixedBearingLands,
+        movingBearingLands: movingBearingLands,
+        fixedTieBushings: fixedTieBushings,
+        movingTieBushings: movingTieBushings,
+        fixedTieReactionNuts: fixedTieReactionNuts,
+        movingTieReactionNuts: movingTieReactionNuts,
+        fixedTieWipeCollars: fixedTieWipeCollars,
+        movingTieWipeCollars: movingTieWipeCollars,
+        tieTerminationBatches: tieTerminationBatches,
+        tieTerminationAddedDraws: 6,
+        tieTerminationCount: 32,
+        tieTerminationMaxCoaxialityErrorMm: 0,
+        movingPlatenGuideWays: movingPlatenGuideWays,
+        movingPlatenGuideWearStrips: movingPlatenGuideWearStrips,
+        movingPlatenSlideShoes: movingPlatenSlideShoes,
+        movingPlatenShoeWipers: movingPlatenShoeWipers,
+        movingPlatenBearingShadows: movingPlatenBearingShadows,
+        movingPlatenGuideAddedDraws: 5,
+        movingPlatenGuideSamples: 65,
+        movingPlatenGuideContactErrorMm: 0,
+        movingPlatenGuideMinimumOverlapMm: 0,
+        fixedPlatenSole: fixedPlatenSole,
+        fixedPlatenLoadRibs: fixedPlatenLoadRibs,
+        fixedPlatenKeepers: fixedPlatenKeepers,
+        fixedPlatenAnchors: fixedPlatenAnchors,
+        fixedPlatenRibBearingShadow: fixedPlatenRibBearingShadow,
+        fixedPlatenAnchorageMeshes: fixedPlatenAnchorageMeshes,
+        fixedPlatenAnchorageAddedDraws: 5,
+        fixedPlatenAnchorageContactErrorMm: 0,
+        clampReducerLand: clampReducerLand,
+        fasteners: pressFasteners,
+        serviceObjects: [
+          rearToggleShell,
+          clampServiceSkirt,
+          clampServiceTopRail,
+          clampServicePosts,
+          clampServiceHandles,
+          serviceFrame,
+          serviceRecess,
+          serviceCover,
+          toggleLoadGussets
+        ],
+        addedObjects: [
+          serviceFrame,
+          serviceRecess,
+          serviceCover,
+          toggleLoadGussets,
+          fixedBearingLands,
+          movingBearingLands,
+          clampReducerLand,
+          pressFasteners,
+          clampServiceSkirt,
+          clampServiceTopRail,
+          clampServicePosts,
+          clampServiceHandles
+        ],
+        addedDraws: 12,
+        instancedBatches: 8,
+        clampServiceAddedDraws: 4,
+        clampServiceBodyLength: 1.6,
+        clampServiceBodyHeight: 0.76,
+        clampServiceBodyAspectRatio: 1.6 / 0.76,
+        clampServiceVentSlots: 6,
+        fastenerCount: pressFastenerTransforms.length,
+        bearingCount: fixedBearingTransforms.length + movingBearingTransforms.length,
+        macroAddedObjects: [
+          bedSideWebs,
+          fixedDieCarrier,
+          movingDieCarrier,
+          fixedDieFaceRim,
+          movingDieFaceRim,
+          shotReactionBracket,
+          shotReactionCollar
+        ],
+        macroAddedDraws: 7,
+        macroAddedShadowCasters: 2,
+        tieBarDrawsBefore: 20,
+        tieBarDrawsAfter: 3,
+        netDrawDelta: -10,
+        foundationObjects: [foundationBed, bedSideWebs],
+        fixedLoadPathObjects: [
+          fixedPlatenShell,
+          fixedDieCarrier,
+          fixedDieFaceRim,
+          fixedBearingLands,
+          fixedTieBushings,
+          fixedTieReactionNuts,
+          fixedTieWipeCollars,
+          fixedPlatenSole,
+          fixedPlatenLoadRibs,
+          fixedPlatenKeepers,
+          fixedPlatenAnchors,
+          fixedPlatenRibBearingShadow,
+          shotReactionBracket,
+          shotReactionCollar
+        ],
+        movingLoadPathObjects: [
+          movingPlatenShell,
+          movingDieCarrier,
+          movingDieFaceRim,
+          movingBearingLands,
+          movingTieBushings,
+          movingTieReactionNuts,
+          movingTieWipeCollars
+        ],
+        tieBarObjects: [structuralTieBars, tieBarEndNuts, tieBarGreaseCollars],
+        shotSupportObjects: [
+          shotSleeveOuter,
+          shotSleeveLiner,
+          shotCylinderShell,
+          shotReactionBracket,
+          shotReactionCollar,
+          shotSleeveSaddles,
+          shotCylinderFoot,
+          shotCylinderBearingRail,
+          shotCylinderGusset
+        ],
+        shotLoadPathObjects: [
+          shotSleeveSaddles,
+          shotCylinderFoot,
+          shotCylinderBearingRail,
+          shotCylinderGusset
+        ],
+        frozenPressRoot: Object.freeze([DCM_PRESS_ROOT_X, 0, -5.65]),
+        frozenPressScale: Object.freeze([-1, 1, 1]),
+        frozenFixedPlatenX: -0.55,
+        frozenMovingHalfHomeX: 0.92,
+        frozenDieTravel: 0.92,
+        frozenShotSleeve: Object.freeze([-1.65, 1.22, 0.32]),
+        frozenShotCylinder: Object.freeze([-3.73, 1.22, 0.32]),
+        frozenPlungerEndpoints: Object.freeze([-2.55, -1.48, -0.74])
+      },
+      plunger: plunger,
+      plungerHomeX: -2.55,
+      plungerSlowX: -1.48,
+      plungerFastX: -0.74,
+      shotActuator: {
+        rod: plungerRod,
+        sleeve: intensifierSleeve,
+        collar: intensifierCollar,
+        rodRearX: plungerRodRearX,
+        rodTipInset: plungerRodTipInset,
+        rodBaseLength: 1,
+        rodRadius: 0.12,
+        sleeveBaseX: -2.84,
+        sleeveBaseLength: 0.38,
+        sleeveBodyRadius: 0.195,
+        sleeveRadius: 0.205,
+        sleeveCompression: 0.08,
+        sleeveCenterTravel: 0.04,
+        collarBaseLocalY: 0.16,
+        collarOuterRadius: 0.205,
+        collarTubeRadius: 0.019,
+        stage: 'home',
+        stageRank: -1,
+        stageElapsedMs: 0,
+        rodTravelMm: 0,
+        rodExtensionMm: Math.round(plungerRodInitialLength * 1000),
+        sleeveTravelMm: 0,
+        sleeveCompressionMm: 0,
+        collarTravelMm: 0,
+        collarVisible: true,
+        monotonicSamples: 0,
+        monotonicFailures: 0,
+        monotonicValid: true,
+        active: false,
+        lastRank: -1,
+        lastStageElapsedMs: 0,
+        lastRodTravelMm: 0,
+        lastCollarTravelMm: 0,
+        addedDraws: 1,
+        witnessCollarDraws: 1,
+        strokeWitness: {
+          root: shotStrokeWitnessRoot,
+          rack: strokeRack,
+          hardware: strokeHardware,
+          pointer: strokePointer,
+          rackBaseX: -0.07,
+          pitchRadius: 0.07675,
+          pointerStart: strokePointerStart,
+          pointerSweep: strokePointerSweep,
+          pointerLength: strokePointerLength,
+          inputTravelMm: 0,
+          outputAngleRad: 0,
+          outputAngleDeg: 0,
+          degreesPerMm: 180 / Math.PI / 76.75,
+          monotonicFailures: 0,
+          resetFailures: 0,
+          monotonicValid: true,
+          lastMode: 'home',
+          lastOutputAngleRad: 0,
+          addedDraws: 3,
+          addedShadowCasters: 0,
+          projectedArcPx652: 0
+        }
+      },
+      ladle: ladle,
+      ladleVessel: ladleVessel,
+      ladleMetal: ladleMetal,
+      ladleLip: ladleLipDatum,
+      furnace: furnace,
+      ladleFurnacePosition: new THREE.Vector3(-2.894, 1.78, 1.6),
+      ladleReadyPosition: new THREE.Vector3(-2.78, 2.03, 0.32),
+      ladlePourPosition: new THREE.Vector3(-2.28, 2.06, 0.32),
+      ladleSupport: {
+        anchor: ladleSupportAnchor,
+        mast: ladleSupportMast,
+        foot: ladleSupportFoot,
+        anchors: ladleSupportAnchors,
+        gusset: ladleSupportGusset,
+        pivot: ladleSupportPivot,
+        link: ladleSupportLink,
+        yoke: ladleSupportYoke,
+        pin: ladleSupportPin,
+        state: ladleSupportState,
+        update: updateLadleSupport,
+        applyJoints: applyLadleJointState,
+        minimumJerk: ladleMinimumJerk,
+        setSurfaceFill: setLadleSurfaceFill,
+        furnaceJoints: ladleFurnaceJointState,
+        readyJoints: ladleReadyJointState,
+        pourJoints: ladlePourJointState,
+        furnaceLipTarget: ladleFurnaceLipTarget,
+        readyLipTarget: ladleReadyLipTarget,
+        pourLipTarget: ladlePourLipTarget,
+        addedDraws: ladleSupportAnchors ? 8 : 11,
+        addedShadowCasters: 5,
+        frozenFurnacePosition: Object.freeze([-2.894, 0, 1.6]),
+        frozenAnchor: Object.freeze([-2.094, 2.5, 1.1]),
+        frozenHomePosition: Object.freeze([-2.894, 1.78, 1.6]),
+        frozenReadyPosition: Object.freeze([-2.78, 2.03, 0.32]),
+        frozenPourPosition: Object.freeze([-2.28, 2.06, 0.32])
+      },
+      ladleHome: true,
+      chargeLoaded: true,
+      sleeveCharged: false,
+      slowShotProved: false,
+      fastShotProved: false,
+      intensificationProved: false,
+      solidified: false,
+      clampReleased: true,
+      sleevePool: sleevePool,
+      metalWitness: {
+        inspectionHood: inspectionHood,
+        sleeveSlug: sleeveSlug,
+        sleeveSlugMaterial: sleeveSlugMaterial,
+        shotRodSweep: shotRodSweep,
+        shotSweepMaterial: shotSweepMaterial,
+        drawMeshes: [inspectionHood, sleeveSlug, shotRodSweep],
+        drawCount: 3,
+        slugBaseLength: 1.56,
+        stage: 'ladle-ready',
+        custody: 'ladle',
+        custodyValid: true,
+        authorityMask: 0,
+        authority: 'none',
+        authorityCount: 0,
+        shotProgress: 0,
+        transitions: 0,
+        assertionFailures: 0,
+        lastInvalidStage: '',
+        cooledSource: 'existing-recipe-plaque'
+      },
+      castVisualProof: {
+        cycle: 0,
+        eject: {
+          captured: false,
+          widthPx: 0,
+          heightPx: 0,
+          spanPx: 0,
+          runnerProtrusionPx: 0,
+          jawTabOverlapMm: 0,
+          pinsStrokeMm: 0,
+          custody: 'none',
+          sourceCount: 0,
+          projectionTargetMet: false,
+          protrusionTargetMet: false,
+          jawTabsProved: false
+        },
+        grip: {
+          captured: false,
+          widthPx: 0,
+          heightPx: 0,
+          spanPx: 0,
+          runnerProtrusionPx: 0,
+          jawTabOverlapMm: 0,
+          pinsStrokeMm: 0,
+          custody: 'none',
+          sourceCount: 0,
+          projectionTargetMet: false,
+          protrusionTargetMet: false,
+          jawTabsProved: false
+        },
+        held: {
+          captured: false,
+          widthPx: 0,
+          heightPx: 0,
+          spanPx: 0,
+          runnerProtrusionPx: 0,
+          jawTabOverlapMm: 0,
+          pinsStrokeMm: 0,
+          custody: 'none',
+          sourceCount: 0,
+          projectionTargetMet: false,
+          protrusionTargetMet: false,
+          jawTabsProved: false
+        },
+        localPoint: new THREE.Vector3(),
+        worldPoint: new THREE.Vector3(),
+        projectedPoint: new THREE.Vector3(),
+        runnerPoint: new THREE.Vector3(),
+        centerPoint: new THREE.Vector3(),
+        leftPad: new THREE.Vector3(),
+        rightPad: new THREE.Vector3(),
+        leftTab: new THREE.Vector3(),
+        rightTab: new THREE.Vector3(),
+        jawAxis: new THREE.Vector3(),
+        tabDelta: new THREE.Vector3()
+      },
+      streamLipScratch: new THREE.Vector3(),
+      streamHoleScratch: new THREE.Vector3(-2.28, 1.5, 0.32),
+      ejectorPins: ejectorPins,
+      ejectorDrive: {
+        crosshead: ejectorCrosshead,
+        pushrods: ejectorPushrods,
+        reactionBridge: ejectorReactionBridge,
+        cylinder: ejectorCylinder,
+        gland: ejectorGland,
+        ram: ejectorRam,
+        amount: 0,
+        addedDraws: 5,
+        samples: 258
+      },
+      plaqueSocket: plaqueSocket,
+      runnerGlow: runnerGlow,
+      pinsExtended: false,
+      towerGreen: towerGreen,
+      towerAmber: towerAmber,
+      towerRed: towerRed
+    };
+    machineRig = castingRig;
+    castingRig.clampDrive.apply(0);
+    applyEjectorStroke(0);
+    updateShotActuatorWitness(0);
+  }
+
+  function applyEjectorStroke(extension) {
+    if (!castingRig || !castingRig.ejectorPins || !castingRig.plaqueSocket) return;
+    var amount = clamp(extension, 0, 1);
+    var pinX = -0.18 - 0.2 * amount;
+    castingRig.ejectorPins.position.x = pinX;
+    castingRig.plaqueSocket.position.x = -0.19 - 0.2 * amount;
+    if (castingRig.ejectorDrive && castingRig.ejectorDrive.ram) {
+      var ramFront = pinX + 0.56;
+      var ramRear = 0.74;
+      var ramLength = ramRear - ramFront;
+      castingRig.ejectorDrive.ram.position.x = (ramFront + ramRear) * 0.5;
+      castingRig.ejectorDrive.ram.scale.y = ramLength;
+      castingRig.ejectorDrive.amount = amount;
+    }
+    castingRig.pinsExtended = amount >= 0.995;
+    return amount;
+  }
+
+  function validateEjectorMechanism() {
+    if (!castingRig || !castingRig.ejectorDrive) return false;
+    var drive = castingRig.ejectorDrive;
+    var savedAmount = drive.amount;
+    var samples = 0;
+    var maximumEndpointError = 0;
+    var monotonic = true;
+    var previousPinX = null;
+    var previousRamLength = null;
+    var ramFront = new THREE.Vector3();
+    var ramRear = new THREE.Vector3();
+    var expectedFront = new THREE.Vector3();
+    var expectedRear = new THREE.Vector3();
+    var parentageValid =
+      drive.crosshead.parent === castingRig.ejectorPins &&
+      (!drive.pushrods || drive.pushrods.parent === castingRig.ejectorPins) &&
+      drive.reactionBridge.parent === castingRig.movingHalf &&
+      drive.cylinder.parent === castingRig.movingHalf &&
+      drive.gland.parent === castingRig.movingHalf &&
+      drive.ram.parent === castingRig.movingHalf;
+
+    function sampleStroke(amount, extending) {
+      applyEjectorStroke(amount);
+      castingRig.group.updateMatrixWorld(true);
+      var expectedPinX = -0.18 - 0.2 * amount;
+      var expectedSocketX = -0.19 - 0.2 * amount;
+      var expectedRamLength = 0.74 - (expectedPinX + 0.56);
+      ramFront.set(0, 0.5, 0).applyMatrix4(drive.ram.matrixWorld);
+      ramRear.set(0, -0.5, 0).applyMatrix4(drive.ram.matrixWorld);
+      expectedFront.set(expectedPinX + 0.56, 2.37, 0.39);
+      expectedRear.set(0.74, 2.37, 0.39);
+      castingRig.movingHalf.localToWorld(expectedFront);
+      castingRig.movingHalf.localToWorld(expectedRear);
+      maximumEndpointError = Math.max(
+        maximumEndpointError,
+        Math.abs(castingRig.ejectorPins.position.x - expectedPinX),
+        Math.abs(castingRig.plaqueSocket.position.x - expectedSocketX),
+        Math.abs(drive.ram.scale.y - expectedRamLength),
+        ramFront.distanceTo(expectedFront),
+        ramRear.distanceTo(expectedRear)
+      );
+      if (previousPinX !== null) {
+        if (extending && castingRig.ejectorPins.position.x > previousPinX + 0.000001) monotonic = false;
+        if (!extending && castingRig.ejectorPins.position.x < previousPinX - 0.000001) monotonic = false;
+        if (extending && drive.ram.scale.y < previousRamLength - 0.000001) monotonic = false;
+        if (!extending && drive.ram.scale.y > previousRamLength + 0.000001) monotonic = false;
+      }
+      previousPinX = castingRig.ejectorPins.position.x;
+      previousRamLength = drive.ram.scale.y;
+      samples += 1;
+    }
+
+    for (var extendIndex = 0; extendIndex <= 128; extendIndex++) {
+      sampleStroke(extendIndex / 128, true);
+    }
+    previousPinX = null;
+    previousRamLength = null;
+    for (var retractIndex = 0; retractIndex <= 128; retractIndex++) {
+      sampleStroke(1 - retractIndex / 128, false);
+    }
+    applyEjectorStroke(savedAmount);
+    castingRig.group.updateMatrixWorld(true);
+
+    var stroke = Math.abs(-0.38 - -0.18);
+    var valid = samples === 258 && Math.abs(stroke - 0.2) <= 0.000001 &&
+      maximumEndpointError <= 0.002 && monotonic && parentageValid &&
+      Math.abs(drive.amount - savedAmount) <= 0.000001;
+    startupDiagnostics.ejectorMechanismValid = valid;
+    startupDiagnostics.ejectorMechanismSamples = samples;
+    startupDiagnostics.ejectorMechanismStrokeMm = Number((stroke * 1000).toFixed(1));
+    startupDiagnostics.ejectorMechanismMaximumEndpointErrorMm = Number(
+      (maximumEndpointError * 1000).toFixed(3)
+    );
+    startupDiagnostics.ejectorMechanismMonotonic = monotonic;
+    if (window.console && console.assert) {
+      console.assert(valid, 'Ejector mechanism proof failed', {
+        samples: samples,
+        strokeMm: startupDiagnostics.ejectorMechanismStrokeMm,
+        maximumEndpointErrorMm:
+          startupDiagnostics.ejectorMechanismMaximumEndpointErrorMm,
+        monotonic: monotonic,
+        parentage: parentageValid
+      });
+    }
+    return valid;
+  }
+
   function drawTravelerFace(ctx, meta, x, y, w, h) {
     var hex = "#" + ("000000" + meta.color.toString(16)).slice(-6);
     ctx.save();
     ctx.translate(x, y);
-    ctx.fillStyle = "#f3f0e7";
+    ctx.fillStyle = "#afb6b7";
     ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = "#141c20";
+    ctx.fillStyle = "#20282b";
     ctx.fillRect(0, 0, w, 48);
     ctx.fillStyle = hex;
     ctx.fillRect(0, 0, 12, h);
     ctx.fillStyle = "#ffffff";
     ctx.font = "700 15px ui-monospace, monospace";
-    ctx.fillText("RACK " + meta.key + " / CLIPBOARD", 24, 30);
-    ctx.fillStyle = "#162126";
+    ctx.fillText("CAST 0" + meta.key + " / ALUMINUM", 24, 30);
+    ctx.fillStyle = "#172024";
     ctx.font = "800 25px system-ui, sans-serif";
     ctx.fillText(meta.label, 24, 91);
-    ctx.fillStyle = "#5a666b";
+    ctx.fillStyle = "#48565b";
     ctx.font = "600 14px system-ui, sans-serif";
     ctx.fillText(meta.detail, 24, 117);
     // The old nine 3px source rules projected below two screen pixels behind
@@ -2651,7 +7179,7 @@
     ctx.fillRect(24, h - 62, w - 48, 32);
     ctx.fillStyle = "#10171a";
     ctx.font = "800 12px ui-monospace, monospace";
-    ctx.fillText("FENCE COPY / CELL 04", 33, h - 42);
+    ctx.fillText("DCM-900 / RECIPE 0" + meta.key, 33, h - 42);
     ctx.restore();
   }
 
@@ -2758,7 +7286,7 @@
     }
   }
 
-  function buildTravelers() {
+  function buildClipboardTravelersLegacy() {
     var cardMaterial = standard(0x8a6037, 0x000000, 0, 0.72, 0.05, {
       envMapIntensity: 0.42
     });
@@ -2955,6 +7483,163 @@
     );
   }
 
+  function buildTravelers() {
+    // One shared drafted shell and one shared raised perimeter rib replace the
+    // old laminated slab/face stack. Their authored extents stay strictly
+    // inside CAST_PLAQUE_LOCAL_BOUNDS, so the proved carried-payload OBB is
+    // unchanged while the edge-on die pose gains a finite readable thickness.
+    var shellShape = new THREE.Shape();
+    shellShape.moveTo(-0.22, 0.37);
+    shellShape.lineTo(0.22, 0.37);
+    shellShape.lineTo(0.29, 0.31);
+    shellShape.lineTo(0.29, -0.21);
+    shellShape.lineTo(0.23, -0.28);
+    shellShape.lineTo(0.1, -0.31);
+    shellShape.lineTo(-0.1, -0.31);
+    shellShape.lineTo(-0.23, -0.28);
+    shellShape.lineTo(-0.29, -0.21);
+    // One actual foundry-key notch breaks the otherwise symmetric casting
+    // outline. Its 60 x 130 mm recess remains visible after projection and is
+    // part of this same extruded shell, never a screen-space overlay.
+    shellShape.lineTo(-0.29, -0.055);
+    shellShape.lineTo(-0.23, -0.055);
+    shellShape.lineTo(-0.23, 0.075);
+    shellShape.lineTo(-0.29, 0.075);
+    shellShape.lineTo(-0.29, 0.31);
+    shellShape.lineTo(-0.22, 0.37);
+    var castShellGeometry = new THREE.ExtrudeGeometry(shellShape, {
+      depth: 0.09,
+      steps: 1,
+      bevelEnabled: false,
+      curveSegments: 1
+    });
+    castShellGeometry.translate(0, 0, -0.045);
+    castShellGeometry.computeVertexNormals();
+
+    var rimShape = new THREE.Shape();
+    rimShape.moveTo(-0.255, -0.245);
+    rimShape.lineTo(0.255, -0.245);
+    rimShape.lineTo(0.255, 0.325);
+    rimShape.lineTo(-0.255, 0.325);
+    rimShape.lineTo(-0.255, 0.075);
+    rimShape.lineTo(-0.235, 0.075);
+    rimShape.lineTo(-0.235, -0.055);
+    rimShape.lineTo(-0.255, -0.055);
+    rimShape.lineTo(-0.255, -0.245);
+    var rimOpening = new THREE.Path();
+    rimOpening.moveTo(-0.225, -0.21);
+    rimOpening.lineTo(-0.225, 0.29);
+    rimOpening.lineTo(0.225, 0.29);
+    rimOpening.lineTo(0.225, -0.21);
+    rimOpening.lineTo(-0.225, -0.21);
+    rimShape.holes.push(rimOpening);
+    var castRimGeometry = new THREE.ExtrudeGeometry(rimShape, {
+      depth: 0.01,
+      steps: 1,
+      bevelEnabled: false,
+      curveSegments: 1
+    });
+    castRimGeometry.translate(0, 0, 0.04);
+    castRimGeometry.computeVertexNormals();
+
+    // These three shared materials create one persistent visual identity for
+    // every mutually-exclusive recipe casting. The face keeps enough diffuse
+    // response to stay bright at EJECT/GRIP/HELD; only the broad structural
+    // rib is dark. No emissive term or glow is used.
+    var castFaceMaterial = M.castAluminum.clone();
+    castFaceMaterial.color.setHex(0xd9dedc);
+    castFaceMaterial.emissive.setHex(0x000000);
+    castFaceMaterial.emissiveIntensity = 0;
+    castFaceMaterial.roughness = 0.42;
+    castFaceMaterial.metalness = 0.58;
+    castFaceMaterial.envMapIntensity = 1.24;
+    castFaceMaterial.needsUpdate = true;
+
+    var castEdgeMaterial = castFaceMaterial.clone();
+    castEdgeMaterial.color.setHex(0xf0f2ee);
+    castEdgeMaterial.roughness = 0.27;
+    castEdgeMaterial.metalness = 0.76;
+    castEdgeMaterial.envMapIntensity = 1.34;
+    castEdgeMaterial.needsUpdate = true;
+
+    var castRibMaterial = standard(0x252d2f, 0x000000, 0, 0.68, 0.28, {
+      envMapIntensity: 0.42
+    });
+
+    for (var castIndex = 0; castIndex < STATIONS.length; castIndex++) {
+      var meta = STATIONS[castIndex];
+      var group = new THREE.Group();
+      group.visible = false;
+      travelerRack.add(group);
+
+      var castShell = new THREE.Mesh(castShellGeometry, castFaceMaterial);
+      castShell.name = 'single as-cast recipe plaque shell';
+      group.add(castShell);
+      applyMeshShadows(castShell, castFaceMaterial);
+      var castRim = new THREE.Mesh(castRimGeometry, castEdgeMaterial);
+      castRim.name = 'raised as-cast perimeter rib';
+      group.add(castRim);
+      applyMeshShadows(castRim, castEdgeMaterial);
+      // One coarse T-rib reads as a single dark structural motif at thumbnail
+      // scale. Its 50 mm sections replace the former sub-pixel decorative
+      // lines that vanished through guard glazing.
+      roundedBox(0.42, 0.052, 0.008, 0.004, castRibMaterial, 0, 0.15, 0.046, group);
+      roundedBox(0.052, 0.42, 0.008, 0.004, castRibMaterial, 0.085, -0.035, 0.046, group);
+
+      // Overflow wells and the untrimmed lower feed system remain part of the
+      // same traveler group. The compact runner terminates in a thick biscuit
+      // and a bright sheared gate scar, providing a readable 35-45 px overall
+      // projection at the QA camera without enlarging the collision envelope.
+      roundedBox(0.1, 0.04, 0.08, 0.015, castFaceMaterial, -0.245, 0.39, 0, group);
+      roundedBox(0.1, 0.04, 0.08, 0.015, castFaceMaterial, 0.245, 0.39, 0, group);
+      // The lower runner is intentionally offset to recipe-right and ends in
+      // a broad biscuit/trim scar. Its tip remains inside the frozen OBB while
+      // making the same asymmetric protrusion survive GRIP and HELD overlap.
+      roundedBox(0.2, 0.07, 0.085, 0.022, castFaceMaterial, 0.07, -0.315, 0, group);
+      cylinder(0.045, 0.11, castFaceMaterial, CAST_RUNNER_TIP_X, -0.372, 0, group, 0, 0, 0, 14);
+      cylinder(0.06, 0.1, castFaceMaterial, CAST_RUNNER_TIP_X, -0.402, 0, group, Math.PI / 2, 0, 0, 18);
+      roundedBox(0.2, 0.042, 0.096, 0.012, castEdgeMaterial, 0.075, -0.295, 0, group);
+
+      // Purpose-cast grip tabs resolve to 490 mm overall at the authored 0.72
+      // scale. Open pad span is 510 mm; closed pad span is 414 mm, so both jaws
+      // land on dedicated tabs. Burnished contact lands remain visible around
+      // the compressed black pads at GRIP and HELD instead of disappearing
+      // into the former full-width slab.
+      roundedBox(0.06, 0.24, 0.09, 0.02, castFaceMaterial, -0.31, 0, 0, group);
+      roundedBox(0.06, 0.24, 0.09, 0.02, castFaceMaterial, 0.31, 0, 0, group);
+      roundedBox(0.052, 0.11, 0.096, 0.015, M.burnished, -0.31, 0, 0, group);
+      roundedBox(0.052, 0.11, 0.096, 0.015, M.burnished, 0.31, 0, 0, group);
+
+      // These three witness recesses share the exact local coordinates used by
+      // the physical ejector pins above. A small raised recipe slug survives
+      // trimming without introducing a second document/casting authority.
+      cylinder(0.043, 0.012, M.dieSteel, -0.16, 0.15, -0.044, group, Math.PI / 2, 0, 0, 14);
+      cylinder(0.043, 0.012, M.dieSteel, 0, 0, -0.044, group, Math.PI / 2, 0, 0, 14);
+      cylinder(0.043, 0.012, M.dieSteel, 0.16, -0.15, -0.044, group, Math.PI / 2, 0, 0, 14);
+      roundedBox(0.042, 0.15, 0.018, 0.008, castEdgeMaterial, 0.245, 0.2, 0.041, group);
+
+      travelers.push({
+        id: meta.id,
+        group: group,
+        cassette: null,
+        occupancyFlag: null,
+        cassetteOccupied: false,
+        homePosition: new THREE.Vector3(),
+        homeQuaternion: group.quaternion.clone(),
+        restowStartPosition: new THREE.Vector3(),
+        restowStartQuaternion: new THREE.Quaternion(),
+        attached: false,
+        custody: 'recipe-library',
+        castCycle: 0,
+        castLocalBounds: CAST_PLAQUE_LOCAL_BOUNDS,
+        tabCenterX: CAST_TAB_CENTER_X,
+        tabWidth: CAST_TAB_WIDTH,
+        runnerTipX: CAST_RUNNER_TIP_X,
+        runnerTipY: CAST_RUNNER_TIP_Y
+      });
+    }
+  }
+
   function buildHmi() {
     hmiCanvas = document.createElement("canvas");
     var hmiSampleSize = lowPower ? 768 : 1024;
@@ -3102,14 +7787,14 @@
     var mode = controllerMode();
     var accent = mode === "fault" ? "#e45950" : mode === "access" ? "#4fc8d0" : mode === "hold" ? "#e2ad43" : "#50cf91";
     var accentDark = mode === "fault" ? "#351a1a" : mode === "access" ? "#123138" : mode === "hold" ? "#352b18" : "#123128";
-    var modeLabel = mode === "fault" ? "SAFETY STOP" : mode === "access" ? "OUTER ACCESS" : mode === "hold" ? "AUTO HOLD" : "AUTO RUN";
+    var modeLabel = mode === "fault" ? "SAFETY STOP" : mode === "access" ? "CAST REVIEW" : mode === "hold" ? "CAST CYCLE" : "AUTO READY";
     var stripCopy = mode === "fault"
       ? "ALARM  SAFETY CIRCUIT NOT PROVED / RESET REQUIRED"
       : mode === "access"
-        ? "ACCESS  INNER LOCK PROVED / ROBOT CLEAR / OUTER ENABLED"
+        ? "REVIEW  DIE OPEN / EJECTOR PROVED / ROBOT HOLDING"
         : mode === "hold"
-          ? "STATUS  AUTO HOLD / TRANSFER ACTIVE / OUTER LOCKED"
-          : "STATUS  INTERLOCKS PROVED / CELL CYCLING / REQUESTS ENABLED";
+          ? "STATUS  DIE CYCLE ACTIVE / GUARD LOCKED / INPUTS HELD"
+          : "STATUS  LADLE FULL / DIE OPEN / RECIPES ENABLED";
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = "#071014";
     ctx.fillRect(0, 0, w, h);
@@ -3125,10 +7810,10 @@
     ctx.fillRect(0, 0, 768, 5);
     ctx.fillStyle = "#eef4f3";
     ctx.font = "850 28px ui-monospace, monospace";
-    ctx.fillText("MC-04 / HMI-04", 28, 42);
+    ctx.fillText("DCM-900 / HMI-DC4", 28, 42);
     ctx.fillStyle = "#869ba1";
     ctx.font = "700 14px ui-monospace, monospace";
-    ctx.fillText("DOCUMENT TRANSFER CONTROL / LOCAL PENDANT", 28, 71);
+    ctx.fillText("DIE RECIPE / SHOT PROFILE CONTROL", 28, 71);
     ctx.fillStyle = accentDark;
     ctx.fillRect(548, 18, 192, 64);
     ctx.strokeStyle = accent;
@@ -3155,7 +7840,7 @@
       var openHover = hmiHover === "__inspect";
       ctx.fillStyle = "#81959b";
       ctx.font = "700 16px ui-monospace, monospace";
-      ctx.fillText("PRIMARY ACTION / DOCUMENT SERVICE", 28, 176);
+      ctx.fillText("PRIMARY ACTION / DIE RECIPE", 28, 176);
       ctx.fillStyle = "#0e1c21";
       ctx.fillRect(28, 194, 712, 420);
       ctx.strokeStyle = "#294047";
@@ -3170,7 +7855,7 @@
       ctx.font = "950 57px system-ui, sans-serif";
       ctx.fillText("OPEN", 96, 302);
       ctx.font = "900 31px ui-monospace, monospace";
-      ctx.fillText("DOCUMENT INDEX", 96, 351);
+      ctx.fillText("RECIPE INDEX", 96, 351);
       ctx.fillStyle = openPressed ? "#153126" : "#85a098";
       ctx.font = "750 16px ui-monospace, monospace";
       ctx.fillText(openPressed ? "INPUT ACKNOWLEDGED" : "TOUCH PANEL / PRESS 1-7 DIRECT", 96, 382);
@@ -3185,17 +7870,17 @@
       ctx.fillText("INDEXED REQUESTS", 86, 505);
       ctx.fillStyle = "#e1e9e8";
       ctx.font = "800 18px ui-monospace, monospace";
-      ctx.fillText("ROBOT SERVICE READY", 408, 473);
+      ctx.fillText("CAST CELL READY", 408, 473);
       ctx.fillStyle = "#819399";
       ctx.font = "650 15px ui-monospace, monospace";
       ctx.fillText("ONE OWNER / SAFE QUEUE", 408, 505);
       ctx.fillStyle = "#71858b";
       ctx.font = "650 15px ui-monospace, monospace";
-      ctx.fillText("SELECTING A FILE INITIATES A CONTROLLED AUTO HOLD", 64, 580);
+      ctx.fillText("SELECTING A RECIPE STARTS A PROVED COLD-CHAMBER CYCLE", 64, 580);
     } else if (mode === "run") {
       ctx.fillStyle = "#81959b";
       ctx.font = "700 16px ui-monospace, monospace";
-      ctx.fillText("REQUEST INDEX / SELECT ONE CONTROLLED COPY", 28, 178);
+      ctx.fillText("DIE RECIPE INDEX / SELECT ONE RESUME CASTING", 28, 178);
       var backPressed = hmiPressed === "__back";
       ctx.fillStyle = backPressed ? accent : hmiHover === "__back" ? "#193a31" : "#132a25";
       ctx.fillRect(548, 148, 192, 56);
@@ -3246,7 +7931,7 @@
       ctx.strokeRect(28, 174, 712, 520);
       ctx.fillStyle = accent;
       ctx.font = "850 18px ui-monospace, monospace";
-      ctx.fillText(mode === "fault" ? "CATEGORY 0 / SAFETY CIRCUIT" : mode === "access" ? "TRANSFER TB-04 / OPERATOR SIDE" : "CONTROLLED SERVICE SEQUENCE", 64, 219);
+      ctx.fillText(mode === "fault" ? "CATEGORY 0 / SAFETY CIRCUIT" : mode === "access" ? "AS-CAST PLAQUE / ROBOT HOLD" : "CONTROLLED CASTING SEQUENCE", 64, 219);
 
       if (mode === "fault") {
         ctx.fillStyle = "#f6ece9";
@@ -3257,12 +7942,12 @@
         ctx.fillText("MOTION INHIBITED / RESET REQUIRED", 64, 352);
         ctx.fillStyle = "#d0aaa6";
         ctx.font = "650 19px system-ui, sans-serif";
-        ctx.fillText("Guard, E-stop, or transfer proof is not valid.", 64, 408);
+        ctx.fillText("Guard, E-stop, clamp, or die proof is not valid.", 64, 408);
         ctx.fillText("Operator requests remain locked until the safety chain is proved.", 64, 442);
       } else if (mode === "access") {
         ctx.fillStyle = "#edf7f7";
         ctx.font = "950 50px system-ui, sans-serif";
-        ctx.fillText("OUTER ACCESS", 64, 294);
+        ctx.fillText("CAST REVIEW", 64, 294);
         ctx.fillStyle = accent;
         ctx.font = "950 48px system-ui, sans-serif";
         ctx.fillText("ENABLED", 64, 350);
@@ -3271,34 +7956,39 @@
         ctx.fillRect(384, 394, 300, 118);
         ctx.fillStyle = "#a8bec1";
         ctx.font = "700 15px ui-monospace, monospace";
-        ctx.fillText("INNER SHUTTER", 86, 429);
-        ctx.fillText("ROBOT ENVELOPE", 406, 429);
+        ctx.fillText("OPEN DIE", 86, 429);
+        ctx.fillText("ROBOT PAYLOAD", 406, 429);
         ctx.fillStyle = accent;
         ctx.font = "900 27px ui-monospace, monospace";
-        ctx.fillText(safetySensors.innerLocked && !safetySensors.innerOpen ? "LOCK PROVED" : "NOT PROVED", 86, 476);
-        ctx.fillText(safetySensors.robotClear ? "CLEAR" : "NOT CLEAR", 406, 476);
+        ctx.fillText(castingRig && castingRig.dieOpen >= 0.995 ? "OPEN PROVED" : "NOT PROVED", 86, 476);
+        ctx.fillText(activeTraveler && activeTraveler.attached ? "HELD" : "NOT HELD", 406, 476);
         ctx.fillStyle = "#b6cbce";
         ctx.font = "700 18px ui-monospace, monospace";
-        ctx.fillText("CLOSE / ACK AT DOCUMENT TRAY TO RETURN CUSTODY", 64, 572);
+        ctx.fillText("CLOSE / ACK TO RETURN CASTING TO THE TRIM NEST", 64, 572);
       } else {
         ctx.fillStyle = "#f5f0e4";
         ctx.font = "950 52px system-ui, sans-serif";
-        ctx.fillText("AUTO HOLD", 64, 292);
+        ctx.fillText("CAST CYCLE", 64, 292);
         ctx.fillStyle = accent;
         ctx.font = "900 31px ui-monospace, monospace";
-        ctx.fillText("TRANSFER ACTIVE", 64, 344);
+        ctx.fillText("PRESS ACTIVE", 64, 344);
         ctx.fillStyle = "#f0e7d3";
-        ctx.font = "850 25px ui-monospace, monospace";
-        ctx.fillText(state, 64, 398);
+        ctx.font = "850 23px ui-monospace, monospace";
+        var dcmStepIndex = DCM_OUTBOUND_SEQUENCE.indexOf(state);
+        var dcmStepPrefix = dcmStepIndex >= 0
+          ? "STEP " + (dcmStepIndex + 1 < 10 ? "0" : "") +
+            (dcmStepIndex + 1) + " / 23  "
+          : "";
+        ctx.fillText(dcmStepPrefix + state, 64, 398);
         ctx.fillStyle = "#b9aa87";
         ctx.font = "700 18px ui-monospace, monospace";
-        ctx.fillText(serviceMeta ? "DOCUMENT 0" + serviceMeta.key + " / " + serviceMeta.label : "CONTROLLED ROBOT SEQUENCE", 64, 442);
-        ctx.fillText("OUTER ACCESS LOCKED WHILE THE ROBOT OWNS TRANSFER", 64, 494);
+        ctx.fillText(serviceMeta ? "RECIPE 0" + serviceMeta.key + " / " + serviceMeta.label : "CONTROLLED CASTING SEQUENCE", 64, 442);
+        ctx.fillText("GUARD LOCKED WHILE PRESS OR ROBOT OWNS THE CYCLE", 64, 494);
         ctx.fillStyle = "#15231f";
         ctx.fillRect(64, 538, 620, 76);
         ctx.fillStyle = accent;
         ctx.font = "800 17px ui-monospace, monospace";
-        ctx.fillText("INPUT LOCKED / WAIT FOR PROVED TRANSFER STATE", 88, 584);
+        ctx.fillText("INPUT LOCKED / WAIT FOR PROVED CAST REVIEW STATE", 88, 584);
       }
     }
 
@@ -3306,16 +7996,22 @@
     ctx.fillRect(0, 738, 768, 30);
     ctx.fillStyle = "#789096";
     ctx.font = "700 13px ui-monospace, monospace";
-    ctx.fillText("RMCFARLIN / MC-04 / HMI-04 / CONTROLLED COPY", 22, 758);
+    ctx.fillText("RMCFARLIN / DCM-900 / HMI-DC4 / DIE RECIPES", 22, 758);
     ctx.textAlign = "right";
     ctx.fillStyle = accent;
-    ctx.fillText("I:" + (safetySensors.innerLocked ? "LOCK" : safetySensors.innerOpen ? "OPEN" : "UNLK") + "  O:" + (safetySensors.outerPresented ? "ACCESS" : safetySensors.outerLocked ? "LOCK" : "UNLK") + "  R:" + (safetySensors.robotClear ? "CLEAR" : "BAY"), 746, 758);
+    ctx.fillText(
+      "D:" + (castingRig && castingRig.dieOpen >= 0.995 ? "OPEN" : castingRig && castingRig.clampProved ? "CLAMP" : "CLOSED") +
+      "  E:" + (castingRig && castingRig.pinsExtended ? "OUT" : "HOME") +
+      "  R:" + (safetySensors.robotClear ? "CLEAR" : "IN CELL"),
+      746,
+      758
+    );
     ctx.textAlign = "left";
     hmiTexture.needsUpdate = true;
   }
 
   function updateHmiHitMode() {
-    var auto = state === STATE.AUTO;
+    var auto = state === STATE.AUTO && castingChargeReady();
     for (var i = 0; i < hmiInteractives.length; i++) {
       var action = hmiInteractives[i].userData.hmiAction;
       hmiInteractives[i].userData.enabled = action === "inspect"
@@ -3341,26 +8037,82 @@
   }
 
   function buildRobot() {
+    // Fine corrugation catches light on the existing flexible conduits without
+    // extra tube segments, geometry or changes to their routed envelopes.
+    var conduitTexture = makeTexture(function (ctx, w, h) {
+      ctx.fillStyle = '#b0b0b0'; ctx.fillRect(0, 0, w, h);
+      for (var band = 0; band < w; band += 8) {
+        ctx.fillStyle = '#777777'; ctx.fillRect(band, 0, 2, h);
+        ctx.fillStyle = '#c5c5c5'; ctx.fillRect(band + 2, 0, 1, h);
+      }
+    }, 128, 32);
+    configureNonColorTexture(conduitTexture, 3, 1);
+    M.robotCable.bumpMap = conduitTexture;
+    M.robotCable.bumpScale = 0.0007;
+    M.robotCable.roughness = 0.64;
+    M.robotCable.envMapIntensity = 0.48;
+    // Reference-led orange enamel belongs only to the six-axis mechanism.
+    // Clone the established maps so the surrounding machine's safety yellow
+    // and every collision/kinematic material identity remain independent.
+    var robotOrange = M.robotYellow.clone();
+    robotOrange.color.setHex(0xc97d4c);
+    robotOrange.emissive.setHex(0x000000);
+    robotOrange.emissiveIntensity = 0;
+    robotOrange.roughness = 0.45;
+    robotOrange.metalness = 0.12;
+    robotOrange.clearcoat = 0.24;
+    robotOrange.clearcoatRoughness = 0.29;
+    var robotOrangeInset = M.robotYellowDark.clone();
+    robotOrangeInset.color.setHex(0x905126);
+    robotOrangeInset.emissive.setHex(0x000000);
+    robotOrangeInset.emissiveIntensity = 0;
+    robotOrangeInset.roughness = 0.62;
+    robotOrangeInset.metalness = 0.08;
     var root = new THREE.Group();
-    root.position.set(0.3, 0, -4.0);
+    // DCM service mount: the pedestal is anchored camera-front/right of the
+    // open die gap. The inherited furnace-side mount forced every extraction
+    // reach through the solid fixed platen before it could reach the casting.
+    root.position.set(DCM_ROBOT_ROOT_X, 0, -3.25);
+    // Mirror the complete six-axis mechanism with its extraction half. The
+    // same joint values therefore generate the exact reflected swept volume;
+    // service targets are solved in the original virtual frame below.
+    root.scale.set(-1, 1, 1);
     scene.add(root);
-    addContactShadow(0, 0, 1.04, 0.86, 0.8, root);
+    addContactShadow(0, 0, 1.56, 1.4, 0.72, root);
 
     cylinder(0.72, 0.14, M.joint, 0, 0.09, 0, root, 0, 0, 0, 32);
     cylinder(0.62, 0.12, M.steel, 0, 0.19, 0, root, 0, 0, 0, 32);
-    cylinder(0.5, 0.63, M.yellowDark, 0, 0.53, 0, root, 0, 0, 0, 28);
+    var robotPedestal = taperedCast(0.63, 0.82, 0.74, 0.68, 0.82, 0.74, 0.68,
+      M.yellow, 0, 0.215, 0, root);
+    robotPedestal.name = 'tapered orange six-axis pedestal casting';
     cylinder(0.44, 0.035, M.joint, 0, 0.855, 0, root, 0, 0, 0, 28);
     var boltItems = [];
     for (var bolt = 0; bolt < 10; bolt++) {
       var angle = bolt / 10 * Math.PI * 2;
-      boltItems.push([Math.cos(angle) * 0.58, 0.19, Math.sin(angle) * 0.58, 0.07, 0.06, 0.07]);
+      boltItems.push([Math.cos(angle) * 0.58, 0.267, Math.sin(angle) * 0.58, 0.07, 0.034, 0.07]);
     }
     instanceBoxes(boltItems, M.robotFastener, root);
 
     var baseAxis = new THREE.Group();
     baseAxis.position.set(0, 0.78, 0);
     root.add(baseAxis);
-    cylinder(0.43, 0.38, M.yellow, 0, 0.18, 0, baseAxis, 0, 0, 0, 28);
+    // Preserve the former 430 mm J1 radial envelope while replacing its
+    // lathed-can silhouette with broad chamfered reducer flats and a waist.
+    var j1CastShell = taperedCast(
+      0.38,
+      0.76,
+      0.838,
+      0.78,
+      0.76,
+      0.838,
+      0.78,
+      M.yellow,
+      0,
+      -0.01,
+      0,
+      baseAxis
+    );
+    j1CastShell.name = 'chamfered J1 reducer casting';
     // J1 reducer is a shallow stack with a seated flange instead of the former
     // oversized dark coin. Its bolt circle is recessed into the top cover.
     cylinder(0.405, 0.07, M.machineEdge, 0, 0.395, 0, baseAxis, 0, 0, 0, 28);
@@ -3390,13 +8142,20 @@
     // J2 motor/reducer depth reads through stepped castings, a narrow bearing
     // land, and real recessed fasteners; the dark material is no longer the
     // dominant camera-facing silhouette.
-    cylinder(0.305, 0.48, M.joint, 0, 0, -0.08, shoulder, Math.PI / 2, 0, 0, 28);
+    cylinder(0.305, 0.48, M.yellowDark, 0, 0, -0.08, shoulder, Math.PI / 2, 0, 0, 28);
     cylinder(0.287, 0.52, M.yellow, 0, 0, 0.03, shoulder, Math.PI / 2, 0, 0, 28);
     cylinder(0.255, 0.075, M.yellowDark, 0, 0, 0.295, shoulder, Math.PI / 2, 0, 0, 26);
-    cylinder(0.224, 0.045, M.machineEdge, 0, 0, 0.35, shoulder, Math.PI / 2, 0, 0, 24);
-    cylinder(0.184, 0.018, M.contactAo, 0, 0, 0.381, shoulder, Math.PI / 2, 0, 0, 22);
-    cylinder(0.09, 0.012, M.steel, 0, 0, 0.414, shoulder, Math.PI / 2, 0, 0, 18);
-    roundedBox(0.26, 0.34, 0.21, 0.065, M.yellowDark, -0.22, -0.02, -0.29, shoulder);
+    cylinder(0.224, 0.045, M.yellow, 0, 0, 0.35, shoulder, Math.PI / 2, 0, 0, 24);
+    cylinder(0.184, 0.018, M.yellowDark, 0, 0, 0.381, shoulder, Math.PI / 2, 0, 0, 22);
+    cylinder(0.09, 0.012, M.steel, 0, 0, 0.414, shoulder, Math.PI / 2, 0, 0, 24);
+    // Narrow metal bearing lands sit on the existing reducer circumference;
+    // the large covers retain their enamel instead of becoming chrome discs.
+    var shoulderBearingLand = new THREE.Mesh(new THREE.TorusGeometry(0.218, 0.006, 6, 32), M.robotFlange);
+    shoulderBearingLand.position.z = 0.374;
+    shoulder.add(shoulderBearingLand);
+    var shoulderMotorCowl = roundedBox(0.37, 0.34, 0.21, 0.065,
+      M.yellow, -0.1, -0.02, -0.29, shoulder);
+    shoulderMotorCowl.name = 'orange shoulder servo motor cowling';
     var shoulderGreaseRing = new THREE.Mesh(new THREE.TorusGeometry(0.221, 0.009, 6, 28), M.robotGrease);
     shoulderGreaseRing.position.z = 0.382;
     shoulder.add(shoulderGreaseRing);
@@ -3417,21 +8176,36 @@
     shoulder.add(arm1);
     // A six-profile chamfered casting replaces the slab/capsule proxy. The
     // envelope is slightly smaller than the old link, retaining all clearance.
-    taperedCast(1.4, 0.46, 0.36, 0.3, 0.5, 0.4, 0.34, M.yellow, 0, 0.04, 0, arm1);
-    roundedBox(0.11, 0.58, 0.46, 0.045, M.yellowDark, 0.175, 0.79, 0, arm1);
+    var upperCastShell = taperedCast(
+      1.4,
+      0.46,
+      0.245,
+      0.255,
+      0.5,
+      0.29,
+      0.3,
+      M.yellow,
+      0,
+      0.04,
+      0,
+      arm1
+    );
+    upperCastShell.name = 'tapered chamfered upper-arm casting';
+    // The cast shell supplies its own stiffening section; a former overlapping
+    // rib cut through this taper and produced false triangular paint facets.
     roundedBox(0.36, 0.15, 0.48, 0.048, M.yellow, 0, 0.18, 0, arm1);
-    roundedBox(0.31, 0.016, 0.014, 0.005, M.contactAo, 0, 0.52, 0.231, arm1);
-    roundedBox(0.15, 0.28, 0.014, 0.016, M.contactAo, 0.095, 0.94, 0.229, arm1);
-    roundedBox(0.126, 0.252, 0.009, 0.014, M.yellowDark, 0.095, 0.94, 0.239, arm1);
-    roundedBox(0.02, 0.62, 0.012, 0.004, M.robotEdgeBurnish, -0.205, 0.72, 0.228, arm1);
-    roundedBox(0.34, 0.026, 0.017, 0.006, M.yellowDark, 0, 0.34, 0.237, arm1);
-    roundedBox(0.275, 0.024, 0.017, 0.006, M.yellowDark, 0, 1.16, 0.207, arm1);
-    addCable(arm1, [[-0.24, 0.03, 0.26], [-0.31, 0.65, 0.28], [-0.24, 1.35, 0.25]], -0.035);
-    addCable(arm1, [[-0.24, 0.03, 0.26], [-0.31, 0.65, 0.28], [-0.24, 1.35, 0.25]], 0.035);
+    roundedBox(0.23, 0.012, 0.009, 0.004, M.contactAo, 0, 0.52, 0.16, arm1);
+    roundedBox(0.09, 0.20, 0.01, 0.018, M.contactAo, 0.015, 0.92, 0.148, arm1);
+    roundedBox(0.065, 0.15, 0.007, 0.014, M.robotCable, 0.015, 0.92, 0.155, arm1);
+    roundedBox(0.012, 0.65, 0.008, 0.003, M.robotEdgeBurnish, -0.118, 0.79, 0.122, arm1);
+    roundedBox(0.27, 0.016, 0.012, 0.004, M.yellowDark, 0, 0.34, 0.197, arm1);
+    roundedBox(0.245, 0.016, 0.012, 0.004, M.yellowDark, 0, 1.16, 0.148, arm1);
+    addCable(arm1, [[-0.21, 0.03, 0.22], [-0.175, 0.65, 0.17], [-0.20, 1.35, 0.21]], -0.035);
+    addCable(arm1, [[-0.21, 0.03, 0.22], [-0.175, 0.65, 0.17], [-0.20, 1.35, 0.21]], 0.035);
     instanceBoxes([
-      [-0.275, 0.28, 0.265, 0.15, 0.045, 0.105],
-      [-0.305, 0.78, 0.28, 0.15, 0.045, 0.105],
-      [-0.255, 1.24, 0.255, 0.15, 0.045, 0.105]
+      [-0.2, 0.28, 0.20, 0.12, 0.04, 0.08],
+      [-0.18, 0.78, 0.175, 0.12, 0.04, 0.08],
+      [-0.195, 1.24, 0.20, 0.12, 0.04, 0.08]
     ], M.machineEdge, arm1);
     roundedBox(0.15, 0.13, 0.13, 0.025, M.joint, -0.245, 0.09, 0.245, arm1);
     roundedBox(0.15, 0.13, 0.13, 0.025, M.joint, -0.235, 1.36, 0.235, arm1);
@@ -3439,17 +8213,22 @@
     var elbow = new THREE.Group();
     elbow.position.set(0, 1.48, 0);
     arm1.add(elbow);
-    cylinder(0.27, 0.44, M.joint, 0, 0, -0.07, elbow, Math.PI / 2, 0, 0, 26);
+    cylinder(0.27, 0.44, M.yellowDark, 0, 0, -0.07, elbow, Math.PI / 2, 0, 0, 26);
     cylinder(0.252, 0.5, M.yellow, 0, 0, 0.02, elbow, Math.PI / 2, 0, 0, 26);
     cylinder(0.224, 0.07, M.yellowDark, 0, 0, 0.275, elbow, Math.PI / 2, 0, 0, 24);
-    cylinder(0.195, 0.04, M.machineEdge, 0, 0, 0.33, elbow, Math.PI / 2, 0, 0, 22);
-    cylinder(0.158, 0.016, M.contactAo, 0, 0, 0.357, elbow, Math.PI / 2, 0, 0, 20);
+    cylinder(0.195, 0.04, M.yellow, 0, 0, 0.33, elbow, Math.PI / 2, 0, 0, 22);
+    cylinder(0.158, 0.016, M.yellowDark, 0, 0, 0.357, elbow, Math.PI / 2, 0, 0, 20);
     cylinder(0.075, 0.012, M.steel, 0, 0, 0.388, elbow, Math.PI / 2, 0, 0, 16);
-    roundedBox(0.22, 0.3, 0.19, 0.055, M.yellowDark, 0.19, -0.025, -0.265, elbow);
+    var elbowMotorCowl = roundedBox(0.4, 0.4, 0.17, 0.065,
+      M.yellow, 0.10, -0.025, -0.265, elbow);
+    elbowMotorCowl.name = 'broad enclosed orange elbow motor casting';
     var elbowGreaseRing = new THREE.Mesh(new THREE.TorusGeometry(0.192, 0.008, 6, 26), M.robotGrease);
     elbowGreaseRing.position.z = 0.358;
     elbow.add(elbowGreaseRing);
     applyMeshShadows(elbowGreaseRing, M.robotGrease);
+    var elbowBearingLand = new THREE.Mesh(new THREE.TorusGeometry(0.19, 0.005, 6, 32), M.robotFlange);
+    elbowBearingLand.position.z = 0.351;
+    elbow.add(elbowBearingLand);
     var elbowBoltRecesses = [];
     var elbowBoltHeads = [];
     for (var elbowBolt = 0; elbowBolt < 8; elbowBolt++) {
@@ -3464,44 +8243,86 @@
 
     var arm2 = new THREE.Group();
     elbow.add(arm2);
-    taperedCast(1.18, 0.36, 0.27, 0.2, 0.4, 0.31, 0.24, M.yellow, 0, 0.04, 0, arm2);
-    roundedBox(0.085, 0.5, 0.36, 0.038, M.yellowDark, -0.145, 0.66, 0, arm2);
-    roundedBox(0.3, 0.14, 0.4, 0.042, M.yellow, 0, 0.16, 0, arm2);
-    roundedBox(0.25, 0.014, 0.013, 0.004, M.contactAo, 0, 0.47, 0.201, arm2);
-    roundedBox(0.13, 0.24, 0.013, 0.014, M.contactAo, -0.075, 0.78, 0.184, arm2);
-    roundedBox(0.108, 0.214, 0.008, 0.012, M.yellowDark, -0.075, 0.78, 0.193, arm2);
-    roundedBox(0.018, 0.48, 0.012, 0.004, M.robotEdgeBurnish, 0.15, 0.62, 0.194, arm2);
-    roundedBox(0.26, 0.024, 0.016, 0.006, M.yellowDark, 0, 0.34, 0.207, arm2);
-    roundedBox(0.205, 0.022, 0.016, 0.006, M.yellowDark, 0, 0.98, 0.171, arm2);
-    var forearmTransition = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.2, 0.17, 0.18, 18, 1, false),
-      M.yellowDark
+    var forearmCastShell = taperedCast(
+      1.18,
+      0.30,
+      0.14,
+      0.135,
+      0.32,
+      0.16,
+      0.15,
+      M.yellow,
+      0,
+      0.04,
+      0,
+      arm2
     );
-    forearmTransition.position.y = 1.17;
-    arm2.add(forearmTransition);
-    applyMeshShadows(forearmTransition, M.yellowDark);
+    forearmCastShell.name = 'tapered chamfered forearm casting';
+    roundedBox(0.038, 0.74, 0.13, 0.016, M.yellow, -0.06, 0.66, 0, arm2);
+    roundedBox(0.24, 0.11, 0.28, 0.032, M.yellow, 0, 0.16, 0, arm2);
+    roundedBox(0.14, 0.009, 0.008, 0.003, M.contactAo, 0, 0.47, 0.092, arm2);
+    roundedBox(0.067, 0.17, 0.008, 0.009, M.contactAo, -0.012, 0.76, 0.082, arm2);
+    roundedBox(0.048, 0.145, 0.005, 0.007, M.yellowDark, -0.012, 0.76, 0.088, arm2);
+    roundedBox(0.009, 0.55, 0.007, 0.003, M.robotEdgeBurnish, 0.064, 0.69, 0.065, arm2);
+    roundedBox(0.18, 0.014, 0.011, 0.004, M.yellowDark, 0, 0.34, 0.115, arm2);
+    roundedBox(0.135, 0.014, 0.011, 0.004, M.yellowDark, 0, 0.98, 0.078, arm2);
+    var forearmTransition = taperedCast(
+      0.18,
+      0.34,
+      0.37,
+      0.4,
+      0.34,
+      0.37,
+      0.4,
+      M.yellowDark,
+      0,
+      1.08,
+      0,
+      arm2
+    );
+    forearmTransition.name = 'flared chamfered J4 transition casting';
     var forearmTransitionSeam = new THREE.Mesh(new THREE.TorusGeometry(0.196, 0.008, 6, 24), M.robotGrease);
     forearmTransitionSeam.position.y = 1.255;
     forearmTransitionSeam.rotation.x = Math.PI / 2;
     arm2.add(forearmTransitionSeam);
     applyMeshShadows(forearmTransitionSeam, M.robotGrease);
-    addCable(arm2, [[0.2, 0.03, 0.22], [0.25, 0.6, 0.24], [0.19, 1.2, 0.2]], -0.025);
-    addCable(arm2, [[0.2, 0.03, 0.22], [0.25, 0.6, 0.24], [0.19, 1.2, 0.2]], 0.035);
+    addCable(arm2, [[0.16, 0.03, 0.17], [0.10, 0.6, 0.12], [0.15, 1.2, 0.17]], -0.025);
+    addCable(arm2, [[0.16, 0.03, 0.17], [0.10, 0.6, 0.12], [0.15, 1.2, 0.17]], 0.035);
     instanceBoxes([
-      [0.205, 0.25, 0.225, 0.13, 0.04, 0.095],
-      [0.245, 0.67, 0.238, 0.13, 0.04, 0.095],
-      [0.205, 1.08, 0.207, 0.13, 0.04, 0.095]
+      [0.135, 0.25, 0.15, 0.105, 0.035, 0.07],
+      [0.108, 0.67, 0.12, 0.105, 0.035, 0.07],
+      [0.14, 1.08, 0.15, 0.105, 0.035, 0.07]
     ], M.machineEdge, arm2);
     roundedBox(0.135, 0.12, 0.12, 0.023, M.joint, 0.19, 0.09, 0.205, arm2);
     roundedBox(0.135, 0.12, 0.12, 0.023, M.joint, 0.19, 1.18, 0.19, arm2);
+
+    // One flexible bridge closes the physical gap between the two clamped
+    // link runs. Parenting it to J3 gives the loop real elbow slack without a
+    // world-space cable or any independent animation channel.
+    var elbowDressPack = addCable(
+      elbow,
+      [
+        [-0.24, -0.13, 0.25],
+        [-0.31, -0.02, 0.28],
+        [-0.23, 0.12, 0.28],
+        [0.02, 0.18, 0.25],
+        [0.2, 0.06, 0.22]
+      ],
+      0
+    );
+    if (elbowDressPack) elbowDressPack.name = 'J3 articulated dress-pack slack loop';
 
     // J4 forearm roll cartridge: concentric cast housings, bearing seam, and
     // fastener face all live on the forearm axis and rotate with that axis.
     var j4Roll = new THREE.Group();
     j4Roll.position.set(0, 1.28, 0);
     arm2.add(j4Roll);
+    // Only substantial opaque terminal pieces participate in the locked-camera
+    // GRIP occlusion proof. Fasteners and thin guide rods cannot hide a 4 px
+    // pad/tab land and remain outside this bounded list.
+    var gripOpticalOccluders = [];
     cylinder(0.205, 0.16, M.yellowDark, 0, 0, 0, j4Roll, 0, 0, 0, 26);
-    cylinder(0.17, 0.1, M.yellow, 0, 0.085, 0, j4Roll, 0, 0, 0, 24);
+    cylinder(0.18, 0.1, M.yellow, 0, 0.085, 0, j4Roll, 0, 0, 0, 24);
     // J4 is compressed toward the forearm so J5 and J6 no longer collapse
     // into it. All four steps remain inside the former 300 mm cartridge.
     cylinder(0.158, 0.018, M.contactAo, 0, 0.128, 0, j4Roll, 0, 0, 0, 24);
@@ -3535,25 +8356,135 @@
     // The former constant-section yoke boxes are replaced in-place by small
     // six-profile cast cheeks and a tapered bridge. Their widest profiles are
     // equal to the old boxes, so every conservative wrist sweep stays valid.
-    taperedCast(0.29, 0.13, 0.126, 0.12, 0.34, 0.331, 0.31, M.yellow, -0.105, -0.065, 0, wrist);
-    taperedCast(0.29, 0.13, 0.126, 0.12, 0.34, 0.331, 0.31, M.yellow, 0.205, -0.065, 0, wrist);
-    taperedCast(0.07, 0.31, 0.29, 0.265, 0.3, 0.28, 0.25, M.yellowDark, 0.05, 0.08, 0, wrist);
+    // At the proved positive-J5 GRIP branch, the -X cheek is camera-side. Its
+    // old 290 mm slab extended past the bearing and visually fused with the
+    // terminal tool. A 190 mm cheek still captures the J5 bearing but leaves a
+    // real open throat; the far structural cheek keeps its full load path.
+    var cameraSideJ5Cheek = taperedCast(
+      0.19,
+      0.118,
+      0.114,
+      0.108,
+      0.3,
+      0.284,
+      0.264,
+      M.yellow,
+      -0.105,
+      -0.005,
+      0,
+      wrist
+    );
+    cameraSideJ5Cheek.name = 'camera-side shortened J5 cheek';
+    gripOpticalOccluders.push(cameraSideJ5Cheek);
+    var farJ5Cheek = taperedCast(
+      0.29,
+      0.13,
+      0.126,
+      0.12,
+      0.34,
+      0.331,
+      0.31,
+      M.yellow,
+      0.205,
+      -0.065,
+      0,
+      wrist
+    );
+    farJ5Cheek.name = 'far structural J5 cheek';
+    gripOpticalOccluders.push(farJ5Cheek);
+    var j5Bridge = taperedCast(
+      0.055,
+      0.25,
+      0.235,
+      0.218,
+      0.25,
+      0.232,
+      0.215,
+      M.yellowDark,
+      0.05,
+      0.08,
+      0,
+      wrist
+    );
+    j5Bridge.name = 'notched J5 load bridge';
+    gripOpticalOccluders.push(j5Bridge);
     // Flush access covers and their narrow recesses are service features, not
     // decoration; both remain behind the old cheek's front surface.
-    roundedBox(0.084, 0.155, 0.007, 0.008, M.contactAo, -0.105, 0.075, 0.164, wrist);
-    roundedBox(0.068, 0.137, 0.005, 0.007, M.yellowDark, -0.105, 0.075, 0.1675, wrist);
-    roundedBox(0.084, 0.155, 0.007, 0.008, M.contactAo, 0.205, 0.075, 0.164, wrist);
-    roundedBox(0.068, 0.137, 0.005, 0.007, M.yellowDark, 0.205, 0.075, 0.1675, wrist);
-    cylinder(0.132, 0.009, M.contactAo, 0.05, 0.075, 0.177, wrist, Math.PI / 2, 0, 0, 20);
-    cylinder(0.12, 0.036, M.robotFlange, 0.05, 0.075, 0.184, wrist, Math.PI / 2, 0, 0, 18);
-    cylinder(0.12, 0.028, M.joint, 0.05, 0.075, -0.18, wrist, Math.PI / 2, 0, 0, 18);
+    var farJ5CoverRecess = roundedBox(
+      0.084,
+      0.155,
+      0.007,
+      0.008,
+      M.contactAo,
+      0.205,
+      0.075,
+      0.164,
+      wrist
+    );
+    var farJ5Cover = roundedBox(
+      0.068,
+      0.137,
+      0.005,
+      0.007,
+      M.yellowDark,
+      0.205,
+      0.075,
+      0.1675,
+      wrist
+    );
+    farJ5CoverRecess.name = 'far J5 cover recess';
+    farJ5Cover.name = 'far J5 access cover';
+    gripOpticalOccluders.push(farJ5CoverRecess, farJ5Cover);
+    var j5BearingRecess = cylinder(
+      0.112,
+      0.009,
+      M.contactAo,
+      0.05,
+      0.075,
+      0.158,
+      wrist,
+      Math.PI / 2,
+      0,
+      0,
+      20
+    );
+    var j5BearingFace = cylinder(
+      0.102,
+      0.028,
+      M.robotFlange,
+      0.05,
+      0.075,
+      0.164,
+      wrist,
+      Math.PI / 2,
+      0,
+      0,
+      18
+    );
+    var j5RearCover = cylinder(
+      0.105,
+      0.022,
+      M.joint,
+      0.05,
+      0.075,
+      -0.158,
+      wrist,
+      Math.PI / 2,
+      0,
+      0,
+      18
+    );
+    j5BearingRecess.name = 'reduced J5 bearing recess';
+    j5BearingFace.name = 'reduced J5 bearing face';
+    j5RearCover.name = 'reduced J5 rear cover';
+    gripOpticalOccluders.push(j5BearingRecess, j5BearingFace, j5RearCover);
     var j5Screws = [];
     for (var j5Screw = 0; j5Screw < 6; j5Screw++) {
       var j5Angle = j5Screw / 6 * Math.PI * 2;
       j5Screws.push([
         0.05 + Math.cos(j5Angle) * 0.084,
         0.075 + Math.sin(j5Angle) * 0.084,
-        0.197,
+        0.181,
         0.009,
         0.009,
         Math.PI / 2,
@@ -3570,16 +8501,24 @@
     // the analytical tool axis used by reach and clipboard-seat validation.
     wristRoll.position.set(0, 0.18, 0);
     wrist.add(wristRoll);
-    cylinder(0.14, 0.07, M.joint, 0, 0.035, 0, wristRoll, 0, 0, 0, 24);
-    cylinder(0.086, 0.016, M.contactAo, 0, 0.086, 0, wristRoll, 0, 0, 0, 20);
-    cylinder(0.128, 0.032, M.robotFlange, 0, 0.124, 0, wristRoll, 0, 0, 0, 22);
-    cylinder(0.105, 0.012, M.robotEdgeBurnish, 0, 0.146, 0, wristRoll, 0, 0, 0, 20);
+    // Four existing draws now form a deeper, stepped reducer stack. The stack
+    // grows only 19 mm along the tool axis and 15 mm radially, remaining well
+    // inside the unchanged 210 mm wrist / 110 mm tool swept proof volumes.
+    var j6Reducer = cylinder(0.135, 0.072, M.joint, 0, 0.036, 0, wristRoll, 0, 0, 0, 24);
+    var j6Recess = cylinder(0.105, 0.014, M.contactAo, 0, 0.079, 0, wristRoll, 0, 0, 0, 20);
+    var j6Flange = cylinder(0.126, 0.042, M.robotFlange, 0, 0.107, 0, wristRoll, 0, 0, 0, 22);
+    var j6Burnish = cylinder(0.108, 0.014, M.robotEdgeBurnish, 0, 0.135, 0, wristRoll, 0, 0, 0, 20);
+    j6Reducer.name = 'deep J6 reducer housing';
+    j6Recess.name = 'J6 recessed bearing land';
+    j6Flange.name = 'deep J6 tool flange';
+    j6Burnish.name = 'J6 flange burnish';
+    gripOpticalOccluders.push(j6Reducer, j6Recess, j6Flange, j6Burnish);
     var flangeScrews = [];
     for (var flangeScrew = 0; flangeScrew < 6; flangeScrew++) {
       var flangeAngle = flangeScrew / 6 * Math.PI * 2;
       flangeScrews.push([
         Math.cos(flangeAngle) * 0.075,
-        0.151,
+        0.124,
         Math.sin(flangeAngle) * 0.075,
         0.01,
         0.012,
@@ -3590,10 +8529,57 @@
     }
     instanceCylinders(flangeScrews, M.robotFastener, wristRoll, 8);
 
-    // Compact tapered pneumatic body preserves the former 700 x 180 x 300 mm
-    // tool envelope while giving the terminal chain a manufactured casting.
-    taperedCast(0.1, 0.7, 0.66, 0.61, 0.3, 0.285, 0.255, M.machineEdge, 0, 0.19, 0, wristRoll);
-    taperedCast(0.07, 0.56, 0.525, 0.47, 0.22, 0.21, 0.18, M.robotToolPolymer, 0, 0.27, 0, wristRoll);
+    // The compact pneumatic body stays within the former 700 x 180 x 300 mm
+    // analytical tool envelope while exposing its centerline at the camera.
+    // Split the former 700 mm opaque crossbar into two rail-supported lobes.
+    // The 200 mm physical center notch is the sight window between the pads;
+    // both lobes remain inside the unchanged conservative tool capsule.
+    var leftToolLobe = taperedCast(
+      0.1,
+      0.18,
+      0.17,
+      0.16,
+      0.285,
+      0.272,
+      0.25,
+      M.machineEdge,
+      -0.21,
+      0.16,
+      0,
+      wristRoll
+    );
+    var rightToolLobe = taperedCast(
+      0.1,
+      0.18,
+      0.17,
+      0.16,
+      0.285,
+      0.272,
+      0.25,
+      M.machineEdge,
+      0.21,
+      0.16,
+      0,
+      wristRoll
+    );
+    var toolManifold = taperedCast(
+      0.055,
+      0.3,
+      0.282,
+      0.26,
+      0.19,
+      0.176,
+      0.16,
+      M.robotToolPolymer,
+      0,
+      0.16,
+      0,
+      wristRoll
+    );
+    leftToolLobe.name = 'left short thick gripper housing lobe';
+    rightToolLobe.name = 'right short thick gripper housing lobe';
+    toolManifold.name = 'recessed gripper manifold';
+    gripOpticalOccluders.push(leftToolLobe, rightToolLobe, toolManifold);
     cylinder(0.018, 0.62, M.steel, 0, 0.22, -0.075, wristRoll, 0, 0, Math.PI / 2, 12);
     cylinder(0.018, 0.62, M.steel, 0, 0.22, 0.075, wristRoll, 0, 0, Math.PI / 2, 12);
     cylinder(0.032, 0.06, M.yellowDark, 0.16, 0.19, -0.16, wristRoll, Math.PI / 2, 0, 0, 12);
@@ -3606,28 +8592,81 @@
     wristRoll.add(rightFinger);
     roundedBox(GRIP_FINGER_WIDTH, 0.3, 0.11, 0.014, M.steel, 0, 0.13, 0, leftFinger);
     roundedBox(GRIP_FINGER_WIDTH, 0.3, 0.11, 0.014, M.steel, 0, 0.13, 0, rightFinger);
-    roundedBox(0.055, 0.075, 0.14, 0.018, M.robotJawPad, 0.018, 0.285, 0, leftFinger);
-    roundedBox(0.055, 0.075, 0.14, 0.018, M.robotJawPad, -0.018, 0.285, 0, rightFinger);
+    var leftJawPad = roundedBox(
+      0.055,
+      0.075,
+      0.14,
+      0.018,
+      M.robotJawPad,
+      0.018,
+      0.285,
+      0,
+      leftFinger
+    );
+    var rightJawPad = roundedBox(
+      0.055,
+      0.075,
+      0.14,
+      0.018,
+      M.robotJawPad,
+      -0.018,
+      0.285,
+      0,
+      rightFinger
+    );
+    leftJawPad.name = 'left compressed jaw pad';
+    rightJawPad.name = 'right compressed jaw pad';
 
     // Protected dress pack loops from the forearm into J5 with two clamps.
-    addCable(j4Roll, [[-0.18, -0.04, 0.15], [-0.25, 0.13, 0.19], [-0.15, 0.32, 0.14]], 0);
-    roundedBox(0.08, 0.04, 0.2, 0.015, M.machineEdge, -0.19, 0.04, 0.14, j4Roll);
-    roundedBox(0.08, 0.04, 0.18, 0.015, M.machineEdge, -0.16, 0.27, 0.13, j4Roll);
+    var terminalDressPack = addCable(
+      j4Roll,
+      [[-0.12, -0.02, -0.16], [-0.18, 0.11, -0.19], [-0.12, 0.24, -0.14]],
+      0
+    );
+    var lowerDressClamp = roundedBox(
+      0.07,
+      0.04,
+      0.15,
+      0.015,
+      M.machineEdge,
+      -0.12,
+      0.03,
+      -0.16,
+      j4Roll
+    );
+    var upperDressClamp = roundedBox(
+      0.07,
+      0.04,
+      0.14,
+      0.015,
+      M.machineEdge,
+      -0.12,
+      0.2,
+      -0.14,
+      j4Roll
+    );
+    if (terminalDressPack) {
+      terminalDressPack.name = 'rear-routed terminal dress pack';
+      gripOpticalOccluders.push(terminalDressPack);
+    }
+    lowerDressClamp.name = 'lower rear dress clamp';
+    upperDressClamp.name = 'upper rear dress clamp';
+    gripOpticalOccluders.push(lowerDressClamp, upperDressClamp);
 
     var gripperTip = new THREE.Group();
     gripperTip.position.set(0, 0.57, 0);
     wristRoll.add(gripperTip);
 
-    var label = makeLabelTexture(["R-01", "6 AXIS"], "#121719", "#f0b713", 230, 120);
-    var labelMesh = labelPlane(label, 0.45, 0.24, 0, 0.55, 0.251, arm1);
+    var label = makeLabelTexture(["R-01", "6 AXIS"], "#171b1d", "#d9d9d3", 230, 120);
+    var labelMesh = labelPlane(label, 0.18, 0.09, 0, 0.55, 0.158, arm1);
     labelMesh.rotation.y = 0;
     labelPlane(
-      makeLabelTexture(["J2 LUBE", "5000 h"], "#d8aa20", "#202628", 240, 100),
-      0.24,
-      0.1,
-      -0.09,
+      makeLabelTexture(["J2 LUBE", "5000 h"], "#d65c24", "#202628", 240, 100),
+      0.15,
+      0.062,
+      -0.04,
       0.28,
-      0.272,
+      0.21,
       arm1
     );
 
@@ -3635,9 +8674,10 @@
     // their established profiles while all cast housings share one controlled
     // powder response and exposed tool steel shares one brushed direction.
     root.traverse(function (object) {
+      if (object.userData && object.userData.screenLabel) object.scale.x *= -1;
       if (!object.isMesh || !object.material) return;
-      if (object.material === M.yellow) object.material = M.robotYellow;
-      else if (object.material === M.yellowDark) object.material = M.robotYellowDark;
+      if (object.material === M.yellow) object.material = robotOrange;
+      else if (object.material === M.yellowDark) object.material = robotOrangeInset;
       else if (object.material === M.steel) object.material = M.robotFlange;
       else if (object.material === M.cable) object.material = M.robotCable;
       else if (object.material === M.jawPad) object.material = M.robotJawPad;
@@ -3648,21 +8688,64 @@
       baseAxis: baseAxis,
       shoulder: shoulder,
       elbow: elbow,
+      arm1: arm1,
       arm2: arm2,
       j4Roll: j4Roll,
       wrist: wrist,
       wristRoll: wristRoll,
       leftFinger: leftFinger,
       rightFinger: rightFinger,
+      leftJawPad: leftJawPad,
+      rightJawPad: rightJawPad,
+      gripOpticalOccluders: gripOpticalOccluders,
       gripperTip: gripperTip,
-      shoulderWorld: new THREE.Vector3(0.3, 1.21, -4.0),
+      hardSurfaceAnatomy: {
+        j1CastShell: j1CastShell,
+        upperCastShell: upperCastShell,
+        forearmCastShell: forearmCastShell,
+        forearmTransition: forearmTransition,
+        elbowDressPack: elbowDressPack,
+        terminalObjects: Object.freeze([
+          j6Reducer,
+          j6Recess,
+          j6Flange,
+          j6Burnish,
+          leftToolLobe,
+          rightToolLobe
+        ]),
+        terminalAddedDraws: 0,
+        terminalReworkedDraws: 6,
+        addedDraws: elbowDressPack ? 1 : 0,
+        replacedPrimitiveDraws: 4,
+        upperEnvelope: Object.freeze([0.46, 1.4, 0.5]),
+        forearmEnvelope: Object.freeze([0.36, 1.18, 0.4]),
+        j4TransitionEnvelope: Object.freeze([0.4, 0.18, 0.4]),
+        pivotSignature: Object.freeze({
+          root: Object.freeze([DCM_ROBOT_ROOT_X, 0, -3.25]),
+          rootScale: Object.freeze([-1, 1, 1]),
+          baseAxis: Object.freeze([0, 0.78, 0]),
+          shoulder: Object.freeze([0, 0.43, 0]),
+          elbow: Object.freeze([0, 1.48, 0]),
+          j4: Object.freeze([0, 1.28, 0]),
+          wrist: Object.freeze([0, 0, 0]),
+          wristRoll: Object.freeze([0, 0.18, 0]),
+          tcp: Object.freeze([0, 0.57, 0])
+        }),
+        kinematicSignature: Object.freeze({
+          shoulderWorld: Object.freeze([DCM_ROBOT_ROOT_X, 1.21, -3.25]),
+          upperLength: 1.48,
+          foreLength: 1.28,
+          toolLength: 0.75
+        })
+      },
+      shoulderWorld: new THREE.Vector3(DCM_ROBOT_ROOT_X, 1.21, -3.25),
       upperLength: 1.48,
       foreLength: 1.28,
       toolLength: 0.75
     };
   }
 
-  function buildStaging() {
+  function buildCncStagingLegacy() {
     var raw = new THREE.Group();
     raw.position.set(-2.7, 0, -4.65);
     scene.add(raw);
@@ -3745,16 +8828,207 @@
     finishedWorkpiece.visible = false;
   }
 
+  function buildStaging() {
+    // A separate open cooling bath follows extraction, as in the Imperial
+    // reference video. Solid walls are also the collision proof's obstacles.
+    var bath = new THREE.Group();
+    bath.position.set(-1.8, 0, -3.8);
+    bath.name = 'robot quench station';
+    scene.add(bath);
+    var bathWalls = [
+      [-0.55, 0.78, 0, 0.1, 1.08, 1.12],
+      [0.55, 0.78, 0, 0.1, 1.08, 1.12],
+      [0, 0.78, -0.51, 1, 1.08, 0.1],
+      [0, 0.78, 0.51, 1, 1.08, 0.1],
+      [0, 0.21, 0, 1.2, 0.1, 1.12]
+    ];
+    var bathSteel = standard(0x7c929a, 0, 0, 0.3, 0.72, {envMapIntensity: 1.1});
+    instanceBoxes(bathWalls, bathSteel, bath);
+    instanceBoxes([
+      [-0.49, 0.08, -0.45, 0.14, 0.16, 0.14],
+      [0.49, 0.08, -0.45, 0.14, 0.16, 0.14],
+      [-0.49, 0.08, 0.45, 0.14, 0.16, 0.14],
+      [0.49, 0.08, 0.45, 0.14, 0.16, 0.14]
+    ], M.machineDark, bath);
+    addContactShadow(0, 0, 1.4, 1.35, 0.85, bath);
+    labelPlane(makeLabelTexture(['Q-01', 'QUENCH'], '#d8e7df', '#1e353b', 256, 96), 0.48, 0.18, 0, 0.94, 0.563, bath);
+    var waterMaterial = standard(0x497577, 0, 0, 0.09, 0.65, {envMapIntensity: 1.7});
+    // Soft high-bay reflections make the resting water legible from the low
+    // operator viewpoint without a second scene render or animated shader.
+    waterMaterial.map = makeTexture(function (ctx, w, h) {
+      var waterGradient = ctx.createLinearGradient(0, 0, w, h);
+      waterGradient.addColorStop(0, '#23444a');
+      waterGradient.addColorStop(0.5, '#587c80');
+      waterGradient.addColorStop(1, '#172e35');
+      ctx.fillStyle = waterGradient;
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(220,241,235,0.32)';
+      ctx.save();
+      ctx.translate(w * 0.5, h * 0.5);
+      ctx.rotate(-0.28);
+      ctx.fillRect(-w * 0.38, -h * 0.23, w * 0.62, h * 0.07);
+      ctx.fillRect(-w * 0.38, -h * 0.08, w * 0.62, h * 0.04);
+      ctx.restore();
+    }, 128, 128);
+    var water = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.92), waterMaterial);
+    water.rotation.x = -Math.PI / 2;
+    water.position.y = 1.22;
+    bath.add(water);
+    var ripples = [];
+    for (var rippleIndex = 0; rippleIndex < 3; rippleIndex++) {
+      var ripple = new THREE.Mesh(new THREE.RingGeometry(0.19, 0.196, 40),
+        new THREE.MeshBasicMaterial({color: 0xb1d4cf, transparent: true, opacity: 0, depthWrite: false}));
+      ripple.rotation.x = -Math.PI / 2;
+      ripple.position.y = 1.223 + rippleIndex * 0.001;
+      bath.add(ripple);
+      ripples.push(ripple);
+    }
+    quenchRig = {completed: false, group: bath, water: water, ripples: ripples, steam: buildQuenchSteam(bath), walls: bathWalls.map(function (wall, index) {
+      return {name: 'quench bath wall ' + index,
+        minX: bath.position.x + wall[0] - wall[3] / 2, maxX: bath.position.x + wall[0] + wall[3] / 2,
+        minY: wall[1] - wall[4] / 2, maxY: wall[1] + wall[4] / 2,
+        minZ: bath.position.z + wall[2] - wall[5] / 2, maxZ: bath.position.z + wall[2] + wall[5] / 2};
+    })};
+    // A compact, clean trim nest receives the reviewed plaque before its
+    // recipe mesh is recycled for the next casting. It replaces the old raw
+    // bar-stock and machined-part tables without adding another busy station.
+    var trimNest = new THREE.Group();
+    trimNest.position.set(mirrorDcmWorldX(1.42), 0, -3.52);
+    scene.add(trimNest);
+    // Four localized foot contacts keep the open table from reading as one
+    // hovering slab; the adjacent closed-loop tote has its own seated mass.
+    addContactShadow(-0.46, -0.25, 0.3, 0.28, 0.52, trimNest);
+    addContactShadow(0.46, -0.25, 0.3, 0.28, 0.52, trimNest);
+    addContactShadow(-0.46, 0.25, 0.3, 0.28, 0.52, trimNest);
+    addContactShadow(0.46, 0.25, 0.3, 0.28, 0.52, trimNest);
+    addContactShadow(-0.98, 0.08, 0.96, 0.84, 0.58, trimNest);
+    roundedBox(1.18, 0.14, 0.72, 0.04, M.machineEdge, 0, 0.82, 0, trimNest);
+    instanceBoxes([
+      [-0.46, 0.4, -0.25, 0.09, 0.8, 0.09],
+      [0.46, 0.4, -0.25, 0.09, 0.8, 0.09],
+      [-0.46, 0.4, 0.25, 0.09, 0.8, 0.09],
+      [0.46, 0.4, 0.25, 0.09, 0.8, 0.09]
+    ], M.machineEdge, trimNest);
+    roundedBox(0.82, 0.055, 0.14, 0.018, M.robotJawPad, 0, 0.93, -0.16, trimNest);
+    roundedBox(0.82, 0.055, 0.14, 0.018, M.robotJawPad, 0, 0.93, 0.16, trimNest);
+    labelPlane(makeLabelTexture(['TN-01', 'TRIM / RECYCLE NEST'], '#171b1d', '#d2a00b', 300, 110), 0.62, 0.23, 0, 0.57, 0.366, trimNest);
+
+    // Closed lidded scrap tote keeps the foundry clean; there is no theatrical
+    // pile of metal around the operator aisle.
+    roundedBox(0.78, 0.74, 0.66, 0.065, M.machineDark, -0.98, 0.39, 0.08, trimNest);
+    roundedBox(0.84, 0.08, 0.72, 0.025, M.yellowDark, -0.98, 0.79, 0.08, trimNest);
+    labelPlane(makeLabelTexture(['AL RETURN', 'CLOSED LOOP'], '#15191a', '#bbc2c1', 260, 110), 0.5, 0.2, -0.98, 0.4, 0.416, trimNest);
+  }
+
+  function buildQuenchSteam(parent) {
+    var puffTexture = makeTexture(function (ctx, w, h) {
+      ctx.clearRect(0, 0, w, h);
+      // Overlapping soft lobes avoid the hard circular points used by sparks.
+      for (var lobe = 0; lobe < 7; lobe++) {
+        var angle = lobe * 2.399;
+        var cx = w * (0.5 + Math.cos(angle) * 0.12);
+        var cy = h * (0.5 + Math.sin(angle) * 0.12);
+        var fog = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.31);
+        fog.addColorStop(0, 'rgba(255,255,255,0.3)');
+        fog.addColorStop(0.42, 'rgba(255,255,255,0.15)');
+        fog.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = fog; ctx.fillRect(0, 0, w, h);
+      }
+    }, 64, 64);
+    var count = lowPower ? 8 : 16;
+    var geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+    geometry.setAttribute('puffSize', new THREE.BufferAttribute(new Float32Array(count), 1));
+    geometry.setAttribute('puffAlpha', new THREE.BufferAttribute(new Float32Array(count), 1));
+    geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0.5, 0), 1.3);
+    var material = new THREE.ShaderMaterial({
+      uniforms: {puffMap: {value: puffTexture}, viewportHeight: {value: height * renderDpr}},
+      vertexShader: [
+        'uniform float viewportHeight;',
+        'attribute float puffSize; attribute float puffAlpha; varying float alpha;',
+        'void main(){',
+        'vec4 p = modelViewMatrix * vec4(position, 1.0);',
+        'gl_Position = projectionMatrix * p;',
+        'gl_PointSize = clamp(puffSize * viewportHeight * 0.5 * projectionMatrix[1][1] / max(0.1, -p.z), 1.0, 128.0);',
+        'alpha = puffAlpha; }'
+      ].join('\n'),
+      fragmentShader: [
+        'uniform sampler2D puffMap; varying float alpha;',
+        'void main(){ float a = texture2D(puffMap, gl_PointCoord).a * alpha;',
+        'gl_FragColor = vec4(0.82, 0.86, 0.84, a); }'
+      ].join('\n'),
+      transparent: true, depthWrite: false, depthTest: true,
+      blending: THREE.NormalBlending, toneMapped: false
+    });
+    var plume = new THREE.Points(geometry, material);
+    plume.name = 'soft quench-contact vapor';
+    plume.position.y = 1.235;
+    plume.visible = false;
+    parent.add(plume);
+    var births = new Float64Array(count);
+    births.fill(-100);
+    return {mesh: plume, births: births, emitting: false, live: 0, scratch: new THREE.Vector3()};
+  }
+
+  function updateQuenchSteam() {
+    if (!quenchRig || !quenchRig.steam) return;
+    var steam = quenchRig.steam;
+    if (reducedMotion || state === STATE.AUTO || state === STATE.HELD) {
+      steam.mesh.visible = false; steam.emitting = false; steam.live = 0;
+      steam.births.fill(-100);
+      return;
+    }
+    var inBathMove = state === STATE.CAST_QUENCH_DIP || state === STATE.CAST_QUENCH_DWELL || state === STATE.CAST_QUENCH_LIFT;
+    var contact = false;
+    if (inBathMove && activeTraveler && activeTraveler.attached) {
+      robotRig.gripperTip.getWorldPosition(steam.scratch);
+      // Downward-oriented casting extends below its TCP. Emission begins
+      // only after its leading edge has crossed the 1.22 m water surface.
+      contact = steam.scratch.y < 1.52;
+    }
+    if (contact && !steam.emitting) {
+      for (var onset = 0; onset < steam.births.length; onset++) {
+        steam.births[onset] = simulationClock + onset * 0.035;
+      }
+    }
+    steam.emitting = contact;
+    var position = steam.mesh.geometry.getAttribute('position');
+    var sizes = steam.mesh.geometry.getAttribute('puffSize');
+    var alphas = steam.mesh.geometry.getAttribute('puffAlpha');
+    steam.live = 0;
+    for (var puff = 0; puff < steam.births.length; puff++) {
+      var life = 1.2 + (puff % 4) * 0.1;
+      var age = simulationClock - steam.births[puff];
+      if (age > life && contact) { steam.births[puff] = simulationClock; age = 0; }
+      var t = clamp(age / life, 0, 1);
+      var alive = age >= 0 && age < life;
+      var seed = puff * 2.399;
+      position.setXYZ(puff,
+        Math.cos(seed) * (0.075 + t * 0.18) + t * 0.08,
+        0.02 + t * 0.85,
+        Math.sin(seed) * (0.075 + t * 0.13));
+      sizes.setX(puff, 0.17 + t * 0.36);
+      alphas.setX(puff, alive ? Math.sin(Math.PI * t) * 0.44 : 0);
+      if (alive) steam.live++;
+    }
+    steam.mesh.visible = steam.live > 0;
+    if (steam.mesh.visible) {
+      position.needsUpdate = true; sizes.needsUpdate = true; alphas.needsUpdate = true;
+      steam.mesh.material.uniforms.viewportHeight.value = height * renderDpr;
+    }
+  }
+
   function buildSceneFinishing() {
+    buildContactShadowSystem();
     if (dynamicShadows && THREE.ShadowMaterial) {
       var shadowMaterial = new THREE.ShadowMaterial({
         color: 0x151a1b,
         transparent: true,
-        opacity: 0.32,
+        opacity: 0.44,
         depthWrite: false
       });
       // One receiver follows the photographed slab plane. Its material writes
-      // only shadow alpha, preserving the photograph's bright concrete values.
+      // only shadow alpha, preserving the graded concrete texture beneath it.
       shadowReceiver = horizontalPlane(13.6, 9.6, shadowMaterial, 1.15, 0.006, -4.55, scene);
       shadowReceiver.receiveShadow = true;
       shadowReceiver.renderOrder = -2;
@@ -3860,16 +9134,40 @@
     roll: 1.28,
     grip: 0.2
   };
-  var SAFE_POSE = {
-    // Attract pose: shoulder-to-elbow rises cleanly, the forearm descends
-    // toward the load lock, then J5 folds the tool back toward cell center.
-    // The three alternating diagonals form a contained S at thumbnail scale.
-    base: -0.3,
-    shoulder: -1.2,
-    elbow: -0.8,
+  // Dedicated AUTO optical park: the complete arm folds beneath the throat
+  // sightline. It is never substituted for the unchanged machine-owned SAFE
+  // pose used by EJECT and every service/custody route.
+  var AUTO_PARK_POSE = {
+    base: 2.6,
+    shoulder: 2.2,
+    elbow: -2.3,
     wrist: -2.4,
-    roll: 1.0,
-    grip: 0.2
+    j4: -1.2,
+    roll: 0.2,
+    grip: 0.22
+  };
+  var HERO_POSE = {
+    // Separate right-bay showcase: shallow opposing diagonals keep the six
+    // axes readable while the dedicated park preserves the platen tableau.
+    base: 2.9,
+    shoulder: 2.0,
+    elbow: -3.15,
+    wrist: -0.95,
+    j4: -0.3,
+    roll: 0.4,
+    grip: 0.22
+  };
+  var SAFE_POSE = {
+    // Lower sibling of HERO for machine-owned stages. It preserves the same
+    // extraction-side screen lane while folding the terminal chain toward the
+    // pedestal before the unchanged CAST_ENTRY_CLEAR service route begins.
+    base: 2.75,
+    shoulder: 1.55,
+    elbow: -2.75,
+    wrist: -1.35,
+    j4: -1.7,
+    roll: 0,
+    grip: 0.22
   };
 
   function poseCopy(pose) {
@@ -3878,6 +9176,7 @@
       shoulder: pose.shoulder,
       elbow: pose.elbow,
       wrist: pose.wrist,
+      j4: pose.j4 === undefined ? pose.roll * 0.35 : pose.j4,
       roll: pose.roll,
       grip: pose.grip
     };
@@ -3906,7 +9205,7 @@
     return reach.distance >= reach.minimum && reach.distance <= reach.maximum;
   }
 
-  function validateStationReach(id) {
+  function validateRackStationReachLegacy(id) {
     if (!robotRig || stationIndex(id) < 0) return false;
     var targets = [
       travelerTarget(id, "approach"),
@@ -3925,6 +9224,51 @@
       }
     }
     return true;
+  }
+
+  function validateStationReach(id) {
+    if (!robotRig || !castingRig || stationIndex(id) < 0) return false;
+    var targets = [
+      CAST_ENTRY_CLEAR_TARGET,
+      CAST_FRONT_CLEAR_TARGET,
+      CAST_APPROACH_TARGET,
+      CAST_PICK_TARGET,
+      CAST_NORMAL_CLEAR,
+      CAST_TRANSIT_TARGET,
+      CAST_QUENCH_CLEAR_TARGET,
+      CAST_QUENCH_DIP_TARGET,
+      CAST_PRESENT_TARGET,
+      CAST_DROP_TARGET
+    ];
+    for (var targetIndex = 0; targetIndex < targets.length; targetIndex++) {
+      if (!targetIsReachable(targets[targetIndex])) {
+        if (window.console && console.error) {
+          console.error('Casting TCP waypoint is outside the robot envelope', id, targetIndex);
+        }
+        return false;
+      }
+    }
+
+    // Dedicated tab/jaw fit: 489.6 mm casting span clears the 510.6 mm open
+    // pad throat and receives 5.7 mm nominal contact per side when closed.
+    var openPadThroat = 2 * (GRIP_BASE_GAP + 0.22 * GRIP_TRAVEL - 0.055 * 0.5);
+    var closedPadThroat = 2 * (GRIP_BASE_GAP + 0.02 * GRIP_TRAVEL - 0.055 * 0.5);
+    var tabOuterSpan =
+      (CAST_TAB_CENTER_X + CAST_TAB_WIDTH * 0.5) * 2 * CAST_PLAQUE_SCALE;
+    var tabInnerSpan =
+      (CAST_TAB_CENTER_X - CAST_TAB_WIDTH * 0.5) * 2 * CAST_PLAQUE_SCALE;
+    var openClearance = openPadThroat - tabOuterSpan;
+    var closedContact = closedPadThroat - tabInnerSpan;
+
+    // With J6 rolled -90 degrees the jaws close along plaque-local X/world Z.
+    // At the socket center the nearest tie bar is 280 mm away in Z; subtract
+    // the 85 mm jaw sweep and 75 mm bar radii for a conservative 120 mm gap.
+    var tieBarClearance = 0.28 - 0.085 - 0.075;
+    var valid = openClearance >= 0.018 && closedContact >= 0.008 && tieBarClearance >= 0.1;
+    if (!valid && window.console && console.error) {
+      console.error('Casting jaw/tie-bar proof failed', openClearance, closedContact, tieBarClearance);
+    }
+    return valid;
   }
 
   function validateRackFixture() {
@@ -4079,8 +9423,179 @@
     return target;
   }
 
+  function castPoseForTarget(target, gripValue, dieAccessAmount, quenchAmount) {
+    // The TCP follows the surveyed die-normal line, but the gripper body must
+    // enter through the physical gap between the fixed and moving platens. A
+    // pure +X tool frame puts the open jaw and tool through the fixed platen.
+    // Blend into a shallow upward tool frame as the robot leaves ENTRY_CLEAR;
+    // its X component increases across the 430 mm insert so J4 remains inside
+    // the open platen gap. The jaw axis remains world Z at every sample, exactly
+    // aligned with the casting's purpose-made side tabs.
+    var accessAmount = clamp(dieAccessAmount === undefined ? 0 : dieAccessAmount, 0, 1);
+    // Solve in the former right-handed frame, then let the reflected robot
+    // root produce the exact paired world-space mirror. This retains every
+    // proven joint branch while reversing the physical die normal from +X to
+    // -X without a discontinuous IK branch swap.
+    var solveTargetX = mirrorDcmWorldX(target.x);
+    var solveApproachX = mirrorDcmWorldX(CAST_APPROACH_TARGET.x);
+    var solvePickX = mirrorDcmWorldX(CAST_PICK_TARGET.x);
+    var insertSpan = Math.max(0.001, solvePickX - solveApproachX);
+    var insertAmount = clamp((solveTargetX - solveApproachX) / insertSpan, 0, 1);
+    var accessToolX = lerp(0.1, 0.4, insertAmount);
+    var accessToolY = Math.sqrt(Math.max(0, 1 - accessToolX * accessToolX));
+    var toolX = lerp(1, accessToolX, accessAmount);
+    var toolY = accessToolY * accessAmount;
+    var downAmount = clamp(quenchAmount || 0, 0, 1);
+    toolX = lerp(toolX, 0, downAmount);
+    toolY = lerp(toolY, -1, downAmount);
+    var toolLength = Math.sqrt(toolX * toolX + toolY * toolY);
+    toolX /= toolLength;
+    toolY /= toolLength;
+
+    var wristOriginX = solveTargetX - robotRig.toolLength * toolX;
+    var wristOriginY = target.y - robotRig.toolLength * toolY;
+    var wristOriginZ = target.z;
+    var virtualShoulderX = mirrorDcmWorldX(robotRig.shoulderWorld.x);
+    var dx = wristOriginX - virtualShoulderX;
+    var dz = wristOriginZ - robotRig.shoulderWorld.z;
+    var planarX = Math.sqrt(dx * dx + dz * dz);
+    var planarY = wristOriginY - robotRig.shoulderWorld.y;
+    var l1 = robotRig.upperLength;
+    var l2 = robotRig.foreLength;
+    var rawD =
+      (planarX * planarX + planarY * planarY - l1 * l1 - l2 * l2) /
+      (2 * l1 * l2);
+    if ((rawD < -1 || rawD > 1) && window.console && console.error) {
+      console.error('Oriented casting TCP is outside the physical two-link envelope', target);
+    }
+    // Use the elbow-up branch for every DCM waypoint. The mirrored positive
+    // branch reaches the same TCP, but drops the upper arm through the shot
+    // sleeve and lower tie-bar corridor on the way into the open die.
+    var elbow = -Math.acos(clamp(rawD, -0.98, 0.98));
+    var shoulder =
+      Math.atan2(planarY, planarX) -
+      Math.atan2(l2 * Math.sin(elbow), l1 + l2 * Math.cos(elbow)) -
+      Math.PI / 2;
+    var base = Math.atan2(-dz, dx);
+    var armAngle = shoulder + elbow;
+
+    // Express the requested world-space tool direction in the forearm frame.
+    var cosBase = Math.cos(base);
+    var sinBase = Math.sin(base);
+    var cosArm = Math.cos(armAngle);
+    var sinArm = Math.sin(armAngle);
+    var toolAfterBaseX = cosBase * toolX;
+    var toolAfterBaseY = toolY;
+    var toolAfterBaseZ = sinBase * toolX;
+    var desiredToolX = cosArm * toolAfterBaseX + sinArm * toolAfterBaseY;
+    var desiredToolY = -sinArm * toolAfterBaseX + cosArm * toolAfterBaseY;
+    var desiredToolZ = toolAfterBaseZ;
+    // The positive J5 solution is the exact Euler-equivalent tool frame to the
+    // former negative branch: TCP, jaw-axis, and casting orientation are
+    // unchanged, while the physical J5 yoke/J6 reducer fold away from the
+    // camera's tab sightline. Every casting waypoint uses this same branch, so
+    // INSERT -> GRIP -> EXTRACT is continuous and the runtime/sweep paths agree.
+    var wrist = Math.acos(clamp(desiredToolY, -1, 1));
+    var wristSin = Math.sin(wrist);
+    var j4 = Math.atan2(
+      desiredToolZ / wristSin,
+      -desiredToolX / wristSin
+    );
+
+    // Transform the required world +Z jaw axis back through J1-J5. It is
+    // perpendicular to both the +X production frame and the XY access frame,
+    // so J6 can retain exact tab alignment throughout insert/extract.
+    var jawAfterBaseX = -sinBase;
+    var jawAfterBaseY = 0;
+    var jawAfterBaseZ = cosBase;
+    var jawAfterArmX = cosArm * jawAfterBaseX + sinArm * jawAfterBaseY;
+    var jawAfterArmY = -sinArm * jawAfterBaseX + cosArm * jawAfterBaseY;
+    var jawAfterArmZ = jawAfterBaseZ;
+    var cosJ4 = Math.cos(j4);
+    var sinJ4 = Math.sin(j4);
+    var afterJ4X = cosJ4 * jawAfterArmX - sinJ4 * jawAfterArmZ;
+    var afterJ4Y = jawAfterArmY;
+    var afterJ4Z = sinJ4 * jawAfterArmX + cosJ4 * jawAfterArmZ;
+    var j6X = Math.cos(wrist) * afterJ4X + Math.sin(wrist) * afterJ4Y;
+    var j6Z = afterJ4Z;
+
+    return {
+      base: base,
+      shoulder: shoulder,
+      elbow: elbow,
+      wrist: wrist,
+      j4: j4,
+      roll: Math.atan2(-j6Z, j6X),
+      grip: gripValue === undefined ? 0.2 : gripValue
+    };
+  }
+
+  function castingMachineOwnsCycle(nextState) {
+    return (
+      nextState === STATE.DIE_CLOSE ||
+      nextState === STATE.CLAMP_LOCK ||
+      nextState === STATE.LADLE_LIFT ||
+      nextState === STATE.LADLE_POUR ||
+      nextState === STATE.LADLE_RETURN ||
+      nextState === STATE.INJECT_SLOW ||
+      nextState === STATE.INJECT_FAST ||
+      nextState === STATE.INTENSIFY ||
+      nextState === STATE.COOL ||
+      nextState === STATE.CLAMP_RELEASE ||
+      nextState === STATE.DIE_OPEN ||
+      nextState === STATE.EJECT ||
+      nextState === STATE.CAST_RESET
+    );
+  }
+
   function servicePoseFor(nextState) {
     if (!activeRequest) return poseCopy(SAFE_POSE);
+    if (castingMachineOwnsCycle(nextState)) return poseCopy(SAFE_POSE);
+    if (nextState === STATE.CAST_ENTRY_CLEAR) {
+      return castPoseForTarget(CAST_ENTRY_CLEAR_TARGET, 0.22, 0);
+    }
+    if (nextState === STATE.CAST_FRONT_CLEAR) {
+      return castPoseForTarget(CAST_FRONT_CLEAR_TARGET, 0.22, 1);
+    }
+    if (nextState === STATE.CAST_APPROACH) {
+      return castPoseForTarget(CAST_APPROACH_TARGET, 0.22, 1);
+    }
+    if (nextState === STATE.CAST_INSERT) {
+      return castPoseForTarget(CAST_PICK_TARGET, 0.22, 1);
+    }
+    if (nextState === STATE.CAST_GRIP) {
+      return castPoseForTarget(CAST_PICK_TARGET, 0.02, 1);
+    }
+    if (nextState === STATE.CAST_EXTRACT) {
+      return castPoseForTarget(CAST_NORMAL_CLEAR, 0.02, 1);
+    }
+    if (nextState === STATE.CAST_EXIT_FRONT_CLEAR) {
+      return castPoseForTarget(CAST_FRONT_CLEAR_TARGET, 0.02, 1);
+    }
+    if (nextState === STATE.CAST_EXIT_ENTRY_CLEAR) {
+      return castPoseForTarget(CAST_ENTRY_CLEAR_TARGET, 0.02, 0);
+    }
+    if (nextState === STATE.CAST_TRANSIT) {
+      return castPoseForTarget(CAST_TRANSIT_TARGET, 0.02);
+    }
+    if (nextState === STATE.CAST_QUENCH_APPROACH || nextState === STATE.CAST_QUENCH_LIFT) {
+      return castPoseForTarget(CAST_QUENCH_CLEAR_TARGET, 0.02, 0, 1);
+    }
+    if (nextState === STATE.CAST_QUENCH_CLEAR || nextState === STATE.CAST_QUENCH_EXIT) {
+      return castPoseForTarget(CAST_QUENCH_DEPART_TARGET, 0.02);
+    }
+    if (nextState === STATE.CAST_QUENCH_DIP || nextState === STATE.CAST_QUENCH_DWELL) {
+      return castPoseForTarget(CAST_QUENCH_DIP_TARGET, 0.02, 0, 1);
+    }
+    if (nextState === STATE.CAST_PRESENT || nextState === STATE.HELD) {
+      return castPoseForTarget(CAST_PRESENT_TARGET, 0.02);
+    }
+    if (nextState === STATE.CAST_RETURN) {
+      return castPoseForTarget(CAST_DROP_TARGET, 0.02);
+    }
+    if (nextState === STATE.CAST_RELEASE) {
+      return castPoseForTarget(CAST_DROP_TARGET, 0.22);
+    }
     if (nextState === STATE.REQUESTED) {
       return requestEgressPoseAt(1);
     }
@@ -4135,7 +9650,9 @@
       return poseForTarget(CELL_TRANSIT, 0.02);
     }
     if (nextState === STATE.HOME_TRANSIT) {
-      return poseForTarget(CELL_TRANSIT, 0.22);
+      return castingRig
+        ? castPoseForTarget(CAST_ENTRY_CLEAR_TARGET, 0.22, 0)
+        : poseForTarget(CELL_TRANSIT, 0.22);
     }
     if (
       nextState === STATE.ROBOT_CLEAR ||
@@ -4185,6 +9702,90 @@
     return poseCopy(HOME_POSE);
   }
 
+  function castingCartesianPoseAt(currentState, progress) {
+    var fromTarget = null;
+    var toTarget = null;
+    var grip = 0.02;
+    var fromAccess = 0;
+    var toAccess = 0;
+    var fromQuench = 0;
+    var toQuench = 0;
+    if (currentState === STATE.CAST_FRONT_CLEAR) {
+      fromTarget = CAST_ENTRY_CLEAR_TARGET;
+      toTarget = CAST_FRONT_CLEAR_TARGET;
+      grip = 0.22;
+      toAccess = 1;
+    } else if (currentState === STATE.CAST_APPROACH) {
+      fromTarget = CAST_FRONT_CLEAR_TARGET;
+      toTarget = CAST_APPROACH_TARGET;
+      grip = 0.22;
+      fromAccess = 1;
+      toAccess = 1;
+    } else if (currentState === STATE.CAST_INSERT) {
+      fromTarget = CAST_APPROACH_TARGET;
+      toTarget = CAST_PICK_TARGET;
+      grip = 0.22;
+      fromAccess = 1;
+      toAccess = 1;
+    } else if (currentState === STATE.CAST_EXTRACT) {
+      fromTarget = CAST_PICK_TARGET;
+      toTarget = CAST_NORMAL_CLEAR;
+      fromAccess = 1;
+      toAccess = 1;
+    } else if (currentState === STATE.CAST_EXIT_FRONT_CLEAR) {
+      fromTarget = CAST_NORMAL_CLEAR;
+      toTarget = CAST_FRONT_CLEAR_TARGET;
+      fromAccess = 1;
+      toAccess = 1;
+    } else if (currentState === STATE.CAST_EXIT_ENTRY_CLEAR) {
+      fromTarget = CAST_FRONT_CLEAR_TARGET;
+      toTarget = CAST_ENTRY_CLEAR_TARGET;
+      fromAccess = 1;
+      toAccess = 0;
+    } else if (currentState === STATE.CAST_TRANSIT) {
+      fromTarget = CAST_ENTRY_CLEAR_TARGET;
+      toTarget = CAST_TRANSIT_TARGET;
+    } else if (currentState === STATE.CAST_QUENCH_CLEAR) {
+      fromTarget = CAST_TRANSIT_TARGET;
+      toTarget = CAST_QUENCH_DEPART_TARGET;
+    } else if (currentState === STATE.CAST_QUENCH_APPROACH) {
+      fromTarget = CAST_QUENCH_DEPART_TARGET;
+      toTarget = CAST_QUENCH_CLEAR_TARGET;
+      toQuench = 1;
+    } else if (currentState === STATE.CAST_QUENCH_DIP) {
+      fromTarget = CAST_QUENCH_CLEAR_TARGET;
+      toTarget = CAST_QUENCH_DIP_TARGET;
+      fromQuench = toQuench = 1;
+    } else if (currentState === STATE.CAST_QUENCH_LIFT) {
+      fromTarget = CAST_QUENCH_DIP_TARGET;
+      toTarget = CAST_QUENCH_CLEAR_TARGET;
+      fromQuench = toQuench = 1;
+    } else if (currentState === STATE.CAST_QUENCH_EXIT) {
+      fromTarget = CAST_QUENCH_CLEAR_TARGET;
+      toTarget = CAST_QUENCH_DEPART_TARGET;
+      fromQuench = 1;
+    } else if (currentState === STATE.CAST_PRESENT) {
+      fromTarget = CAST_QUENCH_DEPART_TARGET;
+      toTarget = CAST_PRESENT_TARGET;
+    } else if (currentState === STATE.CAST_RETURN) {
+      fromTarget = CAST_PRESENT_TARGET;
+      toTarget = CAST_DROP_TARGET;
+    }
+    if (!fromTarget || !toTarget) return null;
+    var easedProgress = smootherstep(progress);
+    castMotionTargetScratch.lerpVectors(
+      fromTarget,
+      toTarget,
+      easedProgress
+    );
+    return castPoseForTarget(
+      castMotionTargetScratch,
+      grip,
+      lerp(fromAccess, toAccess, easedProgress),
+      lerp(fromQuench, toQuench, easedProgress)
+    );
+  }
+
   function applyPose(pose) {
     if (!robotRig || !pose) return;
     robotRig.baseAxis.rotation.y = pose.base;
@@ -4192,7 +9793,10 @@
     robotRig.elbow.rotation.z = pose.elbow;
     // The authored roll channel drives a restrained J4 forearm contribution
     // and the full J6 flange rotation; both housings remain on their axes.
-    if (robotRig.j4Roll) robotRig.j4Roll.rotation.y = pose.roll * 0.35;
+    if (robotRig.j4Roll) {
+      robotRig.j4Roll.rotation.y =
+        pose.j4 === undefined ? pose.roll * 0.35 : pose.j4;
+    }
     robotRig.wrist.rotation.z = pose.wrist;
     robotRig.wristRoll.rotation.y = pose.roll;
     // Jaw centers span the scaled clipboard width: open clears both edges,
@@ -4210,6 +9814,12 @@
       shoulder: lerp(from.shoulder, to.shoulder, t),
       elbow: lerp(from.elbow, to.elbow, t),
       wrist: lerp(from.wrist, to.wrist, t),
+      j4:
+        (from.j4 === undefined ? from.roll * 0.35 : from.j4) +
+        angularDelta(
+          from.j4 === undefined ? from.roll * 0.35 : from.j4,
+          to.j4 === undefined ? to.roll * 0.35 : to.j4
+        ) * t,
       roll: from.roll + angularDelta(from.roll, to.roll) * t,
       grip: lerp(from.grip, to.grip, t)
     };
@@ -4222,12 +9832,258 @@
     return null;
   }
 
+  function resetCastVisualProof() {
+    if (!castingRig || !castingRig.castVisualProof) return;
+    var proof = castingRig.castVisualProof;
+    proof.cycle += 1;
+    var names = ['eject', 'grip', 'held'];
+    for (var proofIndex = 0; proofIndex < names.length; proofIndex++) {
+      var record = proof[names[proofIndex]];
+      record.captured = false;
+      record.capturedAtMs = 0;
+      record.widthPx = 0;
+      record.heightPx = 0;
+      record.faceWidthPx = 0;
+      record.faceHeightPx = 0;
+      record.spanPx = 0;
+      record.runnerProtrusionPx = 0;
+      record.jawTabOverlapMm = 0;
+      record.padTabCrossings = 0;
+      record.pinsStrokeMm = 0;
+      record.custody = 'none';
+      record.sourceCount = 0;
+      record.singleCooledSource = false;
+      record.pinsCarrying = false;
+      record.projectionTargetMet = false;
+      record.protrusionTargetMet = false;
+      record.jawTabsProved = false;
+      record.viewportWidth = 0;
+      record.viewportHeight = 0;
+      record.cameraFov = 0;
+      record.cameraAzimuthDeg = 0;
+      record.cameraElevationDeg = 0;
+      record.cameraPosition = null;
+      record.cameraTarget = null;
+    }
+  }
+
+  function captureCastVisualProof(stageName) {
+    if (
+      !castingRig ||
+      !castingRig.castVisualProof ||
+      !activeTraveler ||
+      !activeTraveler.group.visible ||
+      !camera
+    ) return false;
+    var proof = castingRig.castVisualProof;
+    var record = proof[stageName];
+    if (!record) return false;
+    var bounds = CAST_PLAQUE_VISUAL_BOUNDS;
+    var viewportWidth = Math.max(1, canvas.clientWidth || width || 1);
+    var viewportHeight = Math.max(1, canvas.clientHeight || height || 1);
+    var minimumX = Infinity;
+    var maximumX = -Infinity;
+    var minimumY = Infinity;
+    var maximumY = -Infinity;
+    scene.updateMatrixWorld(true);
+    camera.updateMatrixWorld(true);
+
+    for (var cornerIndex = 0; cornerIndex < 8; cornerIndex++) {
+      proof.localPoint.set(
+        cornerIndex & 1 ? bounds.maxX : bounds.minX,
+        cornerIndex & 2 ? bounds.maxY : bounds.minY,
+        cornerIndex & 4 ? bounds.maxZ : bounds.minZ
+      );
+      proof.worldPoint.copy(proof.localPoint);
+      activeTraveler.group.localToWorld(proof.worldPoint);
+      proof.projectedPoint.copy(proof.worldPoint).project(camera);
+      var screenX = (proof.projectedPoint.x * 0.5 + 0.5) * viewportWidth;
+      var screenY = (-proof.projectedPoint.y * 0.5 + 0.5) * viewportHeight;
+      minimumX = Math.min(minimumX, screenX);
+      maximumX = Math.max(maximumX, screenX);
+      minimumY = Math.min(minimumY, screenY);
+      maximumY = Math.max(maximumY, screenY);
+    }
+
+    proof.runnerPoint.set(CAST_RUNNER_TIP_X, CAST_RUNNER_TIP_Y, 0);
+    activeTraveler.group.localToWorld(proof.runnerPoint);
+    proof.runnerPoint.project(camera);
+    proof.centerPoint.set(0, 0, 0);
+    activeTraveler.group.localToWorld(proof.centerPoint);
+    proof.centerPoint.project(camera);
+    var runnerDx = (proof.runnerPoint.x - proof.centerPoint.x) * viewportWidth * 0.5;
+    var runnerDy = (proof.runnerPoint.y - proof.centerPoint.y) * viewportHeight * 0.5;
+    var runnerProtrusionPx = Math.sqrt(runnerDx * runnerDx + runnerDy * runnerDy);
+
+    var jawTabOverlap = 0;
+    if (activeTraveler.attached && activeTraveler.custody === 'robot') {
+      proof.leftPad.set(0.018, 0.285, 0);
+      robotRig.leftFinger.localToWorld(proof.leftPad);
+      proof.rightPad.set(-0.018, 0.285, 0);
+      robotRig.rightFinger.localToWorld(proof.rightPad);
+      proof.leftTab.set(-CAST_TAB_CENTER_X, 0, 0);
+      activeTraveler.group.localToWorld(proof.leftTab);
+      proof.rightTab.set(CAST_TAB_CENTER_X, 0, 0);
+      activeTraveler.group.localToWorld(proof.rightTab);
+      proof.jawAxis.subVectors(proof.rightPad, proof.leftPad).normalize();
+      var directError =
+        Math.abs(proof.tabDelta.subVectors(proof.leftTab, proof.leftPad).dot(proof.jawAxis)) +
+        Math.abs(proof.tabDelta.subVectors(proof.rightTab, proof.rightPad).dot(proof.jawAxis));
+      var crossedError =
+        Math.abs(proof.tabDelta.subVectors(proof.rightTab, proof.leftPad).dot(proof.jawAxis)) +
+        Math.abs(proof.tabDelta.subVectors(proof.leftTab, proof.rightPad).dot(proof.jawAxis));
+      var leftCenterError;
+      var rightCenterError;
+      if (directError <= crossedError) {
+        leftCenterError = Math.abs(
+          proof.tabDelta.subVectors(proof.leftTab, proof.leftPad).dot(proof.jawAxis)
+        );
+        rightCenterError = Math.abs(
+          proof.tabDelta.subVectors(proof.rightTab, proof.rightPad).dot(proof.jawAxis)
+        );
+      } else {
+        leftCenterError = Math.abs(
+          proof.tabDelta.subVectors(proof.rightTab, proof.leftPad).dot(proof.jawAxis)
+        );
+        rightCenterError = Math.abs(
+          proof.tabDelta.subVectors(proof.leftTab, proof.rightPad).dot(proof.jawAxis)
+        );
+      }
+      var contactHalfSpan =
+        CAST_TAB_WIDTH * CAST_PLAQUE_SCALE * 0.5 + 0.055 * 0.5;
+      jawTabOverlap = Math.max(
+        0,
+        Math.min(
+          contactHalfSpan - leftCenterError,
+          contactHalfSpan - rightCenterError
+        )
+      );
+    }
+
+    record.captured = true;
+    record.capturedAtMs = Math.round(performance.now());
+    record.widthPx = Number((maximumX - minimumX).toFixed(2));
+    record.heightPx = Number((maximumY - minimumY).toFixed(2));
+    // These are the projected dimensions of the one authoritative as-cast
+    // face, including its finite edge thickness but excluding no hidden copy.
+    record.faceWidthPx = record.widthPx;
+    record.faceHeightPx = record.heightPx;
+    record.spanPx = Number(Math.max(record.widthPx, record.heightPx).toFixed(2));
+    record.runnerProtrusionPx = Number(runnerProtrusionPx.toFixed(2));
+    record.jawTabOverlapMm = Number((jawTabOverlap * 1000).toFixed(1));
+    record.padTabCrossings = stageName === 'eject' ? 0 : jawTabOverlap > 0 ? 2 : 0;
+    record.pinsStrokeMm = Number(
+      (Math.abs(castingRig.ejectorPins.position.x + 0.18) * 1000).toFixed(1)
+    );
+    record.custody = activeTraveler.custody;
+    record.sourceCount = castPlaqueReady ? 1 : 0;
+    record.singleCooledSource = !!(
+      castingRig.metalWitness &&
+      castingRig.metalWitness.authorityMask === 16 &&
+      castingRig.metalWitness.authorityCount === 1
+    );
+    record.pinsCarrying =
+      stageName === 'eject' &&
+      record.pinsStrokeMm >= 195 &&
+      activeTraveler.custody === 'ejector-half';
+    record.projectionTargetMet =
+      stageName === 'eject'
+        ? Math.min(record.widthPx, record.heightPx) >= 18 && record.spanPx >= 35
+        : stageName === 'held'
+          ? record.widthPx >= 40 && record.heightPx >= 24
+          : true;
+    record.protrusionTargetMet =
+      stageName === 'eject' ||
+      (record.runnerProtrusionPx >= 15 && record.runnerProtrusionPx <= 25);
+    record.jawTabsProved =
+      stageName === 'eject' || record.jawTabOverlapMm >= 5;
+    record.viewportWidth = Math.round(viewportWidth);
+    record.viewportHeight = Math.round(viewportHeight);
+    record.cameraFov = Number(camera.fov.toFixed(2));
+    record.cameraAzimuthDeg = Number(
+      (Math.atan2(Math.abs(PROCESS_CAMERA_DIRECTION.x), PROCESS_CAMERA_DIRECTION.z) *
+        180 / Math.PI).toFixed(2)
+    );
+    record.cameraElevationDeg = Number(
+      (Math.asin(PROCESS_CAMERA_DIRECTION.y) * 180 / Math.PI).toFixed(2)
+    );
+    record.cameraPosition = Object.freeze([
+      Number(camera.position.x.toFixed(3)),
+      Number(camera.position.y.toFixed(3)),
+      Number(camera.position.z.toFixed(3))
+    ]);
+    record.cameraTarget = Object.freeze([
+      Number(cameraTargetScratch.x.toFixed(3)),
+      Number(cameraTargetScratch.y.toFixed(3)),
+      Number(cameraTargetScratch.z.toFixed(3))
+    ]);
+    return true;
+  }
+
+  function castVisualRecordSnapshot(record) {
+    if (!record) return null;
+    return Object.freeze({
+      captured: record.captured,
+      capturedAtMs: record.capturedAtMs || 0,
+      widthPx: record.widthPx,
+      heightPx: record.heightPx,
+      faceWidthPx: record.faceWidthPx,
+      faceHeightPx: record.faceHeightPx,
+      spanPx: record.spanPx,
+      runnerProtrusionPx: record.runnerProtrusionPx,
+      jawTabOverlapMm: record.jawTabOverlapMm,
+      padTabCrossings: record.padTabCrossings,
+      pinsStrokeMm: record.pinsStrokeMm,
+      custody: record.custody,
+      sourceCount: record.sourceCount,
+      singleCooledSource: !!record.singleCooledSource,
+      pinsCarrying: !!record.pinsCarrying,
+      projectionTargetMet: record.projectionTargetMet,
+      protrusionTargetMet: record.protrusionTargetMet,
+      jawTabsProved: record.jawTabsProved,
+      viewportWidth: record.viewportWidth,
+      viewportHeight: record.viewportHeight,
+      cameraFov: record.cameraFov,
+      cameraAzimuthDeg: record.cameraAzimuthDeg,
+      cameraElevationDeg: record.cameraElevationDeg,
+      cameraPosition: record.cameraPosition,
+      cameraTarget: record.cameraTarget
+    });
+  }
+
+  function prepareCastPlaque() {
+    if (!castingRig || !castingRig.plaqueSocket || !activeRequest) return false;
+    if (activeTraveler) return activeTraveler.custody === 'ejector-half';
+    var traveler = selectedTraveler();
+    if (!traveler) return false;
+    scene.updateMatrixWorld(true);
+    castingRig.plaqueSocket.attach(traveler.group);
+    traveler.group.position.set(0, 0, 0);
+    traveler.group.quaternion.identity();
+    traveler.group.scale.setScalar(CAST_PLAQUE_SCALE);
+    traveler.group.visible = true;
+    traveler.attached = false;
+    traveler.custody = 'ejector-half';
+    traveler.castCycle += 1;
+    activeTraveler = traveler;
+    castPlaqueReady = true;
+    castingRig.runnerGlow.visible = false;
+    return true;
+  }
+
   function tcpSeatError(id) {
     if (!robotRig || !id) return Infinity;
     scene.updateMatrixWorld(true);
     var tcp = new THREE.Vector3();
     robotRig.gripperTip.getWorldPosition(tcp);
     return tcp.distanceTo(travelerTarget(id, "seat"));
+  }
+
+  function castTcpError(target) {
+    if (!robotRig || !target || !castTcpScratch) return Infinity;
+    scene.updateMatrixWorld(true);
+    robotRig.gripperTip.getWorldPosition(castTcpScratch);
+    return castTcpScratch.distanceTo(target);
   }
 
   function travelerHomePoseError(traveler) {
@@ -4252,7 +10108,7 @@
     };
   }
 
-  function attachSelectedTraveler() {
+  function attachRackTravelerLegacy() {
     if (!robotRig || activeTraveler) return false;
     var traveler = selectedTraveler();
     if (!traveler || tcpSeatError(traveler.id) > RACK_TCP_TOLERANCE) {
@@ -4267,6 +10123,123 @@
     traveler.custody = "robot";
     activeTraveler = traveler;
     setCassetteOccupied(traveler, false);
+    return true;
+  }
+
+  function attachSelectedTraveler() {
+    if (!robotRig || !castingRig || !activeTraveler || activeTraveler.attached) return false;
+    scene.updateMatrixWorld(true);
+    var tcp = new THREE.Vector3();
+    var leftJaw = new THREE.Vector3();
+    var rightJaw = new THREE.Vector3();
+    var plaqueQuaternion = new THREE.Quaternion();
+    var plaqueTabAxis = new THREE.Vector3(1, 0, 0);
+    var plaqueNormal = new THREE.Vector3(0, 0, 1);
+    var jawAxis = new THREE.Vector3();
+    var expectedCastPose = castPoseForTarget(CAST_PICK_TARGET, 0.02, 1);
+    robotRig.gripperTip.getWorldPosition(tcp);
+    robotRig.leftFinger.getWorldPosition(leftJaw);
+    robotRig.rightFinger.getWorldPosition(rightJaw);
+    activeTraveler.group.getWorldQuaternion(plaqueQuaternion);
+    plaqueTabAxis.applyQuaternion(plaqueQuaternion).normalize();
+    plaqueNormal.applyQuaternion(plaqueQuaternion).normalize();
+    jawAxis.subVectors(rightJaw, leftJaw).normalize();
+    var pickupError = tcp.distanceTo(CAST_PICK_TARGET);
+    var rollError = Math.abs(
+      angularDelta(currentPose ? currentPose.roll : 0, expectedCastPose.roll)
+    );
+    var j4Error = Math.abs(
+      angularDelta(currentPose ? currentPose.j4 : 0, expectedCastPose.j4)
+    );
+    var gripError = Math.abs((currentPose ? currentPose.grip : 1) - 0.02);
+    var tabAxisAlignment = Math.abs(jawAxis.dot(plaqueTabAxis));
+    var dieNormalAlignment = Math.abs(plaqueNormal.dot(new THREE.Vector3(1, 0, 0)));
+    var jawHalfSpan = leftJaw.distanceTo(rightJaw) * 0.5;
+    var tabCenterHalfSpan = CAST_TAB_CENTER_X * CAST_PLAQUE_SCALE;
+    var padContactError = Math.abs(jawHalfSpan - tabCenterHalfSpan);
+    if (
+      !castPlaqueReady ||
+      !activeTraveler.group.visible ||
+      activeTraveler.custody !== 'ejector-half' ||
+      castingRig.dieOpen < 0.995 ||
+      castingRig.clampProved ||
+      !castingRig.pinsExtended ||
+      !castingRig.ladleHome ||
+      pickupError > 0.025 ||
+      rollError > 0.025 ||
+      j4Error > 0.025 ||
+      gripError > 0.006 ||
+      tabAxisAlignment < 0.985 ||
+      dieNormalAlignment < 0.995 ||
+      padContactError > 0.025
+    ) {
+      if (window.console && console.error) {
+        console.error(
+          'Cast grip proof rejected: tcp=' + pickupError.toFixed(4) +
+          'm roll=' + rollError.toFixed(4) +
+          'rad j4=' + j4Error.toFixed(4) +
+          'rad grip=' + gripError.toFixed(4) +
+          ' tabAlign=' + tabAxisAlignment.toFixed(4) +
+          ' normalAlign=' + dieNormalAlignment.toFixed(4) +
+          ' pad=' + padContactError.toFixed(4) +
+          'm custody=' + activeTraveler.custody
+        );
+      }
+      return false;
+    }
+    robotRig.gripperTip.attach(activeTraveler.group);
+    activeTraveler.group.visible = true;
+    activeTraveler.attached = true;
+    activeTraveler.custody = 'robot';
+    safetySensors.robotClear = false;
+    updateMetalWitness(1);
+    captureCastVisualProof('grip');
+    return true;
+  }
+
+  function recycleCastPlaque() {
+    if (!activeTraveler || !robotRig || !travelerRack) return false;
+    var dropError = castTcpError(CAST_DROP_TARGET);
+    var openError = Math.abs((currentPose ? currentPose.grip : 0) - 0.22);
+    var expectedDropPose = castPoseForTarget(CAST_DROP_TARGET, 0.22);
+    var rollError = Math.abs(
+      angularDelta(currentPose ? currentPose.roll : 0, expectedDropPose.roll)
+    );
+    var j4Error = Math.abs(
+      angularDelta(currentPose ? currentPose.j4 : 0, expectedDropPose.j4)
+    );
+    if (
+      !castPlaqueReady ||
+      !activeTraveler.attached ||
+      activeTraveler.custody !== 'robot' ||
+      dropError > 0.025 ||
+      openError > 0.006 ||
+      rollError > 0.025 ||
+      j4Error > 0.025
+    ) {
+      if (window.console && console.error) {
+        console.error('Trim-nest release proof rejected', {
+          dropError: dropError,
+          openError: openError,
+          rollError: rollError,
+          j4Error: j4Error,
+          custody: activeTraveler.custody
+        });
+      }
+      return false;
+    }
+    scene.updateMatrixWorld(true);
+    travelerRack.attach(activeTraveler.group);
+    activeTraveler.group.position.set(0, 0, 0);
+    activeTraveler.group.quaternion.identity();
+    activeTraveler.group.scale.set(1, 1, 1);
+    activeTraveler.group.visible = false;
+    activeTraveler.attached = false;
+    activeTraveler.custody = 'recipe-library';
+    activeTraveler = null;
+    castPlaqueReady = false;
+    castRecycleProved = true;
+    safetySensors.robotClear = true;
     return true;
   }
 
@@ -4378,7 +10351,7 @@
     return true;
   }
 
-  function heldSafetyInvariant() {
+  function transferHeldSafetyInvariantLegacy() {
     return !!(
       activeTraveler &&
       activeTraveler.custody === "bay" &&
@@ -4388,6 +10361,30 @@
       !safetySensors.innerOpen &&
       !safetySensors.outerLocked &&
       safetySensors.outerPresented &&
+      safetySensors.maintenanceGateLocked &&
+      safetySensors.estopHealthy
+    );
+  }
+
+  function heldSafetyInvariant() {
+    return !!(
+      castingRig &&
+      activeTraveler &&
+      activeTraveler.group.visible &&
+      activeTraveler.attached &&
+      activeTraveler.custody === 'robot' &&
+      castPlaqueReady &&
+      castingRig.dieOpen >= 0.995 &&
+      !castingRig.clampProved &&
+      castingRig.clampReleased &&
+      castingRig.solidified &&
+      castingRig.intensificationProved &&
+      !castingRig.sleeveCharged &&
+      castingRig.ejectorDrive.amount <= 0.005 &&
+      dieSprayer && dieSprayer.amount <= 0.005 && !dieSprayer.spraying &&
+      quenchRig && quenchRig.completed &&
+      castingRig.ladleHome &&
+      castTcpError(CAST_PRESENT_TARGET) <= 0.03 &&
       safetySensors.maintenanceGateLocked &&
       safetySensors.estopHealthy
     );
@@ -4413,6 +10410,549 @@
     } else if (state === STATE.OUTER_CLOSE) {
       transferBay.outerHatch.position.z = transferBay.outerTravel * (1 - amount);
     }
+  }
+
+  function updateCastingSteam(progress) {
+    if (!castingSteam) return;
+    var attribute = castingSteam.geometry.getAttribute('position');
+    for (var steamIndex = 0; steamIndex < attribute.count; steamIndex++) {
+      var seed = steamIndex * 2.417;
+      var life = (simulationClock * 0.42 + seed) % 1;
+      attribute.array[steamIndex * 3] = Math.sin(seed * 3.1) * (0.08 + life * 0.22);
+      attribute.array[steamIndex * 3 + 1] = life * 0.62;
+      attribute.array[steamIndex * 3 + 2] = Math.cos(seed * 2.3) * (0.06 + life * 0.2);
+    }
+    attribute.needsUpdate = true;
+    castingSteam.material.opacity = 0.1 + 0.2 * (1 - smoothstep(progress));
+  }
+
+  function updateMoltenStream(visible) {
+    if (!castingRig || !moltenStream) return;
+    moltenStream.visible = !!visible;
+    if (moltenDrops) moltenDrops.visible = !!visible;
+    if (!visible) return;
+    castingRig.group.updateMatrixWorld(true);
+    var lip = castingRig.ladleLip.getWorldPosition(castingRig.streamLipScratch);
+    castingRig.group.worldToLocal(lip);
+    var pourHole = castingRig.streamHoleScratch;
+    var height = Math.max(0.08, lip.y - pourHole.y);
+    moltenStream.position.set(
+      lip.x,
+      pourHole.y + height * 0.5,
+      lip.z
+    );
+    moltenStream.rotation.set(0, 0, 0);
+    var streamPulse = 0.88 + Math.sin(simulationClock * 23) * 0.09;
+    moltenStream.scale.set(streamPulse, height / 0.84, streamPulse * 0.92);
+    if (moltenDrops) {
+      var dropAttribute = moltenDrops.geometry.getAttribute('position');
+      for (var dropIndex = 0; dropIndex < dropAttribute.count; dropIndex++) {
+        var seed = dropIndex * 0.381966;
+        var dropLife = (simulationClock * 1.42 + seed) % 1;
+        var lateral = Math.sin(dropIndex * 4.73 + simulationClock * 5.4) * 0.018 * dropLife;
+        dropAttribute.array[dropIndex * 3] = lerp(lip.x, pourHole.x, dropLife) + lateral;
+        dropAttribute.array[dropIndex * 3 + 1] = lerp(lip.y, pourHole.y, dropLife);
+        dropAttribute.array[dropIndex * 3 + 2] = lerp(lip.z, pourHole.z, dropLife) - lateral * 0.55;
+      }
+      dropAttribute.needsUpdate = true;
+    }
+  }
+
+  function metalAuthorityLabel(mask) {
+    if (mask === 0) return 'none';
+    if (mask === 1) return 'ladle';
+    if (mask === 2) return 'falling-stream';
+    if (mask === 4) return 'shot-sleeve';
+    if (mask === 8) return 'die-biscuit';
+    if (mask === 16) return 'cooled-casting';
+    if ((mask & 7) === mask) return 'ladle-to-sleeve';
+    if ((mask & 12) === mask) return 'sleeve-to-die';
+    return 'conflicting-sources';
+  }
+
+  // The charge has one visual authority at every stable process stage. The
+  // only intentional overlaps are contiguous handoffs: ladle/stream/meniscus
+  // while pouring and sleeve/runner while the shot crosses the gate. Geometry
+  // is preallocated; this function only changes transforms/material scalars
+  // during an already-active machine or robot state.
+  function updateMetalWitness(progress) {
+    if (!castingRig || !castingRig.metalWitness) return;
+    var witness = castingRig.metalWitness;
+    var amount = clamp(isFinite(progress) ? progress : 0, 0, 1);
+    var stage = 'ladle-ready';
+    var custody = 'ladle';
+    var showSlug = false;
+    var showSweep = false;
+    var slugLeft = -2.23;
+    var slugRight = -0.67;
+
+    if (
+      state === STATE.REQUESTED ||
+      state === STATE.DIE_CLOSE ||
+      state === STATE.CLAMP_LOCK ||
+      state === STATE.LADLE_LIFT
+    ) {
+      stage = 'ladle-charge';
+      custody = 'ladle';
+    } else if (state === STATE.LADLE_POUR) {
+      stage = 'pour-transfer';
+      custody = 'ladle-to-sleeve';
+    } else if (state === STATE.LADLE_RETURN) {
+      stage = 'sleeve-charge';
+      custody = 'shot-sleeve';
+      showSlug = true;
+    } else if (state === STATE.INJECT_SLOW) {
+      showSlug = true;
+      showSweep = true;
+      stage = castingRig.runnerGlow.visible ? 'sleeve-to-die' : 'slow-shot';
+      custody = castingRig.runnerGlow.visible ? 'sleeve-to-die' : 'shot-sleeve';
+    } else if (state === STATE.INJECT_FAST) {
+      showSlug = true;
+      showSweep = true;
+      stage = 'sleeve-to-die';
+      custody = 'sleeve-to-die';
+    } else if (state === STATE.INTENSIFY) {
+      stage = 'intensification';
+      custody = 'die';
+      showSweep = true;
+    } else if (state === STATE.COOL) {
+      stage = 'solidifying';
+      custody = 'die';
+    } else if (state === STATE.CAST_RESET) {
+      stage = 'recharging';
+      custody = 'recharge';
+    } else if (state === STATE.HOME_TRANSIT && !castPlaqueReady) {
+      stage = 'recycled';
+      custody = 'trim-nest';
+    } else if (castPlaqueReady && activeTraveler) {
+      stage = 'cooled-casting';
+      custody = activeTraveler.custody;
+    } else if (castingRig.sleeveCharged) {
+      stage = 'sleeve-charge';
+      custody = 'shot-sleeve';
+      showSlug = true;
+    }
+
+    // The window is a view of the physical charge ahead of the real plunger,
+    // not a second casting. Its left edge follows the measured shot-rod X;
+    // the right edge remains fixed at the gate and disappears as metal enters
+    // the die.
+    if (showSlug) {
+      slugLeft = Math.min(
+        slugRight,
+        Math.max(-2.23, castingRig.plunger.position.x + 0.18)
+      );
+      var slugSpan = Math.max(0, slugRight - slugLeft);
+      witness.sleeveSlug.position.x = (slugLeft + slugRight) * 0.5;
+      witness.sleeveSlug.scale.x = Math.max(0.001, slugSpan / witness.slugBaseLength);
+      witness.sleeveSlug.visible = slugSpan > 0.025;
+      witness.sleeveSlugMaterial.opacity = state === STATE.INJECT_FAST
+        ? lerp(0.78, 0.38, amount)
+        : 0.78;
+      // Once the camera-side meniscus is authoritative, the pour-hole pool is
+      // hidden so one charge cannot appear twice in the sleeve.
+      castingRig.sleevePool.visible = false;
+    } else {
+      witness.sleeveSlug.visible = false;
+    }
+
+    witness.shotRodSweep.visible = showSweep;
+    if (showSweep) {
+      witness.shotSweepMaterial.opacity =
+        0.075 + Math.sin(amount * Math.PI) * (state === STATE.INJECT_FAST ? 0.13 : 0.08);
+    }
+    witness.shotProgress = clamp(
+      (castingRig.plunger.position.x - castingRig.plungerHomeX) /
+        (castingRig.plungerFastX + 0.08 - castingRig.plungerHomeX),
+      0,
+      1
+    );
+
+    if (state === STATE.INJECT_SLOW) {
+      M.castHot.emissiveIntensity = lerp(0.04, 0.12, amount);
+    } else if (state === STATE.INJECT_FAST) {
+      M.castHot.emissiveIntensity = lerp(0.12, 0.22, amount);
+    } else if (state === STATE.INTENSIFY) {
+      M.castHot.emissiveIntensity = lerp(0.22, 0.16, amount);
+    }
+
+    if (witness.stage !== stage) {
+      witness.stage = stage;
+      witness.transitions += 1;
+    }
+    witness.custody = custody;
+
+    var ladleAuthority = castingRig.ladleMetal.visible ? 1 : 0;
+    var streamAuthority = moltenStream && moltenStream.visible ? 2 : 0;
+    var sleeveAuthority =
+      castingRig.sleevePool.visible || witness.sleeveSlug.visible ? 4 : 0;
+    var dieAuthority = castingRig.runnerGlow.visible ? 8 : 0;
+    var cooledAuthority =
+      castPlaqueReady && activeTraveler && activeTraveler.group.visible ? 16 : 0;
+    var authorityMask =
+      ladleAuthority |
+      streamAuthority |
+      sleeveAuthority |
+      dieAuthority |
+      cooledAuthority;
+    var authorityCount =
+      (ladleAuthority ? 1 : 0) +
+      (streamAuthority ? 1 : 0) +
+      (sleeveAuthority ? 1 : 0) +
+      (dieAuthority ? 1 : 0) +
+      (cooledAuthority ? 1 : 0);
+    var custodyValid = false;
+
+    if (stage === 'pour-transfer') {
+      custodyValid =
+        authorityCount >= 1 &&
+        (authorityMask & ~(1 | 2 | 4)) === 0;
+    } else if (stage === 'sleeve-to-die') {
+      custodyValid =
+        authorityCount >= 1 &&
+        authorityCount <= 2 &&
+        (authorityMask & ~(4 | 8)) === 0;
+    } else if (stage === 'sleeve-charge' || stage === 'slow-shot') {
+      custodyValid = authorityMask === 4;
+    } else if (
+      stage === 'intensification' ||
+      stage === 'solidifying'
+    ) {
+      custodyValid = authorityMask === 8;
+    } else if (stage === 'cooled-casting') {
+      custodyValid = authorityMask === 16;
+    } else if (stage === 'recycled' || stage === 'recharging') {
+      custodyValid = authorityMask === 0 || authorityMask === 1;
+    } else {
+      custodyValid = authorityMask === 1;
+    }
+
+    if (authorityMask !== witness.authorityMask) {
+      witness.authorityMask = authorityMask;
+      witness.authority = metalAuthorityLabel(authorityMask);
+    }
+    witness.authorityCount = authorityCount;
+    if (!custodyValid && (witness.custodyValid || witness.lastInvalidStage !== stage)) {
+      witness.assertionFailures += 1;
+      witness.lastInvalidStage = stage;
+      if (debugFps && window.console && console.assert) {
+        console.assert(
+          false,
+          'DCM metal witness custody conflict: stage=' + stage +
+            ' authority=' + witness.authority +
+            ' mask=' + authorityMask
+        );
+      }
+    } else if (custodyValid) {
+      witness.lastInvalidStage = '';
+    }
+    witness.custodyValid = custodyValid;
+  }
+
+  function updateShotActuatorWitness(progress) {
+    if (!castingRig || !castingRig.shotActuator) return;
+    var actuator = castingRig.shotActuator;
+    var amount = clamp(isFinite(progress) ? progress : 0, 0, 1);
+    var rodFrontX = castingRig.plunger.position.x - actuator.rodTipInset;
+    var rodLength = Math.max(0.12, rodFrontX - actuator.rodRearX);
+    actuator.rod.position.x = (actuator.rodRearX + rodFrontX) * 0.5;
+    actuator.rod.scale.y = rodLength / actuator.rodBaseLength;
+
+    var stage = 'home';
+    var stageRank = -1;
+    if (state === STATE.INJECT_SLOW) {
+      stage = 'slow-shot';
+      stageRank = 0;
+    } else if (state === STATE.INJECT_FAST) {
+      stage = 'fast-shot';
+      stageRank = 1;
+    } else if (state === STATE.INTENSIFY) {
+      stage = 'intensify-seat';
+      stageRank = 2;
+    } else if (state === STATE.CAST_RESET) {
+      stage = 'return-home';
+    } else if (castingRig.intensificationProved) {
+      stage = 'pressure-hold';
+    }
+
+    var pressureSeatAmount = state === STATE.INTENSIFY
+      ? amount
+      : state === STATE.CAST_RESET
+        ? 1 - amount
+        : castingRig.intensificationProved
+          ? 1
+          : 0;
+    var sleeveCompression = actuator.sleeveCompression * pressureSeatAmount;
+    var sleeveTravel = actuator.sleeveCenterTravel * pressureSeatAmount;
+    actuator.sleeve.position.x = actuator.sleeveBaseX + sleeveTravel;
+    actuator.sleeve.scale.y =
+      (actuator.sleeveBaseLength - sleeveCompression) /
+      actuator.sleeveBaseLength;
+    // Sleeve local +Y points toward world -X after its fixed quarter-turn.
+    // The rear-band travel therefore combines center advance and axial scale.
+    var collarBaseX = actuator.sleeveBaseX - actuator.collarBaseLocalY;
+    var collarCurrentX =
+      actuator.sleeve.position.x -
+      actuator.collarBaseLocalY * actuator.sleeve.scale.y;
+    var collarTravelMm = Math.max(0, (collarCurrentX - collarBaseX) * 1000);
+    var strokeWitness = actuator.strokeWitness;
+    var strokeInputMeters = collarTravelMm / 1000;
+    var strokeOutputAngle = clamp(
+      strokeInputMeters / strokeWitness.pitchRadius,
+      0,
+      strokeWitness.pointerSweep
+    );
+    strokeWitness.rack.position.x = strokeWitness.rackBaseX + strokeInputMeters;
+    strokeWitness.pointer.rotation.z =
+      strokeWitness.pointerStart + strokeOutputAngle;
+    var strokeMode = state === STATE.INTENSIFY
+      ? 'intensify'
+      : state === STATE.CAST_RESET
+        ? 'reset'
+        : castingRig.intensificationProved
+          ? 'pressure-hold'
+          : 'home';
+    if (
+      strokeMode === 'intensify' &&
+      strokeWitness.lastMode === 'intensify' &&
+      strokeOutputAngle + 0.0005 < strokeWitness.lastOutputAngleRad
+    ) {
+      strokeWitness.monotonicFailures += 1;
+    }
+    if (
+      strokeMode === 'reset' &&
+      strokeWitness.lastMode === 'reset' &&
+      strokeOutputAngle > strokeWitness.lastOutputAngleRad + 0.0005
+    ) {
+      strokeWitness.resetFailures += 1;
+    }
+    strokeWitness.lastMode = strokeMode;
+    strokeWitness.lastOutputAngleRad = strokeOutputAngle;
+    strokeWitness.inputTravelMm = Math.round(collarTravelMm * 10) / 10;
+    strokeWitness.outputAngleRad = strokeOutputAngle;
+    strokeWitness.outputAngleDeg = strokeOutputAngle * 180 / Math.PI;
+    strokeWitness.monotonicValid =
+      strokeWitness.monotonicFailures === 0 &&
+      strokeWitness.resetFailures === 0;
+
+    var rodTravelMm = Math.max(
+      0,
+      (castingRig.plunger.position.x - castingRig.plungerHomeX) * 1000
+    );
+    var stageElapsedMs = stageRank >= 0
+      ? Math.max(0, (simulationClock - stateEntered) * 1000)
+      : 0;
+    if (stageRank >= 0) {
+      if (actuator.active) {
+        var reversedTravel = rodTravelMm + 0.5 < actuator.lastRodTravelMm;
+        var reversedStage = stageRank < actuator.lastRank;
+        var reversedTime =
+          stageRank === actuator.lastRank &&
+          stageElapsedMs + 1 < actuator.lastStageElapsedMs;
+        var reversedCollar =
+          stageRank === 2 &&
+          actuator.lastRank === 2 &&
+          collarTravelMm + 0.25 < actuator.lastCollarTravelMm;
+        if (reversedTravel || reversedStage || reversedTime || reversedCollar) {
+          actuator.monotonicFailures += 1;
+        }
+      }
+      actuator.active = true;
+      actuator.lastRank = stageRank;
+      actuator.lastStageElapsedMs = stageElapsedMs;
+      actuator.lastRodTravelMm = rodTravelMm;
+      actuator.lastCollarTravelMm = collarTravelMm;
+      actuator.monotonicSamples += 1;
+    } else {
+      actuator.active = false;
+      actuator.lastRank = -1;
+      actuator.lastStageElapsedMs = 0;
+      actuator.lastRodTravelMm = rodTravelMm;
+      actuator.lastCollarTravelMm = collarTravelMm;
+    }
+    actuator.stage = stage;
+    actuator.stageRank = stageRank;
+    actuator.stageElapsedMs = Math.round(stageElapsedMs);
+    actuator.rodTravelMm = Math.round(rodTravelMm);
+    actuator.rodExtensionMm = Math.round(rodLength * 1000);
+    actuator.sleeveTravelMm = Math.round(sleeveTravel * 1000);
+    actuator.sleeveCompressionMm = Math.round(sleeveCompression * 1000);
+    actuator.collarTravelMm = Math.round(collarTravelMm);
+    actuator.collarVisible = !!(
+      actuator.collar.visible && actuator.sleeve.visible
+    );
+    actuator.monotonicValid = actuator.monotonicFailures === 0;
+  }
+
+  function updateCastingHardware(progress) {
+    if (!castingRig) return;
+    var amount = smootherstep(progress);
+    var ladleSupport = castingRig.ladleSupport;
+
+    if (state === STATE.DIE_CLOSE) {
+      castingRig.clampProved = false;
+      castingRig.clampReleased = true;
+      castingRig.sleevePool.visible = false;
+      castingGlow.intensity = 0.14;
+    } else if (state === STATE.CLAMP_LOCK) {
+      castingRig.clampReleased = amount < 0.002;
+    } else if (state === STATE.LADLE_LIFT) {
+      ladleSupport.applyJoints(
+        ladleSupport.readyJoints,
+        ladleSupport.pourJoints,
+        progress,
+        0,
+        'lift'
+      );
+      castingRig.ladleHome = false;
+      castingRig.ladleMetal.visible = true;
+      updateMoltenStream(false);
+    } else if (state === STATE.LADLE_POUR) {
+      ladleSupport.applyJoints(
+        ladleSupport.pourJoints,
+        ladleSupport.pourJoints,
+        progress,
+        -1.08 * ladleSupport.minimumJerk(progress),
+        'pour'
+      );
+      var ladleVolume = clamp(1 - smoothstep((amount - 0.04) / 0.8), 0, 1);
+      ladleSupport.setSurfaceFill(
+        ladleVolume,
+        -1.08 * ladleSupport.minimumJerk(progress)
+      );
+      castingRig.ladleMetal.visible = ladleVolume > 0.025;
+      // Keep the one physical pour witness readable for roughly 0.45 s of the
+      // compressed 0.65 s state. The stream still begins after tilt and ends
+      // before the vessel is empty; no second metal authority is introduced.
+      updateMoltenStream(amount > 0.04 && amount < 0.98);
+      var sleeveFill = smoothstep((amount - 0.08) / 0.78);
+      castingRig.sleevePool.visible = amount > 0.08;
+      castingRig.sleevePool.scale.set(
+        Math.max(0.12, sleeveFill),
+        1,
+        Math.max(0.12, sleeveFill)
+      );
+      castingGlow.intensity = (lowPower ? 0.52 : 0.84) * Math.sin(amount * Math.PI) + 0.14;
+    } else if (state === STATE.LADLE_RETURN) {
+      ladleSupport.applyJoints(
+        ladleSupport.pourJoints,
+        ladleSupport.furnaceJoints,
+        progress,
+        -1.08 * (1 - ladleSupport.minimumJerk(progress)),
+        'return'
+      );
+      castingRig.ladleMetal.visible = false;
+      updateMoltenStream(false);
+      castingRig.sleevePool.visible = true;
+      castingRig.sleevePool.scale.set(1, 1, 1);
+      castingGlow.intensity = lowPower ? 0.28 : 0.42;
+    } else if (state === STATE.INJECT_SLOW) {
+      castingRig.plunger.position.x = shotHermiteScalar(
+        progress,
+        castingRig.plungerHomeX,
+        castingRig.plungerSlowX,
+        DCM_SHOT_SLOW_SECONDS,
+        0,
+        DCM_SHOT_SWITCH_VELOCITY,
+        0
+      );
+      amount = clamp(
+        (castingRig.plunger.position.x - castingRig.plungerHomeX) /
+          (castingRig.plungerSlowX - castingRig.plungerHomeX),
+        0,
+        1
+      );
+      castingRig.runnerGlow.visible = amount > 0.72;
+      var sleeveRemainder = 1 - smoothstep((amount - 0.18) / 0.72);
+      castingRig.sleevePool.visible = sleeveRemainder > 0.03;
+      castingRig.sleevePool.scale.set(
+        Math.max(0.08, sleeveRemainder),
+        1,
+        Math.max(0.08, sleeveRemainder)
+      );
+      castingGlow.intensity = lerp(lowPower ? 0.3 : 0.46, 0.22, amount);
+    } else if (state === STATE.INJECT_FAST) {
+      castingRig.plunger.position.x = shotHermiteScalar(
+        progress,
+        castingRig.plungerSlowX,
+        castingRig.plungerFastX,
+        DCM_SHOT_FAST_SECONDS,
+        DCM_SHOT_SWITCH_VELOCITY,
+        0,
+        0
+      );
+      amount = clamp(
+        (castingRig.plunger.position.x - castingRig.plungerSlowX) /
+          (castingRig.plungerFastX - castingRig.plungerSlowX),
+        0,
+        1
+      );
+      castingRig.runnerGlow.visible = true;
+      castingRig.sleevePool.visible = false;
+      castingGlow.intensity = lerp(0.22, lowPower ? 0.32 : 0.5, amount);
+    } else if (state === STATE.INTENSIFY) {
+      castingRig.plunger.position.x = lerp(castingRig.plungerFastX, castingRig.plungerFastX + 0.08, amount);
+      castingRig.runnerGlow.visible = true;
+      castingGlow.intensity = lerp(lowPower ? 0.32 : 0.5, 0.2, amount);
+    } else if (state === STATE.COOL) {
+      castingRig.runnerGlow.visible = true;
+      M.castHot.emissiveIntensity = lerp(0.16, 0.025, amount);
+      castingGlow.intensity = lerp(0.2, 0.08, amount);
+    } else if (state === STATE.CLAMP_RELEASE) {
+      castingRig.clampReleased = amount >= 0.998;
+      castingRig.runnerGlow.visible = false;
+      castingGlow.intensity = 0.06;
+    } else if (state === STATE.DIE_OPEN) {
+      castingRig.clampProved = false;
+      castingRig.runnerGlow.visible = false;
+      castingSteam.visible = false;
+      castingGlow.intensity = 0.04;
+    } else if (state === STATE.EJECT) {
+      applyEjectorStroke(amount);
+      castingSteam.visible = false;
+    } else if (state === STATE.CAST_QUENCH_APPROACH) {
+      applyEjectorStroke(1 - smootherstep(clamp(progress / 0.35, 0, 1)));
+    } else if (state === STATE.CAST_RESET) {
+      applyEjectorStroke(0);
+      castingRig.plunger.position.x = lerp(castingRig.plungerFastX + 0.08, castingRig.plungerHomeX, amount);
+      ladleSupport.applyJoints(
+        ladleSupport.furnaceJoints,
+        ladleSupport.readyJoints,
+        progress,
+        0,
+        'reset-charge'
+      );
+      castingRig.ladleMetal.visible = amount > 0.35;
+      castingRig.sleevePool.visible = false;
+      castingRig.runnerGlow.visible = false;
+      castingSteam.visible = false;
+      updateMoltenStream(false);
+      castingGlow.intensity = lerp(0.04, 0.14, amount);
+    }
+    var clampDriveStroke = state === STATE.DIE_CLOSE
+      ? castingRig.dieTravel * amount
+      : state === STATE.CLAMP_LOCK
+        ? castingRig.dieTravel + castingRig.clampDrive.lockSeatTravel * amount
+        : state === STATE.CLAMP_RELEASE
+          ? castingRig.dieTravel + castingRig.clampDrive.lockSeatTravel * (1 - amount)
+          : state === STATE.DIE_OPEN
+            ? castingRig.dieTravel * (1 - amount)
+            : state === STATE.LADLE_LIFT || state === STATE.LADLE_POUR ||
+                state === STATE.LADLE_RETURN || state === STATE.INJECT_SLOW ||
+                state === STATE.INJECT_FAST || state === STATE.INTENSIFY ||
+                state === STATE.COOL
+              ? castingRig.clampDrive.fullStroke
+              : 0;
+    castingRig.clampDrive.apply(clampDriveStroke);
+    if (castingRig.ladleSupport && !(
+      state === STATE.LADLE_LIFT ||
+      state === STATE.LADLE_POUR ||
+      state === STATE.LADLE_RETURN ||
+      state === STATE.CAST_RESET
+    )) castingRig.ladleSupport.update();
+    updateDieSprayer(progress);
+    updateShotActuatorWitness(amount);
+    updateMetalWitness(amount);
   }
 
   function setStacklight(mode) {
@@ -4451,6 +10991,45 @@
     return x * x * x * (x * (x * 6 - 15) + 10);
   }
 
+  // Allocation-free zero-acceleration quintic Hermite evaluator for the
+  // two-stage shot. derivativeOrder: 0=position, 1=velocity, 2=acceleration,
+  // 3=jerk. Both segments share a physical 2.2 m/s switch velocity, so the
+  // PLC state boundary is C2-continuous rather than an artificial full stop.
+  function shotHermiteScalar(
+    progress,
+    startX,
+    endX,
+    duration,
+    startVelocity,
+    endVelocity,
+    derivativeOrder
+  ) {
+    var u = clamp(progress, 0, 1);
+    var displacement = endX - startX;
+    var m0 = startVelocity * duration;
+    var m1 = endVelocity * duration;
+    var c3 = 10 * displacement - 6 * m0 - 4 * m1;
+    var c4 = -15 * displacement + 8 * m0 + 7 * m1;
+    var c5 = 6 * displacement - 3 * m0 - 3 * m1;
+    var u2 = u * u;
+    if (derivativeOrder === 1) {
+      return (
+        m0 + 3 * c3 * u2 + 4 * c4 * u2 * u + 5 * c5 * u2 * u2
+      ) / duration;
+    }
+    if (derivativeOrder === 2) {
+      return (
+        6 * c3 * u + 12 * c4 * u2 + 20 * c5 * u2 * u
+      ) / (duration * duration);
+    }
+    if (derivativeOrder === 3) {
+      return (
+        6 * c3 + 24 * c4 * u + 60 * c5 * u2
+      ) / (duration * duration * duration);
+    }
+    return startX + m0 * u + c3 * u2 * u + c4 * u2 * u2 + c5 * u2 * u2 * u;
+  }
+
   function lerp(a, b, amount) {
     return a + (b - a) * amount;
   }
@@ -4475,16 +11054,30 @@
       : threshold > previous || threshold <= next;
   }
 
-  function autoHeroPoseError(pose) {
+  function poseErrorAgainst(reference, pose) {
     if (!pose) return Infinity;
     return Math.max(
-      Math.abs(angularDelta(SAFE_POSE.base, pose.base)),
-      Math.abs(pose.shoulder - SAFE_POSE.shoulder),
-      Math.abs(pose.elbow - SAFE_POSE.elbow),
-      Math.abs(pose.wrist - SAFE_POSE.wrist),
-      Math.abs(angularDelta(SAFE_POSE.roll, pose.roll)),
-      Math.abs(pose.grip - SAFE_POSE.grip)
+      Math.abs(angularDelta(reference.base, pose.base)),
+      Math.abs(pose.shoulder - reference.shoulder),
+      Math.abs(pose.elbow - reference.elbow),
+      Math.abs(pose.wrist - reference.wrist),
+      Math.abs(
+        angularDelta(
+          reference.j4 === undefined ? reference.roll * 0.35 : reference.j4,
+          pose.j4 === undefined ? pose.roll * 0.35 : pose.j4
+        )
+      ),
+      Math.abs(angularDelta(reference.roll, pose.roll)),
+      Math.abs(pose.grip - reference.grip)
     );
+  }
+
+  function autoHeroPoseError(pose) {
+    return poseErrorAgainst(HERO_POSE, pose);
+  }
+
+  function autoParkPoseError(pose) {
+    return poseErrorAgainst(AUTO_PARK_POSE, pose);
   }
 
   function resetAutoHeroDwellTracking(phase, afterService) {
@@ -4511,12 +11104,27 @@
     required = Math.max(required, peakFactor * Math.abs(to.shoulder - from.shoulder) / SERVICE_SHOULDER_SPEED);
     required = Math.max(required, peakFactor * Math.abs(to.elbow - from.elbow) / SERVICE_ELBOW_SPEED);
     required = Math.max(required, peakFactor * Math.abs(to.wrist - from.wrist) / SERVICE_WRIST_SPEED);
+    required = Math.max(
+      required,
+      peakFactor * Math.abs(
+        angularDelta(
+          from.j4 === undefined ? from.roll * 0.35 : from.j4,
+          to.j4 === undefined ? to.roll * 0.35 : to.j4
+        )
+      ) / SERVICE_ROLL_SPEED
+    );
     required = Math.max(required, peakFactor * Math.abs(angularDelta(from.roll, to.roll)) / SERVICE_ROLL_SPEED);
     required = Math.max(required, peakFactor * Math.abs(to.grip - from.grip) / SERVICE_GRIP_SPEED);
     return Math.max(nominal, required);
   }
 
   function stateDuration(currentState) {
+    if (Object.prototype.hasOwnProperty.call(DCM_TIMING_SECONDS, currentState)) {
+      return DCM_TIMING_SECONDS[currentState];
+    }
+    if (currentState === STATE.CAST_RETURN) return 1.12;
+    if (currentState === STATE.CAST_RELEASE) return 0.42;
+    if (currentState === STATE.CAST_RESET) return 0.92;
     if (currentState === STATE.REQUESTED) return requestEgressDuration;
     if (currentState === STATE.SAFE_PARK) return interruptedPartHeld ? 0.24 : 0.12;
     if (currentState === STATE.BUFFER_DROP) return 0.34;
@@ -4555,7 +11163,7 @@
     return Infinity;
   }
 
-  function estimateOutboundFetchDuration() {
+  function estimateClipboardFetchDurationLegacy() {
     var estimatedStates = [STATE.REQUESTED];
     if (interruptedPartHeld) {
       estimatedStates.push(STATE.SAFE_PARK, STATE.BUFFER_DROP, STATE.BUFFER_CLEAR);
@@ -4600,7 +11208,211 @@
     return total;
   }
 
+  function estimateOutboundFetchDuration() {
+    var estimatedStates = DCM_OUTBOUND_SEQUENCE;
+    var fromPose = poseCopy(currentPose || SAFE_POSE);
+    var total = 0;
+    plannedFetchBreakdown = [];
+    for (var estimateIndex = 0; estimateIndex < estimatedStates.length; estimateIndex++) {
+      var estimatedState = estimatedStates[estimateIndex];
+      var toPose = servicePoseFor(estimatedState);
+      var estimatedDuration = boundedStateDuration(
+        stateDuration(estimatedState),
+        fromPose,
+        toPose
+      );
+      total += estimatedDuration;
+      plannedFetchBreakdown.push({
+        state: estimatedState,
+        durationMs: Math.round(estimatedDuration * 1000)
+      });
+      fromPose = poseCopy(toPose);
+    }
+    return total;
+  }
+
+  function nominalDcmOutboundDuration(requestSeconds) {
+    var total = 0;
+    for (var timingIndex = 0; timingIndex < DCM_OUTBOUND_SEQUENCE.length; timingIndex++) {
+      var timingState = DCM_OUTBOUND_SEQUENCE[timingIndex];
+      total += timingState === STATE.REQUESTED
+        ? requestSeconds
+        : stateDuration(timingState);
+    }
+    return total;
+  }
+
+  function estimateParkRequestFetchDuration() {
+    // Build the same bounded plan used by a live request, but from the proved
+    // optical PARK endpoint. Save every mutable planning field so startup QA
+    // cannot disturb the live AUTO phase, focus, request owner, or telemetry.
+    var savedRequest = activeRequest;
+    var savedCurrentPose = currentPose;
+    var savedStartPhase = requestEgressStartPhase;
+    var savedEndPhase = requestEgressEndPhase;
+    var savedFromPose = requestEgressFromPose;
+    var savedToPose = requestEgressToPose;
+    var savedEgressDuration = requestEgressDuration;
+    var savedBreakdown = plannedFetchBreakdown;
+    activeRequest = STATIONS[0].id;
+    currentPose = poseCopy(SAFE_POSE);
+    configureRequestEgress(0);
+    var total = estimateOutboundFetchDuration();
+    var breakdown = plannedFetchBreakdown.slice();
+    activeRequest = savedRequest;
+    currentPose = savedCurrentPose;
+    requestEgressStartPhase = savedStartPhase;
+    requestEgressEndPhase = savedEndPhase;
+    requestEgressFromPose = savedFromPose;
+    requestEgressToPose = savedToPose;
+    requestEgressDuration = savedEgressDuration;
+    plannedFetchBreakdown = savedBreakdown;
+    return {
+      seconds: total,
+      breakdown: breakdown
+    };
+  }
+
   function updateStateStatus() {
+    var castingMeta = stationMeta(activeRequest);
+    var castingKey = castingMeta ? castingMeta.key : '--';
+    if (state === STATE.AUTO) {
+      setCellStatus(
+        'Charge',
+        castingChargeReady()
+          ? 'Ladle full - select a die recipe'
+          : 'Ladle charging - recipe controls locked'
+      );
+      return;
+    }
+    if (state === STATE.REQUESTED) {
+      setCellStatus('Recipe 0' + castingKey, 'Accepted - parking robot and proving press safe');
+      return;
+    }
+    if (state === STATE.DIE_CLOSE) {
+      setCellStatus('Die', 'Closing moving platen');
+      return;
+    }
+    if (state === STATE.CLAMP_LOCK) {
+      setCellStatus('Clamp', 'Building full locking force');
+      return;
+    }
+    if (state === STATE.LADLE_LIFT) {
+      setCellStatus('Ladle', 'Moving measured aluminum charge to shot sleeve');
+      return;
+    }
+    if (state === STATE.LADLE_POUR) {
+      setCellStatus('Charge', 'Pouring molten aluminum through sleeve port');
+      return;
+    }
+    if (state === STATE.LADLE_RETURN) {
+      setCellStatus('Ladle', 'Returning clear of the injection axis');
+      return;
+    }
+    if (state === STATE.INJECT_SLOW) {
+      setCellStatus('Shot profile', 'Slow shot purging air from the sleeve');
+      return;
+    }
+    if (state === STATE.INJECT_FAST) {
+      setCellStatus('Shot profile', 'Fast shot filling resume die recipe 0' + castingKey);
+      return;
+    }
+    if (state === STATE.INTENSIFY) {
+      setCellStatus('Pressure', 'Intensifying through solidification shrinkage');
+      return;
+    }
+    if (state === STATE.COOL) {
+      setCellStatus('Cooling', 'Holding pressure while aluminum solidifies');
+      return;
+    }
+    if (state === STATE.CLAMP_RELEASE) {
+      setCellStatus('Clamp', 'Pressure proved - releasing toggle lock before die open');
+      return;
+    }
+    if (state === STATE.DIE_OPEN) {
+      setCellStatus('Die', 'Opening with casting retained on ejector half');
+      return;
+    }
+    if (state === STATE.EJECT) {
+      setCellStatus('Ejector', 'Pins advancing as-cast resume plaque');
+      return;
+    }
+    if (state === STATE.CAST_ENTRY_CLEAR) {
+      setCellStatus('Robot', 'Routing elbow-up above the shot sleeve to die entry clearance');
+      return;
+    }
+    if (state === STATE.CAST_FRONT_CLEAR) {
+      setCellStatus('Robot', 'Aligning the open tool with the front of the platen gap');
+      return;
+    }
+    if (state === STATE.CAST_APPROACH) {
+      setCellStatus('Robot', 'At die-normal clear point - jaws open');
+      return;
+    }
+    if (state === STATE.CAST_INSERT) {
+      setCellStatus('Robot', 'Inserting along die normal with jaws open');
+      return;
+    }
+    if (state === STATE.CAST_GRIP) {
+      setCellStatus('Gripper', 'Closing on dedicated cast tabs');
+      return;
+    }
+    if (state === STATE.CAST_EXTRACT) {
+      setCellStatus('Robot', 'Extracting along the die normal');
+      return;
+    }
+    if (state === STATE.CAST_EXIT_FRONT_CLEAR) {
+      setCellStatus('Robot', 'Withdrawing the casting to the front-clear plane');
+      return;
+    }
+    if (state === STATE.CAST_EXIT_ENTRY_CLEAR) {
+      setCellStatus('Robot', 'Clearing the platen edge with the casting secured');
+      return;
+    }
+    if (state === STATE.CAST_TRANSIT) {
+      setCellStatus('Robot', 'Casting clear - routing to inspection pose');
+      return;
+    }
+    if (state === STATE.CAST_QUENCH_APPROACH || state === STATE.CAST_QUENCH_CLEAR) {
+      setCellStatus('Quench', 'Positioning above the cooling bath');
+      return;
+    }
+    if (state === STATE.CAST_QUENCH_DIP) {
+      setCellStatus('Quench', 'Lowering casting into the cooling bath');
+      return;
+    }
+    if (state === STATE.CAST_QUENCH_DWELL) {
+      setCellStatus('Quench', 'Quenching the extracted casting');
+      return;
+    }
+    if (state === STATE.CAST_QUENCH_LIFT || state === STATE.CAST_QUENCH_EXIT) {
+      setCellStatus('Quench', 'Lifting and draining the casting');
+      return;
+    }
+    if (state === STATE.CAST_PRESENT) {
+      setCellStatus('Robot', 'Presenting as-cast recipe 0' + castingKey);
+      return;
+    }
+    if (state === STATE.HELD) {
+      setCellStatus('As cast', 'Resume recipe 0' + castingKey + ' held for review');
+      return;
+    }
+    if (state === STATE.CAST_RETURN) {
+      setCellStatus('Robot', 'Returning reviewed casting to trim nest');
+      return;
+    }
+    if (state === STATE.CAST_RELEASE) {
+      setCellStatus('Handoff', 'Opening jaws over closed-loop recycle nest');
+      return;
+    }
+    if (state === STATE.HOME_TRANSIT) {
+      setCellStatus('Robot', 'Clearing trim nest before press reset');
+      return;
+    }
+    if (state === STATE.CAST_RESET) {
+      setCellStatus('Reset', 'Resetting the shot and recharging the ladle');
+      return;
+    }
     if (state === STATE.LIFT_CLEAR) {
       setCellStatus('Robot', 'Lifting clipboard clear of twin hooks');
       return;
@@ -4656,10 +11468,18 @@
       return;
     }
     if (nextState === STATE.REQUESTED && state === STATE.AUTO) {
+      castRecycleProved = false;
+      resetCastVisualProof();
       recordCycleStart();
     }
+    if (state === STATE.HELD && nextState === STATE.CAST_RETURN) {
+      recordReturnStart();
+    }
+    if (state !== nextState) recordDcmStageCompletion(state);
+    if (nextState !== STATE.AUTO) clearAutoHeroWake();
     state = nextState;
     stateEntered = simulationClock;
+    updateMetalWitness(0);
     transitionPose = poseCopy(currentPose || HOME_POSE);
     transitionTarget = servicePoseFor(nextState);
     activeStateDuration = boundedStateDuration(
@@ -4702,6 +11522,7 @@
     if (state === STATE.HELD) {
       recordFetchCompletion();
       applyPose(servicePoseFor(STATE.HELD));
+      captureCastVisualProof('held');
       revealPlate(activeRequest);
     }
   }
@@ -4719,6 +11540,7 @@
       }
       applyPose(transitionTarget || servicePoseFor(state));
       updateTransferHardware(1);
+      updateCastingHardware(1);
       if (state === STATE.RELEASE_SETTLE && activeTraveler && !activeTraveler.attached) {
         updateRestowTraveler(1);
       }
@@ -4750,7 +11572,7 @@
     setWorkpieceFinished(interruptedPartFinished);
   }
 
-  function advanceServiceState() {
+  function advanceClipboardServiceStateLegacy() {
     if (state === STATE.REQUESTED) {
       setState(interruptedPartHeld ? STATE.SAFE_PARK : STATE.CELL_TRANSIT);
     }
@@ -4867,6 +11689,259 @@
     } else if (state === STATE.RESUME_CHECKPOINT) finishServiceCycle();
   }
 
+  function advanceServiceState() {
+    if (state === STATE.REQUESTED) {
+      if (
+        poseErrorAgainst(SAFE_POSE, currentPose) > 0.02 ||
+        castingRig.dieOpen < 0.995 ||
+        castingRig.pinsExtended ||
+        castingRig.sleeveCharged ||
+        castPlaqueReady
+      ) {
+        holdSafetyFault('Die close blocked: robot park, die-open, empty-sleeve, or ejector proof dropped');
+        return;
+      }
+      setState(STATE.DIE_CLOSE);
+    } else if (state === STATE.DIE_CLOSE) {
+      if (
+        castingRig.movingHalf.position.x > 0.002 ||
+        castingRig.dieOpen > 0.002 ||
+        Math.abs(castingRig.plunger.position.x - castingRig.plungerHomeX) > 0.005 ||
+        castingRig.pinsExtended
+      ) {
+        holdSafetyFault('Clamp blocked: moving platen, plunger-home, or ejector-home proof failed');
+        return;
+      }
+      setState(STATE.CLAMP_LOCK);
+    } else if (state === STATE.CLAMP_LOCK) {
+      castingRig.clampProved = castingRig.movingHalf.position.x <= 0.002;
+      castingRig.clampReleased = !castingRig.clampProved;
+      if (!castingRig.clampProved) {
+        holdSafetyFault('Pour blocked: full clamp position is not proved');
+        return;
+      }
+      setState(STATE.LADLE_LIFT);
+    } else if (state === STATE.LADLE_LIFT) {
+      if (!castingRig.clampProved || castingRig.dieOpen > 0.002) {
+        holdSafetyFault('Ladle blocked: die is not closed and clamped');
+        return;
+      }
+      setState(STATE.LADLE_POUR);
+    } else if (state === STATE.LADLE_POUR) {
+      castingRig.chargeLoaded = false;
+      castingChargeLoaded = false;
+      castingRig.sleeveCharged = true;
+      setState(STATE.LADLE_RETURN);
+    } else if (state === STATE.LADLE_RETURN) {
+      castingRig.ladleHome = true;
+      castingRig.group.updateMatrixWorld(true);
+      castingRig.ladleLip.getWorldPosition(castingRig.streamLipScratch);
+      castingRig.group.worldToLocal(castingRig.streamLipScratch);
+      if (
+        !castingRig.clampProved ||
+        !castingRig.sleeveCharged ||
+        castingRig.streamLipScratch.distanceTo(castingRig.ladleSupport.furnaceLipTarget) > 0.015
+      ) {
+        holdSafetyFault('Slow shot blocked: clamp, sleeve-charge, or ladle-home proof failed');
+        return;
+      }
+      setState(STATE.INJECT_SLOW);
+    } else if (state === STATE.INJECT_SLOW) {
+      castingRig.slowShotProved =
+        castingRig.plunger.position.x >= castingRig.plungerSlowX - 0.005;
+      if (
+        !castingRig.ladleHome ||
+        !castingRig.clampProved ||
+        !castingRig.sleeveCharged ||
+        !castingRig.slowShotProved
+      ) {
+        holdSafetyFault('Fast shot blocked: slow-shot, sleeve, ladle-clear, or clamp proof failed');
+        return;
+      }
+      setState(STATE.INJECT_FAST);
+    } else if (state === STATE.INJECT_FAST) {
+      castingRig.fastShotProved =
+        castingRig.slowShotProved &&
+        castingRig.plunger.position.x >= castingRig.plungerFastX - 0.005;
+      if (!castingRig.fastShotProved) {
+        holdSafetyFault('Intensification blocked: fast-shot end position is not proved');
+        return;
+      }
+      castingRig.sleeveCharged = false;
+      setState(STATE.INTENSIFY);
+    } else if (state === STATE.INTENSIFY) {
+      castingRig.intensificationProved =
+        castingRig.fastShotProved &&
+        castingRig.plunger.position.x >= castingRig.plungerFastX + 0.075;
+      if (!castingRig.intensificationProved) {
+        holdSafetyFault('Solidification hold blocked: intensification position is not proved');
+        return;
+      }
+      setState(STATE.COOL);
+    } else if (state === STATE.COOL) {
+      if (!castingRig.intensificationProved || castingRig.sleeveCharged) {
+        holdSafetyFault('Clamp release blocked: pressure hold or empty-sleeve proof failed');
+        return;
+      }
+      castingRig.solidified = true;
+      if (!prepareCastPlaque()) {
+        holdSafetyFault('Clamp release blocked: cast plaque could not be retained on ejector half');
+        return;
+      }
+      setState(STATE.CLAMP_RELEASE);
+    } else if (state === STATE.CLAMP_RELEASE) {
+      castingRig.clampProved = false;
+      castingRig.clampReleased = castingRig.clampKinematics.state.lockAmount <= 0.002;
+      if (
+        !castingRig.clampReleased ||
+        !castingRig.solidified ||
+        castingRig.dieOpen > 0.002
+      ) {
+        holdSafetyFault('Die opening blocked: clamp release, solidification, or closed-platen proof failed');
+        return;
+      }
+      setState(STATE.DIE_OPEN);
+    } else if (state === STATE.DIE_OPEN) {
+      if (
+        !castingRig.clampReleased ||
+        !castingRig.solidified ||
+        castingRig.dieOpen < 0.995 ||
+        !activeTraveler ||
+        activeTraveler.custody !== 'ejector-half'
+      ) {
+        holdSafetyFault('Eject blocked: clamp-release, solidified, full-open, or retained-part proof failed');
+        return;
+      }
+      setState(STATE.EJECT);
+    } else if (state === STATE.EJECT) {
+      if (castingRig.plaqueSocket.position.x > -0.385) {
+        holdSafetyFault('Robot entry blocked: ejector stroke is incomplete');
+        return;
+      }
+      if (
+        !activeTraveler ||
+        !activeTraveler.group.visible ||
+        activeTraveler.custody !== 'ejector-half'
+      ) {
+        holdSafetyFault('Robot entry blocked: the single ejected casting is not visibly retained');
+        return;
+      }
+      captureCastVisualProof('eject');
+      safetySensors.robotClear = false;
+      setState(STATE.CAST_ENTRY_CLEAR);
+    } else if (state === STATE.CAST_ENTRY_CLEAR) {
+      if (
+        !castingRig.pinsExtended ||
+        castingRig.dieOpen < 0.995 ||
+        !castingRig.clampReleased ||
+        !castingRig.solidified ||
+        !castingRig.ladleHome
+      ) {
+        holdSafetyFault('Robot entry-clear blocked: press or ladle proof dropped');
+        return;
+      }
+      setState(STATE.CAST_FRONT_CLEAR);
+    } else if (state === STATE.CAST_FRONT_CLEAR) {
+      if (
+        !castingRig.pinsExtended ||
+        castingRig.dieOpen < 0.995 ||
+        !castingRig.clampReleased ||
+        !castingRig.solidified ||
+        !castingRig.ladleHome
+      ) {
+        holdSafetyFault('Front-clear alignment blocked: press or ladle proof dropped');
+        return;
+      }
+      setState(STATE.CAST_APPROACH);
+    } else if (state === STATE.CAST_APPROACH) {
+      if (
+        !castingRig.pinsExtended ||
+        castingRig.dieOpen < 0.995 ||
+        !castingRig.clampReleased ||
+        !castingRig.solidified ||
+        !castingRig.ladleHome
+      ) {
+        holdSafetyFault('Robot entry blocked: pin, die-open, clamp-release, solidified, or ladle-clear proof dropped');
+        return;
+      }
+      setState(STATE.CAST_INSERT);
+    } else if (state === STATE.CAST_INSERT) {
+      setState(STATE.CAST_GRIP);
+    } else if (state === STATE.CAST_GRIP) {
+      if (!attachSelectedTraveler()) {
+        holdSafetyFault('Cast grip stopped before tab and TCP proof');
+        return;
+      }
+      setState(STATE.CAST_EXTRACT);
+    } else if (state === STATE.CAST_EXTRACT) {
+      // CAST_EXTRACT ends at the surveyed 290 mm die-normal clearance. Reverse
+      // the same proved L-route before any general cell transit.
+      setState(STATE.CAST_EXIT_FRONT_CLEAR);
+    } else if (state === STATE.CAST_EXIT_FRONT_CLEAR) {
+      setState(STATE.CAST_EXIT_ENTRY_CLEAR);
+    } else if (state === STATE.CAST_EXIT_ENTRY_CLEAR) {
+      setState(STATE.CAST_TRANSIT);
+    } else if (state === STATE.CAST_TRANSIT) {
+      quenchRig.completed = false;
+      setState(STATE.CAST_QUENCH_CLEAR);
+    } else if (state === STATE.CAST_QUENCH_CLEAR) {
+      setState(STATE.CAST_QUENCH_APPROACH);
+    } else if (state === STATE.CAST_QUENCH_APPROACH) {
+      setState(STATE.CAST_QUENCH_DIP);
+    } else if (state === STATE.CAST_QUENCH_DIP) {
+      setState(STATE.CAST_QUENCH_DWELL);
+    } else if (state === STATE.CAST_QUENCH_DWELL) {
+      if (!activeTraveler || !activeTraveler.attached || castTcpError(CAST_QUENCH_DIP_TARGET) > 0.03) {
+        holdSafetyFault('Quench lift blocked: secured casting or submerged TCP not proved');
+        return;
+      }
+      quenchRig.completed = true;
+      setState(STATE.CAST_QUENCH_LIFT);
+    } else if (state === STATE.CAST_QUENCH_LIFT) {
+      if (dieSprayer.amount > 0.005 || dieSprayer.spraying) {
+        holdSafetyFault('Presentation blocked: die sprayer not retracted');
+        return;
+      }
+      setState(STATE.CAST_QUENCH_EXIT);
+    } else if (state === STATE.CAST_QUENCH_EXIT) {
+      setState(STATE.CAST_PRESENT);
+    } else if (state === STATE.CAST_PRESENT) {
+      if (!quenchRig.completed) {
+        holdSafetyFault('Presentation blocked: quench stage incomplete');
+        return;
+      }
+      setState(STATE.HELD);
+    } else if (state === STATE.CAST_RETURN) {
+      setState(STATE.CAST_RELEASE);
+    } else if (state === STATE.CAST_RELEASE) {
+      if (!recycleCastPlaque()) {
+        holdSafetyFault('Trim-nest release failed before recipe recycle');
+        return;
+      }
+      setState(STATE.HOME_TRANSIT);
+    } else if (state === STATE.HOME_TRANSIT) {
+      setState(STATE.CAST_RESET);
+    } else if (state === STATE.CAST_RESET) {
+      if (dieSprayer.amount > 0.005 || dieSprayer.spraying) {
+        holdSafetyFault('Press reset blocked: die sprayer not retracted');
+        return;
+      }
+      castingRig.clampProved = false;
+      castingRig.clampReleased = true;
+      castingRig.ladleHome = true;
+      castingRig.chargeLoaded = true;
+      castingRig.sleeveCharged = false;
+      castingRig.slowShotProved = false;
+      castingRig.fastShotProved = false;
+      castingRig.intensificationProved = false;
+      castingRig.solidified = false;
+      castingChargeLoaded = true;
+      castingBootChargeComplete = true;
+      M.castHot.emissiveIntensity = 0.16;
+      finishServiceCycle();
+    }
+  }
+
   function finishServiceCycle() {
     // Normal choreography proves/restows during RELEASE_SETTLE, so the active
     // pointer is usually already cleared here. Only perform the legacy final
@@ -4878,7 +11953,10 @@
     queuedRequest = null;
     hmiInspect = true;
     cameraInspectionTarget = 0;
-    productionClock = savedProductionClock;
+    // Every completed service returns to the proved PARK endpoint, then
+    // re-enters the same deterministic HERO transition/dwell. Review time and
+    // the interrupted AUTO phase can therefore never shorten the showcase.
+    productionClock = AUTO_PARK_TO_HERO_START;
     bufferedPart = false;
     interruptedPartHeld = false;
     interruptedAtCncMouth = false;
@@ -4893,12 +11971,13 @@
       transferBay.outerHatch.position.z = 0;
       transferBay.innerShutter.position.y = transferBay.innerClosedY;
     }
-    recordCycleCompletion(restowComplete);
     applyPose(productionPoseAt(productionClock));
-    // Resume the exact interrupted production phase, but restart dwell
-    // accounting so time spent in service can never contaminate the next
-    // logical AUTO hero hold. If service interrupted the hold, only its
-    // unconsumed phase time remains; otherwise the next loop arms normally.
+    // Validate the completed cycle only after the exact PARK pose used by the
+    // reset contract has been restored. Recording first produced a one-frame
+    // false failure even though the following frame was fully reset.
+    recordCycleCompletion(restowComplete);
+    // Restart dwell accounting at the PARK-to-HERO boundary. The first AUTO
+    // frame is continuous with the service PARK pose; there is no pose snap.
     resetAutoHeroDwellTracking(productionClock, true);
     setState(STATE.AUTO);
     if (nextRequest) {
@@ -4933,15 +12012,59 @@
   var BUFFER_NEST = new THREE.Vector3(-0.55, 1.07, -3.1);
   var TRANSFER_TCP = new THREE.Vector3(3.12, 2.15, -2.67);
   var TRANSFER_CLEAR = new THREE.Vector3(2.08, 2.52, -3.72);
+  // Surveyed DCM waypoints. PICK is the ejected plaque center at full platen
+  // travel; NORMAL_CLEAR pulls 290 mm along the die-opening axis before any
+  // frontward transit, keeping the gripped runner between the four tie bars.
+  // ENTRY_CLEAR is an explicit high/rear elbow-up gate: the robot must prove
+  // this pose before descending toward the die-normal approach.
+  var CAST_ENTRY_CLEAR_TARGET = new THREE.Vector3(mirrorDcmWorldX(1.88), 2.62, -4.18);
+  var CAST_FRONT_CLEAR_TARGET = new THREE.Vector3(mirrorDcmWorldX(2.69), 2.62, -4.18);
+  var CAST_APPROACH_TARGET = new THREE.Vector3(mirrorDcmWorldX(2.69), 2.37, -5.26);
+  var CAST_PICK_TARGET = new THREE.Vector3(mirrorDcmWorldX(2.98), 2.37, -5.26);
+  var CAST_NORMAL_CLEAR = new THREE.Vector3(mirrorDcmWorldX(2.69), 2.37, -5.26);
+  var CAST_TRANSIT_TARGET = new THREE.Vector3(mirrorDcmWorldX(1.88), 2.62, -4.38);
+  var CAST_QUENCH_CLEAR_TARGET = new THREE.Vector3(-1.8, 2.0, -3.8);
+  var CAST_QUENCH_DEPART_TARGET = new THREE.Vector3(mirrorDcmWorldX(1.88), 2.62, -3.95);
+  var CAST_QUENCH_DIP_TARGET = new THREE.Vector3(-1.8, 0.69, -3.8);
+  // Review sightline sits immediately camera-right of the DOM cabinet while
+  // remaining behind the front guard and inside the relocated robot envelope.
+  var CAST_PRESENT_TARGET = new THREE.Vector3(mirrorDcmWorldX(1.4), 2.56, -3.08);
+  var CAST_DROP_TARGET = new THREE.Vector3(mirrorDcmWorldX(1.42), 1.48, -3.52);
+  var CAST_PLAQUE_SCALE = 0.72;
+  var CAST_TAB_CENTER_X = 0.31;
+  var CAST_TAB_WIDTH = 0.06;
+  var CAST_RUNNER_TIP_X = 0.14;
+  var CAST_RUNNER_TIP_Y = -0.462;
+  // The safety OBB remains the already-proved conservative envelope. The new
+  // visible shell/runner is smaller and separately measured for screen-space
+  // capture so realism changes cannot silently weaken collision clearance.
+  var CAST_PLAQUE_LOCAL_BOUNDS = Object.freeze({
+    minX: -0.34,
+    maxX: 0.34,
+    minY: -0.75,
+    maxY: 0.47,
+    minZ: -0.05,
+    maxZ: 0.05
+  });
+  var CAST_PLAQUE_VISUAL_BOUNDS = Object.freeze({
+    minX: -0.34,
+    maxX: 0.34,
+    minY: -0.462,
+    maxY: 0.41,
+    minZ: -0.05,
+    maxZ: 0.05
+  });
   var tempPosition = new THREE.Vector3();
   var tempQuaternion = new THREE.Quaternion();
+  var castTcpScratch = new THREE.Vector3();
+  var castMotionTargetScratch = new THREE.Vector3();
 
   function setWorkpieceFinished(isFinished) {
     if (rawWorkpiece) rawWorkpiece.visible = !isFinished;
     if (finishedWorkpiece) finishedWorkpiece.visible = isFinished;
   }
 
-  function productionPoseAt(phase) {
+  function cncProductionPoseAtLegacy(phase) {
     var pickOpen = poseForTarget(RAW_PICK, 0.22);
     var pickClosed = poseForTarget(RAW_PICK, 0.02);
     var cncGuardOpen = poseForTarget(CNC_GUARD_CLEAR, 0.22);
@@ -4970,16 +12093,45 @@
     return interpolatePose(cellTransitOpen, HOME_POSE, (phase - 13.78) / 0.62);
   }
 
+  function productionPoseAt(phase) {
+    var wrapped = phase % AUTO_CYCLE_SECONDS;
+    if (wrapped < 0) wrapped += AUTO_CYCLE_SECONDS;
+    if (wrapped < AUTO_PARK_TO_HERO_START) return poseCopy(AUTO_PARK_POSE);
+    if (wrapped < AUTO_HERO_PHASE_START) {
+      return interpolatePose(
+        AUTO_PARK_POSE,
+        HERO_POSE,
+        (wrapped - AUTO_PARK_TO_HERO_START) /
+          (AUTO_HERO_PHASE_START - AUTO_PARK_TO_HERO_START)
+      );
+    }
+    if (wrapped < AUTO_HERO_PHASE_END) return poseCopy(HERO_POSE);
+    if (wrapped < AUTO_HERO_TO_PARK_END) {
+      return interpolatePose(
+        HERO_POSE,
+        AUTO_PARK_POSE,
+        (wrapped - AUTO_HERO_PHASE_END) /
+          (AUTO_HERO_TO_PARK_END - AUTO_HERO_PHASE_END)
+      );
+    }
+    return poseCopy(AUTO_PARK_POSE);
+  }
+
   function requestSafePhaseFor(phase) {
-    if (phase < AUTO_SAFE_PHASE_START) return AUTO_SAFE_PHASE_START;
-    if (phase > AUTO_SAFE_PHASE_END) return AUTO_SAFE_PHASE_END;
-    return phase;
+    var wrapped = phase % AUTO_CYCLE_SECONDS;
+    if (wrapped < 0) wrapped += AUTO_CYCLE_SECONDS;
+    if (wrapped < AUTO_PARK_TO_HERO_START || wrapped >= AUTO_HERO_TO_PARK_END) {
+      return wrapped;
+    }
+    return wrapped < AUTO_HERO_PHASE_START
+      ? AUTO_PARK_TO_HERO_START
+      : AUTO_HERO_TO_PARK_END;
   }
 
   function requestEgressPoseAt(amount) {
-    var t = smootherstep(clamp(amount, 0, 1));
-    var phase = lerp(requestEgressStartPhase, requestEgressEndPhase, t);
-    var pose = productionPoseAt(phase);
+    var fromPose = requestEgressFromPose || productionPoseAt(requestEgressStartPhase);
+    var toPose = requestEgressToPose || productionPoseAt(requestEgressEndPhase);
+    var pose = interpolatePose(fromPose, toPose, clamp(amount, 0, 1));
     if (interruptedPartHeld) pose.grip = 0.02;
     return pose;
   }
@@ -4987,6 +12139,8 @@
   function configureRequestEgress(phase) {
     requestEgressStartPhase = phase;
     requestEgressEndPhase = requestSafePhaseFor(phase);
+    requestEgressFromPose = productionPoseAt(phase);
+    requestEgressToPose = poseCopy(SAFE_POSE);
     var sampleCount = Math.max(
       1,
       Math.ceil(Math.abs(requestEgressEndPhase - requestEgressStartPhase) * 18)
@@ -5108,7 +12262,17 @@
       if (!valid) requestEgressFailureStage = "production egress";
     }
     var safePose = requestEgressPoseAt(1);
-    if (valid && interruptedPartHeld) {
+    if (valid && castingRig) {
+      // DCM AUTO never owns a payload; request acceptance routes from the
+      // deterministic SAFE pose directly to the same front-cell entry gate
+      // used by the extraction sequence. Do not exercise unreachable legacy
+      // CNC rack/buffer poses against the relocated die-service pedestal.
+      valid = sweepIsClear(
+        safePose,
+        castPoseForTarget(CAST_ENTRY_CLEAR_TARGET, 0.22, 0)
+      );
+      if (!valid) requestEgressFailureStage = 'DCM optical park to entry clearance';
+    } else if (valid && interruptedPartHeld) {
       var transitClosedPose = poseForTarget(CELL_TRANSIT, 0.02);
       var bufferPose = poseForTarget(BUFFER_NEST, 0.02);
       valid = sweepIsClear(safePose, transitClosedPose);
@@ -5137,6 +12301,8 @@
     var savedAtMouth = interruptedAtCncMouth;
     var savedStart = requestEgressStartPhase;
     var savedEnd = requestEgressEndPhase;
+    var savedFromPose = requestEgressFromPose && poseCopy(requestEgressFromPose);
+    var savedToPose = requestEgressToPose && poseCopy(requestEgressToPose);
     var savedDuration = requestEgressDuration;
     var savedProof = requestEgressProofValid;
     var valid = true;
@@ -5159,6 +12325,8 @@
     interruptedAtCncMouth = savedAtMouth;
     requestEgressStartPhase = savedStart;
     requestEgressEndPhase = savedEnd;
+    requestEgressFromPose = savedFromPose;
+    requestEgressToPose = savedToPose;
     requestEgressDuration = savedDuration;
     requestEgressProofValid = savedProof;
     applyPose(savedPose);
@@ -5180,7 +12348,7 @@
     return dx * dx + dy * dy + dz * dz;
   }
 
-  function validateSweptSafetyEnvelope() {
+  function validateLegacyClipboardSweptEnvelope() {
     if (!robotRig || !transferBay) return false;
     var issues = [];
     var heroDwellPoseError = 0;
@@ -5313,10 +12481,10 @@
     if (!targetIsReachable(CNC_GUARD_CLEAR)) issues.push("CNC_GUARD_CLEAR is outside the reach envelope");
 
     // Sample the complete repeating AUTO path in its live logical order. Loop
-    // time zero is the SAFE hero hold; rotating phase order does not omit or
-    // duplicate any of the existing guarded CNC/finished-part trajectory.
-    if (AUTO_HERO_DWELL_SECONDS < 1.5 || AUTO_HERO_DWELL_SECONDS > 2.0) {
-      issues.push("AUTO hero dwell is outside the 1.5-2.0 s validated window");
+    // time zero is the distinct HERO hold; rotated phase order still covers
+    // both smootherstep transitions and the entire optical PARK interval.
+    if (AUTO_HERO_DWELL_SECONDS < 1.5 || AUTO_HERO_DWELL_SECONDS > 1.8) {
+      issues.push("AUTO hero dwell is outside the 1.5-1.8 s validated window");
     }
     for (var productionSample = 0; productionSample <= 288 && issues.length < 24; productionSample++) {
       var productionLoopTime = AUTO_CYCLE_SECONDS * productionSample / 288;
@@ -5334,7 +12502,7 @@
       );
     }
     if (heroDwellPoseError > 0.000001) {
-      issues.push("AUTO hero dwell departs SAFE pose by " + heroDwellPoseError.toFixed(6) + " rad");
+      issues.push("AUTO hero dwell departs HERO pose by " + heroDwellPoseError.toFixed(6) + " rad");
     }
 
     // Prove every station through outbound custody, isolated HELD, and the
@@ -5426,6 +12594,1157 @@
     return valid;
   }
 
+  function validateSweptSafetyEnvelope() {
+    if (!robotRig || !castingRig) return false;
+    var requiredClearance = 0.025;
+    var savedPose = poseCopy(currentPose || SAFE_POSE);
+    var savedRequest = activeRequest;
+    var savedClampStroke = castingRig.clampDrive.state.stroke;
+    var savedEjectorAmount = castingRig.ejectorDrive.amount;
+    var issues = [];
+    var minimumClearance = Infinity;
+    var heroStaticMinimumClearance = Infinity;
+    var measuringHeroStatic = false;
+    activeRequest = STATIONS[0].id;
+
+    // World AABBs match the actual primitive envelopes built for DCM-900.
+    var obstacles = [
+      { name: 'fixed platen and die', minX: 0.73, maxX: 1.29, minY: 0.53, maxY: 3.71, minZ: -6.61, maxZ: -4.69 },
+      { name: 'open moving platen and die', minX: -1.065, maxX: -0.17, minY: 0.6, maxY: 3.64, minZ: -6.61, maxZ: -4.69 },
+      { name: 'rear clamp cover', minX: -1.94, maxX: -0.89, minY: 0.47, maxY: 3.69, minZ: -6.53, maxZ: -4.77 },
+      { name: 'press base', minX: -1.79, maxX: 2.96, minY: 0.04, maxY: 0.57, minZ: -6.58, maxZ: -4.72 },
+      { name: 'shot sleeve', minX: 1.11, maxX: 3.36, minY: 1.0, maxY: 1.56, minZ: -5.57, maxZ: -5.09 },
+      { name: 'shot cylinder and intensifier', minX: 3.655, maxX: 4.975, minY: 0.85, maxY: 1.59, minZ: -5.69, maxZ: -4.97 },
+      { name: 'supported hydraulic power pack', minX: 3.18, maxX: 4.95, minY: 0.68, maxY: 3.66, minZ: -6.55, maxZ: -4.84 },
+      // Keep the dosing obstacle model faithful to the built members. A single
+      // furnace+hood AABB combined the low front label with the high canopy and
+      // incorrectly filled the open service volume between them.
+      { name: 'holding furnace vessel', minX: 2.739, maxX: 4.219, minY: 0.12, maxY: 1.36, minZ: -4.79, maxZ: -3.31 },
+      { name: 'holding furnace rim', minX: 2.774, maxX: 4.184, minY: 1.315, maxY: 1.465, minZ: -4.755, maxZ: -3.345 },
+      { name: 'holding furnace hood', minX: 2.599, maxX: 4.359, minY: 2.37, maxY: 2.55, minZ: -4.71, maxZ: -3.39 },
+      { name: 'holding furnace left hood post', minX: 2.719, maxX: 2.879, minY: 1.35, maxY: 2.47, minZ: -4.63, maxZ: -4.47 },
+      { name: 'holding furnace right hood post', minX: 4.079, maxX: 4.239, minY: 1.35, maxY: 2.47, minZ: -4.63, maxZ: -4.47 },
+      // Model the relocated support as the physical members it is built from.
+      // The former single mast+link AABB filled the empty diagonal beneath the
+      // boom and falsely rejected the inspection-presentation path even though
+      // the actual rigid link was more than 250 mm away.  These conservative
+      // capsules retain the same 25 mm clearance law without treating air as
+      // solid machinery.
+      { name: 'automatic ladle mast foot', minX: 2.339, maxX: 3.019, minY: 0.0, maxY: 0.24, minZ: -4.87, maxZ: -4.23 },
+      { name: 'automatic ladle mast column', kind: 'capsule', from: [2.679, 0.21, -4.55], to: [2.679, 2.5, -4.55], radius: 0.245 },
+      { name: 'automatic ladle mast pivot', kind: 'capsule', from: [2.679, 2.5, -4.55], to: [2.679, 2.5, -4.55], radius: 0.24 },
+      { name: 'automatic ladle mast gusset', minX: 2.599, maxX: 3.099, minY: 1.98, maxY: 2.56, minZ: -4.7, maxZ: -4.4 },
+      { name: 'automatic ladle home load link', kind: 'capsule', from: [2.679, 2.5, -4.55], to: [3.479, 1.78, -4.05], radius: 0.18 },
+      { name: 'automatic ladle home vessel and yoke', minX: 3.244, maxX: 5.094, minY: 1.33, maxY: 2.12, minZ: -4.48, maxZ: -3.62 },
+      {
+        name: 'trim nest',
+        minX: 0.985,
+        maxX: 2.245,
+        minY: 0,
+        maxY: 0.96,
+        minZ: -3.93,
+        maxZ: -3.11,
+        allowPayloadSeat: true
+      }
+    ];
+    var tieYs = [1.19, 3.05];
+    if (quenchRig) obstacles = obstacles.concat(quenchRig.walls);
+    var tieZs = [-6.32, -4.98];
+    for (var tieYIndex = 0; tieYIndex < tieYs.length; tieYIndex++) {
+      for (var tieZIndex = 0; tieZIndex < tieZs.length; tieZIndex++) {
+        obstacles.push({
+          name: 'tie bar ' + tieYIndex + '-' + tieZIndex,
+          minX: -1.465,
+          maxX: 2.155,
+          minY: tieYs[tieYIndex] - 0.075,
+          maxY: tieYs[tieYIndex] + 0.075,
+          minZ: tieZs[tieZIndex] - 0.075,
+          maxZ: tieZs[tieZIndex] + 0.075
+        });
+      }
+    }
+
+    function addIssue(pathLabel, bodyLabel, obstacleLabel, clearance) {
+      minimumClearance = Math.min(minimumClearance, clearance);
+      if (measuringHeroStatic) {
+        heroStaticMinimumClearance = Math.min(heroStaticMinimumClearance, clearance);
+      }
+      if (clearance >= requiredClearance || issues.length >= 20) return;
+      issues.push(
+        pathLabel + ' / ' + bodyLabel + ' clearance to ' + obstacleLabel +
+        ' is ' + Math.round(clearance * 1000) + ' mm'
+      );
+    }
+
+    function pointCapsuleDistanceSquared(point, capsule) {
+      var fromX = capsule.from[0];
+      var fromY = capsule.from[1];
+      var fromZ = capsule.from[2];
+      var axisX = capsule.to[0] - fromX;
+      var axisY = capsule.to[1] - fromY;
+      var axisZ = capsule.to[2] - fromZ;
+      var axisLengthSquared = axisX * axisX + axisY * axisY + axisZ * axisZ;
+      var amount = axisLengthSquared > 0.000000001
+        ? clamp(
+            ((point.x - fromX) * axisX +
+              (point.y - fromY) * axisY +
+              (point.z - fromZ) * axisZ) / axisLengthSquared,
+            0,
+            1
+          )
+        : 0;
+      var deltaX = point.x - (fromX + axisX * amount);
+      var deltaY = point.y - (fromY + axisY * amount);
+      var deltaZ = point.z - (fromZ + axisZ * amount);
+      return deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
+    }
+
+    function pointObstacleClearance(point, bounds, radius) {
+      if (bounds.kind === 'capsule') {
+        return Math.sqrt(pointCapsuleDistanceSquared(point, bounds)) -
+          bounds.radius - radius;
+      }
+      return Math.sqrt(pointAabbDistanceSquared(point, bounds)) - radius;
+    }
+
+    function checkPoint(pathLabel, bodyLabel, point, radius) {
+      var diagnosticBody = bodyLabel + '@(' +
+        point.x.toFixed(3) + ',' + point.y.toFixed(3) + ',' + point.z.toFixed(3) + ')';
+      for (var obstacleIndex = 0; obstacleIndex < obstacles.length; obstacleIndex++) {
+        var obstacle = obstacles[obstacleIndex];
+        // The casting is intentionally captured by the trim nest at the end
+        // of the reviewed-return path. Permit only that surveyed seating
+        // contact; robot bodies, earlier path samples, and every other press
+        // obstacle retain the full 25 mm clearance requirement.
+        var payloadSeatContact =
+          obstacle.allowPayloadSeat &&
+          (pathLabel === 'review return to trim nest' ||
+            pathLabel === 'stationary trim-nest release') &&
+          tcpPoint.distanceTo(CAST_DROP_TARGET) <= 0.18 &&
+          payloadBox.min.y >= 0.64 &&
+          payloadBox.max.y <= 2.06;
+        if (payloadSeatContact) continue;
+        addIssue(
+          pathLabel,
+          diagnosticBody,
+          obstacle.name,
+          pointObstacleClearance(point, obstacle, radius)
+        );
+      }
+      if (
+        point.x + radius >= FRONT_GUARD_MIN_X &&
+        point.x - radius <= FRONT_GUARD_MAX_X &&
+        point.y + radius >= 0.24 &&
+        point.y - radius <= GUARD_HEIGHT
+      ) {
+        addIssue(pathLabel, diagnosticBody, 'front guard', FRONT_GUARD_Z - (point.z + radius));
+      }
+      if (
+        point.z + radius >= SIDE_GUARD_MIN_Z &&
+        point.z - radius <= FRONT_GUARD_Z &&
+        point.y + radius >= 0.24 &&
+        point.y - radius <= GUARD_HEIGHT
+      ) {
+        addIssue(pathLabel, diagnosticBody, 'side guard', SIDE_GUARD_X - (point.x + radius));
+      }
+    }
+
+    var segmentProbe = new THREE.Vector3();
+    function checkSegment(pathLabel, bodyLabel, from, to, radius) {
+      for (var segmentSample = 0; segmentSample <= 18; segmentSample++) {
+        segmentProbe.lerpVectors(from, to, segmentSample / 18);
+        checkPoint(pathLabel, bodyLabel, segmentProbe, radius);
+      }
+    }
+
+    var capsuleBoxProbe = new THREE.Vector3();
+    function boxClearanceToObstacle(box, obstacle) {
+      if (obstacle.kind === 'capsule') {
+        var capsuleBoxMinimum = Infinity;
+        var capsuleBoxSamples = 64;
+        var capsuleAxisLength = Math.sqrt(
+          Math.pow(obstacle.to[0] - obstacle.from[0], 2) +
+          Math.pow(obstacle.to[1] - obstacle.from[1], 2) +
+          Math.pow(obstacle.to[2] - obstacle.from[2], 2)
+        );
+        for (var capsuleSampleIndex = 0; capsuleSampleIndex <= capsuleBoxSamples; capsuleSampleIndex++) {
+          var capsuleSampleAmount = capsuleSampleIndex / capsuleBoxSamples;
+          capsuleBoxProbe.set(
+            lerp(obstacle.from[0], obstacle.to[0], capsuleSampleAmount),
+            lerp(obstacle.from[1], obstacle.to[1], capsuleSampleAmount),
+            lerp(obstacle.from[2], obstacle.to[2], capsuleSampleAmount)
+          );
+          var capsuleBoxDx = Math.max(
+            box.min.x - capsuleBoxProbe.x,
+            0,
+            capsuleBoxProbe.x - box.max.x
+          );
+          var capsuleBoxDy = Math.max(
+            box.min.y - capsuleBoxProbe.y,
+            0,
+            capsuleBoxProbe.y - box.max.y
+          );
+          var capsuleBoxDz = Math.max(
+            box.min.z - capsuleBoxProbe.z,
+            0,
+            capsuleBoxProbe.z - box.max.z
+          );
+          capsuleBoxMinimum = Math.min(
+            capsuleBoxMinimum,
+            Math.sqrt(
+              capsuleBoxDx * capsuleBoxDx +
+              capsuleBoxDy * capsuleBoxDy +
+              capsuleBoxDz * capsuleBoxDz
+            )
+          );
+        }
+        // Subtract half a sample interval so discretization can only make the
+        // capsule more conservative, never create fictitious clearance.
+        return capsuleBoxMinimum - obstacle.radius -
+          capsuleAxisLength / (capsuleBoxSamples * 2);
+      }
+      var dx = Math.max(obstacle.minX - box.max.x, box.min.x - obstacle.maxX, 0);
+      var dy = Math.max(obstacle.minY - box.max.y, box.min.y - obstacle.maxY, 0);
+      var dz = Math.max(obstacle.minZ - box.max.z, box.min.z - obstacle.maxZ, 0);
+      return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    castingRig.clampDrive.apply(0);
+    applyEjectorStroke(1);
+    scene.updateMatrixWorld(true);
+    applyPose(castPoseForTarget(CAST_PICK_TARGET, 0.02, 1));
+    robotRig.root.updateMatrixWorld(true);
+    castingRig.plaqueSocket.updateMatrixWorld(true);
+    var inverseGrip = new THREE.Matrix4().copy(robotRig.gripperTip.matrixWorld);
+    if (inverseGrip.invert) inverseGrip.invert();
+    else inverseGrip.getInverse(robotRig.gripperTip.matrixWorld);
+    var plaqueScale = new THREE.Matrix4().makeScale(
+      CAST_PLAQUE_SCALE,
+      CAST_PLAQUE_SCALE,
+      CAST_PLAQUE_SCALE
+    );
+    var plaqueWorldAtPick = new THREE.Matrix4().multiplyMatrices(
+      castingRig.plaqueSocket.matrixWorld,
+      plaqueScale
+    );
+    var plaqueRelativeToGrip = new THREE.Matrix4().multiplyMatrices(
+      inverseGrip,
+      plaqueWorldAtPick
+    );
+    var payloadMatrix = new THREE.Matrix4();
+    var payloadCorner = new THREE.Vector3();
+    var payloadBox = new THREE.Box3();
+    var payloadBounds = CAST_PLAQUE_LOCAL_BOUNDS;
+
+    var shoulderPoint = new THREE.Vector3();
+    var elbowPoint = new THREE.Vector3();
+    var j4Point = new THREE.Vector3();
+    var wristPoint = new THREE.Vector3();
+    var tcpPoint = new THREE.Vector3();
+    var leftJawPoint = new THREE.Vector3();
+    var rightJawPoint = new THREE.Vector3();
+
+    function checkPayload(pathLabel) {
+      payloadMatrix.multiplyMatrices(robotRig.gripperTip.matrixWorld, plaqueRelativeToGrip);
+      payloadBox.makeEmpty();
+      for (var cornerIndex = 0; cornerIndex < 8; cornerIndex++) {
+        payloadCorner.set(
+          cornerIndex & 1 ? payloadBounds.maxX : payloadBounds.minX,
+          cornerIndex & 2 ? payloadBounds.maxY : payloadBounds.minY,
+          cornerIndex & 4 ? payloadBounds.maxZ : payloadBounds.minZ
+        ).applyMatrix4(payloadMatrix);
+        payloadBox.expandByPoint(payloadCorner);
+      }
+      for (var obstacleIndex = 0; obstacleIndex < obstacles.length; obstacleIndex++) {
+        var obstacle = obstacles[obstacleIndex];
+        addIssue(
+          pathLabel,
+          'carried casting OBB',
+          obstacle.name,
+          boxClearanceToObstacle(payloadBox, obstacle)
+        );
+      }
+      addIssue(
+        pathLabel,
+        'carried casting OBB',
+        'front guard',
+        FRONT_GUARD_Z - payloadBox.max.z
+      );
+      addIssue(
+        pathLabel,
+        'carried casting OBB',
+        'side guard',
+        SIDE_GUARD_X - payloadBox.max.x
+      );
+    }
+
+    function checkPose(pathLabel, pose, carryingPlaque) {
+      applyPose(pose);
+      robotRig.root.updateMatrixWorld(true);
+      robotRig.shoulder.getWorldPosition(shoulderPoint);
+      robotRig.elbow.getWorldPosition(elbowPoint);
+      robotRig.j4Roll.getWorldPosition(j4Point);
+      robotRig.wristRoll.getWorldPosition(wristPoint);
+      robotRig.gripperTip.getWorldPosition(tcpPoint);
+      robotRig.leftFinger.getWorldPosition(leftJawPoint);
+      robotRig.rightFinger.getWorldPosition(rightJawPoint);
+      checkSegment(pathLabel, 'upper arm', shoulderPoint, elbowPoint, 0.27);
+      checkSegment(pathLabel, 'forearm and dress pack', elbowPoint, j4Point, 0.23);
+      checkSegment(pathLabel, 'wrist', j4Point, wristPoint, 0.21);
+      checkSegment(pathLabel, 'tool', wristPoint, tcpPoint, 0.11);
+      checkPoint(pathLabel, 'left jaw', leftJawPoint, 0.085);
+      checkPoint(pathLabel, 'right jaw', rightJawPoint, 0.085);
+      if (carryingPlaque) checkPayload(pathLabel);
+    }
+
+    function checkSweep(pathLabel, fromPose, toPose, carryingPlaque) {
+      for (var sweepSample = 0; sweepSample <= 28; sweepSample++) {
+        checkPose(
+          pathLabel,
+          interpolatePose(fromPose, toPose, sweepSample / 28),
+          carryingPlaque
+        );
+      }
+    }
+
+    function checkCastTargetSweep(
+      pathLabel,
+      fromTarget,
+      toTarget,
+      gripValue,
+      carryingPlaque,
+      fromAccess,
+      toAccess,
+      fromQuench,
+      toQuench
+    ) {
+      for (var sweepSample = 0; sweepSample <= 28; sweepSample++) {
+        var sweepAmount = smootherstep(sweepSample / 28);
+        castMotionTargetScratch.lerpVectors(
+          fromTarget,
+          toTarget,
+          sweepAmount
+        );
+        checkPose(
+          pathLabel,
+          castPoseForTarget(
+            castMotionTargetScratch,
+            gripValue,
+            lerp(fromAccess || 0, toAccess || 0, sweepAmount),
+            lerp(fromQuench || 0, toQuench || 0, sweepAmount)
+          ),
+          carryingPlaque
+        );
+      }
+    }
+
+    var safePose = poseCopy(SAFE_POSE);
+    var autoParkPose = poseCopy(AUTO_PARK_POSE);
+    var entryClearOpen = castPoseForTarget(CAST_ENTRY_CLEAR_TARGET, 0.22, 0);
+    var frontClearOpen = castPoseForTarget(CAST_FRONT_CLEAR_TARGET, 0.22, 1);
+    var approachOpen = castPoseForTarget(CAST_APPROACH_TARGET, 0.22, 1);
+    var pickOpen = castPoseForTarget(CAST_PICK_TARGET, 0.22, 1);
+    var pickClosed = castPoseForTarget(CAST_PICK_TARGET, 0.02, 1);
+    var normalClearClosed = castPoseForTarget(CAST_NORMAL_CLEAR, 0.02, 1);
+    var transitClosed = castPoseForTarget(CAST_TRANSIT_TARGET, 0.02);
+    var presentClosed = castPoseForTarget(CAST_PRESENT_TARGET, 0.02);
+    var dropClosed = castPoseForTarget(CAST_DROP_TARGET, 0.02);
+    var dropOpen = castPoseForTarget(CAST_DROP_TARGET, 0.22);
+    var homeTransitOpen = castPoseForTarget(CAST_ENTRY_CLEAR_TARGET, 0.22, 0);
+
+    var insertDelta = new THREE.Vector3().subVectors(CAST_PICK_TARGET, CAST_APPROACH_TARGET);
+    var extractDelta = new THREE.Vector3().subVectors(CAST_NORMAL_CLEAR, CAST_PICK_TARGET);
+    if (
+      Math.abs(insertDelta.y) > 0.000001 ||
+      Math.abs(insertDelta.z) > 0.000001 ||
+      Math.abs(insertDelta.x) <= 0 ||
+      Math.abs(extractDelta.y) > 0.000001 ||
+      Math.abs(extractDelta.z) > 0.000001 ||
+      Math.abs(insertDelta.x + extractDelta.x) > 0.000001
+    ) {
+      issues.push('insert/extract segments are not exact opposing die-normal X moves');
+    }
+
+    // These 58 samples are additive to, not a replacement for, the existing
+    // 551-pose service proof. Runtime uses these exact joint-space endpoints
+    // and the same smootherstep interpolation in both directions.
+    measuringHeroStatic = true;
+    checkPose('AUTO hero static clearance', HERO_POSE, false);
+    measuringHeroStatic = false;
+    checkSweep('AUTO hero to dedicated optical park', HERO_POSE, autoParkPose, false);
+    checkSweep('AUTO dedicated optical park to hero', autoParkPose, HERO_POSE, false);
+    checkSweep('optical park to elbow-up entry clearance', safePose, entryClearOpen, false);
+    checkCastTargetSweep(
+      'entry clearance to front-of-die gap',
+      CAST_ENTRY_CLEAR_TARGET,
+      CAST_FRONT_CLEAR_TARGET,
+      0.22,
+      false,
+      0,
+      1
+    );
+    checkCastTargetSweep(
+      'front-of-die gap to normal-clear approach',
+      CAST_FRONT_CLEAR_TARGET,
+      CAST_APPROACH_TARGET,
+      0.22,
+      false,
+      1,
+      1
+    );
+    checkCastTargetSweep(
+      'open-jaw die-normal insert',
+      CAST_APPROACH_TARGET,
+      CAST_PICK_TARGET,
+      0.22,
+      false,
+      1,
+      1
+    );
+    checkSweep('stationary tab grip', pickOpen, pickClosed, false);
+    checkCastTargetSweep(
+      'closed-jaw die-normal extraction',
+      CAST_PICK_TARGET,
+      CAST_NORMAL_CLEAR,
+      0.02,
+      true,
+      1,
+      1
+    );
+    checkCastTargetSweep(
+      'normal clear to front-clear exit',
+      CAST_NORMAL_CLEAR,
+      CAST_FRONT_CLEAR_TARGET,
+      0.02,
+      true,
+      1,
+      1
+    );
+    checkCastTargetSweep(
+      'front-clear exit to entry clearance',
+      CAST_FRONT_CLEAR_TARGET,
+      CAST_ENTRY_CLEAR_TARGET,
+      0.02,
+      true,
+      1,
+      0
+    );
+    checkCastTargetSweep(
+      'entry clearance to cell transit',
+      CAST_ENTRY_CLEAR_TARGET,
+      CAST_TRANSIT_TARGET,
+      0.02,
+      true,
+      0,
+      0
+    );
+    checkCastTargetSweep('quench departure clearance', CAST_TRANSIT_TARGET, CAST_QUENCH_DEPART_TARGET, 0.02, true);
+    checkCastTargetSweep('quench approach and tool rotation', CAST_QUENCH_DEPART_TARGET, CAST_QUENCH_CLEAR_TARGET, 0.02, true, 0, 0, 0, 1);
+    checkCastTargetSweep('vertical quench dip', CAST_QUENCH_CLEAR_TARGET, CAST_QUENCH_DIP_TARGET, 0.02, true, 0, 0, 1, 1);
+    checkCastTargetSweep('vertical quench lift', CAST_QUENCH_DIP_TARGET, CAST_QUENCH_CLEAR_TARGET, 0.02, true, 0, 0, 1, 1);
+    checkCastTargetSweep('quench exit and tool rotation', CAST_QUENCH_CLEAR_TARGET, CAST_QUENCH_DEPART_TARGET, 0.02, true, 0, 0, 1, 0);
+    checkCastTargetSweep('inspection after quenching', CAST_QUENCH_DEPART_TARGET, CAST_PRESENT_TARGET, 0.02, true);
+    checkCastTargetSweep(
+      'review return to trim nest',
+      CAST_PRESENT_TARGET,
+      CAST_DROP_TARGET,
+      0.02,
+      true
+    );
+    checkSweep('stationary trim-nest release', dropClosed, dropOpen, true);
+    checkSweep('trim nest to home transit', dropOpen, homeTransitOpen, false);
+    checkSweep('home transit to safe park', homeTransitOpen, safePose, false);
+
+    activeRequest = savedRequest;
+    castingRig.clampDrive.apply(savedClampStroke);
+    applyEjectorStroke(savedEjectorAmount);
+    applyPose(savedPose);
+    scene.updateMatrixWorld(true);
+    var valid = issues.length === 0;
+    startupDiagnostics.sweptIssueCount = issues.length;
+    startupDiagnostics.sweptIssues = issues.slice();
+    startupDiagnostics.heroStaticWorldClearanceMm = heroStaticMinimumClearance * 1000;
+    if (window.console) {
+      if (console.assert) console.assert(valid, 'DCM swept safety proof failed', issues);
+      if (valid && console.info) {
+        console.info(
+          'DCM swept safety proof: 551 service poses + 58 HERO/PARK poses; minimum robot/payload clearance ' +
+          Math.round(minimumClearance * 1000) + ' mm'
+        );
+      } else if (!valid && console.error) {
+        console.error('DCM swept safety proof failed: ' + issues.join(' | '));
+      }
+    }
+    return valid;
+  }
+
+  function validateEjectOpticalClearance() {
+    if (!robotRig || !robotRig.shoulder || !castingRig || !camera) return false;
+    startupDiagnostics.ejectOcclusionCalls += 1;
+    var proofWidth = 1420;
+    var proofHeight = 982;
+    var proofCamera = new THREE.PerspectiveCamera(
+      43,
+      proofWidth / proofHeight,
+      0.08,
+      70
+    );
+    proofCamera.position
+      .copy(PROCESS_CAMERA_DIRECTION)
+      .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
+      .add(PROCESS_CAMERA_TARGET);
+    proofCamera.lookAt(PROCESS_CAMERA_TARGET);
+    proofCamera.updateProjectionMatrix();
+    proofCamera.updateMatrixWorld(true);
+
+    var savedPose = poseCopy(currentPose || SAFE_POSE);
+    var savedClampStroke = castingRig.clampDrive.state.stroke;
+    var savedEjectorAmount = castingRig.ejectorDrive.amount;
+    castingRig.clampDrive.apply(0);
+    applyEjectorStroke(1);
+    applyPose(SAFE_POSE);
+    scene.updateMatrixWorld(true);
+    proofCamera.updateMatrixWorld(true);
+
+    function emptyScreenBounds() {
+      return {
+        minX: Infinity,
+        maxX: -Infinity,
+        minY: Infinity,
+        maxY: -Infinity,
+        minDepth: Infinity,
+        maxDepth: -Infinity
+      };
+    }
+
+    var localCorner = new THREE.Vector3();
+    var worldCorner = new THREE.Vector3();
+    var projectedCorner = new THREE.Vector3();
+    function expandScreenBounds(bounds, matrix, result) {
+      for (var cornerIndex = 0; cornerIndex < 8; cornerIndex++) {
+        localCorner.set(
+          cornerIndex & 1 ? bounds.max.x : bounds.min.x,
+          cornerIndex & 2 ? bounds.max.y : bounds.min.y,
+          cornerIndex & 4 ? bounds.max.z : bounds.min.z
+        );
+        worldCorner.copy(localCorner).applyMatrix4(matrix);
+        projectedCorner.copy(worldCorner).project(proofCamera);
+        var screenX = (projectedCorner.x * 0.5 + 0.5) * proofWidth;
+        var screenY = (-projectedCorner.y * 0.5 + 0.5) * proofHeight;
+        result.minX = Math.min(result.minX, screenX);
+        result.maxX = Math.max(result.maxX, screenX);
+        result.minY = Math.min(result.minY, screenY);
+        result.maxY = Math.max(result.maxY, screenY);
+      }
+    }
+
+    var castingLocalBounds = new THREE.Box3(
+      new THREE.Vector3(
+        CAST_PLAQUE_VISUAL_BOUNDS.minX,
+        CAST_PLAQUE_VISUAL_BOUNDS.minY,
+        CAST_PLAQUE_VISUAL_BOUNDS.minZ
+      ),
+      new THREE.Vector3(
+        CAST_PLAQUE_VISUAL_BOUNDS.maxX,
+        CAST_PLAQUE_VISUAL_BOUNDS.maxY,
+        CAST_PLAQUE_VISUAL_BOUNDS.maxZ
+      )
+    );
+    var castingScaleMatrix = new THREE.Matrix4().makeScale(
+      CAST_PLAQUE_SCALE,
+      CAST_PLAQUE_SCALE,
+      CAST_PLAQUE_SCALE
+    );
+    var castingWorldMatrix = new THREE.Matrix4().multiplyMatrices(
+      castingRig.plaqueSocket.matrixWorld,
+      castingScaleMatrix
+    );
+    var castingScreenBounds = emptyScreenBounds();
+    expandScreenBounds(
+      castingLocalBounds,
+      castingWorldMatrix,
+      castingScreenBounds
+    );
+
+    var overlapNames = [];
+    var minimumSeparation = Infinity;
+    var instanceMatrix = new THREE.Matrix4();
+    var combinedMatrix = new THREE.Matrix4();
+    function inspectRobotBounds(bounds, matrix, label) {
+      var robotScreenBounds = emptyScreenBounds();
+      expandScreenBounds(bounds, matrix, robotScreenBounds);
+      var dx = Math.max(
+        robotScreenBounds.minX - castingScreenBounds.maxX,
+        castingScreenBounds.minX - robotScreenBounds.maxX,
+        0
+      );
+      var dy = Math.max(
+        robotScreenBounds.minY - castingScreenBounds.maxY,
+        castingScreenBounds.minY - robotScreenBounds.maxY,
+        0
+      );
+      var separation = Math.sqrt(dx * dx + dy * dy);
+      minimumSeparation = Math.min(minimumSeparation, separation);
+      if (dx === 0 && dy === 0) overlapNames.push(label);
+    }
+
+    // The shoulder subtree is exactly the moving robot anatomy: upper arm,
+    // forearm, dress pack, J4-J6, tool, jaws, and their functional labels.
+    // Pedestal/floor shadows are excluded because they cannot occlude the
+    // ejected face. Every actual mesh corner is checked conservatively.
+    robotRig.shoulder.traverse(function (object) {
+      if (
+        !object.isMesh ||
+        object.visible === false ||
+        !object.geometry ||
+        !object.material ||
+        object.material.visible === false ||
+        object.material.opacity === 0
+      ) return;
+      if (!object.geometry.boundingBox) object.geometry.computeBoundingBox();
+      var bounds = object.geometry.boundingBox;
+      if (!bounds) return;
+      var label = object.name || object.type;
+      if (object.isInstancedMesh && object.getMatrixAt) {
+        for (var instanceIndex = 0; instanceIndex < object.count; instanceIndex++) {
+          object.getMatrixAt(instanceIndex, instanceMatrix);
+          combinedMatrix.multiplyMatrices(object.matrixWorld, instanceMatrix);
+          inspectRobotBounds(
+            bounds,
+            combinedMatrix,
+            label + ' instance ' + instanceIndex
+          );
+        }
+      } else {
+        inspectRobotBounds(bounds, object.matrixWorld, label);
+      }
+    });
+
+    var valid = overlapNames.length === 0;
+    startupDiagnostics.ejectOcclusionValid = valid;
+    startupDiagnostics.ejectOcclusionOverlapCount = overlapNames.length;
+    startupDiagnostics.ejectOcclusionMinimumSeparationPx = minimumSeparation;
+    startupDiagnostics.ejectCastingScreenBounds = Object.freeze({
+      minX: Number(castingScreenBounds.minX.toFixed(2)),
+      maxX: Number(castingScreenBounds.maxX.toFixed(2)),
+      minY: Number(castingScreenBounds.minY.toFixed(2)),
+      maxY: Number(castingScreenBounds.maxY.toFixed(2))
+    });
+
+    castingRig.clampDrive.apply(savedClampStroke);
+    applyEjectorStroke(savedEjectorAmount);
+    applyPose(savedPose);
+    scene.updateMatrixWorld(true);
+    if (window.console) {
+      if (console.assert) {
+        console.assert(
+          valid,
+          'EJECT locked-camera casting occlusion proof failed',
+          overlapNames
+        );
+      }
+      if (valid && console.info) {
+        console.info(
+          'EJECT optical proof: zero moving-arm mesh overlaps; minimum screen separation ' +
+          minimumSeparation.toFixed(1) + ' px'
+        );
+      } else if (!valid && console.error) {
+        console.error(
+          'EJECT locked-camera casting occlusion proof failed: ' +
+          overlapNames.join(' | ')
+        );
+      }
+    }
+    return valid;
+  }
+
+  function validateGripOpticalClearance() {
+    if (
+      !robotRig ||
+      !robotRig.leftJawPad ||
+      !robotRig.rightJawPad ||
+      !castingRig ||
+      !castingRig.plaqueSocket
+    ) return false;
+    startupDiagnostics.gripOpticalCalls += 1;
+    var proofWidth = 1420;
+    var proofHeight = 982;
+    var proofCamera = new THREE.PerspectiveCamera(
+      43,
+      proofWidth / proofHeight,
+      0.08,
+      70
+    );
+    proofCamera.position
+      .copy(PROCESS_CAMERA_DIRECTION)
+      .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
+      .add(PROCESS_CAMERA_TARGET);
+    proofCamera.lookAt(PROCESS_CAMERA_TARGET);
+    proofCamera.updateProjectionMatrix();
+    proofCamera.updateMatrixWorld(true);
+
+    var savedPose = poseCopy(currentPose || SAFE_POSE);
+    var savedClampStroke = castingRig.clampDrive.state.stroke;
+    var savedEjectorAmount = castingRig.ejectorDrive.amount;
+    castingRig.clampDrive.apply(0);
+    applyEjectorStroke(1);
+    var gripPose = castPoseForTarget(CAST_PICK_TARGET, 0.02, 1);
+    applyPose(gripPose);
+    scene.updateMatrixWorld(true);
+
+    function emptyScreenBounds() {
+      return {
+        minX: Infinity,
+        maxX: -Infinity,
+        minY: Infinity,
+        maxY: -Infinity,
+        minDepth: Infinity,
+        maxDepth: -Infinity
+      };
+    }
+
+    var localCorner = new THREE.Vector3();
+    var projectedCorner = new THREE.Vector3();
+    function screenBounds(boxBounds, worldMatrix) {
+      var bounds = emptyScreenBounds();
+      for (var cornerIndex = 0; cornerIndex < 8; cornerIndex++) {
+        localCorner.set(
+          cornerIndex & 1 ? boxBounds.max.x : boxBounds.min.x,
+          cornerIndex & 2 ? boxBounds.max.y : boxBounds.min.y,
+          cornerIndex & 4 ? boxBounds.max.z : boxBounds.min.z
+        ).applyMatrix4(worldMatrix);
+        projectedCorner.copy(localCorner).project(proofCamera);
+        var screenX = (projectedCorner.x * 0.5 + 0.5) * proofWidth;
+        var screenY = (-projectedCorner.y * 0.5 + 0.5) * proofHeight;
+        bounds.minX = Math.min(bounds.minX, screenX);
+        bounds.maxX = Math.max(bounds.maxX, screenX);
+        bounds.minY = Math.min(bounds.minY, screenY);
+        bounds.maxY = Math.max(bounds.maxY, screenY);
+        bounds.minDepth = Math.min(bounds.minDepth, projectedCorner.z);
+        bounds.maxDepth = Math.max(bounds.maxDepth, projectedCorner.z);
+      }
+      bounds.centerX = (bounds.minX + bounds.maxX) * 0.5;
+      bounds.centerY = (bounds.minY + bounds.maxY) * 0.5;
+      return bounds;
+    }
+
+    function overlapPixels(a, b) {
+      var overlapWidth = Math.max(
+        0,
+        Math.min(a.maxX, b.maxX) - Math.max(a.minX, b.minX)
+      );
+      var overlapHeight = Math.max(
+        0,
+        Math.min(a.maxY, b.maxY) - Math.max(a.minY, b.minY)
+      );
+      return {
+        minX: Math.max(a.minX, b.minX),
+        maxX: Math.min(a.maxX, b.maxX),
+        minY: Math.max(a.minY, b.minY),
+        maxY: Math.min(a.maxY, b.maxY),
+        width: overlapWidth,
+        height: overlapHeight,
+        visible: Math.min(overlapWidth, overlapHeight)
+      };
+    }
+
+    if (!robotRig.leftJawPad.geometry.boundingBox) {
+      robotRig.leftJawPad.geometry.computeBoundingBox();
+    }
+    if (!robotRig.rightJawPad.geometry.boundingBox) {
+      robotRig.rightJawPad.geometry.computeBoundingBox();
+    }
+    var leftPadBounds = screenBounds(
+      robotRig.leftJawPad.geometry.boundingBox,
+      robotRig.leftJawPad.matrixWorld
+    );
+    var rightPadBounds = screenBounds(
+      robotRig.rightJawPad.geometry.boundingBox,
+      robotRig.rightJawPad.matrixWorld
+    );
+
+    var plaqueScale = new THREE.Matrix4().makeScale(
+      CAST_PLAQUE_SCALE,
+      CAST_PLAQUE_SCALE,
+      CAST_PLAQUE_SCALE
+    );
+    var plaqueWorldMatrix = new THREE.Matrix4().multiplyMatrices(
+      castingRig.plaqueSocket.matrixWorld,
+      plaqueScale
+    );
+    var tabHalfWidth = CAST_TAB_WIDTH * 0.5;
+    var tabBounds = new THREE.Box3(
+      new THREE.Vector3(-tabHalfWidth, -0.12, -0.045),
+      new THREE.Vector3(tabHalfWidth, 0.12, 0.045)
+    );
+    var leftTabMatrix = new THREE.Matrix4().multiplyMatrices(
+      plaqueWorldMatrix,
+      new THREE.Matrix4().makeTranslation(-CAST_TAB_CENTER_X, 0, 0)
+    );
+    var rightTabMatrix = new THREE.Matrix4().multiplyMatrices(
+      plaqueWorldMatrix,
+      new THREE.Matrix4().makeTranslation(CAST_TAB_CENTER_X, 0, 0)
+    );
+    var leftTabBounds = screenBounds(tabBounds, leftTabMatrix);
+    var rightTabBounds = screenBounds(tabBounds, rightTabMatrix);
+    var directOverlap = [
+      overlapPixels(leftPadBounds, leftTabBounds),
+      overlapPixels(rightPadBounds, rightTabBounds)
+    ];
+    var crossedOverlap = [
+      overlapPixels(leftPadBounds, rightTabBounds),
+      overlapPixels(rightPadBounds, leftTabBounds)
+    ];
+    var directMinimum = Math.min(
+      directOverlap[0].visible,
+      directOverlap[1].visible
+    );
+    var crossedMinimum = Math.min(
+      crossedOverlap[0].visible,
+      crossedOverlap[1].visible
+    );
+    var padOverlap = crossedMinimum > directMinimum ? crossedOverlap : directOverlap;
+
+    // The unobstructed strip is measured inside the actual central face, not
+    // between arbitrary pad centers. At least 8 px must remain between the two
+    // matte pads and the coarse T-rib witness must land in that same opening.
+    var centralFaceBounds = screenBounds(
+      new THREE.Box3(
+        new THREE.Vector3(-0.22, -0.21, 0.04),
+        new THREE.Vector3(0.22, 0.29, 0.05)
+      ),
+      plaqueWorldMatrix
+    );
+    var screenLeftPad = leftPadBounds.centerX <= rightPadBounds.centerX
+      ? leftPadBounds
+      : rightPadBounds;
+    var screenRightPad = screenLeftPad === leftPadBounds
+      ? rightPadBounds
+      : leftPadBounds;
+    var centralVisibleSpan = Math.max(
+      0,
+      Math.min(screenRightPad.minX, centralFaceBounds.maxX) -
+        Math.max(screenLeftPad.maxX, centralFaceBounds.minX)
+    );
+    var ribWitness = new THREE.Vector3(0.085, 0.15, 0.05)
+      .applyMatrix4(plaqueWorldMatrix)
+      .project(proofCamera);
+    var ribScreenX = (ribWitness.x * 0.5 + 0.5) * proofWidth;
+    var ribScreenY = (-ribWitness.y * 0.5 + 0.5) * proofHeight;
+    function pointInside(bounds, x, y) {
+      return (
+        x >= bounds.minX &&
+        x <= bounds.maxX &&
+        y >= bounds.minY &&
+        y <= bounds.maxY
+      );
+    }
+    var ribWitnessVisible =
+      !pointInside(leftPadBounds, ribScreenX, ribScreenY) &&
+      !pointInside(rightPadBounds, ribScreenX, ribScreenY);
+
+    // Test the rendered triangles of both the terminal housing and the two
+    // yellow links against the visible contact regions. Projected AABBs were
+    // too pessimistic for tapered castings at a three-quarter angle; this gate
+    // follows the actual mesh silhouette and still requires the triangle to be
+    // nearer than the pad/tab witness it could hide.
+    var centralTargetBounds = {
+      minX: Math.max(screenLeftPad.maxX, centralFaceBounds.minX),
+      maxX: Math.min(screenRightPad.minX, centralFaceBounds.maxX),
+      minY: centralFaceBounds.minY,
+      maxY: centralFaceBounds.maxY
+    };
+    var housingOcclusionNames = [];
+    var armOcclusionNames = [];
+    var depthEpsilon = 0.00001;
+    var triangleA = new THREE.Vector3();
+    var triangleB = new THREE.Vector3();
+    var triangleC = new THREE.Vector3();
+
+    function cross2d(ax, ay, bx, by, cx, cy) {
+      return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+    }
+
+    function pointInTriangle(px, py, ax, ay, bx, by, cx, cy) {
+      var ab = cross2d(ax, ay, bx, by, px, py);
+      var bc = cross2d(bx, by, cx, cy, px, py);
+      var ca = cross2d(cx, cy, ax, ay, px, py);
+      var hasNegative = ab < -0.0001 || bc < -0.0001 || ca < -0.0001;
+      var hasPositive = ab > 0.0001 || bc > 0.0001 || ca > 0.0001;
+      return !(hasNegative && hasPositive);
+    }
+
+    function rangeContains(value, a, b) {
+      return value >= Math.min(a, b) - 0.0001 && value <= Math.max(a, b) + 0.0001;
+    }
+
+    function segmentsIntersect(ax, ay, bx, by, cx, cy, dx, dy) {
+      var abC = cross2d(ax, ay, bx, by, cx, cy);
+      var abD = cross2d(ax, ay, bx, by, dx, dy);
+      var cdA = cross2d(cx, cy, dx, dy, ax, ay);
+      var cdB = cross2d(cx, cy, dx, dy, bx, by);
+      if (
+        ((abC > 0 && abD < 0) || (abC < 0 && abD > 0)) &&
+        ((cdA > 0 && cdB < 0) || (cdA < 0 && cdB > 0))
+      ) return true;
+      if (Math.abs(abC) <= 0.0001 && rangeContains(cx, ax, bx) && rangeContains(cy, ay, by)) return true;
+      if (Math.abs(abD) <= 0.0001 && rangeContains(dx, ax, bx) && rangeContains(dy, ay, by)) return true;
+      if (Math.abs(cdA) <= 0.0001 && rangeContains(ax, cx, dx) && rangeContains(ay, cy, dy)) return true;
+      if (Math.abs(cdB) <= 0.0001 && rangeContains(bx, cx, dx) && rangeContains(by, cy, dy)) return true;
+      return false;
+    }
+
+    function triangleIntersectsBounds(ax, ay, bx, by, cx, cy, bounds) {
+      var minTriangleX = Math.min(ax, bx, cx);
+      var maxTriangleX = Math.max(ax, bx, cx);
+      var minTriangleY = Math.min(ay, by, cy);
+      var maxTriangleY = Math.max(ay, by, cy);
+      if (
+        maxTriangleX < bounds.minX ||
+        minTriangleX > bounds.maxX ||
+        maxTriangleY < bounds.minY ||
+        minTriangleY > bounds.maxY
+      ) return false;
+      if (
+        pointInside(bounds, ax, ay) ||
+        pointInside(bounds, bx, by) ||
+        pointInside(bounds, cx, cy)
+      ) return true;
+      var left = bounds.minX;
+      var right = bounds.maxX;
+      var top = bounds.minY;
+      var bottom = bounds.maxY;
+      if (
+        pointInTriangle(left, top, ax, ay, bx, by, cx, cy) ||
+        pointInTriangle(right, top, ax, ay, bx, by, cx, cy) ||
+        pointInTriangle(right, bottom, ax, ay, bx, by, cx, cy) ||
+        pointInTriangle(left, bottom, ax, ay, bx, by, cx, cy)
+      ) return true;
+      var edges = [
+        [ax, ay, bx, by],
+        [bx, by, cx, cy],
+        [cx, cy, ax, ay]
+      ];
+      for (var edgeIndex = 0; edgeIndex < edges.length; edgeIndex++) {
+        var edge = edges[edgeIndex];
+        if (
+          segmentsIntersect(edge[0], edge[1], edge[2], edge[3], left, top, right, top) ||
+          segmentsIntersect(edge[0], edge[1], edge[2], edge[3], right, top, right, bottom) ||
+          segmentsIntersect(edge[0], edge[1], edge[2], edge[3], right, bottom, left, bottom) ||
+          segmentsIntersect(edge[0], edge[1], edge[2], edge[3], left, bottom, left, top)
+        ) return true;
+      }
+      return false;
+    }
+
+    function meshOccludesBounds(mesh, bounds, targetDepth) {
+      if (
+        !mesh ||
+        !mesh.visible ||
+        !mesh.geometry ||
+        !mesh.material ||
+        mesh.material.visible === false ||
+        mesh.material.opacity === 0 ||
+        bounds.maxX <= bounds.minX ||
+        bounds.maxY <= bounds.minY
+      ) return false;
+      var positionAttribute = mesh.geometry.getAttribute('position');
+      if (!positionAttribute) return false;
+      var indexAttribute = mesh.geometry.index;
+      var triangleIndexCount = indexAttribute
+        ? indexAttribute.count
+        : positionAttribute.count;
+      for (var triangleIndex = 0; triangleIndex + 2 < triangleIndexCount; triangleIndex += 3) {
+        var indexA = indexAttribute ? indexAttribute.getX(triangleIndex) : triangleIndex;
+        var indexB = indexAttribute ? indexAttribute.getX(triangleIndex + 1) : triangleIndex + 1;
+        var indexC = indexAttribute ? indexAttribute.getX(triangleIndex + 2) : triangleIndex + 2;
+        triangleA.fromBufferAttribute(positionAttribute, indexA).applyMatrix4(mesh.matrixWorld).project(proofCamera);
+        triangleB.fromBufferAttribute(positionAttribute, indexB).applyMatrix4(mesh.matrixWorld).project(proofCamera);
+        triangleC.fromBufferAttribute(positionAttribute, indexC).applyMatrix4(mesh.matrixWorld).project(proofCamera);
+        if (
+          Math.min(triangleA.z, triangleB.z, triangleC.z) >=
+          targetDepth - depthEpsilon
+        ) continue;
+        var ax = (triangleA.x * 0.5 + 0.5) * proofWidth;
+        var ay = (-triangleA.y * 0.5 + 0.5) * proofHeight;
+        var bx = (triangleB.x * 0.5 + 0.5) * proofWidth;
+        var by = (-triangleB.y * 0.5 + 0.5) * proofHeight;
+        var cx = (triangleC.x * 0.5 + 0.5) * proofWidth;
+        var cy = (-triangleC.y * 0.5 + 0.5) * proofHeight;
+        if (triangleIntersectsBounds(ax, ay, bx, by, cx, cy, bounds)) return true;
+      }
+      return false;
+    }
+
+    var opticalOccluders = robotRig.gripOpticalOccluders || [];
+    var armOccluders = [];
+    if (robotRig.arm1) {
+      robotRig.arm1.traverse(function (object) {
+        if (
+          object.isMesh &&
+          (object.material === M.robotYellow || object.material === M.robotYellowDark)
+        ) armOccluders.push(object);
+      });
+    }
+    var ribTargetBounds = {
+      minX: ribScreenX - 0.1,
+      maxX: ribScreenX + 0.1,
+      minY: ribScreenY - 0.1,
+      maxY: ribScreenY + 0.1
+    };
+
+    function inspectOpticalOccluder(occluder, names, fallbackName) {
+      if (
+        !occluder ||
+        !occluder.visible ||
+        !occluder.geometry ||
+        !occluder.material ||
+        occluder.material.visible === false ||
+        occluder.material.opacity === 0
+      ) return;
+      var leftTargetHit = meshOccludesBounds(
+        occluder,
+        padOverlap[0],
+        leftPadBounds.minDepth
+      );
+      var rightTargetHit = meshOccludesBounds(
+        occluder,
+        padOverlap[1],
+        rightPadBounds.minDepth
+      );
+      var centralTargetHit = meshOccludesBounds(
+        occluder,
+        centralTargetBounds,
+        centralFaceBounds.minDepth
+      );
+      var ribTargetHit = meshOccludesBounds(
+        occluder,
+        ribTargetBounds,
+        ribWitness.z
+      );
+      if (leftTargetHit || rightTargetHit || centralTargetHit || ribTargetHit) {
+        names.push(occluder.name || fallbackName);
+      }
+    }
+    for (var occluderIndex = 0; occluderIndex < opticalOccluders.length; occluderIndex++) {
+      inspectOpticalOccluder(
+        opticalOccluders[occluderIndex],
+        housingOcclusionNames,
+        'unnamed terminal housing'
+      );
+    }
+    for (var armOccluderIndex = 0; armOccluderIndex < armOccluders.length; armOccluderIndex++) {
+      if (opticalOccluders.indexOf(armOccluders[armOccluderIndex]) !== -1) continue;
+      inspectOpticalOccluder(
+        armOccluders[armOccluderIndex],
+        armOcclusionNames,
+        'unnamed yellow link mesh'
+      );
+    }
+    ribWitnessVisible =
+      ribWitnessVisible &&
+      housingOcclusionNames.length === 0 &&
+      armOcclusionNames.length === 0;
+
+    // Retain the existing physical 42.7 mm pad/tab land while changing only
+    // the equivalent wrist branch. This is the same centerline proof used when
+    // the live custody attach occurs.
+    var leftPadWorld = new THREE.Vector3();
+    var rightPadWorld = new THREE.Vector3();
+    var leftTabWorld = new THREE.Vector3(-CAST_TAB_CENTER_X, 0, 0)
+      .applyMatrix4(plaqueWorldMatrix);
+    var rightTabWorld = new THREE.Vector3(CAST_TAB_CENTER_X, 0, 0)
+      .applyMatrix4(plaqueWorldMatrix);
+    robotRig.leftJawPad.getWorldPosition(leftPadWorld);
+    robotRig.rightJawPad.getWorldPosition(rightPadWorld);
+    var jawAxis = new THREE.Vector3()
+      .subVectors(rightPadWorld, leftPadWorld)
+      .normalize();
+    var tabDelta = new THREE.Vector3();
+    var directCenterErrors = [
+      Math.abs(tabDelta.subVectors(leftTabWorld, leftPadWorld).dot(jawAxis)),
+      Math.abs(tabDelta.subVectors(rightTabWorld, rightPadWorld).dot(jawAxis))
+    ];
+    var crossedCenterErrors = [
+      Math.abs(tabDelta.subVectors(rightTabWorld, leftPadWorld).dot(jawAxis)),
+      Math.abs(tabDelta.subVectors(leftTabWorld, rightPadWorld).dot(jawAxis))
+    ];
+    var centerErrors =
+      crossedCenterErrors[0] + crossedCenterErrors[1] <
+      directCenterErrors[0] + directCenterErrors[1]
+        ? crossedCenterErrors
+        : directCenterErrors;
+    var contactHalfSpan =
+      CAST_TAB_WIDTH * CAST_PLAQUE_SCALE * 0.5 + 0.055 * 0.5;
+    var physicalOverlap = Math.max(
+      0,
+      Math.min(
+        contactHalfSpan - centerErrors[0],
+        contactHalfSpan - centerErrors[1]
+      )
+    );
+    var tcpError = castTcpError(CAST_PICK_TARGET);
+    var valid =
+      tcpError <= 0.00001 &&
+      padOverlap[0].visible >= 4.5 &&
+      padOverlap[1].visible >= 4.5 &&
+      centralVisibleSpan >= 8 &&
+      ribWitnessVisible &&
+      housingOcclusionNames.length === 0 &&
+      armOcclusionNames.length === 0 &&
+      physicalOverlap >= 0.04;
+
+    startupDiagnostics.gripOpticalValid = valid;
+    startupDiagnostics.gripPadOverlapPx = Object.freeze([
+      Number(padOverlap[0].visible.toFixed(2)),
+      Number(padOverlap[1].visible.toFixed(2))
+    ]);
+    startupDiagnostics.gripCentralVisibleSpanPx = Number(
+      centralVisibleSpan.toFixed(2)
+    );
+    startupDiagnostics.gripRibWitnessVisible = ribWitnessVisible;
+    startupDiagnostics.gripPhysicalOverlapMm = Number(
+      (physicalOverlap * 1000).toFixed(1)
+    );
+    startupDiagnostics.gripHousingOcclusionCount = housingOcclusionNames.length;
+    startupDiagnostics.gripHousingOcclusionNames = Object.freeze(
+      housingOcclusionNames.slice()
+    );
+    startupDiagnostics.gripArmOcclusionCount = armOcclusionNames.length;
+    startupDiagnostics.gripArmOcclusionNames = Object.freeze(
+      armOcclusionNames.slice()
+    );
+
+    castingRig.clampDrive.apply(savedClampStroke);
+    applyEjectorStroke(savedEjectorAmount);
+    applyPose(savedPose);
+    scene.updateMatrixWorld(true);
+    if (window.console) {
+      if (console.assert) {
+        console.assert(
+          valid,
+          'GRIP locked-camera pad/tab visibility proof failed',
+          startupDiagnostics.gripPadOverlapPx,
+          startupDiagnostics.gripCentralVisibleSpanPx,
+          startupDiagnostics.gripPhysicalOverlapMm,
+          housingOcclusionNames,
+          armOcclusionNames
+        );
+      }
+      if (valid && console.info) {
+        console.info(
+          'GRIP optical proof: pad/tab overlaps ' +
+            startupDiagnostics.gripPadOverlapPx.join('/') +
+            ' px; central T-rib opening ' +
+            startupDiagnostics.gripCentralVisibleSpanPx.toFixed(1) +
+            ' px; physical land ' +
+            startupDiagnostics.gripPhysicalOverlapMm.toFixed(1) + ' mm'
+        );
+      }
+    }
+    return valid;
+  }
+
   function validateProjectedAutoClearance() {
     if (!robotRig || !robotRig.arm2) return false;
     var proofWidth = 1420;
@@ -5437,8 +13756,11 @@
       0.08,
       70
     );
-    proofCamera.position.set(0, 2.35, 7.15);
-    proofCamera.lookAt(new THREE.Vector3(0.35, 2.12, -5.7));
+    proofCamera.position
+      .copy(PROCESS_CAMERA_DIRECTION)
+      .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
+      .add(PROCESS_CAMERA_TARGET);
+    proofCamera.lookAt(PROCESS_CAMERA_TARGET);
     proofCamera.updateProjectionMatrix();
     proofCamera.updateMatrixWorld(true);
 
@@ -5555,14 +13877,86 @@
       });
     }
 
+    // At the authored dwell, project the actual terminal subtree against the
+    // two actual die-face meshes. This is optical composition only: no world
+    // collision datum or service pose is altered or relaxed.
+    applyPose(HERO_POSE);
+    robotRig.root.updateMatrixWorld(true);
+    castingRig.group.updateMatrixWorld(true);
+    function projectedObjectBounds(object) {
+      var worldBounds = new THREE.Box3().setFromObject(object);
+      var screenBounds = {
+        minX: Infinity,
+        maxX: -Infinity,
+        minY: Infinity,
+        maxY: -Infinity
+      };
+      for (var projectedIndex = 0; projectedIndex < 8; projectedIndex++) {
+        worldCorner.set(
+          projectedIndex & 1 ? worldBounds.max.x : worldBounds.min.x,
+          projectedIndex & 2 ? worldBounds.max.y : worldBounds.min.y,
+          projectedIndex & 4 ? worldBounds.max.z : worldBounds.min.z
+        );
+        projectedCorner.copy(worldCorner).project(proofCamera);
+        var projectedX = (projectedCorner.x + 1) * proofWidth * 0.5;
+        var projectedY = (1 - projectedCorner.y) * proofHeight * 0.5;
+        screenBounds.minX = Math.min(screenBounds.minX, projectedX);
+        screenBounds.maxX = Math.max(screenBounds.maxX, projectedX);
+        screenBounds.minY = Math.min(screenBounds.minY, projectedY);
+        screenBounds.maxY = Math.max(screenBounds.maxY, projectedY);
+      }
+      return screenBounds;
+    }
+    var terminalBounds = projectedObjectBounds(robotRig.wristRoll);
+    function projectedJointPoint(object) {
+      object.getWorldPosition(worldCorner);
+      projectedCorner.copy(worldCorner).project(proofCamera);
+      return [
+        (projectedCorner.x + 1) * proofWidth * 0.5,
+        (1 - projectedCorner.y) * proofHeight * 0.5
+      ];
+    }
+    startupDiagnostics.heroJointScreenPoints = [
+      projectedJointPoint(robotRig.shoulder),
+      projectedJointPoint(robotRig.elbow),
+      projectedJointPoint(robotRig.j4Roll),
+      projectedJointPoint(robotRig.wristRoll),
+      projectedJointPoint(robotRig.gripperTip)
+    ];
+    startupDiagnostics.heroTerminalScreenBounds = terminalBounds;
+    var fixedDieBounds = projectedObjectBounds(castingRig.pressAnatomy.fixedDieFaceRim);
+    var movingDieBounds = projectedObjectBounds(castingRig.pressAnatomy.movingDieFaceRim);
+    var dieFaceBounds = {
+      minX: Math.min(fixedDieBounds.minX, movingDieBounds.minX),
+      maxX: Math.max(fixedDieBounds.maxX, movingDieBounds.maxX),
+      minY: Math.min(fixedDieBounds.minY, movingDieBounds.minY),
+      maxY: Math.max(fixedDieBounds.maxY, movingDieBounds.maxY)
+    };
+    var terminalDieDx = Math.max(
+      terminalBounds.minX - dieFaceBounds.maxX,
+      dieFaceBounds.minX - terminalBounds.maxX,
+      0
+    );
+    var terminalDieDy = Math.max(
+      terminalBounds.minY - dieFaceBounds.maxY,
+      dieFaceBounds.minY - terminalBounds.maxY,
+      0
+    );
+    var terminalDieSeparation = Math.sqrt(
+      terminalDieDx * terminalDieDx + terminalDieDy * terminalDieDy
+    );
+
     applyPose(savedPose);
     robotRig.root.updateMatrixWorld(true);
     var valid =
       minimumClearance >= requiredClearance &&
+      terminalDieSeparation >= 24 &&
       AUTO_HERO_DWELL_SECONDS >= 1.5 &&
-      AUTO_HERO_DWELL_SECONDS <= 2.0 &&
+      AUTO_HERO_DWELL_SECONDS <= 1.8 &&
       heroDwellPoseError <= 0.000001;
     startupDiagnostics.projectedMinimumClearancePx = minimumClearance;
+    startupDiagnostics.heroTerminalDieSeparationPx = terminalDieSeparation;
+    startupDiagnostics.heroTerminalDieSeparationValid = terminalDieSeparation >= 24;
     if (window.console) {
       if (console.assert) {
         console.assert(
@@ -5571,6 +13965,7 @@
           minimumClearance,
           minimumPhase,
           minimumPart
+          ,terminalDieSeparation
         );
       }
       if (valid && console.info) {
@@ -5599,7 +13994,7 @@
     return valid;
   }
 
-  function updateProduction(delta) {
+  function updateCncProductionLegacy(delta) {
     var previousPhase = productionClock;
     productionClock = (productionClock + delta) % AUTO_CYCLE_SECONDS;
     var phase = productionClock;
@@ -5688,6 +14083,105 @@
     }
   }
 
+  function proveBootstrapChargeInstantly() {
+    if (!castingRig || castingChargeReady()) return;
+    castingRig.ladleSupport.applyJoints(
+      castingRig.ladleSupport.readyJoints,
+      castingRig.ladleSupport.readyJoints,
+      1,
+      0,
+      'bootstrap-ready'
+    );
+    castingRig.ladleMetal.visible = true;
+    castingRig.ladleHome = true;
+    castingRig.chargeLoaded = true;
+    castingChargeLoaded = true;
+    castingBootChargeComplete = true;
+    updateMetalWitness(0);
+    syncCastingChargeUi();
+  }
+
+  function updateProduction(delta) {
+    var previousPhase = productionClock;
+    var chargeWasReady = castingChargeReady();
+    productionClock = (productionClock + delta) % AUTO_CYCLE_SECONDS;
+    var phase = productionClock;
+
+    if (crossedAutoPhase(previousPhase, phase, AUTO_HERO_PHASE_START)) {
+      autoHeroLoopCount += 1;
+      autoHeroDwellActive = true;
+      autoHeroDwellEnteredAt =
+        simulationClock - Math.max(0, phase - AUTO_HERO_PHASE_START);
+      autoHeroCurrentPoseError = 0;
+      autoHeroMaxPoseError = 0;
+    }
+
+    var heroDwellNow = isAutoHeroDwellPhase(phase);
+    applyPose(productionPoseAt(phase));
+    autoHeroCurrentPoseError = heroDwellNow ? autoHeroPoseError(currentPose) : 0;
+    if (heroDwellNow) {
+      autoHeroMaxPoseError = Math.max(autoHeroMaxPoseError, autoHeroCurrentPoseError);
+    } else if (autoHeroDwellActive) {
+      autoHeroLastDuration = Math.max(
+        0,
+        simulationClock -
+          Math.max(0, phase - AUTO_HERO_PHASE_END) -
+          autoHeroDwellEnteredAt
+      );
+      autoHeroLastMaxPoseError = autoHeroMaxPoseError;
+      autoHeroCompletedDwells += 1;
+      autoHeroDwellActive = false;
+    }
+    setStacklight(chargeWasReady ? 'run' : 'hold');
+    if (!castingRig) return;
+
+    castingRig.clampDrive.apply(0);
+    castingRig.clampProved = false;
+    castingRig.clampReleased = true;
+    applyEjectorStroke(0);
+    castingRig.plunger.position.x = castingRig.plungerHomeX;
+    castingRig.runnerGlow.visible = false;
+    castingSteam.visible = false;
+    castingRig.sleevePool.visible = false;
+    castingGlow.intensity = 0.14;
+    updateMoltenStream(false);
+    updateShotActuatorWitness(0);
+
+    if (!castingBootChargeComplete) {
+      var chargeProgress = clamp(simulationClock / 1.8, 0, 1);
+      castingRig.ladleSupport.applyJoints(
+        castingRig.ladleSupport.furnaceJoints,
+        castingRig.ladleSupport.readyJoints,
+        chargeProgress,
+        0,
+        'bootstrap-charge'
+      );
+      castingRig.ladleMetal.visible = true;
+      castingRig.ladleHome = chargeProgress >= 1;
+      castingRig.chargeLoaded = true;
+      castingChargeLoaded = true;
+      if (chargeProgress >= 1) castingBootChargeComplete = true;
+    } else {
+      castingRig.ladleSupport.applyJoints(
+        castingRig.ladleSupport.readyJoints,
+        castingRig.ladleSupport.readyJoints,
+        1,
+        0,
+        'ready-hold'
+      );
+      castingRig.ladleMetal.visible = true;
+      castingRig.ladleHome = true;
+      castingRig.chargeLoaded = true;
+      castingChargeLoaded = true;
+    }
+
+    if (!chargeWasReady && castingChargeReady()) {
+      syncCastingChargeUi();
+    }
+    updateMetalWitness(0);
+
+  }
+
   function updateMachiningSpray(phase, visible) {
     if (!machiningSpray) return;
     machiningSpray.visible = visible;
@@ -5742,17 +14236,20 @@
     var duration = activeStateDuration;
     var elapsed = simulationClock - stateEntered;
     var progress = clamp(elapsed / duration, 0, 1);
+    var castingCartesianPose = castingCartesianPoseAt(state, progress);
     // A request can arrive at any point in AUTO. Follow the already-proved
     // production trajectory to its nearest SAFE boundary instead of blending
     // directly across the guard from an arbitrary live pose.
     applyPose(
-      state === STATE.REQUESTED
+      castingCartesianPose ||
+      (state === STATE.REQUESTED
         ? requestEgressPoseAt(progress)
         : state === STATE.RESUME_CHECKPOINT
           ? requestEgressPoseAt(1 - progress)
-        : interpolatePose(transitionPose, transitionTarget, progress)
+        : interpolatePose(transitionPose, transitionTarget, progress))
     );
     updateTransferHardware(progress);
+    updateCastingHardware(progress);
 
     if (state === STATE.RELEASE_SETTLE && activeTraveler && !activeTraveler.attached) {
       updateRestowTraveler(progress);
@@ -5793,9 +14290,9 @@
     pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     pointerDirty = true;
-    // Pointer raycasts are frame-coalesced. In settled HELD this explicitly
-    // wakes one WebGL frame; during motion the pending rAF absorbs the request.
-    requestSceneRender("pointer");
+    // Raycast on the next frame; redraw only when updateHover finds a change.
+    markRenderWake("pointer");
+    scheduleFrame();
   }
 
   function enabledHmiHit() {
@@ -5942,10 +14439,3784 @@
     requestSceneRender();
   });
 
-  function runRackStartupSanity() {
+  function validateCastingFixture() {
+    if (!castingRig || !robotRig || travelers.length !== STATIONS.length) return false;
+    var issues = [];
+    var seen = {};
+    for (var recipeIndex = 0; recipeIndex < travelers.length; recipeIndex++) {
+      var traveler = travelers[recipeIndex];
+      if (traveler.id !== STATIONS[recipeIndex].id || seen[traveler.id]) {
+        issues.push('seven-recipe identity mapping is not one-to-one');
+      }
+      seen[traveler.id] = true;
+      if (traveler.group.visible || traveler.custody !== 'recipe-library') {
+        issues.push('recipe ' + traveler.id + ' is visibly preloaded');
+      }
+      if (
+        traveler.castLocalBounds !== CAST_PLAQUE_LOCAL_BOUNDS ||
+        traveler.tabCenterX !== CAST_TAB_CENTER_X ||
+        traveler.tabWidth !== CAST_TAB_WIDTH ||
+        traveler.runnerTipX !== CAST_RUNNER_TIP_X ||
+        traveler.runnerTipY !== CAST_RUNNER_TIP_Y
+      ) {
+        issues.push('recipe ' + traveler.id + ' lost its shared payload/tab geometry contract');
+      }
+      if (!validateStationReach(traveler.id)) {
+        issues.push('recipe ' + traveler.id + ' failed cast TCP or jaw proof');
+      }
+    }
+
+    var pressMaxX = 4.98;
+    var pressMaxZ = -4.67;
+    var sideMargin = SIDE_GUARD_X - pressMaxX;
+    var frontMargin = FRONT_GUARD_Z - pressMaxZ;
+    if (sideMargin < 0.35) issues.push('press-to-side-guard margin is below 350 mm');
+    if (frontMargin < 2.2) issues.push('press-to-front-guard margin is below 2200 mm');
+    if (
+      CAST_PICK_TARGET.distanceTo(
+        new THREE.Vector3(mirrorDcmWorldX(2.98), 2.37, -5.26)
+      ) > 0.001
+    ) {
+      issues.push('ejected plaque TCP moved off its surveyed target');
+    }
+    if (
+      CAST_PLAQUE_VISUAL_BOUNDS.minX < CAST_PLAQUE_LOCAL_BOUNDS.minX ||
+      CAST_PLAQUE_VISUAL_BOUNDS.maxX > CAST_PLAQUE_LOCAL_BOUNDS.maxX ||
+      CAST_PLAQUE_VISUAL_BOUNDS.minY < CAST_PLAQUE_LOCAL_BOUNDS.minY ||
+      CAST_PLAQUE_VISUAL_BOUNDS.maxY > CAST_PLAQUE_LOCAL_BOUNDS.maxY ||
+      CAST_PLAQUE_VISUAL_BOUNDS.minZ < CAST_PLAQUE_LOCAL_BOUNDS.minZ ||
+      CAST_PLAQUE_VISUAL_BOUNDS.maxZ > CAST_PLAQUE_LOCAL_BOUNDS.maxZ
+    ) {
+      issues.push('visible casting geometry escaped the existing conservative payload OBB');
+    }
+    if (
+      CAST_RUNNER_TIP_X + 0.06 > CAST_PLAQUE_VISUAL_BOUNDS.maxX ||
+      CAST_RUNNER_TIP_X - 0.06 < CAST_PLAQUE_VISUAL_BOUNDS.minX ||
+      CAST_RUNNER_TIP_Y < CAST_PLAQUE_VISUAL_BOUNDS.minY ||
+      0.046 + 0.004 > CAST_PLAQUE_VISUAL_BOUNDS.maxZ
+    ) {
+      issues.push('casting identity runner or coarse rib escaped its frozen visible/OBB bounds');
+    }
+    var valid = issues.length === 0;
+    if (window.console) {
+      if (console.assert) console.assert(valid, 'Casting fixture proof failed', issues);
+      if (valid && console.info) {
+        console.info(
+          'Casting fixture proof: 7/7 hidden recipes; ' +
+          Math.round(sideMargin * 1000) +
+          ' mm side-guard margin; die-normal and tab-grip TCPs reachable'
+        );
+      }
+    }
+    return valid;
+  }
+
+  function validatePressHardSurfaceAnatomy() {
+    if (!castingRig || !castingRig.pressAnatomy) return false;
+    var anatomy = castingRig.pressAnatomy;
+    var issues = [];
+    var addedObjects = anatomy.addedObjects || [];
+    var macroAddedObjects = anatomy.macroAddedObjects || [];
+    if (
+      addedObjects.length !== anatomy.addedDraws ||
+      anatomy.addedDraws !== 12 ||
+      anatomy.fastenerCount !== 12 ||
+      anatomy.bearingCount !== 8 ||
+      anatomy.instancedBatches !== 8 ||
+      anatomy.clampServiceAddedDraws !== 4
+    ) {
+      issues.push('press anatomy draw, bearing, or fastener budget changed');
+    }
+    if (
+      Math.abs(anatomy.clampServiceBodyLength - 1.6) > 0.000001 ||
+      Math.abs(anatomy.clampServiceBodyHeight - 0.76) > 0.000001 ||
+      anatomy.clampServiceBodyAspectRatio <= 2 ||
+      anatomy.clampServiceVentSlots !== 6
+    ) {
+      issues.push('long-low clamp body lost its reference-driven two-to-one macro proportion');
+    }
+    if (
+      macroAddedObjects.length !== anatomy.macroAddedDraws ||
+      anatomy.macroAddedDraws !== 7 ||
+      anatomy.macroAddedShadowCasters !== 2 ||
+      anatomy.tieBarDrawsBefore !== 20 ||
+      anatomy.tieBarDrawsAfter !== 3 ||
+      anatomy.netDrawDelta !== -10
+    ) {
+      issues.push('macro load-path draw or shadow budget changed');
+    }
+    if (
+      !anatomy.fixedPlatenShell.isInstancedMesh ||
+      !anatomy.movingPlatenShell.isInstancedMesh ||
+      !anatomy.fixedPlatenInnerFrame.isInstancedMesh ||
+      !anatomy.movingPlatenInnerFrame.isInstancedMesh ||
+      anatomy.fixedPlatenShell.count !== 4 ||
+      anatomy.movingPlatenShell.count !== 4 ||
+      anatomy.fixedPlatenInnerFrame.count !== 4 ||
+      anatomy.movingPlatenInnerFrame.count !== 4 ||
+      anatomy.fixedPlatenLoadFlowRibs.count !== 2 ||
+      anatomy.movingPlatenLoadFlowRibs.count !== 2 ||
+      anatomy.fixedPlatenInnerFrame.material !== M.machineDark ||
+      anatomy.movingPlatenInnerFrame.material !== M.machineDark ||
+      anatomy.fixedDieFaceRim.geometry.userData.dcmBeveledPerimeter !== true ||
+      anatomy.movingDieFaceRim.geometry !== anatomy.fixedDieFaceRim.geometry ||
+      anatomy.fixedDieFaceRim.material !== M.burnished ||
+      anatomy.movingDieFaceRim.material !== M.burnished ||
+      anatomy.platenFrameAddedDraws !== 6 ||
+      anatomy.platenFrameNetDrawDelta !== 2
+    ) {
+      issues.push('massive cast C-frame platen anatomy lost its bounded batched contract');
+    }
+    if (
+      !anatomy.shotSleeveSaddles ||
+      !anatomy.shotSleeveSaddles.isInstancedMesh ||
+      anatomy.shotSleeveSaddles.count !== 2 ||
+      anatomy.shotLoadPathAddedDraws !== (anatomy.shotSleeveSaddles ? 4 : 5) ||
+      anatomy.shotLoadPathAddedShadowCasters !== 1 ||
+      anatomy.shotSleeveSaddles.parent !== castingRig.group ||
+      anatomy.shotCylinderFoot.parent !== castingRig.group ||
+      anatomy.shotCylinderGusset.parent !== castingRig.group
+    ) {
+      issues.push('shot load-path supports lost their bounded instanced draw/parent contract');
+    }
+    var hydraulicPowerPackObjects = anatomy.hydraulicPowerPackObjects || [];
+    if (
+      hydraulicPowerPackObjects.length !== 6 ||
+      anatomy.hydraulicPowerPackAddedDraws !== 6 ||
+      anatomy.hydraulicPowerPackAddedShadowCasters !== 1 ||
+      !anatomy.hydraulicPackBody ||
+      !anatomy.hydraulicPackLegs ||
+      !anatomy.hydraulicAccumulatorBank ||
+      !anatomy.hydraulicPackFittings ||
+      !anatomy.hydraulicPressureHose ||
+      !anatomy.hydraulicReturnHose ||
+      !anatomy.hydraulicPackLegs.isInstancedMesh ||
+      !anatomy.hydraulicAccumulatorBank.isInstancedMesh ||
+      !anatomy.hydraulicPackFittings.isInstancedMesh ||
+      anatomy.hydraulicPackLegs.count !== 2 ||
+      anatomy.hydraulicAccumulatorBank.count !== 6 ||
+      anatomy.hydraulicPackFittings.count !== 4 ||
+      anatomy.hydraulicPackBody.parent !== castingRig.group ||
+      anatomy.hydraulicPackLegs.parent !== castingRig.group ||
+      anatomy.hydraulicAccumulatorBank.parent !== castingRig.group ||
+      anatomy.hydraulicPackFittings.parent !== castingRig.group ||
+      anatomy.hydraulicPressureHose.parent !== castingRig.group ||
+      anatomy.hydraulicReturnHose.parent !== castingRig.group
+    ) {
+      issues.push('injection hydraulic power pack lost its supported six-draw parent contract');
+    }
+    for (var anatomyObjectIndex = 0; anatomyObjectIndex < addedObjects.length; anatomyObjectIndex++) {
+      if (!addedObjects[anatomyObjectIndex]) {
+        issues.push('press anatomy contains a detached or unbuilt detail mesh');
+        break;
+      }
+    }
+    for (var macroObjectIndex = 0; macroObjectIndex < macroAddedObjects.length; macroObjectIndex++) {
+      if (!macroAddedObjects[macroObjectIndex]) {
+        issues.push('macro load path contains a detached or unbuilt mesh');
+        break;
+      }
+    }
+    if (
+      !anatomy.toggleLoadGussets ||
+      !anatomy.fixedBearingLands ||
+      !anatomy.movingBearingLands ||
+      !anatomy.fasteners ||
+      !anatomy.toggleLoadGussets.isInstancedMesh ||
+      !anatomy.fixedBearingLands.isInstancedMesh ||
+      !anatomy.movingBearingLands.isInstancedMesh ||
+      !anatomy.fasteners.isInstancedMesh ||
+      anatomy.toggleLoadGussets.count !== 2 ||
+      anatomy.fixedBearingLands.count !== 4 ||
+      anatomy.movingBearingLands.count !== 4 ||
+      anatomy.fasteners.count !== 12
+    ) {
+      issues.push('press repeated hardware is not retained in four instanced batches');
+    }
+    var tieTerminationBatches = anatomy.tieTerminationBatches || [];
+    var tieTerminationHardwareValid =
+      tieTerminationBatches.length === 8 &&
+      anatomy.tieTerminationAddedDraws === 6 &&
+      anatomy.tieTerminationCount === 32;
+    for (var terminationBatchIndex = 0; terminationBatchIndex < tieTerminationBatches.length; terminationBatchIndex++) {
+      var terminationBatch = tieTerminationBatches[terminationBatchIndex];
+      if (!terminationBatch || !terminationBatch.isInstancedMesh || terminationBatch.count !== 4) {
+        tieTerminationHardwareValid = false;
+        break;
+      }
+      var expectedTerminationParent = terminationBatchIndex % 2 === 0
+        ? castingRig.fixedPlaten
+        : castingRig.movingHalf;
+      if (terminationBatch.parent !== expectedTerminationParent) {
+        tieTerminationHardwareValid = false;
+        break;
+      }
+    }
+    if (!tieTerminationHardwareValid) {
+      issues.push('tie-bar boss, bushing, reaction-nut, or wipe-collar batch contract changed');
+    }
+    if (
+      !anatomy.movingPlatenGuideWays ||
+      !anatomy.movingPlatenGuideWearStrips ||
+      !anatomy.movingPlatenSlideShoes ||
+      !anatomy.movingPlatenShoeWipers ||
+      !anatomy.movingPlatenBearingShadows ||
+      !anatomy.movingPlatenGuideWays.isInstancedMesh ||
+      !anatomy.movingPlatenGuideWearStrips.isInstancedMesh ||
+      !anatomy.movingPlatenSlideShoes.isInstancedMesh ||
+      !anatomy.movingPlatenShoeWipers.isInstancedMesh ||
+      !anatomy.movingPlatenBearingShadows.isInstancedMesh ||
+      anatomy.movingPlatenGuideWays.count !== 2 ||
+      anatomy.movingPlatenGuideWearStrips.count !== 2 ||
+      anatomy.movingPlatenSlideShoes.count !== 4 ||
+      anatomy.movingPlatenShoeWipers.count !== 4 ||
+      anatomy.movingPlatenBearingShadows.count !== 4 ||
+      anatomy.movingPlatenGuideWays.parent !== castingRig.group ||
+      anatomy.movingPlatenGuideWearStrips.parent !== castingRig.group ||
+      anatomy.movingPlatenSlideShoes.parent !== castingRig.movingHalf ||
+      anatomy.movingPlatenShoeWipers.parent !== castingRig.movingHalf ||
+      anatomy.movingPlatenBearingShadows.parent !== castingRig.movingHalf ||
+      anatomy.movingPlatenGuideAddedDraws !== 5
+    ) {
+      issues.push('moving-platen guide ways, shoes, or wipers lost their bounded instanced contract');
+    }
+    if (
+      !anatomy.fixedPlatenSole ||
+      !anatomy.fixedPlatenLoadRibs ||
+      !anatomy.fixedPlatenKeepers ||
+      !anatomy.fixedPlatenAnchors ||
+      !anatomy.fixedPlatenRibBearingShadow ||
+      anatomy.fixedPlatenAnchorageMeshes.length !== 5 ||
+      anatomy.fixedPlatenAnchorageAddedDraws !== 5 ||
+      anatomy.fixedPlatenSole.parent !== castingRig.fixedPlaten ||
+      anatomy.fixedPlatenLoadRibs.parent !== castingRig.fixedPlaten ||
+      anatomy.fixedPlatenKeepers.parent !== castingRig.fixedPlaten ||
+      anatomy.fixedPlatenAnchors.parent !== castingRig.fixedPlaten ||
+      anatomy.fixedPlatenRibBearingShadow.parent !== castingRig.fixedPlaten ||
+      !anatomy.fixedPlatenSole.isInstancedMesh ||
+      !anatomy.fixedPlatenLoadRibs.isInstancedMesh ||
+      !anatomy.fixedPlatenKeepers.isInstancedMesh ||
+      !anatomy.fixedPlatenAnchors.isInstancedMesh ||
+      anatomy.fixedPlatenSole.count !== 2 ||
+      anatomy.fixedPlatenLoadRibs.count !== 2 ||
+      anatomy.fixedPlatenKeepers.count !== 2 ||
+      anatomy.fixedPlatenAnchors.count !== 4 ||
+      anatomy.fixedPlatenSole.material !== M.machineDark ||
+      anatomy.fixedPlatenLoadRibs.material !== M.machineDark ||
+      anatomy.fixedPlatenKeepers.material !== M.burnished ||
+      anatomy.fixedPlatenAnchors.material !== M.burnished ||
+      anatomy.fixedPlatenRibBearingShadow.material !== M.contactAo ||
+      anatomy.fixedPlatenRibBearingShadow.castShadow
+    ) {
+      issues.push('fixed-platen sole, load-rib, keeper, or anchor contract changed');
+    }
+    if (
+      !anatomy.bedSideWebs ||
+      !anatomy.structuralTieBars ||
+      !anatomy.tieBarEndNuts ||
+      !anatomy.tieBarGreaseCollars ||
+      !anatomy.bedSideWebs.isInstancedMesh ||
+      !anatomy.structuralTieBars.isInstancedMesh ||
+      !anatomy.tieBarEndNuts.isInstancedMesh ||
+      !anatomy.tieBarGreaseCollars.isInstancedMesh ||
+      anatomy.bedSideWebs.count !== 4 ||
+      anatomy.structuralTieBars.count !== 4 ||
+      anatomy.tieBarEndNuts.count !== 8 ||
+      anatomy.tieBarGreaseCollars.count !== 8
+    ) {
+      issues.push('boxed bed or structural tie-bar stacks lost their batched mapping');
+    }
+    if (
+      anatomy.rearToggleShell.parent !== castingRig.group ||
+      anatomy.clampServiceSkirt.parent !== castingRig.group ||
+      anatomy.clampServiceTopRail.parent !== castingRig.group ||
+      anatomy.clampServicePosts.parent !== castingRig.group ||
+      anatomy.clampServiceHandles.parent !== castingRig.group ||
+      anatomy.serviceFrame.parent !== castingRig.group ||
+      anatomy.serviceRecess.parent !== castingRig.group ||
+      anatomy.serviceCover.parent !== castingRig.group ||
+      anatomy.toggleLoadGussets.parent !== castingRig.group ||
+      anatomy.fixedBearingLands.parent !== castingRig.fixedPlaten ||
+      anatomy.movingBearingLands.parent !== castingRig.movingHalf ||
+      anatomy.clampReducerLand.parent !== castingRig.clampToggle ||
+      anatomy.fasteners.parent !== castingRig.group
+    ) {
+      issues.push('press hard-surface detail lost its physical parent');
+    }
+    if (
+      !anatomy.serviceRecess.isInstancedMesh ||
+      !anatomy.serviceCover.isInstancedMesh ||
+      !anatomy.clampServicePosts.isInstancedMesh ||
+      !anatomy.clampServiceHandles.isInstancedMesh ||
+      anatomy.serviceRecess.count !== 8 ||
+      anatomy.serviceCover.count !== 2 ||
+      anatomy.clampServicePosts.count !== 2 ||
+      anatomy.clampServiceHandles.count !== 2 ||
+      anatomy.clampServiceSkirt.material !== M.machineDark ||
+      anatomy.clampServiceTopRail.material !== M.pressWhite ||
+      anatomy.serviceRecess.material !== M.machineDark ||
+      anatomy.serviceCover.material !== M.pressWhite ||
+      anatomy.clampServiceHandles.material !== M.burnished
+    ) {
+      issues.push('long clamp enclosure lost its two-panel or bounded material contract');
+    }
+    if (
+      anatomy.foundationBed.parent !== castingRig.group ||
+      anatomy.bedSideWebs.parent !== castingRig.group ||
+      anatomy.fixedPlatenShell.parent !== castingRig.fixedPlaten ||
+      anatomy.fixedPlatenInnerFrame.parent !== castingRig.fixedPlaten ||
+      anatomy.fixedPlatenLoadFlowRibs.parent !== castingRig.fixedPlaten ||
+      anatomy.fixedDieCarrier.parent !== castingRig.fixedPlaten ||
+      anatomy.fixedDieFaceRim.parent !== castingRig.fixedPlaten ||
+      anatomy.shotReactionBracket.parent !== castingRig.fixedPlaten ||
+      anatomy.shotReactionCollar.parent !== castingRig.fixedPlaten ||
+      anatomy.movingPlatenShell.parent !== castingRig.movingHalf ||
+      anatomy.movingPlatenInnerFrame.parent !== castingRig.movingHalf ||
+      anatomy.movingPlatenLoadFlowRibs.parent !== castingRig.movingHalf ||
+      anatomy.movingDieCarrier.parent !== castingRig.movingHalf ||
+      anatomy.movingDieFaceRim.parent !== castingRig.movingHalf ||
+      anatomy.structuralTieBars.parent !== castingRig.group ||
+      anatomy.tieBarEndNuts.parent !== castingRig.group ||
+      anatomy.tieBarGreaseCollars.parent !== castingRig.group
+    ) {
+      issues.push('macro press load path lost its physical parent');
+    }
+    if (
+      anatomy.fixedDieCarrier.parent !== castingRig.fixedPlaten ||
+      anatomy.movingDieCarrier.parent !== castingRig.movingHalf ||
+      anatomy.fixedDieFaceRim.parent !== castingRig.fixedPlaten ||
+      anatomy.movingDieFaceRim.parent !== castingRig.movingHalf ||
+      (anatomy.dieLeaderPins && anatomy.dieLeaderPins.parent !== castingRig.fixedPlaten) ||
+      (anatomy.dieLeaderBushings && anatomy.dieLeaderBushings.parent !== castingRig.movingHalf) ||
+      anatomy.dieToolingAddedDraws !== (
+        anatomy.dieLeaderPins && anatomy.dieLeaderBushings ? 2 : 8
+      ) ||
+      anatomy.dieToolingAddedShadowCasters !== 0
+    ) {
+      issues.push('opposed die tooling lost platen ownership or its bounded draw contract');
+    }
+    if (
+      Math.abs(castingRig.movingHalf.position.x - anatomy.frozenMovingHalfHomeX) > 0.000001 ||
+      Math.abs(castingRig.dieTravel - anatomy.frozenDieTravel) > 0.000001 ||
+      Math.abs(castingRig.fixedPlaten.position.x - anatomy.frozenFixedPlatenX) > 0.000001 ||
+      Math.abs(castingRig.clampToggle.position.x - 1.22) > 0.000001
+    ) {
+      issues.push('press anatomy changed a frozen platen, toggle, or die-travel transform');
+    }
+    function positionMatches(object, frozen) {
+      return !!(
+        object && frozen &&
+        Math.abs(object.position.x - frozen[0]) <= 0.000001 &&
+        Math.abs(object.position.y - frozen[1]) <= 0.000001 &&
+        Math.abs(object.position.z - frozen[2]) <= 0.000001
+      );
+    }
+    if (
+      !positionMatches(castingRig.group, anatomy.frozenPressRoot) ||
+      Math.abs(castingRig.group.scale.x - anatomy.frozenPressScale[0]) > 0.000001 ||
+      Math.abs(castingRig.group.scale.y - anatomy.frozenPressScale[1]) > 0.000001 ||
+      Math.abs(castingRig.group.scale.z - anatomy.frozenPressScale[2]) > 0.000001 ||
+      !positionMatches(anatomy.shotSleeveOuter, anatomy.frozenShotSleeve) ||
+      !positionMatches(anatomy.shotCylinderShell, anatomy.frozenShotCylinder) ||
+      castingRig.plungerHomeX !== anatomy.frozenPlungerEndpoints[0] ||
+      castingRig.plungerSlowX !== anatomy.frozenPlungerEndpoints[1] ||
+      castingRig.plungerFastX !== anatomy.frozenPlungerEndpoints[2]
+    ) {
+      issues.push('press root, shot line, or plunger endpoint moved off its frozen datum');
+    }
+
+    scene.updateMatrixWorld(true);
+    function unionWorldBounds(objects) {
+      var union = new THREE.Box3();
+      union.makeEmpty();
+      for (var objectIndex = 0; objectIndex < objects.length; objectIndex++) {
+        if (!objects[objectIndex]) continue;
+        union.union(new THREE.Box3().setFromObject(objects[objectIndex]));
+      }
+      return union;
+    }
+    function boundsWithin(actual, expected, tolerance) {
+      var margin = tolerance || 0;
+      return (
+        actual.min.x >= expected.min.x - margin &&
+        actual.min.y >= expected.min.y - margin &&
+        actual.min.z >= expected.min.z - margin &&
+        actual.max.x <= expected.max.x + margin &&
+        actual.max.y <= expected.max.y + margin &&
+        actual.max.z <= expected.max.z + margin
+      );
+    }
+    function frozenBoundsRecord(bounds) {
+      return Object.freeze({
+        min: Object.freeze([
+          Number(bounds.min.x.toFixed(3)),
+          Number(bounds.min.y.toFixed(3)),
+          Number(bounds.min.z.toFixed(3))
+        ]),
+        max: Object.freeze([
+          Number(bounds.max.x.toFixed(3)),
+          Number(bounds.max.y.toFixed(3)),
+          Number(bounds.max.z.toFixed(3))
+        ])
+      });
+    }
+
+    var serviceBounds = unionWorldBounds(anatomy.serviceObjects);
+    var rearToggleBounds = new THREE.Box3().setFromObject(anatomy.rearToggleShell);
+    var clampServiceSkirtBounds = new THREE.Box3().setFromObject(anatomy.clampServiceSkirt);
+    var clampServicePanelBounds = unionWorldBounds([
+      anatomy.serviceFrame,
+      anatomy.serviceRecess,
+      anatomy.serviceCover,
+      anatomy.clampServiceHandles
+    ]);
+    var serviceFoundationBounds = new THREE.Box3().setFromObject(anatomy.foundationBed);
+    var serviceMovingPlatenBounds = new THREE.Box3().setFromObject(anatomy.movingPlatenShell);
+    var clampServiceContactError = Math.max(
+      Math.abs(rearToggleBounds.min.y - serviceFoundationBounds.max.y),
+      Math.abs(clampServiceSkirtBounds.min.y - serviceFoundationBounds.max.y)
+    );
+    var clampServicePlatenGap = clampServicePanelBounds.min.z - serviceMovingPlatenBounds.max.z;
+    if (
+      clampServiceContactError > 0.002 ||
+      clampServicePlatenGap < 0.005 ||
+      clampServicePanelBounds.max.z > -4.65 ||
+      clampServicePanelBounds.max.y > 2.9
+    ) {
+      issues.push('long clamp enclosure lost bed contact or moving-platen exterior clearance');
+    }
+    var fixedBearingBounds = unionWorldBounds([anatomy.fixedBearingLands]);
+    var movingBearingBounds = unionWorldBounds([anatomy.movingBearingLands]);
+    var fixedTieTerminationBounds = unionWorldBounds([
+      anatomy.fixedBearingLands,
+      anatomy.fixedTieBushings,
+      anatomy.fixedTieReactionNuts,
+      anatomy.fixedTieWipeCollars
+    ]);
+    var movingTieTerminationBounds = unionWorldBounds([
+      anatomy.movingBearingLands,
+      anatomy.movingTieBushings,
+      anatomy.movingTieReactionNuts,
+      anatomy.movingTieWipeCollars
+    ]);
+    var movingGuideWayBounds = new THREE.Box3().setFromObject(anatomy.movingPlatenGuideWays);
+    var movingGuideWearBounds = new THREE.Box3().setFromObject(anatomy.movingPlatenGuideWearStrips);
+    var movingGuideShoeBounds = new THREE.Box3().setFromObject(anatomy.movingPlatenSlideShoes);
+    var guideContactError = Math.max(
+      Math.abs(movingGuideWayBounds.min.y - 0.54),
+      Math.abs(movingGuideShoeBounds.min.y - movingGuideWearBounds.max.y)
+    );
+    var minimumGuideOverlap = Infinity;
+    var guideStrokeMonotonic = true;
+    var previousGuideSampleX = -Infinity;
+    for (var guideSampleIndex = 0; guideSampleIndex < 65; guideSampleIndex++) {
+      var guideMovingX = castingRig.dieTravel * guideSampleIndex / 64;
+      if (guideMovingX + 0.000001 < previousGuideSampleX) guideStrokeMonotonic = false;
+      previousGuideSampleX = guideMovingX;
+      var guideWayMinX = 0;
+      var guideWayMaxX = 1.9;
+      var shoeCenters = [0.32 + guideMovingX, 0.66 + guideMovingX];
+      for (var guideShoeIndex = 0; guideShoeIndex < shoeCenters.length; guideShoeIndex++) {
+        var shoeMinX = shoeCenters[guideShoeIndex] - 0.12;
+        var shoeMaxX = shoeCenters[guideShoeIndex] + 0.12;
+        var shoeOverlap = Math.max(
+          0,
+          Math.min(guideWayMaxX, shoeMaxX) - Math.max(guideWayMinX, shoeMinX)
+        );
+        minimumGuideOverlap = Math.min(minimumGuideOverlap, shoeOverlap);
+      }
+    }
+    anatomy.movingPlatenGuideContactErrorMm = guideContactError * 1000;
+    anatomy.movingPlatenGuideMinimumOverlapMm = minimumGuideOverlap * 1000;
+    if (
+      guideContactError > 0.002 ||
+      minimumGuideOverlap < 0.2 ||
+      !guideStrokeMonotonic ||
+      Math.abs(movingGuideWayBounds.max.y - 0.58) > 0.002 ||
+      Math.abs(movingGuideWearBounds.max.y - 0.58) > 0.002 ||
+      movingGuideWearBounds.min.y < 0.574 ||
+      Math.abs(movingGuideShoeBounds.min.y - 0.58) > 0.002
+    ) {
+      issues.push('moving platen lost continuous gravity-bearing guide-way contact');
+    }
+    var fixedAnchorageBounds = unionWorldBounds(anatomy.fixedPlatenAnchorageMeshes);
+    var fixedSoleBounds = new THREE.Box3().setFromObject(anatomy.fixedPlatenSole);
+    var fixedRibBounds = new THREE.Box3().setFromObject(anatomy.fixedPlatenLoadRibs);
+    var fixedShellBoundsForAnchorage = new THREE.Box3().setFromObject(anatomy.fixedPlatenShell);
+    var cameraRibMatrix = new THREE.Matrix4();
+    var farRibMatrix = new THREE.Matrix4();
+    anatomy.fixedPlatenLoadRibs.getMatrixAt(0, cameraRibMatrix);
+    anatomy.fixedPlatenLoadRibs.getMatrixAt(1, farRibMatrix);
+    var cameraRibScaleY = Math.sqrt(
+      Math.pow(cameraRibMatrix.elements[4], 2) +
+      Math.pow(cameraRibMatrix.elements[5], 2) +
+      Math.pow(cameraRibMatrix.elements[6], 2)
+    );
+    var farRibScaleY = Math.sqrt(
+      Math.pow(farRibMatrix.elements[4], 2) +
+      Math.pow(farRibMatrix.elements[5], 2) +
+      Math.pow(farRibMatrix.elements[6], 2)
+    );
+    var cameraSideRibDominant =
+      cameraRibMatrix.elements[14] > 0.7 &&
+      farRibMatrix.elements[14] < -0.7 &&
+      cameraRibScaleY >= farRibScaleY * 1.4;
+    var fixedAnchorageContactError = Math.max(
+      Math.abs(fixedSoleBounds.min.y - 0.54),
+      Math.max(0, fixedRibBounds.min.y - fixedSoleBounds.max.y),
+      Math.max(0, fixedShellBoundsForAnchorage.min.y - fixedSoleBounds.max.y)
+    );
+    anatomy.fixedPlatenAnchorageContactErrorMm = fixedAnchorageContactError * 1000;
+    if (
+      fixedAnchorageContactError > 0.002 ||
+      !cameraSideRibDominant
+    ) {
+      issues.push('fixed-platen anchorage lost sole/bed/rib contact or escaped its shell envelope');
+    }
+    var fixedPlatenShellBounds = new THREE.Box3().setFromObject(anatomy.fixedPlatenShell);
+    var movingPlatenShellBounds = new THREE.Box3().setFromObject(anatomy.movingPlatenShell);
+    var terminationMatrix = new THREE.Matrix4();
+    var expectedTieAxes = [
+      [1.19, -0.67],
+      [3.05, -0.67],
+      [1.19, 0.67],
+      [3.05, 0.67]
+    ];
+    var maximumTieCoaxialityError = 0;
+    for (var coaxBatchIndex = 0; coaxBatchIndex < tieTerminationBatches.length; coaxBatchIndex++) {
+      var coaxBatch = tieTerminationBatches[coaxBatchIndex];
+      if (!coaxBatch || !coaxBatch.getMatrixAt) continue;
+      for (var coaxInstanceIndex = 0; coaxInstanceIndex < coaxBatch.count; coaxInstanceIndex++) {
+        coaxBatch.getMatrixAt(coaxInstanceIndex, terminationMatrix);
+        var expectedTieAxis = expectedTieAxes[coaxInstanceIndex];
+        var coaxialityError = Math.sqrt(
+          Math.pow(terminationMatrix.elements[13] - expectedTieAxis[0], 2) +
+          Math.pow(terminationMatrix.elements[14] - expectedTieAxis[1], 2)
+        );
+        maximumTieCoaxialityError = Math.max(maximumTieCoaxialityError, coaxialityError);
+      }
+    }
+    anatomy.tieTerminationMaxCoaxialityErrorMm = maximumTieCoaxialityError * 1000;
+    if (
+      maximumTieCoaxialityError > 0.001 ||
+      !boundsWithin(fixedTieTerminationBounds, fixedPlatenShellBounds, 0.001) ||
+      !boundsWithin(movingTieTerminationBounds, movingPlatenShellBounds, 0.001)
+    ) {
+      issues.push('tie-bar termination stacks lost coaxiality or escaped a frozen platen shell');
+    }
+    var allDetailBounds = unionWorldBounds(addedObjects);
+    var foundationBounds = unionWorldBounds(anatomy.foundationObjects);
+    var fixedLoadPathBounds = unionWorldBounds(anatomy.fixedLoadPathObjects);
+    var movingLoadPathBounds = unionWorldBounds(anatomy.movingLoadPathObjects);
+    var shotSupportBounds = unionWorldBounds(anatomy.shotSupportObjects);
+    var shotLoadPathBounds = unionWorldBounds(anatomy.shotLoadPathObjects);
+    var hydraulicPowerPackBounds = unionWorldBounds(hydraulicPowerPackObjects);
+    var hydraulicPackBodyBounds = new THREE.Box3().setFromObject(anatomy.hydraulicPackBody);
+    var hydraulicPackLegBounds = new THREE.Box3().setFromObject(anatomy.hydraulicPackLegs);
+    var hydraulicProofCamera = new THREE.PerspectiveCamera(51, 652 / 706, 0.08, 70);
+    hydraulicProofCamera.position
+      .copy(PROCESS_CAMERA_DIRECTION)
+      .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
+      .add(PROCESS_CAMERA_TARGET);
+    hydraulicProofCamera.lookAt(PROCESS_CAMERA_TARGET);
+    hydraulicProofCamera.updateMatrixWorld(true);
+    hydraulicProofCamera.updateProjectionMatrix();
+    var hydraulicProjectionMinX = Infinity;
+    var hydraulicProjectionMaxX = -Infinity;
+    var hydraulicProjectionMinY = Infinity;
+    var hydraulicProjectionMaxY = -Infinity;
+    var hydraulicProjectionCorner = new THREE.Vector3();
+    for (var hydraulicCornerIndex = 0; hydraulicCornerIndex < 8; hydraulicCornerIndex++) {
+      hydraulicProjectionCorner.set(
+        hydraulicCornerIndex & 1 ? hydraulicPowerPackBounds.max.x : hydraulicPowerPackBounds.min.x,
+        hydraulicCornerIndex & 2 ? hydraulicPowerPackBounds.max.y : hydraulicPowerPackBounds.min.y,
+        hydraulicCornerIndex & 4 ? hydraulicPowerPackBounds.max.z : hydraulicPowerPackBounds.min.z
+      ).project(hydraulicProofCamera);
+      var hydraulicPixelX = (hydraulicProjectionCorner.x * 0.5 + 0.5) * 652;
+      var hydraulicPixelY = (1 - (hydraulicProjectionCorner.y * 0.5 + 0.5)) * 706;
+      hydraulicProjectionMinX = Math.min(hydraulicProjectionMinX, hydraulicPixelX);
+      hydraulicProjectionMaxX = Math.max(hydraulicProjectionMaxX, hydraulicPixelX);
+      hydraulicProjectionMinY = Math.min(hydraulicProjectionMinY, hydraulicPixelY);
+      hydraulicProjectionMaxY = Math.max(hydraulicProjectionMaxY, hydraulicPixelY);
+    }
+    var hydraulicProjectedWidthPx652 = hydraulicProjectionMaxX - hydraulicProjectionMinX;
+    var hydraulicProjectedHeightPx652 = hydraulicProjectionMaxY - hydraulicProjectionMinY;
+    var savedDieToolClampStroke = castingRig.clampDrive.state.stroke;
+    castingRig.clampDrive.apply(castingRig.dieTravel);
+    castingRig.movingHalf.updateMatrixWorld(true);
+    var fixedFaceClosedBounds = new THREE.Box3().setFromObject(anatomy.fixedDieFaceRim);
+    var movingFaceClosedBounds = new THREE.Box3().setFromObject(anatomy.movingDieFaceRim);
+    var closedFaceGap = Math.max(
+      0,
+      Math.max(fixedFaceClosedBounds.min.x, movingFaceClosedBounds.min.x) -
+        Math.min(fixedFaceClosedBounds.max.x, movingFaceClosedBounds.max.x)
+    );
+    castingRig.clampDrive.apply(0);
+    castingRig.movingHalf.updateMatrixWorld(true);
+    var fixedFaceOpenBounds = new THREE.Box3().setFromObject(anatomy.fixedDieFaceRim);
+    var movingFaceOpenBounds = new THREE.Box3().setFromObject(anatomy.movingDieFaceRim);
+    var openFaceGap = Math.max(
+      0,
+      Math.max(fixedFaceOpenBounds.min.x, movingFaceOpenBounds.min.x) -
+        Math.min(fixedFaceOpenBounds.max.x, movingFaceOpenBounds.max.x)
+    );
+    castingRig.clampDrive.apply(savedDieToolClampStroke);
+    castingRig.movingHalf.updateMatrixWorld(true);
+    var bedBounds = new THREE.Box3().setFromObject(anatomy.foundationBed);
+    var sleeveBounds = new THREE.Box3().setFromObject(anatomy.shotSleeveOuter);
+    var cylinderBounds = new THREE.Box3().setFromObject(anatomy.shotCylinderShell);
+    var saddleBounds = new THREE.Box3().setFromObject(anatomy.shotSleeveSaddles);
+    var cylinderFootBounds = new THREE.Box3().setFromObject(anatomy.shotCylinderFoot);
+    var bearingRailBounds = new THREE.Box3().setFromObject(anatomy.shotCylinderBearingRail);
+    var cylinderGussetBounds = new THREE.Box3().setFromObject(anatomy.shotCylinderGusset);
+    var shotSupportContactError = Math.max(
+      Math.abs(saddleBounds.min.y - bedBounds.max.y),
+      Math.abs(saddleBounds.max.y - sleeveBounds.min.y),
+      Math.abs(cylinderFootBounds.min.y - bedBounds.max.y),
+      Math.abs(cylinderFootBounds.max.y - cylinderBounds.min.y),
+      Math.abs(bearingRailBounds.min.y - bedBounds.max.y)
+    );
+    var railBedBearingWidth = Math.max(
+      0,
+      Math.min(bearingRailBounds.max.x, bedBounds.max.x) -
+        Math.max(bearingRailBounds.min.x, bedBounds.min.x)
+    );
+    var railFootOverlapWidth = Math.max(
+      0,
+      Math.min(bearingRailBounds.max.x, cylinderFootBounds.max.x) -
+        Math.max(bearingRailBounds.min.x, cylinderFootBounds.min.x)
+    );
+    var hydraulicSupportContactError = Math.max(
+      Math.abs(hydraulicPackLegBounds.min.y - bearingRailBounds.max.y),
+      Math.abs(hydraulicPackLegBounds.max.y - hydraulicPackBodyBounds.min.y)
+    );
+    var hydraulicLegRailOverlapX = Math.max(
+      0,
+      Math.min(hydraulicPackLegBounds.max.x, bearingRailBounds.max.x) -
+        Math.max(hydraulicPackLegBounds.min.x, bearingRailBounds.min.x)
+    );
+    var hydraulicLegRailOverlapZ = Math.max(
+      0,
+      Math.min(hydraulicPackLegBounds.max.z, bearingRailBounds.max.z) -
+        Math.max(hydraulicPackLegBounds.min.z, bearingRailBounds.min.z)
+    );
+    var hydraulicHoseEndpointError = 0;
+    var hydraulicHoses = [anatomy.hydraulicPressureHose, anatomy.hydraulicReturnHose];
+    for (var hoseIndex = 0; hoseIndex < hydraulicHoses.length; hoseIndex++) {
+      var hosePath = hydraulicHoses[hoseIndex].geometry.parameters.path;
+      var hoseStart = hosePath.getPoint(0, new THREE.Vector3());
+      var hoseEnd = hosePath.getPoint(1, new THREE.Vector3());
+      hydraulicHoseEndpointError = Math.max(
+        hydraulicHoseEndpointError,
+        hoseStart.distanceTo(anatomy.hydraulicBodyPorts[hoseIndex]),
+        hoseEnd.distanceTo(anatomy.hydraulicCylinderPorts[hoseIndex])
+      );
+    }
+    function hydraulicCurveMinimumRadius(curve) {
+      var minimumRadius = Infinity;
+      var pointA = curve.getPoint(0, new THREE.Vector3());
+      var pointB = curve.getPoint(1 / 96, new THREE.Vector3());
+      var pointC = new THREE.Vector3();
+      var ab = new THREE.Vector3();
+      var bc = new THREE.Vector3();
+      var ac = new THREE.Vector3();
+      var cross = new THREE.Vector3();
+      for (var radiusIndex = 2; radiusIndex <= 96; radiusIndex++) {
+        curve.getPoint(radiusIndex / 96, pointC);
+        ab.subVectors(pointB, pointA);
+        bc.subVectors(pointC, pointB);
+        ac.subVectors(pointC, pointA);
+        cross.crossVectors(ab, bc);
+        var radiusDenominator = 2 * cross.length();
+        if (radiusDenominator > 0.0000001) {
+          minimumRadius = Math.min(
+            minimumRadius,
+            ab.length() * bc.length() * ac.length() / radiusDenominator
+          );
+        }
+        pointA.copy(pointB);
+        pointB.copy(pointC);
+      }
+      return minimumRadius;
+    }
+    var hydraulicHoseMinimumBendRadius = Math.min(
+      hydraulicCurveMinimumRadius(
+        anatomy.hydraulicPressureHose.geometry.parameters.path
+      ),
+      hydraulicCurveMinimumRadius(
+        anatomy.hydraulicReturnHose.geometry.parameters.path
+      )
+    );
+    anatomy.hydraulicPowerPackSupportContactErrorMm = hydraulicSupportContactError * 1000;
+    anatomy.hydraulicPowerPackHoseEndpointErrorMm = hydraulicHoseEndpointError * 1000;
+    // The new subsystem is displaced to the fixed/shot side of the existing
+    // ladle mast. These explicit gaps prove it does not consume the already-
+    // identified furnace/cylinder or mast/cylinder overlap volume.
+    function boxClearance3d(a, b) {
+      var gapX = Math.max(a.min.x - b.max.x, b.min.x - a.max.x, 0);
+      var gapY = Math.max(a.min.y - b.max.y, b.min.y - a.max.y, 0);
+      var gapZ = Math.max(a.min.z - b.max.z, b.min.z - a.max.z, 0);
+      return Math.sqrt(gapX * gapX + gapY * gapY + gapZ * gapZ);
+    }
+    function pointToBoxClearance(point, bounds) {
+      var dx = Math.max(bounds.min.x - point.x, point.x - bounds.max.x, 0);
+      var dy = Math.max(bounds.min.y - point.y, point.y - bounds.max.y, 0);
+      var dz = Math.max(bounds.min.z - point.z, point.z - bounds.max.z, 0);
+      return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+    function sampledHoseToBoxClearance(hose, bounds, radius) {
+      var minimum = Infinity;
+      var path = hose.geometry.parameters.path;
+      var samplePoint = new THREE.Vector3();
+      for (var hoseClearanceIndex = 0; hoseClearanceIndex <= 96; hoseClearanceIndex++) {
+        path.getPoint(hoseClearanceIndex / 96, samplePoint);
+        samplePoint.applyMatrix4(hose.matrixWorld);
+        minimum = Math.min(
+          minimum,
+          pointToBoxClearance(samplePoint, bounds) - radius
+        );
+      }
+      return minimum;
+    }
+    function appendIndividualMeshBounds(object, target) {
+      object.updateWorldMatrix(true, false);
+      if (object.isInstancedMesh) {
+        if (!object.geometry.boundingBox) object.geometry.computeBoundingBox();
+        var individualInstanceMatrix = new THREE.Matrix4();
+        var individualWorldMatrix = new THREE.Matrix4();
+        for (var individualIndex = 0; individualIndex < object.count; individualIndex++) {
+          object.getMatrixAt(individualIndex, individualInstanceMatrix);
+          individualWorldMatrix.multiplyMatrices(
+            object.matrixWorld,
+            individualInstanceMatrix
+          );
+          target.push(
+            object.geometry.boundingBox.clone().applyMatrix4(individualWorldMatrix)
+          );
+        }
+      } else {
+        target.push(new THREE.Box3().setFromObject(object));
+      }
+    }
+    var hydraulicSolidComponentBounds = [];
+    appendIndividualMeshBounds(anatomy.hydraulicPackBody, hydraulicSolidComponentBounds);
+    appendIndividualMeshBounds(anatomy.hydraulicPackLegs, hydraulicSolidComponentBounds);
+    appendIndividualMeshBounds(anatomy.hydraulicAccumulatorBank, hydraulicSolidComponentBounds);
+    appendIndividualMeshBounds(anatomy.hydraulicPackFittings, hydraulicSolidComponentBounds);
+    var hydraulicSleeveClearance = Infinity;
+    for (var solidClearanceIndex = 0;
+      solidClearanceIndex < hydraulicSolidComponentBounds.length;
+      solidClearanceIndex++) {
+      hydraulicSleeveClearance = Math.min(
+        hydraulicSleeveClearance,
+        boxClearance3d(
+          hydraulicSolidComponentBounds[solidClearanceIndex],
+          sleeveBounds
+        )
+      );
+    }
+    hydraulicSleeveClearance = Math.min(
+      hydraulicSleeveClearance,
+      sampledHoseToBoxClearance(anatomy.hydraulicPressureHose, sleeveBounds, 0.034),
+      sampledHoseToBoxClearance(anatomy.hydraulicReturnHose, sleeveBounds, 0.034)
+    );
+    var furnaceWorldBounds = new THREE.Box3().setFromObject(castingRig.furnace);
+    var mastWorldBounds = unionWorldBounds([
+      castingRig.ladleSupport.mast,
+      castingRig.ladleSupport.foot,
+      castingRig.ladleSupport.gusset
+    ]);
+    var hydraulicMastClearance = boxClearance3d(
+      hydraulicPowerPackBounds,
+      mastWorldBounds
+    );
+    var hydraulicFurnaceClearance = boxClearance3d(
+      hydraulicPowerPackBounds,
+      furnaceWorldBounds
+    );
+    var serviceEnvelope = new THREE.Box3(
+      new THREE.Vector3(-1.94, 0.47, -6.53),
+      new THREE.Vector3(-0.33, 2.9, -4.65)
+    );
+    var fixedPlatenEnvelope = new THREE.Box3(
+      new THREE.Vector3(mirrorDcmWorldX(2.305), 0.53, -6.61),
+      new THREE.Vector3(mirrorDcmWorldX(1.745), 3.71, -4.69)
+    );
+    var openMovingEnvelope = new THREE.Box3(
+      new THREE.Vector3(mirrorDcmWorldX(4.1), 0.6, -6.61),
+      new THREE.Vector3(mirrorDcmWorldX(3.205), 3.64, -4.69)
+    );
+    var existingPressEnvelope = new THREE.Box3(
+      new THREE.Vector3(mirrorDcmWorldX(4.98), 0.0, -6.61),
+      new THREE.Vector3(mirrorDcmWorldX(-1.94), 3.71, -4.67)
+    );
+    var pressBaseEnvelope = new THREE.Box3(
+      new THREE.Vector3(mirrorDcmWorldX(4.825), 0.04, -6.58),
+      new THREE.Vector3(mirrorDcmWorldX(0.075), 0.57, -4.72)
+    );
+    var hydraulicPowerPackEnvelope = new THREE.Box3(
+      new THREE.Vector3(3.18, 0.68, -6.55),
+      new THREE.Vector3(4.95, 3.66, -4.84)
+    );
+    if (!boundsWithin(fixedAnchorageBounds, fixedPlatenEnvelope, 0.006)) {
+      issues.push('fixed-platen anchorage escaped its frozen platen envelope');
+    }
+    if (!boundsWithin(serviceBounds, serviceEnvelope, 0.006)) {
+      issues.push(
+        'service cassette or gusset escaped the existing rear housing bounds [' +
+        serviceBounds.min.toArray().concat(serviceBounds.max.toArray())
+          .map(function (value) { return value.toFixed(3); }).join(',') +
+        ' vs ' +
+        serviceEnvelope.min.toArray().concat(serviceEnvelope.max.toArray())
+          .map(function (value) { return value.toFixed(3); }).join(',') + ']'
+      );
+    }
+    if (!boundsWithin(fixedBearingBounds, fixedPlatenEnvelope, 0.006)) {
+      issues.push('fixed tie-bar bearing lands escaped the proved fixed-platen envelope');
+    }
+    if (!boundsWithin(movingBearingBounds, openMovingEnvelope, 0.006)) {
+      issues.push('moving tie-bar bearing lands escaped the proved open-platen envelope');
+    }
+    if (!boundsWithin(allDetailBounds, existingPressEnvelope, 0.006)) {
+      issues.push('hard-surface detail escaped the existing press exterior envelope [' +
+        allDetailBounds.min.toArray().concat(allDetailBounds.max.toArray()).map(function (v) { return v.toFixed(3); }).join(',') +
+        ' vs ' + existingPressEnvelope.min.toArray().concat(existingPressEnvelope.max.toArray()).map(function (v) { return v.toFixed(3); }).join(',') + ']');
+    }
+    if (!boundsWithin(foundationBounds, pressBaseEnvelope, 0.006)) {
+      issues.push('boxed foundation bed escaped the frozen press-base envelope');
+    }
+    if (!boundsWithin(fixedLoadPathBounds, fixedPlatenEnvelope, 0.006)) {
+      issues.push('fixed platen, die carrier, or shot reaction escaped its collision envelope');
+    }
+    if (!boundsWithin(movingLoadPathBounds, openMovingEnvelope, 0.006)) {
+      issues.push('moving platen or die carrier escaped its open collision envelope');
+    }
+    if (
+      Math.abs(closedFaceGap - anatomy.frozenClosedFaceGap) > 0.002 ||
+      openFaceGap + 0.002 < anatomy.frozenOpenFaceGap ||
+      fixedFaceClosedBounds.max.y - fixedFaceClosedBounds.min.y < 1.18 ||
+      movingFaceClosedBounds.max.y - movingFaceClosedBounds.min.y < 1.18
+    ) {
+      issues.push('opposed die faces lost their closed alignment or open-air separation');
+    }
+    if (!boundsWithin(shotSupportBounds, existingPressEnvelope, 0.006)) {
+      issues.push('shot sleeve or cylinder support escaped the frozen press exterior');
+    }
+    if (
+      shotSupportContactError > 0.002 ||
+      !boundsWithin(shotLoadPathBounds, existingPressEnvelope, 0.002) ||
+      saddleBounds.max.y > sleeveBounds.min.y + 0.002 ||
+      cylinderFootBounds.max.y > cylinderBounds.min.y + 0.002 ||
+      cylinderGussetBounds.max.y > 1.022 ||
+      railBedBearingWidth < 0.075 ||
+      railFootOverlapWidth < 0.35
+    ) {
+      issues.push('shot saddles/foot missed the 2 mm bed-contact or frozen shot-envelope proof');
+    }
+    if (
+      hydraulicSupportContactError > 0.002 ||
+      hydraulicHoseEndpointError > 0.002 ||
+      hydraulicHoseMinimumBendRadius < 0.24 ||
+      hydraulicLegRailOverlapX < 0.28 ||
+      hydraulicLegRailOverlapZ < 0.1 ||
+      !boundsWithin(hydraulicPowerPackBounds, hydraulicPowerPackEnvelope, 0.002) ||
+      hydraulicSleeveClearance < 0.05 ||
+      SIDE_GUARD_X - hydraulicPowerPackBounds.max.x < 0.04 ||
+      FRONT_GUARD_Z - hydraulicPowerPackBounds.max.z < 0.3 ||
+      hydraulicMastClearance < 0.06 ||
+      hydraulicFurnaceClearance < 0.05 ||
+      hydraulicProjectedWidthPx652 < 25 ||
+      hydraulicProjectedHeightPx652 < 25
+    ) {
+      issues.push(
+        'hydraulic power pack lost support, hose-port continuity, or guarded clearance ' +
+        '[contact=' + (hydraulicSupportContactError * 1000).toFixed(2) +
+        'mm hose=' + (hydraulicHoseEndpointError * 1000).toFixed(2) +
+        'mm bearing=' + (hydraulicLegRailOverlapX * 1000).toFixed(1) + 'x' +
+        (hydraulicLegRailOverlapZ * 1000).toFixed(1) +
+        'mm sleeve=' + (hydraulicSleeveClearance * 1000).toFixed(1) +
+        'mm side=' + ((SIDE_GUARD_X - hydraulicPowerPackBounds.max.x) * 1000).toFixed(1) +
+        'mm front=' + ((FRONT_GUARD_Z - hydraulicPowerPackBounds.max.z) * 1000).toFixed(1) +
+        'mm mast=' + (hydraulicMastClearance * 1000).toFixed(1) +
+        'mm furnace=' + (hydraulicFurnaceClearance * 1000).toFixed(1) +
+        'mm bend=' + (hydraulicHoseMinimumBendRadius * 1000).toFixed(1) +
+        'mm px=' + hydraulicProjectedWidthPx652.toFixed(1) + 'x' +
+        hydraulicProjectedHeightPx652.toFixed(1) +
+        ' bounds=' +
+        [hydraulicPowerPackBounds.min.x, hydraulicPowerPackBounds.min.y,
+          hydraulicPowerPackBounds.min.z, hydraulicPowerPackBounds.max.x,
+          hydraulicPowerPackBounds.max.y, hydraulicPowerPackBounds.max.z]
+          .map(function (value) { return value.toFixed(3); }).join(',') +
+        ' envelope=' +
+        [hydraulicPowerPackEnvelope.min.x, hydraulicPowerPackEnvelope.min.y,
+          hydraulicPowerPackEnvelope.min.z, hydraulicPowerPackEnvelope.max.x,
+          hydraulicPowerPackEnvelope.max.y, hydraulicPowerPackEnvelope.max.z]
+          .map(function (value) { return value.toFixed(3); }).join(',') + ']'
+      );
+    }
+    startupDiagnostics.pressAnatomyBounds = Object.freeze({
+      service: frozenBoundsRecord(serviceBounds),
+      clampServiceEnclosure: Object.freeze({
+        addedDraws: anatomy.clampServiceAddedDraws,
+        lowerBodyLengthMm: Math.round(anatomy.clampServiceBodyLength * 1000),
+        lowerBodyHeightMm: Math.round(anatomy.clampServiceBodyHeight * 1000),
+        lowerBodyAspectRatio: Number(anatomy.clampServiceBodyAspectRatio.toFixed(3)),
+        bedContactErrorMm: Number((clampServiceContactError * 1000).toFixed(3)),
+        movingPlatenExteriorGapMm: Math.round(clampServicePlatenGap * 1000),
+        accessPanels: anatomy.serviceCover ? anatomy.serviceCover.count : 0,
+        inspectionOpenings: anatomy.serviceFrame ? 1 : 0,
+        bounds: frozenBoundsRecord(serviceBounds)
+      }),
+      platenCFrames: Object.freeze({
+        addedDraws: anatomy.platenFrameAddedDraws,
+        netDrawDelta: anatomy.platenFrameNetDrawDelta,
+        fixedMembers: anatomy.fixedPlatenShell.count,
+        movingMembers: anatomy.movingPlatenShell.count,
+        fixedLoadRibs: anatomy.fixedPlatenLoadFlowRibs.count,
+        movingLoadRibs: anatomy.movingPlatenLoadFlowRibs.count
+      }),
+      fixedBearings: frozenBoundsRecord(fixedBearingBounds),
+      movingBearings: frozenBoundsRecord(movingBearingBounds),
+      fixedTieTerminations: frozenBoundsRecord(fixedTieTerminationBounds),
+      movingTieTerminations: frozenBoundsRecord(movingTieTerminationBounds),
+      tieTerminationMaxCoaxialityErrorMm: Number(
+        (maximumTieCoaxialityError * 1000).toFixed(3)
+      ),
+      movingPlatenGuide: Object.freeze({
+        samples: 65,
+        contactErrorMm: Number((guideContactError * 1000).toFixed(3)),
+        minimumLongitudinalOverlapMm: Math.round(minimumGuideOverlap * 1000),
+        strokeMonotonic: guideStrokeMonotonic,
+        addedDraws: anatomy.movingPlatenGuideAddedDraws
+      }),
+      fixedPlatenAnchorage: Object.freeze({
+        contactErrorMm: Number((fixedAnchorageContactError * 1000).toFixed(3)),
+        addedDraws: anatomy.fixedPlatenAnchorageAddedDraws,
+        soleSeatedOnBed: fixedAnchorageContactError <= 0.002,
+        ribs: anatomy.fixedPlatenLoadRibs ? 2 : 0,
+        anchors: anatomy.fixedPlatenAnchors ? 4 : 0,
+        cameraSideRib: cameraSideRibDominant,
+        cameraToFarRibHeightRatio: Number((cameraRibScaleY / farRibScaleY).toFixed(3)),
+        bearingShadow: !!anatomy.fixedPlatenRibBearingShadow,
+        bounds: frozenBoundsRecord(fixedAnchorageBounds)
+      }),
+      allDetails: frozenBoundsRecord(allDetailBounds),
+      foundation: frozenBoundsRecord(foundationBounds),
+      fixedLoadPath: frozenBoundsRecord(fixedLoadPathBounds),
+      movingLoadPath: frozenBoundsRecord(movingLoadPathBounds),
+      shotSupport: frozenBoundsRecord(shotSupportBounds),
+      shotLoadPath: frozenBoundsRecord(shotLoadPathBounds),
+      shotLoadPathContactErrorMm: Number((shotSupportContactError * 1000).toFixed(3)),
+      shotLoadPathBearingMm: Object.freeze({
+        bed: Math.round(railBedBearingWidth * 1000),
+        foot: Math.round(railFootOverlapWidth * 1000)
+      }),
+      hydraulicPowerPack: Object.freeze({
+        addedDraws: anatomy.hydraulicPowerPackAddedDraws,
+        addedShadowCasters: anatomy.hydraulicPowerPackAddedShadowCasters,
+        reservoirBodies: 1,
+        supportLegs: anatomy.hydraulicPackLegs ? 2 : 0,
+        accumulatorVessels: anatomy.hydraulicAccumulatorBank ? 3 : 0,
+        hoses: hydraulicHoses.length,
+        supportContactErrorMm: Number((hydraulicSupportContactError * 1000).toFixed(3)),
+        hoseEndpointErrorMm: Number((hydraulicHoseEndpointError * 1000).toFixed(3)),
+        hoseMinimumBendRadiusMm: Number(
+          (hydraulicHoseMinimumBendRadius * 1000).toFixed(1)
+        ),
+        bearingOverlapMm: Object.freeze({
+          x: Math.round(hydraulicLegRailOverlapX * 1000),
+          z: Math.round(hydraulicLegRailOverlapZ * 1000)
+        }),
+        clearanceMm: Object.freeze({
+          mast: Math.round(hydraulicMastClearance * 1000),
+          furnace: Math.round(hydraulicFurnaceClearance * 1000),
+          shotSleeve: Math.round(
+            hydraulicSleeveClearance * 1000
+          ),
+          sideGuard: Math.round((SIDE_GUARD_X - hydraulicPowerPackBounds.max.x) * 1000),
+          frontGuard: Math.round((FRONT_GUARD_Z - hydraulicPowerPackBounds.max.z) * 1000)
+        }),
+        projectedPx652: Object.freeze({
+          width: Number(hydraulicProjectedWidthPx652.toFixed(2)),
+          height: Number(hydraulicProjectedHeightPx652.toFixed(2))
+        }),
+        bounds: frozenBoundsRecord(hydraulicPowerPackBounds)
+      }),
+      dieTooling: Object.freeze({
+        closedFaceGapMm: Number((closedFaceGap * 1000).toFixed(2)),
+        openFaceGapMm: Number((openFaceGap * 1000).toFixed(2)),
+        leaderPins: anatomy.dieLeaderPins ? 4 : 0,
+        leaderBushings: anatomy.dieLeaderBushings ? 4 : 0,
+        addedDraws: anatomy.dieToolingAddedDraws
+      })
+    });
+    startupDiagnostics.pressAnatomyAddedDraws = anatomy.addedDraws;
+    startupDiagnostics.pressMacroAddedDraws = anatomy.macroAddedDraws;
+    startupDiagnostics.pressMacroNetDrawDelta = anatomy.netDrawDelta;
+    startupDiagnostics.pressMacroShadowCasters = anatomy.macroAddedShadowCasters;
+    startupDiagnostics.pressAnatomyFastenerCount = anatomy.fastenerCount;
+    startupDiagnostics.pressAnatomyValid = issues.length === 0;
+    if (window.console && console.assert) {
+      console.assert(
+        startupDiagnostics.pressAnatomyValid,
+        'DCM press hard-surface anatomy proof failed',
+        issues.join(' | ')
+      );
+    }
+    return startupDiagnostics.pressAnatomyValid;
+  }
+
+  function validateRobotHardSurfaceAnatomy() {
+    if (!robotRig || !robotRig.hardSurfaceAnatomy) return false;
+    var anatomy = robotRig.hardSurfaceAnatomy;
+    var issues = [];
+    function vectorMatches(vector, values) {
+      return (
+        vector &&
+        Math.abs(vector.x - values[0]) <= 0.000001 &&
+        Math.abs(vector.y - values[1]) <= 0.000001 &&
+        Math.abs(vector.z - values[2]) <= 0.000001
+      );
+    }
+    var pivots = anatomy.pivotSignature;
+    if (
+      !vectorMatches(robotRig.root.position, pivots.root) ||
+      !vectorMatches(robotRig.root.scale, pivots.rootScale) ||
+      !vectorMatches(robotRig.baseAxis.position, pivots.baseAxis) ||
+      !vectorMatches(robotRig.shoulder.position, pivots.shoulder) ||
+      !vectorMatches(robotRig.elbow.position, pivots.elbow) ||
+      !vectorMatches(robotRig.j4Roll.position, pivots.j4) ||
+      !vectorMatches(robotRig.wrist.position, pivots.wrist) ||
+      !vectorMatches(robotRig.wristRoll.position, pivots.wristRoll) ||
+      !vectorMatches(robotRig.gripperTip.position, pivots.tcp)
+    ) {
+      issues.push('robot hard-surface anatomy changed a J1-J6 pivot or local TCP');
+    }
+    var kinematics = anatomy.kinematicSignature;
+    if (
+      !vectorMatches(robotRig.shoulderWorld, kinematics.shoulderWorld) ||
+      Math.abs(robotRig.upperLength - kinematics.upperLength) > 0.000001 ||
+      Math.abs(robotRig.foreLength - kinematics.foreLength) > 0.000001 ||
+      Math.abs(robotRig.toolLength - kinematics.toolLength) > 0.000001
+    ) {
+      issues.push('robot hard-surface anatomy changed the analytical reach chain');
+    }
+    if (
+      anatomy.j1CastShell.parent !== robotRig.baseAxis ||
+      anatomy.upperCastShell.parent !== robotRig.arm1 ||
+      anatomy.forearmCastShell.parent !== robotRig.arm2 ||
+      anatomy.forearmTransition.parent !== robotRig.arm2 ||
+      !anatomy.elbowDressPack ||
+      anatomy.elbowDressPack.parent !== robotRig.elbow ||
+      anatomy.addedDraws !== 1 ||
+      anatomy.replacedPrimitiveDraws !== 4
+    ) {
+      issues.push('robot cast shells or articulated dress pack lost their link parent/draw budget');
+    }
+    var terminalObjects = anatomy.terminalObjects || [];
+    if (
+      terminalObjects.length !== 6 ||
+      anatomy.terminalAddedDraws !== 0 ||
+      anatomy.terminalReworkedDraws !== 6
+    ) {
+      issues.push('J4-J6/tool revision changed its zero-draw terminal budget');
+    } else {
+      for (var terminalIndex = 0; terminalIndex < terminalObjects.length; terminalIndex++) {
+        if (terminalObjects[terminalIndex].parent !== robotRig.wristRoll) {
+          issues.push('J6 reducer or non-contact tool housing left the frozen J6 parent');
+          break;
+        }
+      }
+    }
+
+    function translatedLocalBounds(mesh) {
+      if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
+      var bounds = mesh.geometry.boundingBox.clone();
+      bounds.translate(mesh.position);
+      return bounds;
+    }
+    function boundsInside(actual, minimum, maximum, tolerance) {
+      var margin = tolerance || 0;
+      return (
+        actual.min.x >= minimum[0] - margin &&
+        actual.min.y >= minimum[1] - margin &&
+        actual.min.z >= minimum[2] - margin &&
+        actual.max.x <= maximum[0] + margin &&
+        actual.max.y <= maximum[1] + margin &&
+        actual.max.z <= maximum[2] + margin
+      );
+    }
+    function anatomyBoundsRecord(bounds) {
+      return Object.freeze({
+        min: Object.freeze([
+          Number(bounds.min.x.toFixed(3)),
+          Number(bounds.min.y.toFixed(3)),
+          Number(bounds.min.z.toFixed(3))
+        ]),
+        max: Object.freeze([
+          Number(bounds.max.x.toFixed(3)),
+          Number(bounds.max.y.toFixed(3)),
+          Number(bounds.max.z.toFixed(3))
+        ])
+      });
+    }
+    var j1Bounds = translatedLocalBounds(anatomy.j1CastShell);
+    var upperBounds = translatedLocalBounds(anatomy.upperCastShell);
+    var forearmBounds = translatedLocalBounds(anatomy.forearmCastShell);
+    var transitionBounds = translatedLocalBounds(anatomy.forearmTransition);
+    var dressBounds = translatedLocalBounds(anatomy.elbowDressPack);
+    var terminalBounds = new THREE.Box3().makeEmpty();
+    for (var terminalBoundsIndex = 0; terminalBoundsIndex < terminalObjects.length; terminalBoundsIndex++) {
+      terminalBounds.union(translatedLocalBounds(terminalObjects[terminalBoundsIndex]));
+    }
+    if (!boundsInside(j1Bounds, [-0.43, -0.01, -0.43], [0.43, 0.37, 0.43], 0.002)) {
+      issues.push('J1 casting escaped the former cylindrical reducer envelope');
+    }
+    if (!boundsInside(upperBounds, [-0.23, 0.04, -0.25], [0.23, 1.44, 0.25], 0.002)) {
+      issues.push('upper-arm casting escaped its frozen link envelope');
+    }
+    if (!boundsInside(forearmBounds, [-0.18, 0.04, -0.2], [0.18, 1.22, 0.2], 0.002)) {
+      issues.push('forearm casting escaped its frozen link envelope');
+    }
+    if (!boundsInside(transitionBounds, [-0.2, 1.08, -0.2], [0.2, 1.26, 0.2], 0.002)) {
+      issues.push('J4 transition escaped the former cartridge shoulder envelope');
+    }
+    // This is the already-occupied twin-cable/clamp volume around J3, not an
+    // expansion of the conservative swept capsule.
+    if (!boundsInside(dressBounds, [-0.37, -0.17, 0.18], [0.32, 0.22, 0.31], 0.004)) {
+      issues.push('J3 slack loop escaped the pre-existing dress-pack volume');
+    }
+    // This is the unchanged 700 x 280 x 300 mm conservative terminal envelope.
+    // Fingers, pads, their motion, and the 570 mm TCP are deliberately excluded
+    // because Pass 58 does not alter any contact geometry.
+    if (
+      terminalObjects.length !== 6 ||
+      !boundsInside(terminalBounds, [-0.35, 0, -0.15], [0.35, 0.28, 0.15], 0.002)
+    ) {
+      issues.push('J6 reducer or outer jaw housing escaped the frozen tool envelope');
+    }
+    startupDiagnostics.robotAnatomyAddedDraws = anatomy.addedDraws;
+    startupDiagnostics.robotAnatomyBounds = Object.freeze({
+      j1: anatomyBoundsRecord(j1Bounds),
+      upperArm: anatomyBoundsRecord(upperBounds),
+      forearm: anatomyBoundsRecord(forearmBounds),
+      j4Transition: anatomyBoundsRecord(transitionBounds),
+      j3DressPack: anatomyBoundsRecord(dressBounds),
+      terminalJ6Tool: anatomyBoundsRecord(terminalBounds)
+    });
+    startupDiagnostics.robotAnatomyValid = issues.length === 0;
+    if (window.console && console.assert) {
+      console.assert(
+        startupDiagnostics.robotAnatomyValid,
+        'Robot hard-surface anatomy proof failed',
+        issues.join(' | ')
+      );
+    }
+    return startupDiagnostics.robotAnatomyValid;
+  }
+
+  function validateGuardAccessDoor() {
+    var issues = [];
+    if (!guardAccessDoor || !guardAccessDoor.group) {
+      startupDiagnostics.guardDoorValid = false;
+      return false;
+    }
+    var door = guardAccessDoor;
+    var group = door.group;
+    scene.updateMatrixWorld(true);
+
+    if (group.parent !== door.parent) {
+      issues.push('closed guard door is detached from the safety perimeter');
+    }
+    if (
+      group.position.lengthSq() > 0.000000001 ||
+      group.rotation.x !== 0 ||
+      group.rotation.y !== 0 ||
+      group.rotation.z !== 0
+    ) {
+      issues.push('closed guard door hardware group moved off its surveyed parent frame');
+    }
+    if (
+      SIDE_GUARD_X !== 5.35 ||
+      FRONT_GUARD_Z !== -2.3 ||
+      group.userData.collisionPlaneX !== SIDE_GUARD_X ||
+      group.userData.frontDatumZ !== FRONT_GUARD_Z ||
+      !group.userData.latchFaceNormal ||
+      group.userData.latchFaceNormal[0] !== 0 ||
+      group.userData.latchFaceNormal[1] !== 0 ||
+      group.userData.latchFaceNormal[2] !== 1
+    ) {
+      issues.push('guard collision datum changed while adding closed-door hardware');
+    }
+    if (
+      group.userData.closed !== true ||
+      group.userData.animated !== false ||
+      group.userData.panelMeshesCreated !== 0 ||
+      !safetySensors.maintenanceGateLocked
+    ) {
+      issues.push('maintenance access door is not statically closed and interlock-proved');
+    }
+
+    var drawCount = 0;
+    var reflectionCount = 0;
+    var parentageValid = true;
+    var nonEmissive = true;
+    function belongsToGroup(object) {
+      var cursor = object;
+      while (cursor && cursor !== group) cursor = cursor.parent;
+      return cursor === group;
+    }
+    group.traverse(function (object) {
+      if (!object.isMesh) return;
+      drawCount += 1;
+      if (!belongsToGroup(object)) parentageValid = false;
+      if (object === door.reflection) reflectionCount += 1;
+      var materials = Array.isArray(object.material)
+        ? object.material
+        : [object.material];
+      for (var materialIndex = 0; materialIndex < materials.length; materialIndex++) {
+        var material = materials[materialIndex];
+        if (
+          material &&
+          material.emissive &&
+          material.emissive.getHex &&
+          material.emissive.getHex() !== 0
+        ) {
+          nonEmissive = false;
+        }
+      }
+    });
+    var latchMaterials = door.latchMaterials;
+    var materialAssignmentsValid = !!(
+      latchMaterials &&
+      door.handleBatch &&
+      door.handleBatch.material === latchMaterials.handle &&
+      door.interlockBox.material === latchMaterials.housing &&
+      door.trappedKey.material === latchMaterials.keyInsert &&
+      door.raisedBackplate &&
+      door.raisedBackplate.material === latchMaterials.backplate &&
+      door.mountingBackplates &&
+      door.mountingBackplates.length > 0
+    );
+    for (
+      var backplateIndex = 0;
+      door.mountingBackplates && backplateIndex < door.mountingBackplates.length;
+      backplateIndex++
+    ) {
+      var backplateMesh = door.mountingBackplates[backplateIndex];
+      if (
+        backplateMesh.parent !== door.parent ||
+        backplateMesh.material !== latchMaterials.backplate
+      ) {
+        materialAssignmentsValid = false;
+      }
+      if (
+        backplateMesh.material.emissive &&
+        backplateMesh.material.emissive.getHex() !== 0
+      ) {
+        nonEmissive = false;
+      }
+    }
+    if (!materialAssignmentsValid) {
+      issues.push('latch functional material assignments are detached or incomplete');
+    }
+    if (latchMaterials) {
+      var handleHsl = {};
+      var housingHsl = {};
+      var keyHsl = {};
+      var backplateHsl = {};
+      latchMaterials.handle.color.getHSL(handleHsl);
+      latchMaterials.housing.color.getHSL(housingHsl);
+      latchMaterials.keyInsert.color.getHSL(keyHsl);
+      latchMaterials.backplate.color.getHSL(backplateHsl);
+      if (
+        latchMaterials.handle.roughness < 0.45 ||
+        latchMaterials.handle.roughness > 0.62 ||
+        latchMaterials.handle.metalness < 0.55 ||
+        latchMaterials.handle.metalness > 0.78 ||
+        handleHsl.s > 0.12
+      ) {
+        issues.push('pull handle material is chrome-like instead of dull stainless');
+      }
+      if (
+        latchMaterials.housing.roughness < 0.55 ||
+        latchMaterials.housing.metalness > 0.12 ||
+        housingHsl.h < 0.07 ||
+        housingHsl.h > 0.18 ||
+        housingHsl.s < 0.7
+      ) {
+        issues.push('trapped-key housing is not nonmetallic safety yellow');
+      }
+      if (
+        latchMaterials.keyInsert.roughness < 0.42 ||
+        latchMaterials.keyInsert.metalness > 0.25 ||
+        !(keyHsl.h < 0.04 || keyHsl.h > 0.96) ||
+        keyHsl.s < 0.55
+      ) {
+        issues.push('physical key insert is not a restrained red polymer/paint response');
+      }
+      if (
+        latchMaterials.backplate.roughness < 0.62 ||
+        latchMaterials.backplate.metalness > 0.22 ||
+        backplateHsl.l > 0.18
+      ) {
+        issues.push('latch mounting backplate is not dark matte powder coat');
+      }
+    }
+    if (!parentageValid) issues.push('guard door mesh escaped its closed-door parent');
+    var drawBudget = THREE.InstancedMesh
+      ? door.expectedInstancedDraws
+      : door.fallbackDrawBudget;
+    if (drawCount > drawBudget) {
+      issues.push('closed guard door exceeds its ' + drawBudget + '-draw budget');
+    }
+    if (reflectionCount !== 1) {
+      issues.push('closed guard door must own exactly one restrained reflection draw');
+    }
+    if (!nonEmissive) {
+      issues.push('closed guard door hardware contains an emissive material');
+    }
+    if (
+      door.hingeBatch &&
+      (door.hingeBatch.parent !== group || door.hingeBatch.count !== 2)
+    ) {
+      issues.push('guard door does not have two physically parented hinges');
+    }
+    if (
+      (door.edgeBatch && door.edgeBatch.parent !== group) ||
+      (door.gasketBatch && door.gasketBatch.parent !== group) ||
+      door.raisedBackplate.parent !== group ||
+      door.interlockBox.parent !== group ||
+      door.trappedKey.parent !== group ||
+      (door.handleBatch && door.handleBatch.parent !== group) ||
+      door.reflection.parent !== group
+    ) {
+      issues.push('handle or trapped-key interlock is detached from the closed door');
+    }
+
+    var bounds = new THREE.Box3().setFromObject(group);
+    var machineSideEnvelope = 0.043;
+    var operatorSideEnvelope = group.userData.operatorEnvelopeFrontZ;
+    if (
+      bounds.min.x < SIDE_GUARD_X - 0.35 ||
+      bounds.max.x > SIDE_GUARD_X + machineSideEnvelope ||
+      bounds.min.z < group.userData.hingeZ - 0.05 ||
+      bounds.max.z > operatorSideEnvelope ||
+      bounds.min.y < 0.24 ||
+      bounds.max.y > GUARD_HEIGHT + 0.05
+    ) {
+      issues.push('closed guard door hardware escaped the existing post/rail envelope');
+    }
+    var raisedBackplateBounds = new THREE.Box3().setFromObject(
+      door.raisedBackplate
+    );
+    var postFrontZ = FRONT_GUARD_Z + 0.0425;
+    var standOffDepth = raisedBackplateBounds.max.z - raisedBackplateBounds.min.z;
+    if (
+      group.userData.moduleStandOffMm < 35 ||
+      group.userData.moduleStandOffMm > 45 ||
+      Math.abs(standOffDepth - 0.04) > 0.002 ||
+      Math.abs(raisedBackplateBounds.min.z - postFrontZ) > 0.002
+    ) {
+      issues.push('raised latch backplate is not a post-seated 35-45mm stand-off');
+    }
+
+    var proofWidth = 652;
+    var proofHeight = 706;
+    var proofCamera = new THREE.PerspectiveCamera(
+      51,
+      proofWidth / proofHeight,
+      0.08,
+      70
+    );
+    proofCamera.position
+      .copy(PROCESS_CAMERA_DIRECTION)
+      .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
+      .add(PROCESS_CAMERA_TARGET);
+    proofCamera.lookAt(PROCESS_CAMERA_TARGET);
+    proofCamera.updateProjectionMatrix();
+    proofCamera.updateMatrixWorld(true);
+    var projectedCorner = new THREE.Vector3();
+    function projectWorldBox(worldBox) {
+      var result = {
+        minX: Infinity,
+        maxX: -Infinity,
+        minY: Infinity,
+        maxY: -Infinity
+      };
+      for (var cornerIndex = 0; cornerIndex < 8; cornerIndex++) {
+        projectedCorner.set(
+          cornerIndex & 1 ? worldBox.max.x : worldBox.min.x,
+          cornerIndex & 2 ? worldBox.max.y : worldBox.min.y,
+          cornerIndex & 4 ? worldBox.max.z : worldBox.min.z
+        ).project(proofCamera);
+        var screenX = (projectedCorner.x + 1) * proofWidth * 0.5;
+        var screenY = (1 - projectedCorner.y) * proofHeight * 0.5;
+        result.minX = Math.min(result.minX, screenX);
+        result.maxX = Math.max(result.maxX, screenX);
+        result.minY = Math.min(result.minY, screenY);
+        result.maxY = Math.max(result.maxY, screenY);
+      }
+      result.width = result.maxX - result.minX;
+      result.height = result.maxY - result.minY;
+      return result;
+    }
+    function screenSeparation(first, second) {
+      var dx = Math.max(
+        first.minX - second.maxX,
+        second.minX - first.maxX,
+        0
+      );
+      var dy = Math.max(
+        first.minY - second.maxY,
+        second.minY - first.maxY,
+        0
+      );
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    var handleScreen = null;
+    var interlockScreen = null;
+    var hmiSeparation = null;
+    var wristSeparation = null;
+    if (door.handleBatch) {
+      handleScreen = projectWorldBox(new THREE.Box3().setFromObject(door.handleBatch));
+      var handleSilhouette = handleScreen.width;
+      if (handleSilhouette < 5 || handleSilhouette > 6) {
+        issues.push(
+          'raised pull-handle width projects ' +
+          handleSilhouette.toFixed(2) +
+          'px instead of the required 5-6px'
+        );
+      }
+      startupDiagnostics.guardDoorHandlePx652 = handleSilhouette;
+      startupDiagnostics.guardDoorHandleBoundsPx652 = Object.freeze({
+        minX: Number(handleScreen.minX.toFixed(2)),
+        maxX: Number(handleScreen.maxX.toFixed(2)),
+        minY: Number(handleScreen.minY.toFixed(2)),
+        maxY: Number(handleScreen.maxY.toFixed(2)),
+        width: Number(handleScreen.width.toFixed(2)),
+        height: Number(handleScreen.height.toFixed(2))
+      });
+      if (
+        Math.abs(
+          handleScreen.width - door.frozenProjection.handleWidthPx652
+        ) > 0.12 ||
+        Math.abs(
+          handleScreen.height - door.frozenProjection.handleHeightPx652
+        ) > 0.12
+      ) {
+        issues.push(
+          'raised pull-handle projection differs from its authored bounds (' +
+          handleScreen.width.toFixed(2) + 'x' + handleScreen.height.toFixed(2) + 'px)'
+        );
+      }
+    }
+    var interlockWorldBounds = new THREE.Box3().setFromObject(door.interlockBox);
+    interlockWorldBounds.union(new THREE.Box3().setFromObject(door.trappedKey));
+    interlockScreen = projectWorldBox(interlockWorldBounds);
+    if (interlockScreen.width < 10 || interlockScreen.width > 14) {
+      issues.push(
+        'raised trapped-key box is outside the required 10-14px width (' +
+        interlockScreen.width.toFixed(2) + 'px)'
+      );
+    }
+    if (
+      Math.abs(
+        interlockScreen.width - door.frozenProjection.interlockWidthPx652
+      ) > 0.12 ||
+      Math.abs(
+        interlockScreen.height - door.frozenProjection.interlockHeightPx652
+      ) > 0.12
+    ) {
+      issues.push(
+        'raised trapped-key box projection differs from its authored bounds (' +
+        interlockScreen.width.toFixed(2) + 'x' + interlockScreen.height.toFixed(2) + 'px)'
+      );
+    }
+    if (hmiAssembly) {
+      hmiSeparation = screenSeparation(
+        interlockScreen,
+        projectWorldBox(new THREE.Box3().setFromObject(hmiAssembly))
+      );
+      if (hmiSeparation < 8) {
+        issues.push('trapped-key interlock overlaps the locked-camera HMI silhouette');
+      }
+    }
+    if (robotRig && robotRig.wristRoll) {
+      wristSeparation = screenSeparation(
+        interlockScreen,
+        projectWorldBox(new THREE.Box3().setFromObject(robotRig.wristRoll))
+      );
+      if (wristSeparation < 8) {
+        issues.push('trapped-key interlock overlaps the locked-camera robot wrist');
+      }
+    }
+    startupDiagnostics.guardDoorInterlockBoundsPx652 = Object.freeze({
+      minX: Number(interlockScreen.minX.toFixed(2)),
+      maxX: Number(interlockScreen.maxX.toFixed(2)),
+      minY: Number(interlockScreen.minY.toFixed(2)),
+      maxY: Number(interlockScreen.maxY.toFixed(2)),
+      width: Number(interlockScreen.width.toFixed(2)),
+      height: Number(interlockScreen.height.toFixed(2))
+    });
+    startupDiagnostics.guardDoorHmiSeparationPx652 =
+      hmiSeparation === null ? null : Number(hmiSeparation.toFixed(2));
+    startupDiagnostics.guardDoorWristSeparationPx652 =
+      wristSeparation === null ? null : Number(wristSeparation.toFixed(2));
+    startupDiagnostics.guardDoorMaterialAudit = Object.freeze({
+      nonEmissive: nonEmissive,
+      assignmentsValid: materialAssignmentsValid,
+      handle: Object.freeze({
+        role: 'dull stainless pull',
+        roughness: latchMaterials
+          ? Number(latchMaterials.handle.roughness.toFixed(3))
+          : null,
+        metalness: latchMaterials
+          ? Number(latchMaterials.handle.metalness.toFixed(3))
+          : null
+      }),
+      housing: Object.freeze({
+        role: 'safety-yellow trapped-key housing',
+        roughness: latchMaterials
+          ? Number(latchMaterials.housing.roughness.toFixed(3))
+          : null,
+        metalness: latchMaterials
+          ? Number(latchMaterials.housing.metalness.toFixed(3))
+          : null
+      }),
+      keyInsert: Object.freeze({
+        role: 'red physical key insert',
+        roughness: latchMaterials
+          ? Number(latchMaterials.keyInsert.roughness.toFixed(3))
+          : null,
+        metalness: latchMaterials
+          ? Number(latchMaterials.keyInsert.metalness.toFixed(3))
+          : null
+      }),
+      backplate: Object.freeze({
+        role: 'dark 40mm raised mounting backplate',
+        roughness: latchMaterials
+          ? Number(latchMaterials.backplate.roughness.toFixed(3))
+          : null,
+        metalness: latchMaterials
+          ? Number(latchMaterials.backplate.metalness.toFixed(3))
+          : null,
+        reusedPostMeshes: door.mountingBackplates
+          ? door.mountingBackplates.length
+          : 0,
+        standOffMm: group.userData.moduleStandOffMm
+      }),
+      projectionFrozen:
+        !!handleScreen &&
+        Math.abs(
+          handleScreen.width -
+          door.frozenProjection.handleWidthPx652
+        ) <= 0.12 &&
+        Math.abs(
+          handleScreen.height -
+          door.frozenProjection.handleHeightPx652
+        ) <= 0.12 &&
+        Math.abs(
+          interlockScreen.width -
+          door.frozenProjection.interlockWidthPx652
+        ) <= 0.12 &&
+        Math.abs(
+          interlockScreen.height -
+          door.frozenProjection.interlockHeightPx652
+        ) <= 0.12
+    });
+
+    startupDiagnostics.guardDoorDraws = drawCount;
+    startupDiagnostics.guardDoorBounds = Object.freeze({
+      min: Object.freeze([
+        Number(bounds.min.x.toFixed(4)),
+        Number(bounds.min.y.toFixed(4)),
+        Number(bounds.min.z.toFixed(4))
+      ]),
+      max: Object.freeze([
+        Number(bounds.max.x.toFixed(4)),
+        Number(bounds.max.y.toFixed(4)),
+        Number(bounds.max.z.toFixed(4))
+      ]),
+      collisionPlaneX: SIDE_GUARD_X,
+      frontDatumZ: FRONT_GUARD_Z
+    });
+    startupDiagnostics.guardDoorValid = issues.length === 0;
+    if (window.console && console.assert) {
+      console.assert(
+        startupDiagnostics.guardDoorValid,
+        'Closed interlocked guard door audit failed',
+        issues.join(' | ')
+      );
+    }
+    return startupDiagnostics.guardDoorValid;
+  }
+
+  function validateClampToggleKinematics() {
+    if (!castingRig || !castingRig.clampKinematics || !castingRig.clampDrive) return false;
+    var mechanism = castingRig.clampKinematics;
+    var drive = castingRig.clampDrive;
+    var savedStroke = drive.state.stroke;
+    var savedMovingX = drive.state.movingX;
+    var savedLock = drive.state.lockAmount;
+    var maximumLengthError = 0;
+    var maximumPinError = 0;
+    var maximumDriveEndpointError = 0;
+    var maximumStageStroke = 0;
+    var minimumStageOverlap = Infinity;
+    var maximumTelescopicSumError = 0;
+    var maximumYokeEndpointError = 0;
+    var maximumYokeReactionError = 0;
+    var maximumBellevilleSpanError = 0;
+    var maximumBellevilleCompression = 0;
+    var maximumBellevilleDeflection = 0;
+    var minimumBellevilleDeflection = Infinity;
+    var minimumBellevillePitch = Infinity;
+    var minimumBellevilleConeRise = Infinity;
+    var maximumBellevilleConeRise = 0;
+    var maximumBellevilleContactGap = 0;
+    var maximumBellevillePenetration = 0;
+    var maximumCouplingError = 0;
+    var maximumGlandCoaxiality = 0;
+    var minimumRunningClearance = Infinity;
+    var maximumRunningClearance = 0;
+    var maximumPistonCoaxiality = 0;
+    var minimumPistonSealClearance = Infinity;
+    var maximumPistonSealClearance = 0;
+    var minimumPistonStopInterference = Infinity;
+    var minimumPistonGlandSetback = Infinity;
+    var rearHeadLeakGap = Infinity;
+    var rearHeadBearingOverlap = 0;
+    var rearHeadPathClearance = Infinity;
+    var inletChamberIntersection = 0;
+    var inletEndpointError = Infinity;
+    var clampHydraulicEndpointError = Infinity;
+    var clampHydraulicSupportError = Infinity;
+    var clampHydraulicMinimumBendRadius = Infinity;
+    var clampHydraulicJumperEndpointError = 0;
+    var clampHydraulicJumperMinimumBendRadius = Infinity;
+    var clampHydraulicJumperMinimumClearance = Infinity;
+    var clampHydraulicJumperMaximumSupportedSpan = 0;
+    var clampEnergyCarrierMaximumLinkGap = 0;
+    var clampEnergyCarrierBracketGap = 0;
+    var maximumActiveRelativeStages = 0;
+    var stageOrderValid = true;
+    var bellevilleBoundsValid = true;
+    var minimumKneeHeight = Infinity;
+    var monotonicValid = true;
+    var boundsValid = true;
+    var samples = 0;
+    var previousClevis = null;
+    var previousKneeHeight = null;
+    var previousStageExtensions = [null, null, null];
+    var previousRelativeStage = null;
+    var previousBellevilleDeflection = null;
+    var upperStart = new THREE.Vector3();
+    var upperEnd = new THREE.Vector3();
+    var lowerStart = new THREE.Vector3();
+    var lowerEnd = new THREE.Vector3();
+    var expectedRear = new THREE.Vector3();
+    var expectedJoint = new THREE.Vector3();
+    var expectedClevis = new THREE.Vector3();
+    var stageFront = new THREE.Vector3();
+    var stageRear = new THREE.Vector3();
+    var expectedStageFront = new THREE.Vector3();
+    var expectedStageRear = new THREE.Vector3();
+    var couplingFront = new THREE.Vector3();
+    var couplingRear = new THREE.Vector3();
+    var clevisWorld = new THREE.Vector3();
+    var yokeHeadWorld = new THREE.Vector3();
+    var bellevilleBounds = new THREE.Box3();
+    var bellevilleDiscBounds = new THREE.Box3();
+    var bellevilleInstanceMatrix = new THREE.Matrix4();
+    var bridgeBounds = new THREE.Box3();
+    var yokeFrameBounds = new THREE.Box3();
+    var positiveCheekBounds = new THREE.Box3();
+    var negativeCheekBounds = new THREE.Box3();
+    var cheekInstanceMatrix = new THREE.Matrix4();
+    var cheekWorldMatrix = new THREE.Matrix4();
+    var pistonInstanceMatrix = new THREE.Matrix4();
+    var pistonCenter = new THREE.Vector3();
+    var rearHeadSleeveBounds = new THREE.Box3();
+    var rearHeadFaceBounds = new THREE.Box3();
+    var barrelBounds = new THREE.Box3();
+    var inletEndpoint = new THREE.Vector3();
+    var expectedInletEndpoint = new THREE.Vector3();
+    var jumperStartCenter = new THREE.Vector3();
+    var jumperEndCenter = new THREE.Vector3();
+    var carrierMatrix = new THREE.Matrix4();
+    var carrierPreviousEnd = new THREE.Vector3();
+    var carrierCurrentStart = new THREE.Vector3();
+    var carrierCurrentEnd = new THREE.Vector3();
+    var carrierBracketWorld = new THREE.Vector3();
+    var pressureYoke = drive.pressureYoke;
+    var movingShell = castingRig.pressAnatomy.movingPlatenShell;
+    castingRig.group.updateMatrixWorld(true);
+    var openKneeHeight = mechanism.solve(drive.dieTravel, 0, {}).jointY;
+    var seatedKneeHeight = mechanism.solve(0, 0, {}).jointY;
+    var lockedKneeHeight = mechanism.solve(0, 1, {}).jointY;
+    var lockedToggleAngle = Math.asin(
+      clamp(lockedKneeHeight / mechanism.linkLength, -1, 1)
+    );
+    var reducerBounds = new THREE.Box3().setFromObject(
+      castingRig.pressAnatomy.clampReducerLand
+    );
+    var rearShellBounds = new THREE.Box3().setFromObject(
+      castingRig.pressAnatomy.rearToggleShell
+    );
+    var reducerShellMargin = Math.min(
+      reducerBounds.min.x - rearShellBounds.min.x,
+      rearShellBounds.max.x - reducerBounds.max.x
+    );
+    if (!movingShell.geometry.boundingBox) movingShell.geometry.computeBoundingBox();
+    function movingCheekBounds(instanceIndex, target) {
+      movingShell.getMatrixAt(instanceIndex, cheekInstanceMatrix);
+      cheekWorldMatrix.multiplyMatrices(movingShell.matrixWorld, cheekInstanceMatrix);
+      return target.copy(movingShell.geometry.boundingBox).applyMatrix4(cheekWorldMatrix);
+    }
+    bridgeBounds.setFromObject(pressureYoke.bridge);
+    yokeFrameBounds.setFromObject(pressureYoke.frame);
+    movingCheekBounds(2, positiveCheekBounds);
+    movingCheekBounds(3, negativeCheekBounds);
+    var bridgeYokeGap = Math.max(
+      bridgeBounds.min.x - yokeFrameBounds.max.x,
+      yokeFrameBounds.min.x - bridgeBounds.max.x,
+      0
+    );
+    function boundsOverlapAlong(a, b, axis) {
+      return Math.max(0, Math.min(a.max[axis], b.max[axis]) - Math.max(a.min[axis], b.min[axis]));
+    }
+    var bridgeCheekOverlap = Math.min(
+      boundsOverlapAlong(bridgeBounds, positiveCheekBounds, 'z'),
+      boundsOverlapAlong(bridgeBounds, negativeCheekBounds, 'z')
+    );
+    var bridgeCheekBearing = Math.min(
+      boundsOverlapAlong(bridgeBounds, positiveCheekBounds, 'x'),
+      boundsOverlapAlong(bridgeBounds, negativeCheekBounds, 'x')
+    );
+    var bridgeOwnershipValid =
+      pressureYoke.bridge.parent === castingRig.movingHalf &&
+      pressureYoke.frame.parent === castingRig.movingHalf &&
+      movingShell.parent === castingRig.movingHalf;
+
+    function sampleLeg(label, stroke) {
+      drive.apply(stroke);
+      castingRig.group.updateMatrixWorld(true);
+      var solved = mechanism.solve(
+        drive.state.movingX,
+        drive.state.lockAmount,
+        {}
+      );
+      upperStart.set(0, -mechanism.linkLength * 0.5, 0).applyMatrix4(mechanism.upperLink.matrix);
+      upperEnd.set(0, mechanism.linkLength * 0.5, 0).applyMatrix4(mechanism.upperLink.matrix);
+      lowerStart.set(0, -mechanism.linkLength * 0.5, 0).applyMatrix4(mechanism.lowerLink.matrix);
+      lowerEnd.set(0, mechanism.linkLength * 0.5, 0).applyMatrix4(mechanism.lowerLink.matrix);
+      expectedRear.set(solved.rearX, 0, 0);
+      expectedJoint.set(solved.jointX, solved.jointY, 0);
+      expectedClevis.set(solved.clevisX, 0, 0);
+      maximumLengthError = Math.max(
+        maximumLengthError,
+        Math.abs(upperStart.distanceTo(upperEnd) - mechanism.linkLength),
+        Math.abs(lowerStart.distanceTo(lowerEnd) - mechanism.linkLength)
+      );
+      maximumPinError = Math.max(
+        maximumPinError,
+        upperStart.distanceTo(expectedRear),
+        upperEnd.distanceTo(expectedJoint),
+        lowerStart.distanceTo(expectedJoint),
+        lowerEnd.distanceTo(expectedClevis)
+      );
+      var activeRelativeStages = 0;
+      var relativeStage = -1;
+      for (var extensionIndex = 0; extensionIndex < 3; extensionIndex++) {
+        var extensionValue = drive.state.stageExtensions[extensionIndex];
+        maximumStageStroke = Math.max(maximumStageStroke, extensionValue);
+        if (
+          extensionValue > 0.000001 &&
+          extensionValue < drive.stageMaximumStroke - 0.000001
+        ) {
+          activeRelativeStages += 1;
+          relativeStage = extensionIndex;
+        }
+        if (
+          extensionIndex > 0 && extensionValue > 0.000001 &&
+          drive.state.stageExtensions[extensionIndex - 1] <
+            drive.stageMaximumStroke - 0.000001
+        ) stageOrderValid = false;
+        if (previousStageExtensions[extensionIndex] !== null) {
+          if ((label === 'close' || label === 'lock') &&
+              extensionValue < previousStageExtensions[extensionIndex] - 0.000001) stageOrderValid = false;
+          if ((label === 'release' || label === 'open') &&
+              extensionValue > previousStageExtensions[extensionIndex] + 0.000001) stageOrderValid = false;
+        }
+      }
+      maximumActiveRelativeStages = Math.max(maximumActiveRelativeStages, activeRelativeStages);
+      if (relativeStage >= 0 && previousRelativeStage !== null) {
+        if ((label === 'close' || label === 'lock') && relativeStage < previousRelativeStage) stageOrderValid = false;
+        if ((label === 'release' || label === 'open') && relativeStage > previousRelativeStage) stageOrderValid = false;
+      }
+      if (relativeStage >= 0) previousRelativeStage = relativeStage;
+      maximumTelescopicSumError = Math.max(
+        maximumTelescopicSumError,
+        Math.abs(drive.state.telescopicSum - stroke)
+      );
+      var jumperPositionAttribute = drive.externalHydraulics.dynamicJumper
+        .geometry.attributes.position;
+      jumperStartCenter.set(0, 0, 0);
+      jumperEndCenter.set(0, 0, 0);
+      var jumperLastRingStart =
+        drive.externalHydraulics.jumperTubularSegments *
+        drive.externalHydraulics.jumperRadialSegments;
+      for (var jumperEndpointVertex = 0;
+        jumperEndpointVertex < drive.externalHydraulics.jumperRadialSegments;
+        jumperEndpointVertex++) {
+        jumperStartCenter.x += jumperPositionAttribute.getX(jumperEndpointVertex);
+        jumperStartCenter.y += jumperPositionAttribute.getY(jumperEndpointVertex);
+        jumperStartCenter.z += jumperPositionAttribute.getZ(jumperEndpointVertex);
+        jumperEndCenter.x += jumperPositionAttribute.getX(jumperLastRingStart + jumperEndpointVertex);
+        jumperEndCenter.y += jumperPositionAttribute.getY(jumperLastRingStart + jumperEndpointVertex);
+        jumperEndCenter.z += jumperPositionAttribute.getZ(jumperLastRingStart + jumperEndpointVertex);
+      }
+      jumperStartCenter.multiplyScalar(1 / drive.externalHydraulics.jumperRadialSegments);
+      jumperEndCenter.multiplyScalar(1 / drive.externalHydraulics.jumperRadialSegments);
+      expectedStageFront.set(
+        castingRig.clampToggle.position.x + drive.state.crossheadX,
+        castingRig.clampToggle.position.y,
+        -0.18
+      );
+      clampHydraulicJumperEndpointError = Math.max(
+        clampHydraulicJumperEndpointError,
+        jumperStartCenter.distanceTo(drive.externalHydraulics.actuatorPorts[1]),
+        jumperEndCenter.distanceTo(expectedStageFront)
+      );
+      var jumperDeltaX = Math.abs(
+        expectedStageFront.x - drive.externalHydraulics.actuatorPorts[1].x
+      );
+      var jumperHelixPitch = jumperDeltaX / (Math.PI * 2);
+      var jumperBendRadius =
+        (drive.externalHydraulics.jumperLoopRadius *
+          drive.externalHydraulics.jumperLoopRadius +
+          jumperHelixPitch * jumperHelixPitch) /
+        drive.externalHydraulics.jumperLoopRadius;
+      clampHydraulicJumperMinimumBendRadius = Math.min(
+        clampHydraulicJumperMinimumBendRadius,
+        jumperBendRadius
+      );
+      clampHydraulicJumperMinimumClearance = Math.min(
+        clampHydraulicJumperMinimumClearance,
+        drive.externalHydraulics.jumperClearance
+      );
+      clampHydraulicJumperMaximumSupportedSpan = Math.max(
+        clampHydraulicJumperMaximumSupportedSpan,
+        Math.sqrt(
+          Math.pow(Math.PI * 2 * drive.externalHydraulics.jumperLoopRadius, 2) +
+          jumperDeltaX * jumperDeltaX
+        ) / 4
+      );
+      for (var carrierProofIndex = 0;
+        carrierProofIndex < drive.externalHydraulics.carrierLinkCount;
+        carrierProofIndex++) {
+        drive.externalHydraulics.carrierLinks.getMatrixAt(
+          carrierProofIndex,
+          carrierMatrix
+        );
+        carrierCurrentStart
+          .set(-0.5, 0, 0)
+          .applyMatrix4(carrierMatrix);
+        carrierCurrentEnd
+          .set(0.5, 0, 0)
+          .applyMatrix4(carrierMatrix);
+        if (carrierProofIndex > 0) {
+          clampEnergyCarrierMaximumLinkGap = Math.max(
+            clampEnergyCarrierMaximumLinkGap,
+            Math.max(
+              0,
+              carrierPreviousEnd.distanceTo(carrierCurrentStart) - 0.002
+            )
+          );
+        }
+        carrierPreviousEnd.copy(carrierCurrentEnd);
+      }
+      drive.externalHydraulics.movingEndBracket.getWorldPosition(
+        carrierBracketWorld
+      );
+      castingRig.group.worldToLocal(carrierBracketWorld);
+      clampEnergyCarrierBracketGap = Math.max(
+        clampEnergyCarrierBracketGap,
+        carrierBracketWorld.distanceTo(expectedStageFront)
+      );
+      var previousStageFrontX = drive.rearAnchorX;
+      for (var stageIndex = 0; stageIndex < drive.stages.length; stageIndex++) {
+        var stage = drive.stages[stageIndex];
+        if (stageIndex < 2) {
+          stageFront.set(-drive.stageLength * 0.5, 0, 0).applyMatrix4(stage.matrix);
+          stageRear.set(drive.stageLength * 0.5, 0, 0).applyMatrix4(stage.matrix);
+        } else {
+          stageFront.set(-drive.stageLength * 0.5, 0, 0).applyMatrix4(stage.matrix);
+          stageRear.set(drive.stageLength * 0.5, 0, 0).applyMatrix4(stage.matrix);
+        }
+        expectedStageFront.set(
+          drive.rearAnchorX - drive.state.stageCumulative[stageIndex],
+          0,
+          0
+        );
+        expectedStageRear.set(expectedStageFront.x + drive.stageLength, 0, 0);
+        maximumDriveEndpointError = Math.max(
+          maximumDriveEndpointError,
+          stageFront.distanceTo(expectedStageFront),
+          stageRear.distanceTo(expectedStageRear)
+        );
+        minimumStageOverlap = Math.min(
+          minimumStageOverlap,
+          expectedStageRear.x - previousStageFrontX
+        );
+        previousStageFrontX = expectedStageFront.x;
+      }
+      for (var glandIndex = 0; glandIndex < drive.glands.length; glandIndex++) {
+        var gland = drive.glands[glandIndex];
+        var expectedGlandX = drive.rearAnchorX;
+        if (glandIndex > 0) {
+          expectedGlandX -= drive.state.stageCumulative[glandIndex - 1];
+        }
+        maximumGlandCoaxiality = Math.max(
+          maximumGlandCoaxiality,
+          Math.abs(gland.position.x - expectedGlandX),
+          Math.abs(gland.position.y),
+          Math.abs(gland.position.z)
+        );
+        var runningClearance =
+          gland.geometry.userData.innerRadius - drive.stageOuterRadii[glandIndex];
+        minimumRunningClearance = Math.min(minimumRunningClearance, runningClearance);
+        maximumRunningClearance = Math.max(maximumRunningClearance, runningClearance);
+        drive.pistonHeads.getMatrixAt(glandIndex, pistonInstanceMatrix);
+        pistonCenter.setFromMatrixPosition(pistonInstanceMatrix);
+        var expectedPistonX =
+          drive.stages[glandIndex].position.x +
+          drive.stageLength * 0.5 - drive.pistonHeadThickness * 0.5;
+        maximumPistonCoaxiality = Math.max(
+          maximumPistonCoaxiality,
+          Math.abs(pistonCenter.x - expectedPistonX),
+          Math.abs(pistonCenter.y),
+          Math.abs(pistonCenter.z)
+        );
+        var parentBoreRadius = glandIndex === 0
+          ? drive.barrelInnerRadius
+          : drive.stageInnerRadii[glandIndex - 1];
+        var pistonSealClearance =
+          parentBoreRadius - drive.pistonHeadOuterRadii[glandIndex];
+        minimumPistonSealClearance = Math.min(
+          minimumPistonSealClearance,
+          pistonSealClearance
+        );
+        maximumPistonSealClearance = Math.max(
+          maximumPistonSealClearance,
+          pistonSealClearance
+        );
+        minimumPistonStopInterference = Math.min(
+          minimumPistonStopInterference,
+          drive.pistonHeadOuterRadii[glandIndex] -
+            drive.glandInnerRadii[glandIndex]
+        );
+        minimumPistonGlandSetback = Math.min(
+          minimumPistonGlandSetback,
+          pistonCenter.x - drive.pistonHeadThickness * 0.5 -
+            (gland.position.x + gland.geometry.userData.length * 0.5)
+        );
+      }
+      couplingFront.set(0, 0.5, 0).applyMatrix4(drive.coupling.matrix);
+      couplingRear.set(0, -0.5, 0).applyMatrix4(drive.coupling.matrix);
+      expectedStageFront.set(drive.state.crossheadX, 0, 0);
+      expectedStageRear.set(drive.rearAnchorX - stroke, 0, 0);
+      maximumDriveEndpointError = Math.max(
+        maximumDriveEndpointError,
+        couplingFront.distanceTo(expectedStageFront),
+        couplingRear.distanceTo(expectedStageRear),
+        drive.crosshead.position.distanceTo(expectedClevis)
+      );
+      maximumCouplingError = Math.max(
+        maximumCouplingError,
+        Math.abs(drive.state.couplingLength - 0.17)
+      );
+      mechanism.movingClevis.getWorldPosition(clevisWorld);
+      drive.pressureYoke.head.getWorldPosition(yokeHeadWorld);
+      maximumYokeEndpointError = Math.max(
+        maximumYokeEndpointError,
+        clevisWorld.distanceTo(yokeHeadWorld)
+      );
+      maximumYokeReactionError = Math.max(
+        maximumYokeReactionError,
+        Math.abs(
+          drive.pressureYoke.frame.position.x + 0.055 -
+          drive.pressureYoke.reactionX
+        )
+      );
+      maximumBellevilleSpanError = Math.max(
+        maximumBellevilleSpanError,
+        Math.abs(
+          drive.state.bellevillePitch * pressureYoke.discCount -
+          drive.state.yokeStackLength
+        )
+      );
+      maximumBellevilleCompression = Math.max(
+        maximumBellevilleCompression,
+        pressureYoke.openPitch * pressureYoke.discCount -
+          drive.state.yokeStackLength
+      );
+      maximumBellevilleDeflection = Math.max(
+        maximumBellevilleDeflection,
+        drive.state.bellevilleDeflection
+      );
+      minimumBellevilleDeflection = Math.min(
+        minimumBellevilleDeflection,
+        drive.state.bellevilleDeflection
+      );
+      minimumBellevillePitch = Math.min(
+        minimumBellevillePitch,
+        drive.state.bellevillePitch
+      );
+      minimumBellevilleConeRise = Math.min(
+        minimumBellevilleConeRise,
+        drive.state.bellevilleConeRise
+      );
+      maximumBellevilleConeRise = Math.max(
+        maximumBellevilleConeRise,
+        drive.state.bellevilleConeRise
+      );
+      bellevilleBounds.makeEmpty();
+      var previousDiscMaxX = null;
+      for (var discIndex = 0; discIndex < pressureYoke.discCount; discIndex++) {
+        pressureYoke.stack.getMatrixAt(discIndex, bellevilleInstanceMatrix);
+        bellevilleDiscBounds
+          .copy(pressureYoke.stack.geometry.boundingBox)
+          .applyMatrix4(bellevilleInstanceMatrix);
+        bellevilleBounds.union(bellevilleDiscBounds);
+        maximumBellevilleSpanError = Math.max(
+          maximumBellevilleSpanError,
+          Math.abs(
+            bellevilleDiscBounds.max.x - bellevilleDiscBounds.min.x -
+            drive.state.bellevillePitch
+          )
+        );
+        if (discIndex === 0) {
+          maximumBellevilleContactGap = Math.max(
+            maximumBellevilleContactGap,
+            Math.abs(bellevilleDiscBounds.min.x - pressureYoke.reactionX)
+          );
+        }
+        if (previousDiscMaxX !== null) {
+          var discFaceGap = bellevilleDiscBounds.min.x - previousDiscMaxX;
+          maximumBellevilleContactGap = Math.max(
+            maximumBellevilleContactGap,
+            Math.max(0, discFaceGap)
+          );
+          maximumBellevillePenetration = Math.max(
+            maximumBellevillePenetration,
+            Math.max(0, -discFaceGap)
+          );
+        }
+        previousDiscMaxX = bellevilleDiscBounds.max.x;
+      }
+      maximumBellevilleContactGap = Math.max(
+        maximumBellevilleContactGap,
+        Math.abs(drive.state.yokeEndpointX - previousDiscMaxX)
+      );
+      bellevilleBoundsValid = bellevilleBoundsValid &&
+        bellevilleBounds.min.x >= pressureYoke.reactionX - 0.001 &&
+        bellevilleBounds.max.x <= drive.state.yokeEndpointX + 0.001 &&
+        bellevilleBounds.min.y >= 2.12 - 0.105 - 0.001 &&
+        bellevilleBounds.max.y <= 2.12 + 0.105 + 0.001 &&
+        bellevilleBounds.min.z >= -0.105 - 0.001 &&
+        bellevilleBounds.max.z <= 0.105 + 0.001;
+      minimumKneeHeight = Math.min(minimumKneeHeight, solved.jointY);
+      boundsValid = boundsValid &&
+        solved.clevisX >= -0.22 && solved.rearX <= 1.075001 &&
+        solved.jointY >= 0.075 && solved.jointY <= 0.625;
+      if (previousClevis !== null) {
+        var delta = solved.clevisX - previousClevis;
+        if ((label === 'close' || label === 'lock') && delta > 0.000001) monotonicValid = false;
+        if ((label === 'release' || label === 'open') && delta < -0.000001) monotonicValid = false;
+        if (label === 'lock' && drive.state.bellevilleDeflection < previousBellevilleDeflection - 0.000001) monotonicValid = false;
+        if (label === 'release' && drive.state.bellevilleDeflection > previousBellevilleDeflection + 0.000001) monotonicValid = false;
+        if ((label === 'close' || label === 'lock') && solved.jointY > previousKneeHeight + 0.000001) monotonicValid = false;
+        if ((label === 'release' || label === 'open') && solved.jointY < previousKneeHeight - 0.000001) monotonicValid = false;
+      }
+      previousClevis = solved.clevisX;
+      previousKneeHeight = solved.jointY;
+      previousStageExtensions[0] = drive.state.stageExtensions[0];
+      previousStageExtensions[1] = drive.state.stageExtensions[1];
+      previousStageExtensions[2] = drive.state.stageExtensions[2];
+      previousBellevilleDeflection = drive.state.bellevilleDeflection;
+      samples += 1;
+    }
+
+    var legs = ['close', 'lock', 'release', 'open'];
+    for (var legIndex = 0; legIndex < legs.length; legIndex++) {
+      previousClevis = null;
+      previousKneeHeight = null;
+      previousStageExtensions[0] = null;
+      previousStageExtensions[1] = null;
+      previousStageExtensions[2] = null;
+      previousRelativeStage = null;
+      previousBellevilleDeflection = null;
+      for (var sampleIndex = 0; sampleIndex <= 64; sampleIndex++) {
+        var progress = sampleIndex / 64;
+        if (legs[legIndex] === 'close') {
+          sampleLeg('close', drive.dieTravel * progress);
+        } else if (legs[legIndex] === 'lock') {
+          sampleLeg('lock', drive.dieTravel + drive.lockSeatTravel * progress);
+        } else if (legs[legIndex] === 'release') {
+          sampleLeg('release', drive.fullStroke - drive.lockSeatTravel * progress);
+        } else {
+          sampleLeg('open', drive.dieTravel * (1 - progress));
+        }
+      }
+    }
+    drive.apply(savedStroke);
+    castingRig.group.updateMatrixWorld(true);
+    barrelBounds.setFromObject(drive.cylinder);
+    rearHeadSleeveBounds.setFromObject(drive.rearHead.sleeve);
+    rearHeadFaceBounds.setFromObject(drive.rearHead.face);
+    rearHeadBearingOverlap = Math.max(
+      0,
+      Math.min(barrelBounds.max.x, rearHeadSleeveBounds.max.x) -
+        Math.max(barrelBounds.min.x, rearHeadSleeveBounds.min.x)
+    );
+    rearHeadLeakGap = Math.max(
+      0,
+      rearHeadFaceBounds.min.x - rearHeadSleeveBounds.max.x
+    );
+    // Both terms are expressed in clamp-toggle local X. The Box3 above is in
+    // mirrored world space and cannot be mixed with the authored local stage
+    // center without turning a real 24 mm clearance into a false 3.2 m miss.
+    rearHeadPathClearance =
+      (drive.rearHead.face.position.x - 0.008) -
+      (drive.stageRetractedCenterX + drive.stageLength * 0.5);
+    inletEndpoint
+      .set(-drive.rearHead.inletLength * 0.5, 0, 0)
+      .applyMatrix4(drive.rearHead.inlet.matrix);
+    expectedInletEndpoint.fromArray(drive.rearHead.expectedInletEndpoint);
+    inletEndpointError = inletEndpoint.distanceTo(expectedInletEndpoint);
+    inletChamberIntersection =
+      drive.rearHead.chamberRadius -
+      Math.sqrt(
+        inletEndpoint.y * inletEndpoint.y +
+        inletEndpoint.z * inletEndpoint.z
+      );
+    var clampCircuit = drive.externalHydraulics;
+    function curveEndpointError(hose, start, end) {
+      var path = hose.geometry.parameters.path;
+      return Math.max(
+        path.getPoint(0, new THREE.Vector3()).distanceTo(start),
+        path.getPoint(1, new THREE.Vector3()).distanceTo(end)
+      );
+    }
+    clampHydraulicEndpointError = Math.max(
+      curveEndpointError(
+        clampCircuit.pressureHose,
+        clampCircuit.manifoldPorts[0],
+        clampCircuit.actuatorPorts[0]
+      ),
+      curveEndpointError(
+        clampCircuit.returnHose,
+        clampCircuit.manifoldPorts[1],
+        clampCircuit.actuatorPorts[1]
+      )
+    );
+    var supportMatrix = new THREE.Matrix4();
+    var supportCenter = new THREE.Vector3();
+    clampHydraulicSupportError = 0;
+    for (var supportIndex = 0; supportIndex < clampCircuit.supportPoints.length; supportIndex++) {
+      clampCircuit.supports.getMatrixAt(supportIndex, supportMatrix);
+      supportCenter.setFromMatrixPosition(supportMatrix);
+      clampHydraulicSupportError = Math.max(
+        clampHydraulicSupportError,
+        supportCenter.distanceTo(clampCircuit.supportPoints[supportIndex])
+      );
+    }
+    function sampleCurveMinimumRadius(curve) {
+      var minimumRadius = Infinity;
+      var pointA = curve.getPoint(0, new THREE.Vector3());
+      var pointB = curve.getPoint(1 / 128, new THREE.Vector3());
+      var pointC = new THREE.Vector3();
+      var ab = new THREE.Vector3();
+      var bc = new THREE.Vector3();
+      var ac = new THREE.Vector3();
+      var cross = new THREE.Vector3();
+      for (var radiusSample = 2; radiusSample <= 128; radiusSample++) {
+        curve.getPoint(radiusSample / 128, pointC);
+        ab.subVectors(pointB, pointA);
+        bc.subVectors(pointC, pointB);
+        ac.subVectors(pointC, pointA);
+        cross.crossVectors(ab, bc);
+        var denominator = 2 * cross.length();
+        if (denominator > 0.0000001) {
+          minimumRadius = Math.min(
+            minimumRadius,
+            ab.length() * bc.length() * ac.length() / denominator
+          );
+        }
+        pointA.copy(pointB);
+        pointB.copy(pointC);
+      }
+      return minimumRadius;
+    }
+    clampHydraulicMinimumBendRadius = Math.min(
+      sampleCurveMinimumRadius(clampCircuit.pressureHose.geometry.parameters.path),
+      sampleCurveMinimumRadius(clampCircuit.returnHose.geometry.parameters.path)
+    );
+    var telescopeWallThicknesses = [
+      drive.barrelOuterRadius - drive.barrelInnerRadius,
+      drive.stageOuterRadii[0] - drive.stageInnerRadii[0],
+      drive.stageOuterRadii[1] - drive.stageInnerRadii[1]
+    ];
+    var telescopeHousingMargins = [
+      drive.barrelInnerRadius - drive.stageOuterRadii[0],
+      drive.stageInnerRadii[0] - drive.stageOuterRadii[1],
+      drive.stageInnerRadii[1] - drive.stageOuterRadii[2]
+    ];
+    var minimumTelescopeWall = Math.min.apply(Math, telescopeWallThicknesses);
+    var minimumTelescopeHousingMargin = Math.min.apply(
+      Math,
+      telescopeHousingMargins
+    );
+    var telescopeCrossSectionValid =
+      drive.cylinder.geometry.userData.openBore === true &&
+      drive.stages[0].geometry.userData.openBore === true &&
+      drive.stages[1].geometry.userData.openBore === true &&
+      telescopeWallThicknesses[0] >= 0.008 - 0.000001 &&
+      telescopeWallThicknesses[1] >= 0.008 - 0.000001 &&
+      telescopeWallThicknesses[2] >= 0.008 - 0.000001 &&
+      telescopeHousingMargins[0] >= 0.005 - 0.000001 &&
+      telescopeHousingMargins[1] >= 0.004 - 0.000001 &&
+      telescopeHousingMargins[2] >= 0.003 - 0.000001 &&
+      drive.glands.length === 3 &&
+      maximumGlandCoaxiality <= 0.0005 &&
+      minimumRunningClearance >= 0.0005 - 0.000001 &&
+      maximumRunningClearance <= 0.0015 + 0.000001;
+    var retractBoreWall =
+      drive.stageOuterRadii[2] - drive.stageInnerRadii[2];
+    var retractOutletIntersection =
+      drive.stageInnerRadii[2] -
+      drive.stages[2].geometry.userData.radialBoreRadius;
+    var retractCircuitValid =
+      drive.stages[2].geometry.userData.innerRadius === 0.012 &&
+      drive.stages[2].geometry.userData.openBore !== false &&
+      drive.stages[2].geometry.userData.continuousRadialBore === true &&
+      drive.stages[2].geometry.userData.radialBoreCount === 2 &&
+      drive.stages[2].geometry.userData.radialBoreRadius === 0.003 &&
+      retractBoreWall >= 0.0115 &&
+      retractOutletIntersection > 0;
+    var pistonRetentionValid =
+      drive.pistonHeads.isInstancedMesh &&
+      drive.pistonHeads.count === 3 &&
+      drive.pistonHeadAddedDraws === 1 &&
+      maximumPistonCoaxiality <= 0.0005 &&
+      minimumPistonSealClearance >= 0.0008 - 0.000001 &&
+      maximumPistonSealClearance <= 0.0012 + 0.000001 &&
+      minimumPistonStopInterference >= 0.002 - 0.000001 &&
+      minimumPistonGlandSetback >= 0.008 - 0.000001 &&
+      drive.pistonHeads.geometry.userData.positivePressureFace === true;
+    var rearHeadValid =
+      rearHeadLeakGap <= 0.001 &&
+      rearHeadBearingOverlap >= 0.008 - 0.000001 &&
+      rearHeadPathClearance >= 0.008 - 0.000001 &&
+      drive.rearHead.sleeve.geometry.userData.innerRadius >=
+        drive.barrelInnerRadius &&
+      drive.rearHead.sleeve.geometry.userData.continuousRadialBore === true &&
+      drive.rearHead.inlet.geometry.userData.openBore === true &&
+      drive.rearHead.inlet.geometry.userData.innerRadius === 0.012 &&
+      drive.rearHead.sleeve.geometry.userData.radialBoreRadius === 0.012 &&
+      drive.rearHead.sleeve.geometry.userData.axialLigament >= 0.008 &&
+      inletChamberIntersection > 0 &&
+      inletEndpointError <= 0.001;
+    var clampHydraulicCircuitValid =
+      clampCircuit.pressureHose.parent === clampCircuit.staticParent &&
+      clampCircuit.returnHose.parent === clampCircuit.staticParent &&
+      clampCircuit.returnUnion.parent === clampCircuit.staticParent &&
+      clampCircuit.pressureHose.material !== clampCircuit.returnHose.material &&
+      clampCircuit.distinctFromShotCircuit === true &&
+      clampCircuit.pressureContinuity === true &&
+      clampCircuit.retractContinuity === true &&
+      clampCircuit.manifoldPorts[0].distanceTo(clampCircuit.manifoldPorts[1]) > 0.1 &&
+      clampHydraulicEndpointError <= 0.002 &&
+      clampHydraulicSupportError <= 0.002 &&
+      clampHydraulicMinimumBendRadius >=
+        clampCircuit.hoseOuterDiameter * 6 &&
+      clampCircuit.supports.count === 6;
+    var clampHydraulicJumperValid =
+      clampCircuit.dynamicJumper.parent === clampCircuit.staticParent &&
+      clampCircuit.jumperGuides.parent === clampCircuit.staticParent &&
+      clampCircuit.movingFeedFitting.parent === drive.crosshead &&
+      clampCircuit.dynamicJumper.geometry.attributes.position.usage !== undefined &&
+      clampHydraulicJumperEndpointError <= 0.002 &&
+      clampHydraulicJumperMinimumBendRadius >=
+        clampCircuit.hoseOuterDiameter * 6 &&
+      clampHydraulicJumperMinimumClearance >= 0.02 &&
+      clampHydraulicJumperMaximumSupportedSpan <= 0.5 + 0.000001 &&
+      drive.stages[2].geometry.userData.openBore === true;
+    var clampEnergyCarrierValid =
+      clampCircuit.trough.parent === clampCircuit.staticParent &&
+      clampCircuit.troughSupports.parent === clampCircuit.staticParent &&
+      clampCircuit.troughSupports.count === 2 &&
+      clampCircuit.troughSupportBearing >= 0.04 &&
+      clampCircuit.carrierLinks.isInstancedMesh &&
+      clampCircuit.carrierLinks.count === clampCircuit.carrierLinkCount &&
+      clampCircuit.carrierLinkCount >= 24 &&
+      clampEnergyCarrierMaximumLinkGap <= 0.002 &&
+      clampCircuit.movingEndBracket.parent === drive.crosshead &&
+      clampEnergyCarrierBracketGap <= 0.002;
+    var valid = samples === 260 && maximumLengthError <= 0.001 &&
+      maximumPinError <= 0.001 && maximumDriveEndpointError <= 0.0005 &&
+      maximumStageStroke <= drive.stageMaximumStroke + 0.0005 &&
+      minimumStageOverlap >= 0.035333 - 0.000001 &&
+      maximumTelescopicSumError <= 0.0005 &&
+      maximumCouplingError <= 0.0005 &&
+      maximumActiveRelativeStages <= 1 && stageOrderValid &&
+      telescopeCrossSectionValid && retractCircuitValid &&
+      pistonRetentionValid && rearHeadValid && clampHydraulicCircuitValid &&
+      clampHydraulicJumperValid &&
+      clampEnergyCarrierValid &&
+      maximumYokeEndpointError <= 0.002 && maximumYokeReactionError <= 0.002 &&
+      bridgeYokeGap <= 0.001 && bridgeCheekOverlap >= 0.04 - 0.000001 &&
+      bridgeCheekBearing >= 0.11 - 0.000001 && bridgeOwnershipValid &&
+      maximumBellevilleSpanError <= 0.001 &&
+      Math.abs(maximumBellevilleCompression - 0.024) <= 0.0005 &&
+      minimumBellevilleDeflection >= -0.000001 &&
+      maximumBellevilleDeflection <= 0.002 + 0.000001 &&
+      Math.abs(maximumBellevilleConeRise - 0.0095) <= 0.000001 &&
+      Math.abs(minimumBellevilleConeRise - 0.0075) <= 0.000001 &&
+      minimumBellevillePitch >= 0.0155 - 0.000001 &&
+      minimumBellevillePitch - pressureYoke.discThickness >= 0.0075 - 0.000001 &&
+      pressureYoke.stack.isInstancedMesh && pressureYoke.stack.count === 12 &&
+      pressureYoke.stack.parent === castingRig.movingHalf &&
+      pressureYoke.opposedPairs === 6 &&
+      pressureYoke.orientationAlternations === 11 &&
+      pressureYoke.addedDraws === 1 && bellevilleBoundsValid &&
+      maximumBellevilleContactGap <= 0.0005 &&
+      maximumBellevillePenetration <= 0.000001 &&
+      minimumKneeHeight >= 0.075 &&
+      lockedKneeHeight >= 0.075 && lockedKneeHeight <= 0.09 &&
+      lockedToggleAngle <= THREE.MathUtils.degToRad(8) &&
+      openKneeHeight > seatedKneeHeight && seatedKneeHeight > lockedKneeHeight &&
+      reducerShellMargin >= 0.005 - 0.0001 &&
+      monotonicValid && boundsValid &&
+      Math.abs(drive.state.stroke - savedStroke) <= 0.000001 &&
+      Math.abs(drive.state.movingX - savedMovingX) <= 0.000001 &&
+      Math.abs(drive.state.lockAmount - savedLock) <= 0.000001;
+    startupDiagnostics.clampToggleValid = valid;
+    startupDiagnostics.clampToggleSamples = samples;
+    startupDiagnostics.clampToggleMaximumLengthErrorMm = Number((maximumLengthError * 1000).toFixed(3));
+    startupDiagnostics.clampToggleMaximumPinErrorMm = Number((maximumPinError * 1000).toFixed(3));
+    startupDiagnostics.clampToggleMinimumKneeHeightMm = Math.round(minimumKneeHeight * 1000);
+    startupDiagnostics.clampToggleOpenKneeHeightMm = Number(
+      (openKneeHeight * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampToggleSeatedKneeHeightMm = Number(
+      (seatedKneeHeight * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampToggleLockedKneeHeightMm = Number(
+      (lockedKneeHeight * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampToggleLockedAngleDeg = Number(
+      THREE.MathUtils.radToDeg(lockedToggleAngle).toFixed(3)
+    );
+    startupDiagnostics.clampToggleReducerShellMarginMm = Number(
+      (reducerShellMargin * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveValid = valid;
+    startupDiagnostics.clampDriveSamples = samples;
+    startupDiagnostics.clampDriveStrokeMm = Number((drive.fullStroke * 1000).toFixed(1));
+    startupDiagnostics.clampDriveLockSeatMm = Number((drive.lockSeatTravel * 1000).toFixed(1));
+    startupDiagnostics.clampDriveMaximumEndpointErrorMm = Number(
+      (maximumDriveEndpointError * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveMonotonic = monotonicValid;
+    startupDiagnostics.clampDriveMaximumStageStrokeMm = Number(
+      (maximumStageStroke * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveMinimumStageOverlapMm = Number(
+      (minimumStageOverlap * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveTelescopicSumErrorMm = Number(
+      (maximumTelescopicSumError * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveCouplingErrorMm = Number(
+      (maximumCouplingError * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveMaximumActiveStages =
+      maximumActiveRelativeStages;
+    startupDiagnostics.clampDriveStageOrderValid = stageOrderValid;
+    startupDiagnostics.clampTelescopeMinimumWallMm = Number(
+      (minimumTelescopeWall * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeMinimumHousingMarginMm = Number(
+      (minimumTelescopeHousingMargin * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeGlandCoaxialityMm = Number(
+      (maximumGlandCoaxiality * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeRunningClearanceMm = Object.freeze([
+      Number((minimumRunningClearance * 1000).toFixed(3)),
+      Number((maximumRunningClearance * 1000).toFixed(3))
+    ]);
+    startupDiagnostics.clampTelescopePistonCoaxialityMm = Number(
+      (maximumPistonCoaxiality * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopePistonSealClearanceMm = Object.freeze([
+      Number((minimumPistonSealClearance * 1000).toFixed(3)),
+      Number((maximumPistonSealClearance * 1000).toFixed(3))
+    ]);
+    startupDiagnostics.clampTelescopePistonStopInterferenceMm = Number(
+      (minimumPistonStopInterference * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopePistonMinimumGlandSetbackMm = Number(
+      (minimumPistonGlandSetback * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeRearHeadLeakGapMm = Number(
+      (rearHeadLeakGap * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeRearHeadBearingOverlapMm = Number(
+      (rearHeadBearingOverlap * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeRearHeadPathClearanceMm = Number(
+      (rearHeadPathClearance * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeInletChamberIntersectionMm = Number(
+      (inletChamberIntersection * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeInletEndpointErrorMm = Number(
+      (inletEndpointError * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeInletCenterlineOcclusionCount =
+      drive.rearHead.sleeve.geometry.userData.continuousRadialBore &&
+      drive.rearHead.inlet.geometry.userData.openBore
+        ? 0
+        : 1;
+    startupDiagnostics.clampTelescopeRearSleeveLigamentMm = Number(
+      (drive.rearHead.sleeve.geometry.userData.axialLigament * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeRetractBoreWallMm = Number(
+      (retractBoreWall * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampTelescopeRetractOutletOcclusionCount =
+      retractCircuitValid ? 0 : 1;
+    startupDiagnostics.clampTelescopeRetractOutletIntersectionMm = Number(
+      (retractOutletIntersection * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampHydraulicEndpointErrorMm = Number(
+      (clampHydraulicEndpointError * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampHydraulicSupportErrorMm = Number(
+      (clampHydraulicSupportError * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampHydraulicMinimumBendRadiusMm = Number(
+      (clampHydraulicMinimumBendRadius * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampHydraulicStaticSegments =
+      clampCircuit.pressureHose.parent === clampCircuit.staticParent &&
+      clampCircuit.returnHose.parent === clampCircuit.staticParent;
+    startupDiagnostics.clampHydraulicDistinctPorts =
+      clampCircuit.manifoldPorts[0].distanceTo(clampCircuit.manifoldPorts[1]) > 0.1;
+    startupDiagnostics.clampHydraulicJumperEndpointErrorMm = Number(
+      (clampHydraulicJumperEndpointError * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampHydraulicJumperMinimumBendRadiusMm = Number(
+      (clampHydraulicJumperMinimumBendRadius * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampHydraulicJumperMinimumClearanceMm = Number(
+      (clampHydraulicJumperMinimumClearance * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampHydraulicJumperMaximumSupportedSpanMm = Number(
+      (clampHydraulicJumperMaximumSupportedSpan * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampEnergyCarrierMaximumLinkGapMm = Number(
+      (clampEnergyCarrierMaximumLinkGap * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampEnergyCarrierTroughBearingMm = Number(
+      (clampCircuit.troughSupportBearing * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampEnergyCarrierBracketGapMm = Number(
+      (clampEnergyCarrierBracketGap * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveYokeEndpointErrorMm = Number(
+      (maximumYokeEndpointError * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveYokeReactionErrorMm = Number(
+      (maximumYokeReactionError * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBridgeYokeGapMm = Number(
+      (bridgeYokeGap * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBridgeCheekOverlapMm = Number(
+      (bridgeCheekOverlap * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBridgeCheekBearingMm = Number(
+      (bridgeCheekBearing * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBellevilleSpanErrorMm = Number(
+      (maximumBellevilleSpanError * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBellevilleCompressionMm = Number(
+      (maximumBellevilleCompression * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBellevilleMaximumDeflectionMm = Number(
+      (maximumBellevilleDeflection * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBellevilleLockedReserveMm = Number(
+      ((minimumBellevillePitch - pressureYoke.discThickness) * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBellevilleContactGapMm = Number(
+      (maximumBellevilleContactGap * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBellevillePenetrationMm = Number(
+      (maximumBellevillePenetration * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBellevilleFreeRiseMm = Number(
+      (maximumBellevilleConeRise * 1000).toFixed(3)
+    );
+    startupDiagnostics.clampDriveBellevilleLockedRiseMm = Number(
+      (minimumBellevilleConeRise * 1000).toFixed(3)
+    );
+    if (!valid && window.console && console.error) {
+      console.error('Clamp mechanism proof detail: ' + JSON.stringify({
+        samples: samples,
+        lengthErrorMm: startupDiagnostics.clampToggleMaximumLengthErrorMm,
+        pinErrorMm: startupDiagnostics.clampToggleMaximumPinErrorMm,
+        driveEndpointErrorMm: startupDiagnostics.clampDriveMaximumEndpointErrorMm,
+        maximumStageStrokeMm: startupDiagnostics.clampDriveMaximumStageStrokeMm,
+        minimumStageOverlapMm: startupDiagnostics.clampDriveMinimumStageOverlapMm,
+        telescopicSumErrorMm: startupDiagnostics.clampDriveTelescopicSumErrorMm,
+        minimumTubeWallMm: startupDiagnostics.clampTelescopeMinimumWallMm,
+        minimumHousingMarginMm:
+          startupDiagnostics.clampTelescopeMinimumHousingMarginMm,
+        glandCoaxialityMm:
+          startupDiagnostics.clampTelescopeGlandCoaxialityMm,
+        runningClearanceMm:
+          startupDiagnostics.clampTelescopeRunningClearanceMm,
+        rearHeadLeakGapMm: startupDiagnostics.clampTelescopeRearHeadLeakGapMm,
+        rearHeadBearingOverlapMm: startupDiagnostics.clampTelescopeRearHeadBearingOverlapMm,
+        rearHeadPathClearanceMm: startupDiagnostics.clampTelescopeRearHeadPathClearanceMm,
+        inletChamberIntersectionMm: startupDiagnostics.clampTelescopeInletChamberIntersectionMm,
+        inletEndpointErrorMm: startupDiagnostics.clampTelescopeInletEndpointErrorMm,
+        yokeEndpointErrorMm: startupDiagnostics.clampDriveYokeEndpointErrorMm,
+        yokeReactionErrorMm: startupDiagnostics.clampDriveYokeReactionErrorMm,
+        bellevilleSpanErrorMm:
+          startupDiagnostics.clampDriveBellevilleSpanErrorMm,
+        bellevilleCompressionMm:
+          startupDiagnostics.clampDriveBellevilleCompressionMm,
+        bellevilleMaximumDeflectionMm:
+          startupDiagnostics.clampDriveBellevilleMaximumDeflectionMm,
+        bellevilleLockedReserveMm:
+          startupDiagnostics.clampDriveBellevilleLockedReserveMm,
+        bellevilleContactGapMm:
+          startupDiagnostics.clampDriveBellevilleContactGapMm,
+        bellevillePenetrationMm:
+          startupDiagnostics.clampDriveBellevillePenetrationMm,
+        minimumKneeHeightMm: startupDiagnostics.clampToggleMinimumKneeHeightMm,
+        reducerShellMarginMm: startupDiagnostics.clampToggleReducerShellMarginMm,
+        hydraulicEndpointMm: startupDiagnostics.clampHydraulicEndpointErrorMm,
+        hydraulicSupportMm: startupDiagnostics.clampHydraulicSupportErrorMm,
+        hydraulicBendMm: startupDiagnostics.clampHydraulicMinimumBendRadiusMm,
+        jumperEndpointMm: startupDiagnostics.clampHydraulicJumperEndpointErrorMm,
+        jumperBendMm: startupDiagnostics.clampHydraulicJumperMinimumBendRadiusMm,
+        jumperClearanceMm: startupDiagnostics.clampHydraulicJumperMinimumClearanceMm,
+        jumperSpanMm: startupDiagnostics.clampHydraulicJumperMaximumSupportedSpanMm,
+        carrierGapMm: startupDiagnostics.clampEnergyCarrierMaximumLinkGapMm,
+        carrierBracketMm: startupDiagnostics.clampEnergyCarrierBracketGapMm,
+        monotonic: monotonicValid,
+        bounds: boundsValid
+      }));
+    }
+    if (window.console && console.assert) {
+      console.assert(valid, 'Rigid clamp-toggle proof failed', {
+        samples: samples,
+        lengthErrorMm: startupDiagnostics.clampToggleMaximumLengthErrorMm,
+        pinErrorMm: startupDiagnostics.clampToggleMaximumPinErrorMm,
+        driveEndpointErrorMm:
+          startupDiagnostics.clampDriveMaximumEndpointErrorMm,
+        maximumStageStrokeMm:
+          startupDiagnostics.clampDriveMaximumStageStrokeMm,
+        minimumStageOverlapMm:
+          startupDiagnostics.clampDriveMinimumStageOverlapMm,
+        telescopicSumErrorMm:
+          startupDiagnostics.clampDriveTelescopicSumErrorMm,
+        minimumTubeWallMm: startupDiagnostics.clampTelescopeMinimumWallMm,
+        minimumHousingMarginMm:
+          startupDiagnostics.clampTelescopeMinimumHousingMarginMm,
+        glandCoaxialityMm:
+          startupDiagnostics.clampTelescopeGlandCoaxialityMm,
+        runningClearanceMm:
+          startupDiagnostics.clampTelescopeRunningClearanceMm,
+        yokeEndpointErrorMm:
+          startupDiagnostics.clampDriveYokeEndpointErrorMm,
+        yokeReactionErrorMm:
+          startupDiagnostics.clampDriveYokeReactionErrorMm,
+        bridgeYokeGapMm:
+          startupDiagnostics.clampDriveBridgeYokeGapMm,
+        bridgeCheekOverlapMm:
+          startupDiagnostics.clampDriveBridgeCheekOverlapMm,
+        bridgeCheekBearingMm:
+          startupDiagnostics.clampDriveBridgeCheekBearingMm,
+        bridgeOwnership: bridgeOwnershipValid,
+        minimumKneeHeightMm: startupDiagnostics.clampToggleMinimumKneeHeightMm,
+        monotonic: monotonicValid,
+        bounds: boundsValid
+      });
+    }
+    return valid;
+  }
+
+  function validateShotTemporalLaw() {
+    if (!castingRig) return false;
+    var samplesPerSegment = 257;
+    var slowStartX = castingRig.plungerHomeX;
+    var switchX = castingRig.plungerSlowX;
+    var fastEndX = castingRig.plungerFastX;
+    var slowDistance = switchX - slowStartX;
+    var fastDistance = fastEndX - switchX;
+    var slowPeakVelocity = 0;
+    var slowMinimumAcceleration = Infinity;
+    var slowMaximumAcceleration = -Infinity;
+    var slowMaximumAbsoluteJerk = 0;
+    var fastPeakVelocity = 0;
+    var fastMinimumAcceleration = Infinity;
+    var fastMaximumAcceleration = -Infinity;
+    var fastMaximumAbsoluteJerk = 0;
+    var monotonic = true;
+    var previousPosition = slowStartX;
+    var sampleIndex;
+
+    for (sampleIndex = 0; sampleIndex < samplesPerSegment; sampleIndex++) {
+      var slowU = sampleIndex / (samplesPerSegment - 1);
+      var slowPosition = shotHermiteScalar(
+        slowU, slowStartX, switchX, DCM_SHOT_SLOW_SECONDS,
+        0, DCM_SHOT_SWITCH_VELOCITY, 0
+      );
+      var slowVelocity = shotHermiteScalar(
+        slowU, slowStartX, switchX, DCM_SHOT_SLOW_SECONDS,
+        0, DCM_SHOT_SWITCH_VELOCITY, 1
+      );
+      var slowAcceleration = shotHermiteScalar(
+        slowU, slowStartX, switchX, DCM_SHOT_SLOW_SECONDS,
+        0, DCM_SHOT_SWITCH_VELOCITY, 2
+      );
+      var slowJerk = shotHermiteScalar(
+        slowU, slowStartX, switchX, DCM_SHOT_SLOW_SECONDS,
+        0, DCM_SHOT_SWITCH_VELOCITY, 3
+      );
+      if (slowPosition + 0.000000001 < previousPosition || slowVelocity < -0.000000001) {
+        monotonic = false;
+      }
+      previousPosition = slowPosition;
+      slowPeakVelocity = Math.max(slowPeakVelocity, slowVelocity);
+      slowMinimumAcceleration = Math.min(slowMinimumAcceleration, slowAcceleration);
+      slowMaximumAcceleration = Math.max(slowMaximumAcceleration, slowAcceleration);
+      slowMaximumAbsoluteJerk = Math.max(slowMaximumAbsoluteJerk, Math.abs(slowJerk));
+    }
+
+    previousPosition = switchX;
+    for (sampleIndex = 0; sampleIndex < samplesPerSegment; sampleIndex++) {
+      var fastU = sampleIndex / (samplesPerSegment - 1);
+      var fastPosition = shotHermiteScalar(
+        fastU, switchX, fastEndX, DCM_SHOT_FAST_SECONDS,
+        DCM_SHOT_SWITCH_VELOCITY, 0, 0
+      );
+      var fastVelocity = shotHermiteScalar(
+        fastU, switchX, fastEndX, DCM_SHOT_FAST_SECONDS,
+        DCM_SHOT_SWITCH_VELOCITY, 0, 1
+      );
+      var fastAcceleration = shotHermiteScalar(
+        fastU, switchX, fastEndX, DCM_SHOT_FAST_SECONDS,
+        DCM_SHOT_SWITCH_VELOCITY, 0, 2
+      );
+      var fastJerk = shotHermiteScalar(
+        fastU, switchX, fastEndX, DCM_SHOT_FAST_SECONDS,
+        DCM_SHOT_SWITCH_VELOCITY, 0, 3
+      );
+      if (fastPosition + 0.000000001 < previousPosition || fastVelocity < -0.000000001) {
+        monotonic = false;
+      }
+      previousPosition = fastPosition;
+      fastPeakVelocity = Math.max(fastPeakVelocity, fastVelocity);
+      fastMinimumAcceleration = Math.min(fastMinimumAcceleration, fastAcceleration);
+      fastMaximumAcceleration = Math.max(fastMaximumAcceleration, fastAcceleration);
+      fastMaximumAbsoluteJerk = Math.max(fastMaximumAbsoluteJerk, Math.abs(fastJerk));
+    }
+
+    var evaluatedSlowStart = shotHermiteScalar(
+      0, slowStartX, switchX, DCM_SHOT_SLOW_SECONDS,
+      0, DCM_SHOT_SWITCH_VELOCITY, 0
+    );
+    var evaluatedSlowEnd = shotHermiteScalar(
+      1, slowStartX, switchX, DCM_SHOT_SLOW_SECONDS,
+      0, DCM_SHOT_SWITCH_VELOCITY, 0
+    );
+    var evaluatedFastStart = shotHermiteScalar(
+      0, switchX, fastEndX, DCM_SHOT_FAST_SECONDS,
+      DCM_SHOT_SWITCH_VELOCITY, 0, 0
+    );
+    var evaluatedFastEnd = shotHermiteScalar(
+      1, switchX, fastEndX, DCM_SHOT_FAST_SECONDS,
+      DCM_SHOT_SWITCH_VELOCITY, 0, 0
+    );
+    var slowSwitchVelocity = shotHermiteScalar(
+      1, slowStartX, switchX, DCM_SHOT_SLOW_SECONDS,
+      0, DCM_SHOT_SWITCH_VELOCITY, 1
+    );
+    var fastSwitchVelocity = shotHermiteScalar(
+      0, switchX, fastEndX, DCM_SHOT_FAST_SECONDS,
+      DCM_SHOT_SWITCH_VELOCITY, 0, 1
+    );
+    var slowSwitchAcceleration = shotHermiteScalar(
+      1, slowStartX, switchX, DCM_SHOT_SLOW_SECONDS,
+      0, DCM_SHOT_SWITCH_VELOCITY, 2
+    );
+    var fastSwitchAcceleration = shotHermiteScalar(
+      0, switchX, fastEndX, DCM_SHOT_FAST_SECONDS,
+      DCM_SHOT_SWITCH_VELOCITY, 0, 2
+    );
+    var slowStartAcceleration = shotHermiteScalar(
+      0, slowStartX, switchX, DCM_SHOT_SLOW_SECONDS,
+      0, DCM_SHOT_SWITCH_VELOCITY, 2
+    );
+    var fastEndAcceleration = shotHermiteScalar(
+      1, switchX, fastEndX, DCM_SHOT_FAST_SECONDS,
+      DCM_SHOT_SWITCH_VELOCITY, 0, 2
+    );
+    var startVelocity = shotHermiteScalar(
+      0, slowStartX, switchX, DCM_SHOT_SLOW_SECONDS,
+      0, DCM_SHOT_SWITCH_VELOCITY, 1
+    );
+    var endVelocity = shotHermiteScalar(
+      1, switchX, fastEndX, DCM_SHOT_FAST_SECONDS,
+      DCM_SHOT_SWITCH_VELOCITY, 0, 1
+    );
+    var endpointError = Math.max(
+      Math.abs(evaluatedSlowStart - slowStartX),
+      Math.abs(evaluatedSlowEnd - switchX),
+      Math.abs(evaluatedFastStart - switchX),
+      Math.abs(evaluatedFastEnd - fastEndX)
+    );
+    var switchVelocityDelta = Math.abs(slowSwitchVelocity - fastSwitchVelocity);
+    var switchAccelerationDelta = Math.abs(
+      slowSwitchAcceleration - fastSwitchAcceleration
+    );
+    var boundaryMaximumAbsoluteAcceleration = Math.max(
+      Math.abs(slowStartAcceleration),
+      Math.abs(slowSwitchAcceleration),
+      Math.abs(fastSwitchAcceleration),
+      Math.abs(fastEndAcceleration)
+    );
+    var slowAverageVelocity = slowDistance / DCM_SHOT_SLOW_SECONDS;
+    var fastAverageVelocity = fastDistance / DCM_SHOT_FAST_SECONDS;
+    var averageVelocityRatio = fastAverageVelocity / slowAverageVelocity;
+    var slowMaximumAbsoluteAcceleration = Math.max(
+      Math.abs(slowMinimumAcceleration), Math.abs(slowMaximumAcceleration)
+    );
+    var fastMaximumAbsoluteAcceleration = Math.max(
+      Math.abs(fastMinimumAcceleration), Math.abs(fastMaximumAcceleration)
+    );
+    var finiteMetrics =
+      isFinite(slowPeakVelocity) && isFinite(slowMaximumAbsoluteAcceleration) &&
+      isFinite(slowMaximumAbsoluteJerk) && isFinite(fastPeakVelocity) &&
+      isFinite(fastMaximumAbsoluteAcceleration) && isFinite(fastMaximumAbsoluteJerk);
+    var valid =
+      Math.abs(DCM_SHOT_SLOW_SECONDS - 0.83) <= 0.000000001 &&
+      Math.abs(DCM_SHOT_FAST_SECONDS - 0.22) <= 0.000000001 &&
+      Math.abs(
+        DCM_SHOT_SLOW_SECONDS + DCM_SHOT_FAST_SECONDS - DCM_SHOT_TOTAL_SECONDS
+      ) <= 0.000000001 &&
+      endpointError <= 0.000000001 &&
+      monotonic && finiteMetrics &&
+      Math.abs(startVelocity) <= 0.000000001 &&
+      Math.abs(endVelocity) <= 0.000000001 &&
+      Math.abs(slowSwitchVelocity - DCM_SHOT_SWITCH_VELOCITY) <= 0.000000001 &&
+      Math.abs(fastSwitchVelocity - DCM_SHOT_SWITCH_VELOCITY) <= 0.000000001 &&
+      switchVelocityDelta <= 0.02 &&
+      switchAccelerationDelta <= 0.5 &&
+      boundaryMaximumAbsoluteAcceleration <= 0.000001 &&
+      averageVelocityRatio >= 2.5 &&
+      slowPeakVelocity <= 2.3 &&
+      slowMaximumAbsoluteAcceleration <= 5 &&
+      slowMaximumAbsoluteJerk <= 40 &&
+      fastPeakVelocity <= 5.6 &&
+      fastMaximumAbsoluteAcceleration <= 72 &&
+      fastMaximumAbsoluteJerk <= 3200;
+
+    startupDiagnostics.shotTemporalLaw = Object.freeze({
+      contract: 'dcm70-zero-acceleration-quintic-hermite',
+      valid: valid,
+      samples: samplesPerSegment * 2,
+      durationsMs: Object.freeze({
+        slow: Math.round(DCM_SHOT_SLOW_SECONDS * 1000),
+        fast: Math.round(DCM_SHOT_FAST_SECONDS * 1000),
+        total: Math.round(DCM_SHOT_TOTAL_SECONDS * 1000)
+      }),
+      endpointsM: Object.freeze({
+        home: slowStartX,
+        switch: switchX,
+        fast: fastEndX,
+        maximumErrorMm: Number((endpointError * 1000).toFixed(6))
+      }),
+      switchVelocityMps: Number(slowSwitchVelocity.toFixed(6)),
+      switchVelocityDeltaMps: Number(switchVelocityDelta.toFixed(6)),
+      switchAccelerationDeltaMps2: Number(switchAccelerationDelta.toFixed(6)),
+      boundaryMaximumAbsoluteAccelerationMps2: Number(
+        boundaryMaximumAbsoluteAcceleration.toFixed(9)
+      ),
+      averageVelocityRatio: Number(averageVelocityRatio.toFixed(4)),
+      monotonic: monotonic,
+      slow: Object.freeze({
+        averageVelocityMps: Number(slowAverageVelocity.toFixed(4)),
+        peakVelocityMps: Number(slowPeakVelocity.toFixed(4)),
+        minimumAccelerationMps2: Number(slowMinimumAcceleration.toFixed(4)),
+        maximumAccelerationMps2: Number(slowMaximumAcceleration.toFixed(4)),
+        maximumAbsoluteJerkMps3: Number(slowMaximumAbsoluteJerk.toFixed(3))
+      }),
+      fast: Object.freeze({
+        averageVelocityMps: Number(fastAverageVelocity.toFixed(4)),
+        peakVelocityMps: Number(fastPeakVelocity.toFixed(4)),
+        minimumAccelerationMps2: Number(fastMinimumAcceleration.toFixed(4)),
+        maximumAccelerationMps2: Number(fastMaximumAcceleration.toFixed(4)),
+        maximumAbsoluteJerkMps3: Number(fastMaximumAbsoluteJerk.toFixed(3))
+      })
+    });
+    if (window.console && console.assert) {
+      console.assert(
+        valid,
+        'DCM shot temporal-law proof failed',
+        startupDiagnostics.shotTemporalLaw
+      );
+    }
+    return valid;
+  }
+
+  function validateCastingProcessContract() {
+    if (!castingRig || !robotRig) return false;
+    var issues = [];
+    if (!validateClampToggleKinematics()) {
+      issues.push('clamp toggle lost rigid-link, pin-coincidence, or monotonic proof');
+    }
+    if (!validatePressHardSurfaceAnatomy()) {
+      issues.push('press hard-surface anatomy failed its frozen transform/bounds audit');
+    }
+    if (!validateRobotHardSurfaceAnatomy()) {
+      issues.push('robot hard-surface anatomy failed its frozen pivot/TCP/bounds audit');
+    }
+    if (!validateGuardAccessDoor()) {
+      issues.push('closed interlocked guard access door failed its parent/bounds audit');
+    }
+    var insertDelta = new THREE.Vector3().subVectors(
+      CAST_PICK_TARGET,
+      CAST_APPROACH_TARGET
+    );
+    var extractDelta = new THREE.Vector3().subVectors(
+      CAST_NORMAL_CLEAR,
+      CAST_PICK_TARGET
+    );
+    if (
+      Math.abs(insertDelta.y) > 0.000001 ||
+      Math.abs(insertDelta.z) > 0.000001 ||
+      Math.abs(insertDelta.x) < 0.28 ||
+      Math.abs(insertDelta.x) > 0.31 ||
+      Math.abs(extractDelta.y) > 0.000001 ||
+      Math.abs(extractDelta.z) > 0.000001 ||
+      Math.abs(insertDelta.x + extractDelta.x) > 0.000001
+    ) {
+      issues.push('robot insert/extract is not a proved opposing die-normal move');
+    }
+    var processTargets = [
+      { name: 'ENTRY_CLEAR', target: CAST_ENTRY_CLEAR_TARGET, access: 0 },
+      { name: 'FRONT_CLEAR', target: CAST_FRONT_CLEAR_TARGET, access: 1 },
+      { name: 'APPROACH', target: CAST_APPROACH_TARGET, access: 1 },
+      { name: 'PICK', target: CAST_PICK_TARGET, access: 1 },
+      { name: 'NORMAL_CLEAR', target: CAST_NORMAL_CLEAR, access: 1 },
+      { name: 'TRANSIT', target: CAST_TRANSIT_TARGET, access: 0 },
+      { name: 'QUENCH_DEPART', target: CAST_QUENCH_DEPART_TARGET, access: 0 },
+      { name: 'QUENCH_CLEAR', target: CAST_QUENCH_CLEAR_TARGET, access: 0, quench: 1 },
+      { name: 'QUENCH_DIP', target: CAST_QUENCH_DIP_TARGET, access: 0, quench: 1 },
+      { name: 'PRESENT', target: CAST_PRESENT_TARGET, access: 0 },
+      { name: 'DROP', target: CAST_DROP_TARGET, access: 0 }
+    ];
+    var castReachRawD = {};
+    for (var processTargetIndex = 0; processTargetIndex < processTargets.length; processTargetIndex++) {
+      var processDefinition = processTargets[processTargetIndex];
+      var processTarget = processDefinition.target;
+      var accessAmount = processDefinition.access;
+      var solveProcessX = mirrorDcmWorldX(processTarget.x);
+      var solveApproachX = mirrorDcmWorldX(CAST_APPROACH_TARGET.x);
+      var solvePickX = mirrorDcmWorldX(CAST_PICK_TARGET.x);
+      var insertSpan = Math.max(0.001, solvePickX - solveApproachX);
+      var insertAmount = clamp((solveProcessX - solveApproachX) / insertSpan, 0, 1);
+      var accessToolX = lerp(0.1, 0.4, insertAmount);
+      var accessToolY = Math.sqrt(Math.max(0, 1 - accessToolX * accessToolX));
+      var toolX = lerp(1, accessToolX, accessAmount);
+      var toolY = accessToolY * accessAmount;
+      if (processDefinition.quench) { toolX = 0; toolY = -1; }
+      var toolMagnitude = Math.sqrt(toolX * toolX + toolY * toolY);
+      toolX /= toolMagnitude;
+      toolY /= toolMagnitude;
+      var wristX = solveProcessX - robotRig.toolLength * toolX;
+      var wristY = processTarget.y - robotRig.toolLength * toolY;
+      var wristDx = wristX - mirrorDcmWorldX(robotRig.shoulderWorld.x);
+      var wristDz = processTarget.z - robotRig.shoulderWorld.z;
+      var wristPlanar = Math.sqrt(wristDx * wristDx + wristDz * wristDz);
+      var wristVertical = wristY - robotRig.shoulderWorld.y;
+      var wristDistance = Math.sqrt(
+        wristPlanar * wristPlanar + wristVertical * wristVertical
+      );
+      var rawD =
+        (wristDistance * wristDistance -
+          robotRig.upperLength * robotRig.upperLength -
+          robotRig.foreLength * robotRig.foreLength) /
+        (2 * robotRig.upperLength * robotRig.foreLength);
+      castReachRawD[processDefinition.name] = {
+        rawD: Math.round(rawD * 10000) / 10000,
+        wristDistanceM: Math.round(wristDistance * 1000) / 1000
+      };
+      if (rawD < -1 || rawD > 1) {
+        issues.push(
+          processDefinition.name + ' oriented reach is invalid: rawD=' +
+          rawD.toFixed(4) + ', wrist=' + wristDistance.toFixed(3) + 'm'
+        );
+      }
+      if (!targetIsReachable(processTarget)) {
+        issues.push(processDefinition.name + ' TCP is unreachable');
+      }
+      if (processTarget.z > FRONT_GUARD_Z - 0.32) {
+        issues.push(processDefinition.name + ' violates the guarded front setback');
+      }
+      if (processTarget.x > SIDE_GUARD_X - 0.32) {
+        issues.push(processDefinition.name + ' violates the machine-side guard setback');
+      }
+    }
+    startupDiagnostics.castReachRawD = castReachRawD;
+    var castEnvelopeBottom = CAST_PICK_TARGET.y - 0.75 * CAST_PLAQUE_SCALE;
+    var castEnvelopeTop = CAST_PICK_TARGET.y + 0.47 * CAST_PLAQUE_SCALE;
+    var lowerTieTop = 1.19 + 0.075;
+    var upperTieBottom = 3.05 - 0.075;
+    var castTieClearance = Math.min(
+      castEnvelopeBottom - lowerTieTop,
+      upperTieBottom - castEnvelopeTop
+    );
+    startupDiagnostics.castTieClearanceMm = Math.round(castTieClearance * 1000);
+    if (castTieClearance < 0.1) {
+      issues.push(
+        'raised casting envelope leaves only ' +
+        Math.round(castTieClearance * 1000) + 'mm vertical tie-bar clearance'
+      );
+    }
+    if (
+      castingRig.plungerHomeX >= castingRig.plungerSlowX ||
+      castingRig.plungerSlowX >= castingRig.plungerFastX
+    ) {
+      issues.push('slow/fast shot positions are not monotonic toward the die');
+    }
+    if (!validateShotTemporalLaw()) {
+      issues.push('slow/fast shot lost its C2 Hermite temporal-law proof');
+    }
+    var shotActuator = castingRig.shotActuator;
+    if (
+      !shotActuator ||
+      shotActuator.rod.parent !== castingRig.group ||
+      shotActuator.sleeve.parent !== castingRig.group ||
+      shotActuator.collar.parent !== shotActuator.sleeve ||
+      shotActuator.addedDraws !== 1 ||
+      shotActuator.witnessCollarDraws !== 1
+    ) {
+      issues.push('external shot actuator/collar is detached or exceeds its draw budget');
+    } else {
+      var slowShotTravel = castingRig.plungerSlowX - castingRig.plungerHomeX;
+      var fastShotTravel = castingRig.plungerFastX - castingRig.plungerSlowX;
+      var intensifyTravel = 0.08;
+      if (
+        slowShotTravel <= fastShotTravel ||
+        fastShotTravel <= intensifyTravel * 3 ||
+        Math.abs(shotActuator.sleeveCompression - intensifyTravel) > 0.001
+      ) {
+        issues.push('external actuator does not preserve distinct slow/fast/intensify travel scales');
+      }
+      var sleeveRearX = shotActuator.sleeveBaseX - shotActuator.sleeveBaseLength * 0.5;
+      var sleeveSeatX = shotActuator.sleeveBaseX + shotActuator.sleeveBaseLength * 0.5;
+      var collarAxialExtent =
+        Math.abs(shotActuator.collarBaseLocalY) + shotActuator.collarTubeRadius;
+      var collarFullTravel =
+        shotActuator.sleeveCenterTravel +
+        shotActuator.collarBaseLocalY *
+          shotActuator.sleeveCompression /
+          shotActuator.sleeveBaseLength;
+      if (
+        shotActuator.rodRadius >= 0.155 ||
+        shotActuator.sleeveRadius > 0.21 ||
+        sleeveRearX < -3.08 ||
+        sleeveSeatX > -2.6 ||
+        shotActuator.sleeve.castShadow ||
+        shotActuator.collarOuterRadius > shotActuator.sleeveRadius ||
+        shotActuator.collarOuterRadius - shotActuator.sleeveBodyRadius < 0.008 ||
+        collarAxialExtent > shotActuator.sleeveBaseLength * 0.5 ||
+        collarFullTravel < 0.07 ||
+        collarFullTravel > 0.08 ||
+        shotActuator.collar.castShadow ||
+        shotActuator.collar.receiveShadow ||
+        !shotActuator.collar.visible ||
+        shotActuator.collar.material.emissiveIntensity > 0
+      ) {
+        issues.push('external actuator/collar exceeds its envelope, travel, or optical budget');
+      }
+      var strokeWitness = shotActuator.strokeWitness;
+      if (
+        !strokeWitness ||
+        strokeWitness.root.parent !== castingRig.group ||
+        strokeWitness.rack.parent !== strokeWitness.root ||
+        strokeWitness.hardware.parent !== strokeWitness.root ||
+        strokeWitness.pointer.parent !== strokeWitness.root ||
+        strokeWitness.addedDraws !== 3 ||
+        strokeWitness.addedShadowCasters !== 0
+      ) {
+        issues.push('rack-and-pinion stroke witness is detached or exceeds its draw budget');
+      } else {
+        var expectedPointerSweep = collarFullTravel / strokeWitness.pitchRadius;
+        var witnessMeshes = [
+          strokeWitness.rack,
+          strokeWitness.hardware,
+          strokeWitness.pointer
+        ];
+        var witnessOpticalInvalid = false;
+        for (var strokeMeshIndex = 0; strokeMeshIndex < witnessMeshes.length; strokeMeshIndex++) {
+          var strokeMesh = witnessMeshes[strokeMeshIndex];
+          if (
+            strokeMesh.castShadow ||
+            strokeMesh.receiveShadow ||
+            (strokeMesh.material.emissiveIntensity || 0) > 0
+          ) {
+            witnessOpticalInvalid = true;
+            break;
+          }
+        }
+        if (
+          Math.abs(expectedPointerSweep - strokeWitness.pointerSweep) > 0.01 ||
+          strokeWitness.root.position.x < -3.15 ||
+          strokeWitness.root.position.x > -2.45 ||
+          strokeWitness.root.position.y < 1.2 ||
+          strokeWitness.root.position.y > 2.15 ||
+          strokeWitness.root.position.z < 0.68 ||
+          strokeWitness.root.position.z > 0.76 ||
+          witnessOpticalInvalid
+        ) {
+          issues.push('rack-and-pinion ratio, press-face envelope, or optical budget is invalid');
+        }
+
+        scene.updateMatrixWorld(true);
+        var strokeProofCamera = new THREE.PerspectiveCamera(51, 652 / 706, 0.08, 70);
+        strokeProofCamera.position
+          .copy(PROCESS_CAMERA_DIRECTION)
+          .multiplyScalar(PROCESS_CAMERA_STANDARD_DISTANCE)
+          .add(PROCESS_CAMERA_TARGET);
+        strokeProofCamera.lookAt(PROCESS_CAMERA_TARGET);
+        strokeProofCamera.updateProjectionMatrix();
+        // Vector3.project reads matrixWorldInverse directly. Mirror the render
+        // path by resolving the proof camera's world matrix before projecting;
+        // otherwise the identity view matrix reports a false 43 px sweep.
+        strokeProofCamera.updateMatrixWorld(true);
+        var strokeStartAngle = strokeWitness.pointerStart;
+        var strokeEndAngle = strokeStartAngle + strokeWitness.pointerSweep;
+        var strokeStartTip = new THREE.Vector3(
+          -Math.sin(strokeStartAngle) * strokeWitness.pointerLength,
+          Math.cos(strokeStartAngle) * strokeWitness.pointerLength,
+          0.03
+        );
+        var strokeEndTip = new THREE.Vector3(
+          -Math.sin(strokeEndAngle) * strokeWitness.pointerLength,
+          Math.cos(strokeEndAngle) * strokeWitness.pointerLength,
+          0.03
+        );
+        strokeWitness.root.localToWorld(strokeStartTip);
+        strokeWitness.root.localToWorld(strokeEndTip);
+        strokeStartTip.project(strokeProofCamera);
+        strokeEndTip.project(strokeProofCamera);
+        var strokeDeltaX = (strokeEndTip.x - strokeStartTip.x) * 652 * 0.5;
+        var strokeDeltaY = (strokeEndTip.y - strokeStartTip.y) * 706 * 0.5;
+        var strokeArcPx652 = Math.sqrt(
+          strokeDeltaX * strokeDeltaX + strokeDeltaY * strokeDeltaY
+        );
+        strokeWitness.projectedArcPx652 = strokeArcPx652;
+        startupDiagnostics.shotStrokeWitnessArcPx652 = strokeArcPx652;
+        if (strokeArcPx652 < 25 || strokeArcPx652 > 30) {
+          issues.push(
+            'rack-and-pinion pointer projects ' +
+            strokeArcPx652.toFixed(2) +
+            'px instead of the required 25-30px at 652'
+          );
+        }
+      }
+    }
+    if (
+      castingRig.dieOpen < 0.995 ||
+      castingRig.clampProved ||
+      !castingRig.clampReleased ||
+      castingRig.pinsExtended ||
+      castingRig.sleeveCharged ||
+      castPlaqueReady
+    ) {
+      issues.push('cold-start press sensors are not open, released, empty, and ejector-home');
+    }
+    var readableStages = [
+      STATE.LADLE_POUR,
+      STATE.INTENSIFY,
+      STATE.DIE_OPEN,
+      STATE.EJECT,
+      STATE.CAST_GRIP,
+      STATE.CAST_PRESENT
+    ];
+    var timingContractValid = true;
+    var timingStateSeen = {};
+    for (var sequenceIndex = 0; sequenceIndex < DCM_OUTBOUND_SEQUENCE.length; sequenceIndex++) {
+      var sequenceState = DCM_OUTBOUND_SEQUENCE[sequenceIndex];
+      if (timingStateSeen[sequenceState]) timingContractValid = false;
+      timingStateSeen[sequenceState] = true;
+      if (
+        sequenceState !== STATE.REQUESTED &&
+        (!isFinite(stateDuration(sequenceState)) || stateDuration(sequenceState) <= 0)
+      ) timingContractValid = false;
+    }
+    for (var readableIndex = 0; readableIndex < readableStages.length; readableIndex++) {
+      var readableDuration = stateDuration(readableStages[readableIndex]);
+      if (
+        readableDuration < DCM_READABLE_STAGE_MIN_SECONDS ||
+        readableDuration > DCM_READABLE_STAGE_MAX_SECONDS
+      ) timingContractValid = false;
+    }
+    var nominalOutboundSeconds = nominalDcmOutboundDuration(0.12);
+    var staticOutboundPlan = estimateParkRequestFetchDuration();
+    var worstAutoRequestSeconds =
+      staticOutboundPlan.seconds - 0.12 +
+      boundedStateDuration(0.12, HERO_POSE, SAFE_POSE);
+    var staticBreakdown = [];
+    for (
+      var breakdownIndex = 0;
+      breakdownIndex < staticOutboundPlan.breakdown.length;
+      breakdownIndex++
+    ) {
+      staticBreakdown.push(Object.freeze({
+        state: staticOutboundPlan.breakdown[breakdownIndex].state,
+        durationMs: staticOutboundPlan.breakdown[breakdownIndex].durationMs
+      }));
+    }
+    startupDiagnostics.outboundNominalDurationMs = nominalOutboundSeconds * 1000;
+    startupDiagnostics.outboundStaticDurationMs = staticOutboundPlan.seconds * 1000;
+    startupDiagnostics.outboundWorstCaseDurationMs = worstAutoRequestSeconds * 1000;
+    startupDiagnostics.outboundStaticBreakdown = Object.freeze(staticBreakdown);
+    if (
+      DCM_OUTBOUND_SEQUENCE.length !== 29 ||
+      DCM_OUTBOUND_SEQUENCE[0] !== STATE.REQUESTED ||
+      DCM_OUTBOUND_SEQUENCE[DCM_OUTBOUND_SEQUENCE.length - 1] !== STATE.CAST_PRESENT ||
+      Math.abs(stateDuration(STATE.INJECT_SLOW) - DCM_SHOT_SLOW_SECONDS) > 0.000000001 ||
+      Math.abs(stateDuration(STATE.INJECT_FAST) - DCM_SHOT_FAST_SECONDS) > 0.000000001 ||
+      Math.abs(
+        stateDuration(STATE.INJECT_SLOW) + stateDuration(STATE.INJECT_FAST) -
+          DCM_SHOT_TOTAL_SECONDS
+      ) > 0.000000001 ||
+      !startupDiagnostics.shotTemporalLaw ||
+      !startupDiagnostics.shotTemporalLaw.valid ||
+      stateDuration(STATE.INJECT_FAST) >= stateDuration(STATE.INJECT_SLOW) ||
+      stateDuration(STATE.INTENSIFY) <= stateDuration(STATE.INJECT_FAST) ||
+      stateDuration(STATE.COOL) < 1 ||
+      stateDuration(STATE.COOL) > 1.4 ||
+      stateDuration(STATE.CLAMP_RELEASE) <= 0 ||
+      nominalOutboundSeconds < DCM_FETCH_TARGET_MIN_SECONDS ||
+      nominalOutboundSeconds > DCM_FETCH_TARGET_MAX_SECONDS ||
+      staticOutboundPlan.seconds < DCM_FETCH_TARGET_MIN_SECONDS ||
+      staticOutboundPlan.seconds > DCM_FETCH_TARGET_MAX_SECONDS ||
+      worstAutoRequestSeconds > DCM_FETCH_TARGET_MAX_SECONDS
+    ) timingContractValid = false;
+    startupDiagnostics.outboundTimingValid = timingContractValid;
+    if (!timingContractValid) {
+      issues.push(
+        'DCM outbound timing contract is inconsistent or outside the 15-22 s quench-cycle target'
+      );
+    }
+    if (autoHeroPoseError(currentPose || HERO_POSE) > 0.000001) {
+      issues.push('robot is not initialized at the DCM AUTO hero pose');
+    }
+    var ladleSupport = castingRig.ladleSupport;
+    if (
+      !ladleSupport ||
+      ladleSupport.addedDraws !== (ladleSupport.anchors ? 8 : 11) ||
+      ladleSupport.addedShadowCasters !== 5 ||
+      ladleSupport.mast.parent !== castingRig.group ||
+      ladleSupport.foot.parent !== castingRig.group ||
+      ladleSupport.gusset.parent !== castingRig.group ||
+      (ladleSupport.anchors && ladleSupport.anchors.parent !== castingRig.group) ||
+      ladleSupport.pivot.parent !== castingRig.group ||
+      ladleSupport.link.parent !== castingRig.group ||
+      ladleSupport.yoke.parent !== castingRig.ladle ||
+      ladleSupport.pin.parent !== castingRig.ladle ||
+      castingRig.ladleLip.parent !== castingRig.ladleVessel ||
+      castingRig.ladleLip.position.distanceTo(new THREE.Vector3(0.03, 0.13, 0)) > 0.000001 ||
+      !ladleSupport.mast.castShadow ||
+      !ladleSupport.foot.castShadow ||
+      !ladleSupport.gusset.castShadow ||
+      !ladleSupport.link.castShadow ||
+      !ladleSupport.yoke.castShadow ||
+      ladleSupport.pivot.castShadow ||
+      (ladleSupport.anchors && ladleSupport.anchors.castShadow) ||
+      ladleSupport.pin.castShadow
+    ) {
+      issues.push('automatic ladle is not retained by the bounded furnace-mounted support');
+    } else {
+      ladleSupport.update();
+      scene.updateMatrixWorld(true);
+      var supportStart = ladleSupport.link.localToWorld(new THREE.Vector3(-0.5, 0, 0));
+      var supportEnd = ladleSupport.link.localToWorld(new THREE.Vector3(0.5, 0, 0));
+      var supportAnchorWorld = castingRig.group.localToWorld(ladleSupport.anchor.clone());
+      var supportTrunnionWorld = castingRig.ladle.getWorldPosition(new THREE.Vector3());
+      var supportContinuityError = Math.max(
+        supportStart.distanceTo(supportAnchorWorld),
+        supportEnd.distanceTo(supportTrunnionWorld)
+      );
+      var furnaceReach = ladleSupport.anchor.distanceTo(castingRig.ladleFurnacePosition);
+      var readyReach = ladleSupport.anchor.distanceTo(castingRig.ladleReadyPosition);
+      var pourReach = ladleSupport.anchor.distanceTo(castingRig.ladlePourPosition);
+      var supportFootBounds = new THREE.Box3().setFromObject(ladleSupport.foot);
+      var supportMastBounds = new THREE.Box3().setFromObject(ladleSupport.mast);
+      var supportGussetBounds = new THREE.Box3().setFromObject(ladleSupport.gusset);
+      var furnaceBounds = new THREE.Box3().setFromObject(castingRig.furnace);
+      var endpointStates = [
+        [ladleSupport.furnaceJoints, ladleSupport.furnaceLipTarget],
+        [ladleSupport.readyJoints, ladleSupport.readyLipTarget],
+        [ladleSupport.pourJoints, ladleSupport.pourLipTarget]
+      ];
+      var maximumFkEndpointError = 0;
+      for (var endpointStateIndex = 0; endpointStateIndex < endpointStates.length; endpointStateIndex++) {
+        var endpointState = endpointStates[endpointStateIndex][0];
+        var endpointTarget = endpointStates[endpointStateIndex][1];
+        var endpointDirection = new THREE.Vector3(
+          Math.cos(endpointState.elevation) * Math.cos(endpointState.yaw),
+          Math.sin(endpointState.elevation),
+          Math.cos(endpointState.elevation) * Math.sin(endpointState.yaw)
+        );
+        var reconstructedEndpoint = ladleSupport.anchor.clone().addScaledVector(
+          endpointDirection,
+          endpointState.extension
+        );
+        maximumFkEndpointError = Math.max(
+          maximumFkEndpointError,
+          reconstructedEndpoint.distanceTo(endpointTarget)
+        );
+      }
+      var streamHorizontalError = 0;
+
+      function appendPhysicalBounds(rootObject, targetBounds) {
+        if (!rootObject) return;
+        rootObject.traverse(function (child) {
+          if (child.isMesh || child.isInstancedMesh) {
+            var physicalBounds = new THREE.Box3().setFromObject(child);
+            physicalBounds.proofName =
+              (rootObject.name || 'unnamed-root') + ' / ' +
+              (child.name || 'unnamed-mesh');
+            targetBounds.push(physicalBounds);
+          }
+        });
+      }
+      function boxClearance(firstBounds, secondBounds) {
+        var dx = Math.max(
+          0,
+          firstBounds.min.x - secondBounds.max.x,
+          secondBounds.min.x - firstBounds.max.x
+        );
+        var dy = Math.max(
+          0,
+          firstBounds.min.y - secondBounds.max.y,
+          secondBounds.min.y - firstBounds.max.y
+        );
+        var dz = Math.max(
+          0,
+          firstBounds.min.z - secondBounds.max.z,
+          secondBounds.min.z - firstBounds.max.z
+        );
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+      }
+      function minimumBoundsClearance(firstList, secondList, tracker, sampleLabel) {
+        var minimum = Infinity;
+        for (var firstIndex = 0; firstIndex < firstList.length; firstIndex++) {
+          for (var secondIndex = 0; secondIndex < secondList.length; secondIndex++) {
+            var pairClearance = boxClearance(
+              firstList[firstIndex],
+              secondList[secondIndex]
+            );
+            if (pairClearance < minimum) minimum = pairClearance;
+            if (tracker && pairClearance < tracker.clearance) {
+              tracker.clearance = pairClearance;
+              tracker.first = firstList[firstIndex].proofName || 'unnamed-first';
+              tracker.second = secondList[secondIndex].proofName || 'unnamed-second';
+              tracker.sample = sampleLabel || '';
+              tracker.firstBounds = firstList[firstIndex].min.toArray()
+                .concat(firstList[firstIndex].max.toArray());
+              tracker.secondBounds = secondList[secondIndex].min.toArray()
+                .concat(secondList[secondIndex].max.toArray());
+            }
+          }
+        }
+        return minimum;
+      }
+
+      var shotPhysicalBounds = [];
+      var pressAnatomy = castingRig.pressAnatomy;
+      var shotPhysicalObjects = pressAnatomy.shotSupportObjects.concat(
+        [pressAnatomy.hydraulicPackBody],
+        [shotActuator.rod, shotActuator.sleeve, shotActuator.collar]
+      );
+      for (var shotPhysicalIndex = 0; shotPhysicalIndex < shotPhysicalObjects.length; shotPhysicalIndex++) {
+        appendPhysicalBounds(shotPhysicalObjects[shotPhysicalIndex], shotPhysicalBounds);
+      }
+      function appendInstancedPhysicalBounds(instancedMesh, target) {
+        instancedMesh.updateWorldMatrix(true, false);
+        if (!instancedMesh.geometry.boundingBox) {
+          instancedMesh.geometry.computeBoundingBox();
+        }
+        var instanceMatrix = new THREE.Matrix4();
+        var instanceWorldMatrix = new THREE.Matrix4();
+        for (var instanceIndex = 0; instanceIndex < instancedMesh.count; instanceIndex++) {
+          instancedMesh.getMatrixAt(instanceIndex, instanceMatrix);
+          instanceWorldMatrix.multiplyMatrices(
+            instancedMesh.matrixWorld,
+            instanceMatrix
+          );
+          target.push(
+            instancedMesh.geometry.boundingBox.clone().applyMatrix4(
+              instanceWorldMatrix
+            )
+          );
+          target[target.length - 1].proofName =
+            (instancedMesh.name || 'unnamed-instanced') +
+            ' instance[' + instanceIndex + ']';
+        }
+      }
+      appendInstancedPhysicalBounds(
+        pressAnatomy.hydraulicPackLegs,
+        shotPhysicalBounds
+      );
+      appendInstancedPhysicalBounds(
+        pressAnatomy.hydraulicAccumulatorBank,
+        shotPhysicalBounds
+      );
+      appendInstancedPhysicalBounds(
+        pressAnatomy.hydraulicPackFittings,
+        shotPhysicalBounds
+      );
+      function appendSampledHoseBounds(hose, radius, target) {
+        var hosePath = hose.geometry.parameters.path;
+        var hosePoint = new THREE.Vector3();
+        var hoseRadiusVector = new THREE.Vector3(radius, radius, radius);
+        for (var hoseSampleIndex = 0; hoseSampleIndex <= 96; hoseSampleIndex++) {
+          hosePath.getPoint(hoseSampleIndex / 96, hosePoint);
+          hosePoint.applyMatrix4(hose.matrixWorld);
+          target.push(new THREE.Box3(
+            hosePoint.clone().sub(hoseRadiusVector),
+            hosePoint.clone().add(hoseRadiusVector)
+          ));
+          target[target.length - 1].proofName =
+            (hose.name || 'unnamed-hose') +
+            ' sample[' + hoseSampleIndex + ']';
+        }
+      }
+      appendSampledHoseBounds(
+        pressAnatomy.hydraulicPressureHose,
+        0.034,
+        shotPhysicalBounds
+      );
+      appendSampledHoseBounds(
+        pressAnatomy.hydraulicReturnHose,
+        0.034,
+        shotPhysicalBounds
+      );
+      var fixedDosingBounds = [];
+      appendPhysicalBounds(castingRig.furnace, fixedDosingBounds);
+      appendPhysicalBounds(ladleSupport.mast, fixedDosingBounds);
+      appendPhysicalBounds(ladleSupport.foot, fixedDosingBounds);
+      appendPhysicalBounds(ladleSupport.gusset, fixedDosingBounds);
+      appendPhysicalBounds(ladleSupport.pivot, fixedDosingBounds);
+      appendPhysicalBounds(ladleSupport.anchors, fixedDosingBounds);
+      var minimumFixedDosingPair = { clearance: Infinity };
+      var minimumMovingDosingPair = { clearance: Infinity };
+      var minimumFixedDosingClearance = minimumBoundsClearance(
+        fixedDosingBounds,
+        shotPhysicalBounds,
+        minimumFixedDosingPair,
+        'fixed'
+      );
+
+      // Mirror the exact bootstrap/lift/pour/return FK rather than checking
+      // only three parked poses. The sample is startup-only and restores every
+      // visible ladle transform before returning to the live state machine.
+      var savedLadlePosition = castingRig.ladle.position.clone();
+      var savedLadleVesselRotation = castingRig.ladleVessel.rotation.clone();
+      var savedLadleMetalPosition = castingRig.ladleMetal.position.clone();
+      var savedLadleMetalRotation = castingRig.ladleMetal.rotation.clone();
+      var savedLadleMetalScale = castingRig.ladleMetal.scale.clone();
+      var savedSupportCurrentYaw = ladleSupport.state.currentYaw;
+      var savedSupportCurrentElevation = ladleSupport.state.currentElevation;
+      var savedSupportLastLeg = ladleSupport.state.lastLeg;
+      var savedSupportLastLegProgress = ladleSupport.state.lastLegProgress;
+      var savedSupportPositionErrorMm = ladleSupport.state.positionErrorMm;
+      var minimumMovingDosingClearance = Infinity;
+      var maximumLipPathErrorMm = 0;
+      var maximumVisibleLipHorizontalErrorMm = 0;
+      var maximumStreamAxisErrorMm = 0;
+      var pourBoundaryErrorMm = 0;
+      var previousLegEndTrunnion = null;
+      var movingDosingMaximumWorldX = -Infinity;
+      var movingDosingMaximumWorldZ = -Infinity;
+      var dosingClearanceSamples = 0;
+      function sampleDosingLeg(fromJoint, toJoint, tipAtProgress, visiblePour) {
+        for (var dosingSampleIndex = 0; dosingSampleIndex <= 112; dosingSampleIndex++) {
+          var dosingProgress = dosingSampleIndex / 112;
+          var dosingTip = tipAtProgress(dosingProgress);
+          ladleSupport.applyJoints(
+            fromJoint,
+            toJoint,
+            dosingProgress,
+            dosingTip,
+            ''
+          );
+          scene.updateMatrixWorld(true);
+          var movingDosingBounds = [];
+          appendPhysicalBounds(ladleSupport.link, movingDosingBounds);
+          appendPhysicalBounds(castingRig.ladle, movingDosingBounds);
+          for (var movingBoundsIndex = 0; movingBoundsIndex < movingDosingBounds.length; movingBoundsIndex++) {
+            movingDosingMaximumWorldX = Math.max(
+              movingDosingMaximumWorldX,
+              movingDosingBounds[movingBoundsIndex].max.x
+            );
+            movingDosingMaximumWorldZ = Math.max(
+              movingDosingMaximumWorldZ,
+              movingDosingBounds[movingBoundsIndex].max.z
+            );
+          }
+          minimumMovingDosingClearance = Math.min(
+            minimumMovingDosingClearance,
+            minimumBoundsClearance(
+              movingDosingBounds,
+              shotPhysicalBounds,
+              minimumMovingDosingPair,
+              'sample[' + dosingClearanceSamples + ']'
+            )
+          );
+          maximumLipPathErrorMm = Math.max(
+            maximumLipPathErrorMm,
+            ladleSupport.state.lipPathErrorMm
+          );
+          if (visiblePour) {
+            var proofLip = castingRig.ladleLip.getWorldPosition(
+              castingRig.streamLipScratch
+            );
+            castingRig.group.worldToLocal(proofLip);
+            var visibleLipError = Math.sqrt(
+              Math.pow(proofLip.x - castingRig.streamHoleScratch.x, 2) +
+              Math.pow(proofLip.z - castingRig.streamHoleScratch.z, 2)
+            );
+            maximumVisibleLipHorizontalErrorMm = Math.max(
+              maximumVisibleLipHorizontalErrorMm,
+              visibleLipError * 1000
+            );
+            maximumStreamAxisErrorMm = Math.max(
+              maximumStreamAxisErrorMm,
+              visibleLipError * 1000
+            );
+          }
+          dosingClearanceSamples += 1;
+        }
+        var legEndTrunnion = castingRig.ladle.position.clone();
+        if (previousLegEndTrunnion) {
+          var nextTip = tipAtProgress(0);
+          ladleSupport.applyJoints(fromJoint, toJoint, 0, nextTip, '');
+          pourBoundaryErrorMm = Math.max(
+            pourBoundaryErrorMm,
+            previousLegEndTrunnion.distanceTo(castingRig.ladle.position) * 1000
+          );
+        }
+        previousLegEndTrunnion = legEndTrunnion;
+      }
+      sampleDosingLeg(ladleSupport.furnaceJoints, ladleSupport.readyJoints, function () {
+        return 0;
+      });
+      sampleDosingLeg(ladleSupport.readyJoints, ladleSupport.pourJoints, function () {
+        return 0;
+      });
+      sampleDosingLeg(ladleSupport.pourJoints, ladleSupport.pourJoints, function (value) {
+        return -1.08 * ladleSupport.minimumJerk(value);
+      }, true);
+      sampleDosingLeg(ladleSupport.pourJoints, ladleSupport.furnaceJoints, function (value) {
+        return -1.08 * (1 - ladleSupport.minimumJerk(value));
+      });
+      castingRig.ladle.position.copy(savedLadlePosition);
+      castingRig.ladleVessel.rotation.copy(savedLadleVesselRotation);
+      castingRig.ladleMetal.position.copy(savedLadleMetalPosition);
+      castingRig.ladleMetal.rotation.copy(savedLadleMetalRotation);
+      castingRig.ladleMetal.scale.copy(savedLadleMetalScale);
+      ladleSupport.update();
+      ladleSupport.state.currentYaw = savedSupportCurrentYaw;
+      ladleSupport.state.currentElevation = savedSupportCurrentElevation;
+      ladleSupport.state.lastLeg = savedSupportLastLeg;
+      ladleSupport.state.lastLegProgress = savedSupportLastLegProgress;
+      ladleSupport.state.positionErrorMm = savedSupportPositionErrorMm;
+      scene.updateMatrixWorld(true);
+      var furnaceDatumFrozen = castingRig.furnace.position.equals(
+        new THREE.Vector3(-2.894, 0, 1.6)
+      );
+      var supportAnchorFrozen = ladleSupport.anchor.equals(
+        new THREE.Vector3(-2.094, 2.5, 1.1)
+      );
+      var furnaceLadleDatumFrozen = castingRig.ladleFurnacePosition.equals(
+        new THREE.Vector3(-2.894, 1.78, 1.6)
+      );
+      var readyLadleDatumFrozen = castingRig.ladleReadyPosition.equals(
+        new THREE.Vector3(-2.78, 2.03, 0.32)
+      );
+      var pourLadleDatumFrozen = castingRig.ladlePourPosition.equals(
+        new THREE.Vector3(-2.28, 2.06, 0.32)
+      );
+      var ladleFailureMetrics = {
+        supportMm: Number((supportContinuityError * 1000).toFixed(3)),
+        fkMm: Number((maximumFkEndpointError * 1000).toFixed(3)),
+        lipPathMm: Number(maximumLipPathErrorMm.toFixed(3)),
+        visibleLipMm: Number(maximumVisibleLipHorizontalErrorMm.toFixed(3)),
+        streamAxisMm: Number(maximumStreamAxisErrorMm.toFixed(3)),
+        streamHorizontalMm: Number((streamHorizontalError * 1000).toFixed(3)),
+        boundaryMm: Number(pourBoundaryErrorMm.toFixed(3)),
+        reaches: [
+          Number(furnaceReach.toFixed(4)),
+          Number(readyReach.toFixed(4)),
+          Number(pourReach.toFixed(4))
+        ],
+        footY: [
+          Number(supportFootBounds.min.y.toFixed(4)),
+          Number(supportFootBounds.max.y.toFixed(4))
+        ],
+        mastFootGapMm: Number(
+          (Math.max(0, supportMastBounds.min.y - supportFootBounds.max.y) * 1000)
+            .toFixed(3)
+        ),
+        gussetMaxY: Number(supportGussetBounds.max.y.toFixed(4)),
+        minFixedMm: Number((minimumFixedDosingClearance * 1000).toFixed(3)),
+        minMovingMm: Number((minimumMovingDosingClearance * 1000).toFixed(3)),
+        minFixedPair: {
+          first: minimumFixedDosingPair.first,
+          second: minimumFixedDosingPair.second,
+          sample: minimumFixedDosingPair.sample,
+          clearanceMm: Number((minimumFixedDosingPair.clearance * 1000).toFixed(3)),
+          firstBounds: minimumFixedDosingPair.firstBounds,
+          secondBounds: minimumFixedDosingPair.secondBounds
+        },
+        minMovingPair: {
+          first: minimumMovingDosingPair.first,
+          second: minimumMovingDosingPair.second,
+          sample: minimumMovingDosingPair.sample,
+          clearanceMm: Number((minimumMovingDosingPair.clearance * 1000).toFixed(3)),
+          firstBounds: minimumMovingDosingPair.firstBounds,
+          secondBounds: minimumMovingDosingPair.secondBounds
+        },
+        furnaceGuardMm: {
+          side: Number(((SIDE_GUARD_X - 0.25 - furnaceBounds.max.x) * 1000).toFixed(3)),
+          front: Number(((FRONT_GUARD_Z - 0.3 - furnaceBounds.max.z) * 1000).toFixed(3))
+        },
+        movingMaxWorld: [
+          Number(movingDosingMaximumWorldX.toFixed(4)),
+          Number(movingDosingMaximumWorldZ.toFixed(4))
+        ],
+        movingGuardMm: {
+          side: Number(((SIDE_GUARD_X - 0.25 - movingDosingMaximumWorldX) * 1000).toFixed(3)),
+          front: Number(((FRONT_GUARD_Z - 0.3 - movingDosingMaximumWorldZ) * 1000).toFixed(3))
+        },
+        frozen: {
+          furnace: furnaceDatumFrozen,
+          anchor: supportAnchorFrozen,
+          furnaceLadle: furnaceLadleDatumFrozen,
+          readyLadle: readyLadleDatumFrozen,
+          pourLadle: pourLadleDatumFrozen
+        },
+        samples: dosingClearanceSamples
+      };
+      if (
+        supportContinuityError > 0.002 ||
+        maximumFkEndpointError > 0.002 ||
+        maximumLipPathErrorMm > 2 ||
+        maximumVisibleLipHorizontalErrorMm > 2 ||
+        maximumStreamAxisErrorMm > 2 ||
+        pourBoundaryErrorMm > 2 ||
+        streamHorizontalError > 0.002 ||
+        Math.min(furnaceReach, readyReach, pourReach) < 0.55 ||
+        Math.max(furnaceReach, readyReach, pourReach) > 1.55 ||
+        supportFootBounds.min.y < -0.005 ||
+        supportFootBounds.max.y > 0.23 ||
+        supportMastBounds.min.y > supportFootBounds.max.y + 0.015 ||
+        supportGussetBounds.max.y > 2.66 ||
+        furnaceBounds.max.x > SIDE_GUARD_X - 0.25 ||
+        furnaceBounds.max.z > FRONT_GUARD_Z - 0.3 ||
+        minimumFixedDosingClearance < 0.1 ||
+        minimumMovingDosingClearance < 0.07 ||
+        movingDosingMaximumWorldX > SIDE_GUARD_X - 0.25 ||
+        movingDosingMaximumWorldZ > FRONT_GUARD_Z - 0.3 ||
+        !furnaceDatumFrozen ||
+        !supportAnchorFrozen ||
+        !furnaceLadleDatumFrozen ||
+        !readyLadleDatumFrozen ||
+        !pourLadleDatumFrozen
+      ) {
+        issues.push(
+          'ladle lip compensation lost FK, stream, guard, or raw shot-system clearance ' +
+          JSON.stringify(ladleFailureMetrics)
+        );
+      }
+      startupDiagnostics.ladleSupport = Object.freeze({
+        valid:
+          supportContinuityError <= 0.002 &&
+          maximumFkEndpointError <= 0.002 &&
+          maximumLipPathErrorMm <= 2 &&
+          maximumVisibleLipHorizontalErrorMm <= 2 &&
+          maximumStreamAxisErrorMm <= 2 &&
+          pourBoundaryErrorMm <= 2 &&
+          streamHorizontalError <= 0.002 &&
+          minimumFixedDosingClearance >= 0.1 &&
+          minimumMovingDosingClearance >= 0.07,
+        addedDraws: ladleSupport.addedDraws,
+        addedShadowCasters: ladleSupport.addedShadowCasters,
+        continuityErrorMm: Number((supportContinuityError * 1000).toFixed(2)),
+        maximumFkEndpointErrorMm: Number((maximumFkEndpointError * 1000).toFixed(3)),
+        maximumLipPathErrorMm: Number(maximumLipPathErrorMm.toFixed(3)),
+        maximumVisibleLipHorizontalErrorMm: Number(
+          maximumVisibleLipHorizontalErrorMm.toFixed(3)
+        ),
+        maximumStreamAxisErrorMm: Number(maximumStreamAxisErrorMm.toFixed(3)),
+        pourBoundaryErrorMm: Number(pourBoundaryErrorMm.toFixed(3)),
+        lipParentValid: castingRig.ladleLip.parent === castingRig.ladleVessel,
+        lipLocalDatum: Object.freeze([0.03, 0.13, 0]),
+        streamHorizontalErrorMm: Number((streamHorizontalError * 1000).toFixed(3)),
+        fixedShotSystemClearanceMm: Math.round(minimumFixedDosingClearance * 1000),
+        movingShotSystemClearanceMm: Math.round(minimumMovingDosingClearance * 1000),
+        movingGuardClearanceMm: Object.freeze({
+          side: Math.round((SIDE_GUARD_X - movingDosingMaximumWorldX) * 1000),
+          front: Math.round((FRONT_GUARD_Z - movingDosingMaximumWorldZ) * 1000)
+        }),
+        requiredGuardClearanceMm: 250,
+        requiredClearanceMm: Object.freeze({
+          fixed: 100,
+          moving: 70,
+          sideGuard: 250,
+          frontGuard: 300
+        }),
+        clearanceSamples: dosingClearanceSamples,
+        endpointReachMm: Object.freeze([
+          Math.round(furnaceReach * 1000),
+          Math.round(readyReach * 1000),
+          Math.round(pourReach * 1000)
+        ]),
+        currentLengthMm: Math.round(ladleSupport.state.currentLength * 1000),
+        minimumObservedLengthMm: Math.round(ladleSupport.state.minimumLength * 1000),
+        maximumObservedLengthMm: Math.round(ladleSupport.state.maximumLength * 1000),
+        foundationBounds: Object.freeze({
+          min: Object.freeze(supportFootBounds.min.toArray().map(function (value) {
+            return Number(value.toFixed(4));
+          })),
+          max: Object.freeze(supportFootBounds.max.toArray().map(function (value) {
+            return Number(value.toFixed(4));
+          }))
+        })
+      });
+    }
+    var processAzimuthDegrees = Math.atan2(
+      Math.abs(PROCESS_CAMERA_DIRECTION.x),
+      PROCESS_CAMERA_DIRECTION.z
+    ) * 180 / Math.PI;
+    var processElevationDegrees = Math.asin(PROCESS_CAMERA_DIRECTION.y) * 180 / Math.PI;
+    if (
+      processAzimuthDegrees < 35 ||
+      processAzimuthDegrees > 42 ||
+      processElevationDegrees < 5 ||
+      processElevationDegrees > 8
+    ) {
+      issues.push('process camera escaped the operator-side topology view');
+    }
+    startupDiagnostics.processTopologyCamera = Object.freeze({
+      azimuthDeg: Number(processAzimuthDegrees.toFixed(2)),
+      elevationDeg: Number(processElevationDegrees.toFixed(2)),
+      target: Object.freeze([
+        Number(PROCESS_CAMERA_TARGET.x.toFixed(3)),
+        Number(PROCESS_CAMERA_TARGET.y.toFixed(3)),
+        Number(PROCESS_CAMERA_TARGET.z.toFixed(3))
+      ])
+    });
+    if (!validateEjectOpticalClearance()) {
+      issues.push('DCM optical park overlaps the single ejected casting in the locked camera');
+    }
+    if (!validateGripOpticalClearance()) {
+      issues.push('DCM GRIP does not expose both physical pad/tab lands and the central T-rib');
+    }
+    var metalWitness = castingRig.metalWitness;
+    if (
+      !metalWitness ||
+      metalWitness.drawCount !== 3 ||
+      !metalWitness.drawMeshes ||
+      metalWitness.drawMeshes.length !== 3
+    ) {
+      issues.push('metal-state witness is not the bounded three-draw assembly');
+    } else {
+      if (
+        metalWitness.inspectionHood.parent !== castingRig.group ||
+        metalWitness.sleeveSlug.parent !== castingRig.group ||
+        metalWitness.shotRodSweep.parent !== castingRig.plunger
+      ) {
+        issues.push('metal-state witness is detached from sleeve or physical shot rod');
+      }
+      for (var witnessMeshIndex = 0; witnessMeshIndex < metalWitness.drawMeshes.length; witnessMeshIndex++) {
+        var witnessMesh = metalWitness.drawMeshes[witnessMeshIndex];
+        if (witnessMesh.castShadow || witnessMesh.receiveShadow) {
+          issues.push('metal-state witness draw entered the performance shadow map');
+          break;
+        }
+      }
+      if (metalWitness.cooledSource !== 'existing-recipe-plaque') {
+        issues.push('metal-state witness creates a duplicate cooled casting authority');
+      }
+      updateMetalWitness(0);
+      if (!metalWitness.custodyValid || metalWitness.authorityMask !== 1) {
+        issues.push('cold-start metal custody is not singularly retained by the ladle');
+      }
+    }
+    startupDiagnostics.processIssueCount = issues.length;
+    startupDiagnostics.processContractValid = issues.length === 0;
+    if (window.console) {
+      if (console.assert) {
+        console.assert(
+          startupDiagnostics.processContractValid,
+          'DCM process contract failed',
+          issues.join(' | ')
+        );
+      }
+      if (issues.length && console.error) {
+        console.error('DCM process contract failed: ' + issues.join(' | '));
+      }
+    }
+    return startupDiagnostics.processContractValid;
+  }
+
+  function runCastingStartupSanity() {
     var startedAt = performance.now();
     startupDiagnostics.rackCalls += 1;
-    startupDiagnostics.rackValid = validateRackFixture();
+    startupDiagnostics.rackValid = validateCastingFixture();
+    startupDiagnostics.ejectorMechanismValid = validateEjectorMechanism();
+    startupDiagnostics.processContractValid = validateCastingProcessContract();
+    // The exhaustive capsule/OBB sweep remains the authoritative QA proof,
+    // but it runs after the first composited frame under ?debug=1/?qa=1. The
+    // production boot gate above still proves the exact six TCPs, die-normal
+    // reversal, guard setbacks, press sensor baseline, shot ordering, and all
+    // seven recipe mappings without blocking first paint on thousands of
+    // main-thread collision samples.
+    startupDiagnostics.rackValid =
+      startupDiagnostics.rackValid &&
+      startupDiagnostics.ejectorMechanismValid &&
+      startupDiagnostics.processContractValid;
     startupDiagnostics.rackDurationMs = performance.now() - startedAt;
     return startupDiagnostics.rackValid;
   }
@@ -5962,7 +18233,10 @@
       startupDiagnostics.sweptCalls += 1;
       startupDiagnostics.sweptValid = validateSweptSafetyEnvelope();
       startupDiagnostics.projectedCalls += 1;
-      startupDiagnostics.projectedValid = validateProjectedAutoClearance();
+      startupDiagnostics.projectedValid =
+        validateProjectedAutoClearance() &&
+        validateEjectOpticalClearance() &&
+        validateGripOpticalClearance();
       startupDiagnostics.requestEntryCalls += 1;
       startupDiagnostics.requestEntryValid = validateAllRequestEgressEntries();
     } catch (proofError) {
@@ -5998,28 +18272,31 @@
   }
 
   try {
-    if (bootMessage) bootMessage.textContent = "Loading floor optics - homing six-axis robot";
+    if (bootMessage) bootMessage.textContent = "Charging ladle - proving cold-chamber cell";
     buildBackdrop();
     buildMachineProxy();
     buildRobot();
     buildStaging();
     buildSceneFinishing();
-    applyPose(SAFE_POSE);
-    // This small seven-station fixture proof remains a synchronous production
-    // sanity check. Full all-station sweeps/projections are scheduled only for
-    // explicit QA after the first frame; live requests retain their reach/TCP,
-    // custody, guard, rack-seat, and shutter-clearance validators unchanged.
-    runRackStartupSanity();
+    applyPose(HERO_POSE);
+    // The bounded production proof covers recipe identity, press/fence
+    // separation, robot reach, die-normal reversal, sensor baseline, and the
+    // shot-order contract. Exhaustive swept capsules/OBBs are deferred until
+    // after first render in explicit QA mode.
+    if (!runCastingStartupSanity()) {
+      throw new Error('DCM geometry or swept-clearance proof failed');
+    }
     updateHmiHitMode();
   } catch (error) {
-    showError("The CNC scene could not be built. Resume clipboards remain available below.");
+    if (window.console && console.error) console.error('DCM build exception', error && (error.stack || error.message || error));
+    showError("The die-casting cell could not be built. Resume recipes remain available below.");
     return;
   }
 
   sceneReady = true;
   setBodyState();
   setDockState();
-  setCellStatus("Cycle", "Running");
+  setCellStatus("Charge", "Ladle charging - die open and guarded");
   updateSafetyDom();
 
   var framePending = false;
@@ -6054,9 +18331,15 @@
     failed: 0,
     startedAt: 0,
     fetchStartedAt: 0,
+    fetchSimulationStartedAt: 0,
+    heldStartedAt: 0,
+    returnStartedAt: 0,
     fetchCompleted: 0,
     lastFetchDurationMs: 0,
+    lastFetchSimulationDurationMs: 0,
+    lastReviewDwellMs: 0,
     lastDurationMs: 0,
+    stageDwells: [],
     lastValid: true,
     lastFault: ""
   };
@@ -6105,6 +18388,33 @@
     frameRequestId = window.requestAnimationFrame(animate);
   }
 
+  function clearAutoHeroWake() {
+    if (!autoHeroWakeTimer) return;
+    window.clearTimeout(autoHeroWakeTimer);
+    autoHeroWakeTimer = 0;
+  }
+
+  function scheduleAutoHeroWake() {
+    if (
+      autoHeroWakeTimer ||
+      reducedMotion ||
+      document.hidden ||
+      state !== STATE.AUTO ||
+      !castingChargeReady() ||
+      (productionClock >= AUTO_PARK_TO_HERO_START &&
+        productionClock < AUTO_HERO_TO_PARK_END)
+    ) return;
+    var secondsUntilHero = productionClock < AUTO_PARK_TO_HERO_START
+      ? AUTO_PARK_TO_HERO_START - productionClock
+      : AUTO_CYCLE_SECONDS - productionClock + AUTO_PARK_TO_HERO_START;
+    autoHeroWakeTimer = window.setTimeout(function () {
+      autoHeroWakeTimer = 0;
+      if (reducedMotion || state !== STATE.AUTO || !castingChargeReady()) return;
+      productionClock = AUTO_PARK_TO_HERO_START;
+      requestSceneRender('auto-hero-loop');
+    }, Math.max(16, secondsUntilHero * 1000));
+  }
+
   function markRenderWake(reason) {
     if (!renderLoopSleeping || wakePending || document.hidden) return;
     wakePending = true;
@@ -6128,13 +18438,55 @@
     cycleMetrics.started += 1;
     cycleMetrics.startedAt = performance.now();
     cycleMetrics.fetchStartedAt = cycleMetrics.startedAt;
+    cycleMetrics.fetchSimulationStartedAt = simulationClock;
+    cycleMetrics.heldStartedAt = 0;
+    cycleMetrics.returnStartedAt = 0;
+    cycleMetrics.lastReviewDwellMs = 0;
+    cycleMetrics.lastFetchSimulationDurationMs = 0;
+    cycleMetrics.stageDwells = [];
     cycleMetrics.lastFault = "";
+  }
+
+  function recordDcmStageCompletion(completedState) {
+    if (
+      !debugFps ||
+      !cycleMetrics.active ||
+      DCM_OUTBOUND_SEQUENCE.indexOf(completedState) < 0
+    ) return;
+    var boundedMs = isFinite(activeStateDuration)
+      ? Math.round(activeStateDuration * 1000)
+      : null;
+    var measuredMs = Math.max(
+      0,
+      Math.round((simulationClock - stateEntered) * 1000)
+    );
+    cycleMetrics.stageDwells.push(Object.freeze({
+      sequence: DCM_OUTBOUND_SEQUENCE.indexOf(completedState) + 1,
+      state: completedState,
+      authoredMs: Math.round(stateDuration(completedState) * 1000),
+      boundedMs: boundedMs,
+      measuredMs: measuredMs,
+      overrunMs: boundedMs === null ? null : Math.max(0, measuredMs - boundedMs)
+    }));
   }
 
   function recordFetchCompletion() {
     if (!debugFps || !cycleMetrics.fetchStartedAt) return;
+    var now = performance.now();
     cycleMetrics.fetchCompleted += 1;
-    cycleMetrics.lastFetchDurationMs = performance.now() - cycleMetrics.fetchStartedAt;
+    cycleMetrics.lastFetchDurationMs = now - cycleMetrics.fetchStartedAt;
+    cycleMetrics.lastFetchSimulationDurationMs =
+      (simulationClock - cycleMetrics.fetchSimulationStartedAt) * 1000;
+    cycleMetrics.heldStartedAt = now;
+  }
+
+  function recordReturnStart() {
+    if (!debugFps || !cycleMetrics.active) return;
+    var now = performance.now();
+    cycleMetrics.returnStartedAt = now;
+    cycleMetrics.lastReviewDwellMs = cycleMetrics.heldStartedAt
+      ? Math.max(0, now - cycleMetrics.heldStartedAt)
+      : 0;
   }
 
   function rackCustodyProved() {
@@ -6151,25 +18503,74 @@
     return true;
   }
 
+  function castingRecipeLibraryProved() {
+    if (travelers.length !== STATIONS.length) return false;
+    for (var travelerIndex = 0; travelerIndex < travelers.length; travelerIndex++) {
+      var traveler = travelers[travelerIndex];
+      if (
+        !traveler ||
+        traveler.custody !== 'recipe-library' ||
+        traveler.attached ||
+        traveler.group.visible
+      ) return false;
+    }
+    return true;
+  }
+
+  function castingCycleResetProved() {
+    if (!castingRig || !robotRig) return false;
+    return !!(
+      castRecycleProved &&
+      !castPlaqueReady &&
+      !activeTraveler &&
+      castingRecipeLibraryProved() &&
+      !castingRig.pinsExtended &&
+      Math.abs(castingRig.ejectorPins.position.x + 0.18) <= 0.005 &&
+      Math.abs(castingRig.plaqueSocket.position.x + 0.19) <= 0.005 &&
+      Math.abs(castingRig.plunger.position.x - castingRig.plungerHomeX) <= 0.005 &&
+      castingRig.ladleHome &&
+      castingRig.chargeLoaded &&
+      castingChargeLoaded &&
+      castingRig.dieOpen >= 0.995 &&
+      Math.abs(castingRig.movingHalf.position.x - castingRig.dieTravel) <= 0.005 &&
+      castingRig.clampReleased &&
+      !castingRig.clampProved &&
+      !castingRig.sleeveCharged &&
+      !castingRig.slowShotProved &&
+      !castingRig.fastShotProved &&
+      !castingRig.intensificationProved &&
+      !castingRig.solidified &&
+      autoParkPoseError(currentPose || SAFE_POSE) <= 0.02
+    );
+  }
+
   function recordCycleCompletion(restowComplete) {
     if (!debugFps) return;
-    var valid = !!(
-      restowComplete &&
-      rackCustodyProved() &&
-      !safetyFault &&
-      !safetySensors.boardInBay &&
-      safetySensors.outerLocked &&
-      !safetySensors.outerPresented &&
-      safetySensors.innerLocked &&
-      !safetySensors.innerOpen &&
-      safetySensors.robotClear
-    );
+    var valid = castingRig
+      ? castingCycleResetProved() && !safetyFault && safetySensors.robotClear
+      : !!(
+        restowComplete &&
+        rackCustodyProved() &&
+        !safetyFault &&
+        !safetySensors.boardInBay &&
+        safetySensors.outerLocked &&
+        !safetySensors.outerPresented &&
+        safetySensors.innerLocked &&
+        !safetySensors.innerOpen &&
+        safetySensors.robotClear
+      );
+    var now = performance.now();
+    var returnDuration = cycleMetrics.returnStartedAt
+      ? Math.max(0, now - cycleMetrics.returnStartedAt)
+      : 0;
     cycleMetrics.completed += 1;
     if (!valid) cycleMetrics.failed += 1;
     cycleMetrics.lastValid = valid;
-    cycleMetrics.lastDurationMs = cycleMetrics.startedAt
-      ? performance.now() - cycleMetrics.startedAt
-      : 0;
+    cycleMetrics.lastDurationMs = castingRig
+      ? cycleMetrics.lastFetchDurationMs + returnDuration
+      : cycleMetrics.startedAt
+        ? now - cycleMetrics.startedAt
+        : 0;
     cycleMetrics.active = false;
   }
 
@@ -6285,7 +18686,15 @@
     if (reducedMotion || document.hidden) return false;
     if (Math.abs(cameraInspectionTarget - cameraInspection) > 0.0005) return true;
     if (hmiPressHit && hmiPressTimer) return true;
-    if (state === STATE.AUTO) return true;
+    // AUTO renders only bootstrap charge and the bounded HERO sequence. PARK
+    // remains render-on-demand; scheduleAutoHeroWake advances the otherwise
+    // static phase to the next proved transition without idle canvas frames.
+    if (state === STATE.AUTO) {
+      return !castingChargeReady() || (
+        productionClock >= AUTO_PARK_TO_HERO_START &&
+        productionClock < AUTO_HERO_TO_PARK_END
+      );
+    }
     if (state === STATE.HELD) return false;
     // A held safety fault has an infinite duration and a frozen pose. Normal
     // service states retain their full-rate, simulation-clock-driven motion.
@@ -6431,8 +18840,10 @@
       }),
       baseline: baselineCopy,
       autoHeroDwell: Object.freeze({
+        parkToHeroStart: AUTO_PARK_TO_HERO_START,
         phaseStart: AUTO_HERO_PHASE_START,
         phaseEnd: AUTO_HERO_PHASE_END,
+        heroToParkEnd: AUTO_HERO_TO_PARK_END,
         configuredDurationSeconds: Number(AUTO_HERO_DWELL_SECONDS.toFixed(3)),
         active: autoHeroDwellActive,
         elapsedSeconds: Number(
@@ -6451,7 +18862,8 @@
         ),
         loopCount: autoHeroLoopCount,
         completedDwells: autoHeroCompletedDwells,
-        serviceResets: autoHeroServiceResets
+        serviceResets: autoHeroServiceResets,
+        parkPoseErrorRadians: Number(autoParkPoseError(currentPose).toFixed(6))
       }),
       startup: Object.freeze({
         diagnosticsMode: exhaustiveProofRequested ? "exhaustive-qa" : "normal",
@@ -6466,6 +18878,18 @@
           !!startupDiagnostics.firstRenderAt &&
           (!startupDiagnostics.proofStartedAt ||
             startupDiagnostics.firstRenderAt <= startupDiagnostics.proofStartedAt),
+        bootstrapCharge: Object.freeze({
+          ready: castingChargeReady(),
+          bootComplete: castingBootChargeComplete,
+          chargeLoaded: !!(castingRig && castingRig.chargeLoaded && castingChargeLoaded),
+          ladleHome: !!(castingRig && castingRig.ladleHome),
+          targetDurationMs: reducedMotion ? 0 : 1800,
+          elapsedMs: castingBootChargeComplete
+            ? reducedMotion ? 0 : 1800
+            : Math.round(Math.min(1.8, simulationClock) * 1000),
+          controlsEnabled: state === STATE.AUTO && castingChargeReady(),
+          reducedMotionInstantProof: reducedMotion
+        }),
         canvasReveal: Object.freeze({
           navigationToFirstPaintMs:
             canvasRevealDiagnostics.firstPaintMs === null
@@ -6508,8 +18932,345 @@
         rackSanity: Object.freeze({
           calls: startupDiagnostics.rackCalls,
           valid: startupDiagnostics.rackValid,
+          processContractValid: startupDiagnostics.processContractValid,
+          processIssueCount: startupDiagnostics.processIssueCount,
           durationMs: Number(startupDiagnostics.rackDurationMs.toFixed(2)),
           stations: STATIONS.length
+        }),
+        outboundTiming: Object.freeze({
+          contract: 'dcm-quench',
+          valid: startupDiagnostics.outboundTimingValid,
+          previousNominalMs: Math.round(DCM_PREVIOUS_NOMINAL_SECONDS * 1000),
+          previousLiveReferenceMs: Math.round(
+            DCM_PREVIOUS_LIVE_REFERENCE_SECONDS * 1000
+          ),
+          targetMs: Object.freeze([
+            DCM_FETCH_TARGET_MIN_SECONDS * 1000,
+            DCM_FETCH_TARGET_MAX_SECONDS * 1000
+          ]),
+          readableStageWindowMs: Object.freeze([
+            DCM_READABLE_STAGE_MIN_SECONDS * 1000,
+            DCM_READABLE_STAGE_MAX_SECONDS * 1000
+          ]),
+          shotTemporalLaw: startupDiagnostics.shotTemporalLaw,
+          nominalMs:
+            startupDiagnostics.outboundNominalDurationMs === null
+              ? null
+              : Math.round(startupDiagnostics.outboundNominalDurationMs),
+          parkRequestStaticExpectedMs:
+            startupDiagnostics.outboundStaticDurationMs === null
+              ? null
+              : Math.round(startupDiagnostics.outboundStaticDurationMs),
+          worstAutoPhaseStaticExpectedMs:
+            startupDiagnostics.outboundWorstCaseDurationMs === null
+              ? null
+              : Math.round(startupDiagnostics.outboundWorstCaseDurationMs),
+          staticBreakdown: startupDiagnostics.outboundStaticBreakdown
+        }),
+        pressAnatomy: Object.freeze({
+          valid: startupDiagnostics.pressAnatomyValid,
+          addedDraws: startupDiagnostics.pressAnatomyAddedDraws,
+          instancedBatches:
+            castingRig && castingRig.pressAnatomy
+              ? castingRig.pressAnatomy.instancedBatches
+              : 0,
+          bearingLands:
+            castingRig && castingRig.pressAnatomy
+              ? castingRig.pressAnatomy.bearingCount
+              : 0,
+          tieTerminationStacks:
+            castingRig && castingRig.pressAnatomy
+              ? castingRig.pressAnatomy.tieTerminationCount
+              : 0,
+          tieTerminationAddedDraws:
+            castingRig && castingRig.pressAnatomy
+              ? castingRig.pressAnatomy.tieTerminationAddedDraws
+              : 0,
+          tieTerminationMaxCoaxialityErrorMm:
+            castingRig && castingRig.pressAnatomy
+              ? Number(castingRig.pressAnatomy.tieTerminationMaxCoaxialityErrorMm.toFixed(3))
+              : null,
+          movingPlatenGuide:
+            startupDiagnostics.pressAnatomyBounds
+              ? startupDiagnostics.pressAnatomyBounds.movingPlatenGuide
+              : null,
+          fixedPlatenAnchorage:
+            startupDiagnostics.pressAnatomyBounds
+              ? startupDiagnostics.pressAnatomyBounds.fixedPlatenAnchorage
+              : null,
+          fasteners: startupDiagnostics.pressAnatomyFastenerCount,
+          frozenMovingHalfHomeX:
+            castingRig && castingRig.pressAnatomy
+              ? castingRig.pressAnatomy.frozenMovingHalfHomeX
+              : null,
+          frozenDieTravel:
+            castingRig && castingRig.pressAnatomy
+              ? castingRig.pressAnatomy.frozenDieTravel
+              : null,
+          worldBounds: startupDiagnostics.pressAnatomyBounds
+        }),
+        processTopology: Object.freeze({
+          camera: startupDiagnostics.processTopologyCamera || null,
+          ladleSupport: startupDiagnostics.ladleSupport || null,
+          clampToggle: Object.freeze({
+            valid: startupDiagnostics.clampToggleValid,
+            samples: startupDiagnostics.clampToggleSamples,
+            maximumLengthErrorMm:
+              startupDiagnostics.clampToggleMaximumLengthErrorMm,
+            maximumPinErrorMm:
+              startupDiagnostics.clampToggleMaximumPinErrorMm,
+            minimumKneeHeightMm:
+              startupDiagnostics.clampToggleMinimumKneeHeightMm,
+            openKneeHeightMm:
+              startupDiagnostics.clampToggleOpenKneeHeightMm,
+            seatedKneeHeightMm:
+              startupDiagnostics.clampToggleSeatedKneeHeightMm,
+            lockedKneeHeightMm:
+              startupDiagnostics.clampToggleLockedKneeHeightMm,
+            lockedAngleDeg:
+              startupDiagnostics.clampToggleLockedAngleDeg,
+            reducerShellMarginMm:
+              startupDiagnostics.clampToggleReducerShellMarginMm,
+            linkLengthMm: castingRig && castingRig.clampKinematics
+              ? Math.round(castingRig.clampKinematics.linkLength * 1000)
+              : null,
+            lockSeatTravelMm: castingRig && castingRig.clampKinematics
+              ? Math.round(castingRig.clampKinematics.lockSeatTravel * 1000)
+              : null,
+            addedDraws: castingRig && castingRig.clampKinematics
+              ? castingRig.clampKinematics.addedDraws
+              : null
+          }),
+          clampDrive: Object.freeze({
+            valid: startupDiagnostics.clampDriveValid,
+            samples: startupDiagnostics.clampDriveSamples,
+            totalStrokeMm: startupDiagnostics.clampDriveStrokeMm,
+            lockSeatMm: startupDiagnostics.clampDriveLockSeatMm,
+            maximumEndpointErrorMm:
+              startupDiagnostics.clampDriveMaximumEndpointErrorMm,
+            monotonic: startupDiagnostics.clampDriveMonotonic,
+            stages: castingRig && castingRig.clampDrive
+              ? castingRig.clampDrive.stages.length
+              : 0,
+            maximumStageStrokeMm:
+              startupDiagnostics.clampDriveMaximumStageStrokeMm,
+            minimumStageOverlapMm:
+              startupDiagnostics.clampDriveMinimumStageOverlapMm,
+            telescopicSumErrorMm:
+              startupDiagnostics.clampDriveTelescopicSumErrorMm,
+            minimumTubeWallMm:
+              startupDiagnostics.clampTelescopeMinimumWallMm,
+            minimumHousingMarginMm:
+              startupDiagnostics.clampTelescopeMinimumHousingMarginMm,
+            glandCoaxialityMm:
+              startupDiagnostics.clampTelescopeGlandCoaxialityMm,
+            runningClearanceMm:
+              startupDiagnostics.clampTelescopeRunningClearanceMm,
+            openBoreMembers: castingRig && castingRig.clampDrive
+              ? 3
+              : 0,
+            physicalGlands: castingRig && castingRig.clampDrive
+              ? castingRig.clampDrive.glands.length
+              : 0,
+            pistonHeads: castingRig && castingRig.clampDrive
+              ? castingRig.clampDrive.pistonHeads.count
+              : 0,
+            pistonHeadDraws: castingRig && castingRig.clampDrive
+              ? castingRig.clampDrive.pistonHeadAddedDraws
+              : 0,
+            pistonCoaxialityMm:
+              startupDiagnostics.clampTelescopePistonCoaxialityMm,
+            pistonSealClearanceMm:
+              startupDiagnostics.clampTelescopePistonSealClearanceMm,
+            pistonStopInterferenceMm:
+              startupDiagnostics.clampTelescopePistonStopInterferenceMm,
+            pistonMinimumGlandSetbackMm:
+              startupDiagnostics.clampTelescopePistonMinimumGlandSetbackMm,
+            rearHeadLeakGapMm:
+              startupDiagnostics.clampTelescopeRearHeadLeakGapMm,
+            rearHeadBearingOverlapMm:
+              startupDiagnostics.clampTelescopeRearHeadBearingOverlapMm,
+            rearHeadPathClearanceMm:
+              startupDiagnostics.clampTelescopeRearHeadPathClearanceMm,
+            inletChamberIntersectionMm:
+              startupDiagnostics.clampTelescopeInletChamberIntersectionMm,
+            inletEndpointErrorMm:
+              startupDiagnostics.clampTelescopeInletEndpointErrorMm,
+            inletCenterlineOcclusionCount:
+              startupDiagnostics.clampTelescopeInletCenterlineOcclusionCount,
+            rearSleeveLigamentMm:
+              startupDiagnostics.clampTelescopeRearSleeveLigamentMm,
+            retractBoreWallMm:
+              startupDiagnostics.clampTelescopeRetractBoreWallMm,
+            retractOutletOcclusionCount:
+              startupDiagnostics.clampTelescopeRetractOutletOcclusionCount,
+            retractOutletIntersectionMm:
+              startupDiagnostics.clampTelescopeRetractOutletIntersectionMm,
+            retractBoreDiameterMm: 24,
+            retractOutletDiameterMm: 6,
+            externalHydraulics: Object.freeze({
+              endpointErrorMm: startupDiagnostics.clampHydraulicEndpointErrorMm,
+              supportErrorMm: startupDiagnostics.clampHydraulicSupportErrorMm,
+              minimumBendRadiusMm:
+                startupDiagnostics.clampHydraulicMinimumBendRadiusMm,
+              requiredBendRadiusMm: castingRig && castingRig.clampDrive
+                ? castingRig.clampDrive.externalHydraulics.hoseOuterDiameter * 6000
+                : null,
+              staticSegments: startupDiagnostics.clampHydraulicStaticSegments,
+              distinctPorts: startupDiagnostics.clampHydraulicDistinctPorts,
+              fluidContinuity: !!(
+                castingRig && castingRig.clampDrive &&
+                castingRig.clampDrive.externalHydraulics.pressureContinuity &&
+                castingRig.clampDrive.externalHydraulics.retractContinuity
+              ),
+              jumperEndpointErrorMm:
+                startupDiagnostics.clampHydraulicJumperEndpointErrorMm,
+              jumperMinimumBendRadiusMm:
+                startupDiagnostics.clampHydraulicJumperMinimumBendRadiusMm,
+              jumperMinimumClearanceMm:
+                startupDiagnostics.clampHydraulicJumperMinimumClearanceMm,
+              jumperMaximumSupportedSpanMm:
+                startupDiagnostics.clampHydraulicJumperMaximumSupportedSpanMm,
+              jumperMovingExternalSegments: 0,
+              jumperGuides: castingRig && castingRig.clampDrive
+                ? castingRig.clampDrive.externalHydraulics.jumperGuides.count
+                : 0,
+              energyCarrierLinks: castingRig && castingRig.clampDrive
+                ? castingRig.clampDrive.externalHydraulics.carrierLinkCount
+                : 0,
+              energyCarrierMaximumLinkGapMm:
+                startupDiagnostics.clampEnergyCarrierMaximumLinkGapMm,
+              troughSupportBearingMm:
+                startupDiagnostics.clampEnergyCarrierTroughBearingMm,
+              movingBracketGapMm:
+                startupDiagnostics.clampEnergyCarrierBracketGapMm,
+              addedDraws: castingRig && castingRig.clampDrive
+                ? castingRig.clampDrive.externalHydraulics.addedDraws
+                : 0
+            }),
+            inletSectionMm: Object.freeze({ outer: 36, inner: 24 }),
+            rearHeadAddedDraws: castingRig && castingRig.clampDrive
+              ? castingRig.clampDrive.rearHead.addedDraws
+              : 0,
+            yokeEndpointErrorMm:
+              startupDiagnostics.clampDriveYokeEndpointErrorMm,
+            yokeReactionErrorMm:
+              startupDiagnostics.clampDriveYokeReactionErrorMm,
+            bridgeYokeGapMm:
+              startupDiagnostics.clampDriveBridgeYokeGapMm,
+            bridgeCheekOverlapMm:
+              startupDiagnostics.clampDriveBridgeCheekOverlapMm,
+            bridgeCheekBearingMm:
+              startupDiagnostics.clampDriveBridgeCheekBearingMm,
+            bridgeOwnedByMovingHalf: !!(
+              castingRig && castingRig.clampDrive &&
+              castingRig.clampDrive.pressureYoke.bridge.parent ===
+                castingRig.movingHalf
+            ),
+            bellevilleDiscs: castingRig && castingRig.clampDrive
+              ? castingRig.clampDrive.pressureYoke.discCount
+              : 0,
+            bellevilleOpposedPairs: castingRig && castingRig.clampDrive
+              ? castingRig.clampDrive.pressureYoke.opposedPairs
+              : 0,
+            bellevilleOrientationAlternations:
+              castingRig && castingRig.clampDrive
+                ? castingRig.clampDrive.pressureYoke.orientationAlternations
+                : 0,
+            bellevilleSpanErrorMm:
+              startupDiagnostics.clampDriveBellevilleSpanErrorMm,
+            bellevilleCompressionMm:
+              startupDiagnostics.clampDriveBellevilleCompressionMm,
+            bellevilleMaximumDeflectionMm:
+              startupDiagnostics.clampDriveBellevilleMaximumDeflectionMm,
+            bellevilleLockedReserveMm:
+              startupDiagnostics.clampDriveBellevilleLockedReserveMm,
+            bellevilleContactGapMm:
+              startupDiagnostics.clampDriveBellevilleContactGapMm,
+            bellevillePenetrationMm:
+              startupDiagnostics.clampDriveBellevillePenetrationMm,
+            bellevilleFreeRiseMm:
+              startupDiagnostics.clampDriveBellevilleFreeRiseMm,
+            bellevilleLockedRiseMm:
+              startupDiagnostics.clampDriveBellevilleLockedRiseMm,
+            yokeStackLengthMm: castingRig && castingRig.clampDrive
+              ? Number((castingRig.clampDrive.state.yokeStackLength * 1000).toFixed(1))
+              : null,
+            activeStrokeMm: castingRig && castingRig.clampDrive
+              ? Number((castingRig.clampDrive.state.stroke * 1000).toFixed(1))
+              : null,
+            addedDraws: castingRig && castingRig.clampDrive
+              ? castingRig.clampDrive.addedDraws
+              : null
+          }),
+          ejectorMechanism: Object.freeze({
+            valid: startupDiagnostics.ejectorMechanismValid,
+            samples: startupDiagnostics.ejectorMechanismSamples,
+            strokeMm: startupDiagnostics.ejectorMechanismStrokeMm,
+            maximumEndpointErrorMm:
+              startupDiagnostics.ejectorMechanismMaximumEndpointErrorMm,
+            monotonic: startupDiagnostics.ejectorMechanismMonotonic,
+            amount: castingRig && castingRig.ejectorDrive
+              ? Number(castingRig.ejectorDrive.amount.toFixed(4))
+              : null,
+            addedDraws: castingRig && castingRig.ejectorDrive
+              ? castingRig.ejectorDrive.addedDraws
+              : null
+          }),
+          shotSide: 'fixed-platen',
+          extractionSide: 'moving-platen',
+          frozenShotSleeve: Object.freeze([-1.65, 1.22, 0.32]),
+          frozenMovingTravel: 0.92
+        }),
+        robotAnatomy: Object.freeze({
+          valid: startupDiagnostics.robotAnatomyValid,
+          addedDraws: startupDiagnostics.robotAnatomyAddedDraws,
+          replacedPrimitiveDraws:
+            robotRig && robotRig.hardSurfaceAnatomy
+              ? robotRig.hardSurfaceAnatomy.replacedPrimitiveDraws
+              : 0,
+          pivotsAndTcpFrozen:
+            startupDiagnostics.robotAnatomyValid === true,
+          conservativeBounds: startupDiagnostics.robotAnatomyBounds
+        }),
+        guardAccessDoor: Object.freeze({
+          valid: startupDiagnostics.guardDoorValid,
+          closed: !!(
+            guardAccessDoor &&
+            guardAccessDoor.group &&
+            guardAccessDoor.group.userData.closed
+          ),
+          maintenanceGateLocked: safetySensors.maintenanceGateLocked,
+          drawCalls: startupDiagnostics.guardDoorDraws,
+          instanced: !!THREE.InstancedMesh,
+          reflectionDraws: guardAccessDoor && guardAccessDoor.reflection ? 1 : 0,
+          handleProjectedPx652:
+            startupDiagnostics.guardDoorHandlePx652 === null
+              ? null
+              : Number(startupDiagnostics.guardDoorHandlePx652.toFixed(2)),
+          handleProjectedBoundsPx652:
+            startupDiagnostics.guardDoorHandleBoundsPx652,
+          interlockProjectedBoundsPx652:
+            startupDiagnostics.guardDoorInterlockBoundsPx652,
+          hmiSeparationPx652:
+            startupDiagnostics.guardDoorHmiSeparationPx652,
+          wristSeparationPx652:
+            startupDiagnostics.guardDoorWristSeparationPx652,
+          latchFaceNormal: Object.freeze([0, 0, 1]),
+          moduleStandOffMm:
+            guardAccessDoor && guardAccessDoor.group
+              ? guardAccessDoor.group.userData.moduleStandOffMm
+              : null,
+          operatorEnvelopeFrontZ:
+            guardAccessDoor && guardAccessDoor.group
+              ? guardAccessDoor.group.userData.operatorEnvelopeFrontZ
+              : null,
+          materialAudit: startupDiagnostics.guardDoorMaterialAudit,
+          collisionDatumUntouched:
+            !!guardAccessDoor &&
+            guardAccessDoor.group.userData.collisionPlaneX === SIDE_GUARD_X &&
+            guardAccessDoor.group.userData.frontDatumZ === FRONT_GUARD_Z,
+          worldBounds: startupDiagnostics.guardDoorBounds
         }),
         exhaustiveProof: Object.freeze({
           requested: exhaustiveProofRequested,
@@ -6520,24 +19281,228 @@
           sweptCalls: startupDiagnostics.sweptCalls,
           projectedCalls: startupDiagnostics.projectedCalls,
           requestEntryCalls: startupDiagnostics.requestEntryCalls,
+          ejectOcclusionCalls: startupDiagnostics.ejectOcclusionCalls,
+          gripOpticalCalls: startupDiagnostics.gripOpticalCalls,
           normalCountsZero: exhaustiveProofRequested
             ? null
             : startupDiagnostics.sweptCalls === 0 &&
               startupDiagnostics.projectedCalls === 0 &&
               startupDiagnostics.requestEntryCalls === 0,
-          sweptPoseBudget: 7835,
+          sweptPoseBudget: 609,
+          servicePoseBudget: 551,
+          heroParkPoseBudget: 58,
           projectedPoseBudget: 577,
           requestEntryPhaseBudget: 289,
           sweptValid: startupDiagnostics.sweptValid,
           sweptIssueCount: startupDiagnostics.sweptIssueCount,
+          sweptIssues: startupDiagnostics.sweptIssues || [],
+          heroStaticWorldClearanceMm:
+            typeof startupDiagnostics.heroStaticWorldClearanceMm === 'number' &&
+            isFinite(startupDiagnostics.heroStaticWorldClearanceMm)
+              ? Number(startupDiagnostics.heroStaticWorldClearanceMm.toFixed(2))
+              : null,
           shutterClearanceMm: shutterClearance,
           projectedValid: startupDiagnostics.projectedValid,
+          ejectOcclusionValid: startupDiagnostics.ejectOcclusionValid,
+          ejectOcclusionOverlapCount: startupDiagnostics.ejectOcclusionOverlapCount,
+          ejectOcclusionMinimumSeparationPx:
+            typeof startupDiagnostics.ejectOcclusionMinimumSeparationPx === 'number' &&
+            isFinite(startupDiagnostics.ejectOcclusionMinimumSeparationPx)
+              ? Number(startupDiagnostics.ejectOcclusionMinimumSeparationPx.toFixed(2))
+              : null,
+          ejectCastingScreenBounds: startupDiagnostics.ejectCastingScreenBounds,
+          gripOpticalValid: startupDiagnostics.gripOpticalValid,
+          gripPadOverlapPx: startupDiagnostics.gripPadOverlapPx,
+          gripCentralVisibleSpanPx:
+            startupDiagnostics.gripCentralVisibleSpanPx,
+          gripRibWitnessVisible: startupDiagnostics.gripRibWitnessVisible,
+          gripPhysicalOverlapMm: startupDiagnostics.gripPhysicalOverlapMm,
+          gripHousingOcclusionCount:
+            startupDiagnostics.gripHousingOcclusionCount,
+          gripHousingOcclusionNames:
+            startupDiagnostics.gripHousingOcclusionNames,
+          gripArmOcclusionCount:
+            startupDiagnostics.gripArmOcclusionCount,
+          gripArmOcclusionNames:
+            startupDiagnostics.gripArmOcclusionNames,
           requestEntryValid: startupDiagnostics.requestEntryValid,
           requestEntrySamples: startupDiagnostics.requestEntrySamples,
           requestEntryFailedPhase: startupDiagnostics.requestEntryFailedPhase,
           requestEntryFailureStage: startupDiagnostics.requestEntryFailureStage,
-          projectedMinimumClearancePx: projectedClearance
+          projectedMinimumClearancePx: projectedClearance,
+          heroTerminalDieSeparationPx:
+            typeof startupDiagnostics.heroTerminalDieSeparationPx === 'number' &&
+            isFinite(startupDiagnostics.heroTerminalDieSeparationPx)
+              ? Number(startupDiagnostics.heroTerminalDieSeparationPx.toFixed(2))
+              : null,
+          heroTerminalDieSeparationValid:
+            startupDiagnostics.heroTerminalDieSeparationValid,
+          heroJointScreenPoints: startupDiagnostics.heroJointScreenPoints,
+          heroTerminalScreenBounds: startupDiagnostics.heroTerminalScreenBounds
         })
+      }),
+      castingProcess: Object.freeze({
+        dieSprayer: dieSprayer ? Object.freeze({
+          descent: Number(dieSprayer.amount.toFixed(3)),
+          spraying: dieSprayer.spraying,
+          headHeight: Number(dieSprayer.head.position.y.toFixed(3)),
+          maximumParticles: dieSprayer.jets.geometry.getAttribute('position').count,
+          addedDraws: 2
+        }) : null,
+        quenchSteam: quenchRig && quenchRig.steam ? Object.freeze({
+          visible: quenchRig.steam.mesh.visible,
+          emitting: quenchRig.steam.emitting,
+          liveParticles: quenchRig.steam.live,
+          maximumParticles: quenchRig.steam.births.length,
+          addedDraws: 1
+        }) : null,
+        state: state,
+        dieOpen: castingRig ? Number(castingRig.dieOpen.toFixed(3)) : null,
+        clampProved: !!(castingRig && castingRig.clampProved),
+        clampReleased: !!(castingRig && castingRig.clampReleased),
+        ladleHome: !!(castingRig && castingRig.ladleHome),
+        ladleCharged: !!(castingRig && castingRig.chargeLoaded),
+        sleeveCharged: !!(castingRig && castingRig.sleeveCharged),
+        slowShotProved: !!(castingRig && castingRig.slowShotProved),
+        fastShotProved: !!(castingRig && castingRig.fastShotProved),
+        intensificationProved: !!(castingRig && castingRig.intensificationProved),
+        solidified: !!(castingRig && castingRig.solidified),
+        pinsExtended: !!(castingRig && castingRig.pinsExtended),
+        ejectorStroke: castingRig && castingRig.ejectorDrive
+          ? Number(castingRig.ejectorDrive.amount.toFixed(4))
+          : null,
+        castingCustody: activeTraveler ? activeTraveler.custody : 'none',
+        heldInvariant: state === STATE.HELD ? heldInvariantProved : null,
+        shotActuator: castingRig && castingRig.shotActuator
+          ? Object.freeze({
+              stage: castingRig.shotActuator.stage,
+              stageElapsedMs: castingRig.shotActuator.stageElapsedMs,
+              rodTravelMm: castingRig.shotActuator.rodTravelMm,
+              rodExtensionMm: castingRig.shotActuator.rodExtensionMm,
+              sleeveTravelMm: castingRig.shotActuator.sleeveTravelMm,
+              sleeveCompressionMm: castingRig.shotActuator.sleeveCompressionMm,
+              collarTravelMm: castingRig.shotActuator.collarTravelMm,
+              collarVisible: castingRig.shotActuator.collarVisible,
+              targetTravelMm: Object.freeze({
+                slow: Math.round(
+                  (castingRig.plungerSlowX - castingRig.plungerHomeX) * 1000
+                ),
+                fast: Math.round(
+                  (castingRig.plungerFastX - castingRig.plungerHomeX) * 1000
+                ),
+                intensify: Math.round(
+                  (castingRig.plungerFastX + 0.08 - castingRig.plungerHomeX) * 1000
+                )
+              }),
+              monotonicSamples: castingRig.shotActuator.monotonicSamples,
+              monotonicFailures: castingRig.shotActuator.monotonicFailures,
+              monotonicValid: castingRig.shotActuator.monotonicValid,
+              addedDraws: castingRig.shotActuator.addedDraws,
+              witnessCollarDraws: castingRig.shotActuator.witnessCollarDraws,
+              addedShadowCasters: 0,
+              strokeWitness: Object.freeze({
+                mode: castingRig.shotActuator.strokeWitness.lastMode,
+                inputTravelMm: castingRig.shotActuator.strokeWitness.inputTravelMm,
+                pitchRadiusMm: Number(
+                  (castingRig.shotActuator.strokeWitness.pitchRadius * 1000).toFixed(2)
+                ),
+                outputAngleDeg: Number(
+                  castingRig.shotActuator.strokeWitness.outputAngleDeg.toFixed(2)
+                ),
+                degreesPerMm: Number(
+                  castingRig.shotActuator.strokeWitness.degreesPerMm.toFixed(3)
+                ),
+                projectedArcPx652: Number(
+                  castingRig.shotActuator.strokeWitness.projectedArcPx652.toFixed(2)
+                ),
+                monotonicFailures:
+                  castingRig.shotActuator.strokeWitness.monotonicFailures,
+                resetFailures: castingRig.shotActuator.strokeWitness.resetFailures,
+                monotonicValid: castingRig.shotActuator.strokeWitness.monotonicValid,
+                visible: castingRig.shotActuator.strokeWitness.root.visible,
+                addedDraws: castingRig.shotActuator.strokeWitness.addedDraws,
+                addedShadowCasters:
+                  castingRig.shotActuator.strokeWitness.addedShadowCasters
+              })
+            })
+          : null,
+        metalWitness: castingRig && castingRig.metalWitness
+          ? Object.freeze({
+              stage: castingRig.metalWitness.stage,
+              custody: castingRig.metalWitness.custody,
+              custodyValid: castingRig.metalWitness.custodyValid,
+              authority: castingRig.metalWitness.authority,
+              authorityMask: castingRig.metalWitness.authorityMask,
+              authorityCount: castingRig.metalWitness.authorityCount,
+              shotProgress: Number(castingRig.metalWitness.shotProgress.toFixed(3)),
+              plungerX: Number(castingRig.plunger.position.x.toFixed(3)),
+              sleeveSlugVisible: castingRig.metalWitness.sleeveSlug.visible,
+              shotSweepVisible: castingRig.metalWitness.shotRodSweep.visible,
+              dieBiscuitVisible: castingRig.runnerGlow.visible,
+              cooledCastingVisible: !!(
+                castPlaqueReady &&
+                activeTraveler &&
+                activeTraveler.group.visible
+              ),
+              transitions: castingRig.metalWitness.transitions,
+              assertionFailures: castingRig.metalWitness.assertionFailures,
+              addedDraws: castingRig.metalWitness.drawCount,
+              shadowDraws: 0,
+              cooledSource: castingRig.metalWitness.cooledSource
+            })
+          : null,
+        castVisualProof: castingRig && castingRig.castVisualProof
+          ? Object.freeze({
+              cycle: castingRig.castVisualProof.cycle,
+              boundsAuthority: 'existing conservative carried-payload OBB',
+              identity: Object.freeze({
+                source: 'single mutually-exclusive cooled recipe casting',
+                brightCastFace: true,
+                coarseDarkRib: 'one T-rib pattern',
+                asymmetricRunnerTip: Object.freeze([
+                  CAST_RUNNER_TIP_X,
+                  CAST_RUNNER_TIP_Y,
+                  0
+                ]),
+                scale: CAST_PLAQUE_SCALE,
+                frozenPayloadObb: Object.freeze({
+                  min: Object.freeze([
+                    CAST_PLAQUE_LOCAL_BOUNDS.minX,
+                    CAST_PLAQUE_LOCAL_BOUNDS.minY,
+                    CAST_PLAQUE_LOCAL_BOUNDS.minZ
+                  ]),
+                  max: Object.freeze([
+                    CAST_PLAQUE_LOCAL_BOUNDS.maxX,
+                    CAST_PLAQUE_LOCAL_BOUNDS.maxY,
+                    CAST_PLAQUE_LOCAL_BOUNDS.maxZ
+                  ])
+                })
+              }),
+              camera: Object.freeze({
+                axis: 'fixed three-quarter clamp/process view',
+                target: Object.freeze([
+                  Number(PROCESS_CAMERA_TARGET.x.toFixed(3)),
+                  Number(PROCESS_CAMERA_TARGET.y.toFixed(3)),
+                  Number(PROCESS_CAMERA_TARGET.z.toFixed(3))
+                ]),
+                azimuthDeg: Number(
+                  (Math.atan2(
+                    Math.abs(PROCESS_CAMERA_DIRECTION.x),
+                    PROCESS_CAMERA_DIRECTION.z
+                  ) * 180 / Math.PI).toFixed(2)
+                ),
+                elevationDeg: Number(
+                  (Math.asin(PROCESS_CAMERA_DIRECTION.y) *
+                    180 / Math.PI).toFixed(2)
+                ),
+                responsiveDistance: Number(processCameraDistance.toFixed(3)),
+                fov: camera ? Number(camera.fov.toFixed(2)) : null
+              }),
+              eject: castVisualRecordSnapshot(castingRig.castVisualProof.eject),
+              grip: castVisualRecordSnapshot(castingRig.castVisualProof.grip),
+              held: castVisualRecordSnapshot(castingRig.castVisualProof.held)
+            })
+          : null
       }),
       thresholds: Object.freeze({
         motionLoad: Object.freeze({
@@ -6592,6 +19557,10 @@
         failed: cycleMetrics.failed,
         fetchCompleted: cycleMetrics.fetchCompleted,
         lastFetchDurationMs: Math.round(cycleMetrics.lastFetchDurationMs),
+        lastFetchSimulationDurationMs: Math.round(
+          cycleMetrics.lastFetchSimulationDurationMs
+        ),
+        lastReviewDwellMs: Math.round(cycleMetrics.lastReviewDwellMs),
         lastDurationMs: Math.round(cycleMetrics.lastDurationMs),
         activeStateDurationMs: isFinite(activeStateDuration)
           ? Math.round(activeStateDuration * 1000)
@@ -6607,11 +19576,18 @@
           runtimeProofDurationMs: Number(requestEgressProofDurationMs.toFixed(2))
         }),
         plannedFetchDurationMs: Math.round(plannedFetchDurationMs),
+        plannedFetchWithinTarget:
+          plannedFetchDurationMs === 0 ||
+          (plannedFetchDurationMs >= DCM_FETCH_TARGET_MIN_SECONDS * 1000 &&
+            plannedFetchDurationMs <= DCM_FETCH_TARGET_MAX_SECONDS * 1000),
         plannedFetchBreakdown: plannedFetchBreakdown.slice(),
+        measuredStageDwells: cycleMetrics.stageDwells.slice(),
         lastValid: cycleMetrics.lastValid,
         liveInvariant: !safetyFault && heldInvariantProved,
         heldInvariant: heldInvariantProved,
-        rackRestowed: rackCustodyProved(),
+        rackRestowed: castingRig ? castingRecipeLibraryProved() : rackCustodyProved(),
+        castingResetProved: castingRig ? castingCycleResetProved() : null,
+        castRecycleProved: castingRig ? castRecycleProved : null,
         lastFault: cycleMetrics.lastFault
       })
     });
@@ -6765,17 +19741,26 @@
       if (state !== STATE.AUTO && state !== STATE.HELD) {
         applyPose(transitionTarget || servicePoseFor(state));
       } else if (state === STATE.AUTO) {
-        applyPose(SAFE_POSE);
-        machineRig.door.position.x = machineRig.doorTravel;
-        if (workpiece) {
-          workpiece.visible = true;
-          setWorkpieceFinished(false);
-          workpiece.position.copy(RAW_PICK);
-          workpiece.quaternion.identity();
-        }
+        applyPose(HERO_POSE);
+        castingRig.clampDrive.apply(0);
+        castingRig.plunger.position.x = castingRig.plungerHomeX;
+        applyEjectorStroke(0);
+        updateShotActuatorWitness(0);
+        proveBootstrapChargeInstantly();
       }
     }
 
+    if (quenchRig) {
+      var quenching = !reducedMotion && (state === STATE.CAST_QUENCH_DIP || state === STATE.CAST_QUENCH_DWELL || state === STATE.CAST_QUENCH_LIFT);
+      for (var waterRing = 0; waterRing < quenchRig.ripples.length; waterRing++) {
+        var ripplePhase = (simulationClock * 0.9 + waterRing / 3) % 1;
+        var waterRipple = quenchRig.ripples[waterRing];
+        waterRipple.visible = quenching;
+        waterRipple.scale.setScalar(0.5 + ripplePhase * 1.7);
+        waterRipple.material.opacity = quenching ? (1 - ripplePhase) * 0.32 : 0;
+      }
+    }
+    updateQuenchSteam();
     updateGuardGlare(simulationClock);
     updateHover(delta);
     var animationStillActive = renderLoopMotionActive();
@@ -6793,6 +19778,7 @@
     } else {
       renderLoopSleeping = true;
       renderLoopSleepStartedAt = now;
+      scheduleAutoHeroWake();
     }
     frameExecuting = false;
     if (!reducedMotion && animationStillActive) {
@@ -6840,8 +19826,13 @@
     reducedMotion = event.matches;
     lastTime = performance.now();
     if (reducedMotion) {
+      clearAutoHeroWake();
       setAdaptiveDpr(nativeRenderDpr, "settled restore", lastTime);
-      if (state === STATE.AUTO) applyPose(SAFE_POSE);
+      if (state === STATE.AUTO) {
+        productionClock = AUTO_HERO_PHASE_START;
+        applyPose(HERO_POSE);
+        proveBootstrapChargeInstantly();
+      }
       else applyPose(servicePoseFor(state));
       scheduleReducedAdvance();
     } else if (reducedTimer) {
@@ -6861,6 +19852,7 @@
     else if (motionQuery.addListener) motionQuery.addListener(onMotionChange);
   }
 
+  if (reducedMotion) proveBootstrapChargeInstantly();
   var initialRenderNow = performance.now();
   var initialMotionActive = renderLoopMotionActive();
   renderSceneFrame(initialRenderNow, !initialMotionActive);

@@ -3,25 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#090c0d" />
-  <title>Robert McFarlin &mdash; Automated CNC Cell Portfolio</title>
-  <meta name="description" content="A floor-level automated CNC cell becomes Robert McFarlin's interactive portfolio: select one of seven fence-mounted clipboards on the machine HMI and the tending robot presents it for review." />
+  <meta name="theme-color" content="#111716" />
+  <title>Robert McFarlin &mdash; DCM-01 Die Casting Portfolio</title>
+  <meta name="description" content="Robert McFarlin's resume is made to order in a clean high-pressure die-casting cell: choose one of seven recipes, watch the die close and fill, then receive the finished casting from the extraction robot." />
   <link rel="canonical" href="https://robertmcfarlin.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://robertmcfarlin.com/" />
-  <meta property="og:title" content="Robert McFarlin &mdash; Automated CNC Cell Portfolio" />
-  <meta property="og:description" content="Choose a labeled clipboard on the machine HMI and the robot retrieves it from the safety fence." />
+  <meta property="og:title" content="Robert McFarlin &mdash; DCM-01 Die Casting Portfolio" />
+  <meta property="og:description" content="Choose a resume recipe. DCM-01 closes the die, injects the alloy, and the robot presents the finished casting." />
   <meta property="og:image" content="https://robertmcfarlin.com/assets/og-card.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Robert McFarlin, manufacturing CFO and systems builder." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Robert McFarlin - Automated CNC Cell Portfolio" />
-  <meta name="twitter:description" content="Seven resume clipboards, one machine HMI, and a robot-controlled handoff." />
+  <meta name="twitter:title" content="Robert McFarlin - DCM-01 Die Casting Portfolio" />
+  <meta name="twitter:description" content="Seven resume recipes, one die-casting cell, and a robot-extracted metal record." />
   <meta name="twitter:image" content="https://robertmcfarlin.com/assets/og-card.png" />
-  <link rel="stylesheet" href="css/control-room.css?v=20260810-full-resume1" />
+  <link rel="stylesheet" href="css/control-room.css?v=20260812-dcm57" />
+  <link rel="stylesheet" href="css/cinematic.css?v=20260905-11" />
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
-  <link rel="preload" as="image" href="assets/cnc-cell-floor.webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="assets/dcm-cell-floor.webp" fetchpriority="high" />
   <script>
     window.__crControlScriptLoaded = false;
     window.crUseStaticResume = function (message) {
@@ -35,7 +36,7 @@
     window.addEventListener("error", function (event) {
       var source = String(event.filename || "");
       if (/\/(?:control-room|three\.min)\.js(?:\?|$)/.test(source)) {
-        window.crUseStaticResume("The automated cell could not start. The complete resume is shown below.");
+        window.crUseStaticResume("The die-casting cell could not start. The complete resume is shown below.");
       }
     });
     document.documentElement.classList.remove("no-js");
@@ -54,82 +55,114 @@
   }
   </script>
 </head>
-<body>
-  <a class="cr-skip" href="#cr-dock">Skip to alternate clipboard controls</a>
+<body class="dcm-cell">
+  <header class="portfolio-header">
+    <a class="portfolio-brand" href="./" aria-label="Robert McFarlin home"><img src="assets/mark-light.svg" width="32" height="32" alt="" /><span>Robert McFarlin<span>CFO &amp; systems builder</span></span></a>
+    <div class="portfolio-header__right"><span class="portfolio-edition">An interactive portfolio / 2026</span><button id="portfolio-scene-toggle" type="button" aria-pressed="false">Scene only <kbd>F</kbd></button></div>
+  </header>
+  <section class="portfolio-intro" aria-labelledby="portfolio-title">
+    <p class="portfolio-eyebrow"><span></span> Finance. Systems. Manufacturing.</p>
+    <h1 id="portfolio-title" aria-label="Value is built.">Value is<br /> <em>built.</em></h1>
+    <p class="portfolio-intro__description">On the plant floor. In the numbers.<br />In the systems that connect them.</p>
+    <p class="portfolio-intro__signature">Robert McFarlin, CMA<span>Chief Financial Officer · RCM Industries</span></p>
+  </section>
+  <div class="portfolio-scene-caption" aria-hidden="true"><span>01 / The foundry</span><span id="portfolio-cycle-status">Preparing the cell</span></div>
+  <a class="cr-skip" href="#cr-dock">Skip to the seven die-recipe controls</a>
+  <a class="cr-skip cr-skip--static" href="#cr-content">Skip to the complete static resume</a>
   <div class="cr-boot" id="cr-boot" role="status" aria-live="polite" aria-atomic="true">
     <div class="cr-boot__card">
-      <div class="cr-boot__identity" aria-hidden="true"><img src="assets/mark-light.svg" alt="" width="32" height="32" /><span>MC-04 / ROBOT TEND</span></div>
-      <p class="cr-boot__label">Operator panel initialization</p>
-      <p class="cr-boot__message" id="cr-boot-msg">Establishing safety circuit &middot; indexing document rack</p>
+      <div class="cr-boot__identity" aria-hidden="true"><img src="assets/mark-light.svg" alt="" width="32" height="32" /><span>DCM-01 / COLD-CHAMBER CELL</span></div>
+      <p class="cr-boot__label">Alloy charge sequence</p>
+      <p class="cr-boot__message" id="cr-boot-msg">Loading A380 aluminum into servo ladle &middot; shot system warming</p>
       <div class="cr-boot__bar" aria-hidden="true"><span></span></div>
-      <div class="cr-boot__checks" aria-hidden="true"><span>Safety</span><b>Closed</b><span>Rack index</span><b>07 / 07</b></div>
+      <div class="cr-boot__checks" aria-hidden="true"><span>Alloy</span><b>A380 / 680&deg;C</b><span>Shot sleeve</span><b>Ready</b></div>
     </div>
   </div>
   <div id="cr-error" class="cr-error" role="alert" hidden></div>
   <div class="cr-canvas-poster" aria-hidden="true"></div>
-  <canvas id="viewport" width="1280" height="720" tabindex="0" aria-label="Interactive floor-level CNC cell with seven indexed documents and a guarded operator transfer bay." aria-describedby="cr-hint">Your browser cannot display the automated CNC cell. The complete resume follows below.</canvas>
-  <div class="cr-viewframe" aria-hidden="true"><span class="cr-viewframe__corner cr-viewframe__corner--tl"></span><span class="cr-viewframe__corner cr-viewframe__corner--tr"></span><span class="cr-viewframe__corner cr-viewframe__corner--bl"></span><span class="cr-viewframe__corner cr-viewframe__corner--br"></span><span class="cr-viewframe__datum" id="cr-safety-datum">CAM-04A &middot; GUARD LOCKED</span></div>
+  <canvas id="viewport" width="1280" height="720" tabindex="0" aria-label="Interactive clean die-casting cell with a servo ladle, closing die, shot unit, extraction robot, and seven resume recipes." aria-describedby="cr-hint">Your browser cannot display the die-casting cell. The complete resume follows below.</canvas>
+  <div class="cr-viewframe" aria-hidden="true"><span class="cr-viewframe__corner cr-viewframe__corner--tl"></span><span class="cr-viewframe__corner cr-viewframe__corner--tr"></span><span class="cr-viewframe__corner cr-viewframe__corner--bl"></span><span class="cr-viewframe__corner cr-viewframe__corner--br"></span><span class="cr-viewframe__datum" id="cr-safety-datum">DCM-01 &middot; DIE AREA LOCKED</span></div>
   <div class="cr-operator-stack">
-  <header class="cr-rail" aria-label="Automated cell status">
-    <div class="cr-rail__brand"><img src="assets/mark-light.svg" alt="" width="30" height="30" /><div><span class="cr-rail__title">MC-04 / Automated Machining</span><span class="cr-rail__sub">Robert McFarlin &middot; Manufacturing systems</span></div></div>
-    <div class="cr-rail__meta" aria-label="CNC cell status"><span class="cr-rail__cell"><small>Cell ID</small> MC-04</span><span class="cr-rail__cell cr-rail__safety" id="cr-safety-status" data-safety-channel="guard" role="status" aria-live="polite" aria-atomic="true"><small>Safety circuit</small><span id="cr-safety-value">Guard locked</span></span><span class="cr-led" id="cr-cell-status" aria-live="polite"><small>Controller</small> Auto run</span><span class="cr-rail__perf" id="cr-fps" aria-hidden="true">-- FPS</span></div>
+  <header class="cr-rail" aria-label="DCM-01 die-casting cell status">
+    <div class="cr-rail__brand"><img src="assets/mark-light.svg" alt="" width="30" height="30" /><div><span class="cr-rail__title">DCM-01 / A380 HPDC Cell</span><span class="cr-rail__sub">Robert McFarlin &middot; Resume foundry</span></div></div>
+    <div class="cr-rail__meta" aria-label="Live die-casting cell status"><span class="cr-rail__cell cr-rail__alloy"><small>Cell / alloy</small> DCM-01 &middot; A380</span><span class="cr-rail__cell cr-rail__safety" id="cr-safety-status" data-safety-channel="guard" role="status" aria-live="polite" aria-atomic="true"><small>Die area</small><span id="cr-safety-value">Guard locked</span></span><span class="cr-led" id="cr-cell-status" role="status" aria-live="polite" aria-atomic="true"><small>Cycle stage</small><span class="cr-led__value" data-status-value>Charging ladle</span></span><span class="cr-rail__perf" id="cr-fps" aria-hidden="true">-- FPS</span></div>
+    <span class="cr-rail__shell" aria-hidden="true"></span>
+    <span class="cr-rail__bracket cr-rail__bracket--left" aria-hidden="true"></span>
+    <span class="cr-rail__bracket cr-rail__bracket--right" aria-hidden="true"></span>
+    <span class="cr-rail__cable" aria-hidden="true"></span>
   </header>
   <section class="cr-hint cr-orientation" id="cr-hint" aria-labelledby="cr-orientation-title">
-    <p class="cr-orientation__eyebrow"><span></span> Operator notice 2408-04 &middot; System ready</p>
-    <h1 id="cr-orientation-title">Select a document at the machine operator panel.</h1>
-    <p class="cr-orientation__lede">A selection requests a controlled cycle stop. The robot loads the guarded transfer bay; outer access enables only after the inner lock and robot-clear circuits are proven.</p>
-    <div class="cr-orientation__command"><span>Control point &middot; HMI-04</span><kbd>Touch</kbd><span aria-hidden="true">or</span><kbd>1&ndash;7</kbd></div>
+    <p class="cr-orientation__eyebrow"><span></span> Automatic cell &middot; Safety circuit monitored</p>
+    <h1 id="cr-orientation-title">Choose the resume section to cast.</h1>
+    <p class="cr-orientation__lede">DCM-01 closes the selected die, pours the ladle into the shot sleeve, and injects the alloy under pressure. After solidification, the extraction robot removes and presents the finished metal record.</p>
+    <div class="cr-orientation__command"><span>Charge &middot; Clamp &middot; Inject &middot; Cool &middot; Extract</span><kbd>Touch</kbd><span aria-hidden="true">or</span><kbd>1&ndash;7</kbd></div>
   </section>
 
-  <!-- Redundant accessible/service path; the in-world HMI remains the primary chooser. -->
-  <nav class="cr-dock" id="cr-dock" aria-label="Open resume document menu, seven sections" tabindex="-1">
-    <div class="cr-dock__legend" aria-hidden="true"><span>Operator console</span><strong>Open resume</strong><small>Select record 01&ndash;07 &middot; Keys 1&ndash;7</small></div>
+  <!-- Redundant accessible/service path; the in-world die-casting HMI remains the primary chooser. -->
+  <nav class="cr-dock" id="cr-dock" aria-label="Choose a resume die recipe, seven sections" tabindex="-1">
+    <div class="cr-dock__legend" aria-hidden="true"><span>Explore the work</span><strong>Select a chapter. Watch it take shape.</strong><small>Use keys 1&ndash;7</small></div>
     <div class="cr-dock__controls">
-      <button type="button" data-station="status" aria-label="Clipboard 1: operator overview" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">01</span><span class="cr-control-copy"><strong>Operator</strong><small>Identity / scope</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
-      <button type="button" data-station="results" aria-label="Clipboard 2: results and impact" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">02</span><span class="cr-control-copy"><strong>Results</strong><small>KPI record</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
-      <button type="button" data-station="experience" aria-label="Clipboard 3: career experience" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">03</span><span class="cr-control-copy"><strong>History</strong><small>Work record</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
-      <button type="button" data-station="principles" aria-label="Clipboard 4: operating principles" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">04</span><span class="cr-control-copy"><strong>Standards</strong><small>Operating rules</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
-      <button type="button" data-station="outlook" aria-label="Clipboard 5: future outlook" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">05</span><span class="cr-control-copy"><strong>Outlook</strong><small>Forward plan</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
-      <button type="button" data-station="toolbox" aria-label="Clipboard 6: capabilities and credentials" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">06</span><span class="cr-control-copy"><strong>Systems</strong><small>Capability file</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
-      <button type="button" data-station="contact" aria-label="Clipboard 7: contact Robert McFarlin" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">07</span><span class="cr-control-copy"><strong>Contact</strong><small>Channel record</small></span><span class="cr-control-state" aria-hidden="true">Ready</span></button>
+      <button type="button" data-station="status" aria-label="Die recipe 1: operator overview" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">01</span><span class="cr-control-copy"><strong>Overview</strong><small>CFO profile</small></span><span class="cr-control-state" aria-hidden="true">Charge ready</span></button>
+      <button type="button" data-station="results" aria-label="Die recipe 2: results and impact" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">02</span><span class="cr-control-copy"><strong>Results</strong><small>Impact insert</small></span><span class="cr-control-state" aria-hidden="true">Charge ready</span></button>
+      <button type="button" data-station="experience" aria-label="Die recipe 3: career experience" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">03</span><span class="cr-control-copy"><strong>Experience</strong><small>Career history</small></span><span class="cr-control-state" aria-hidden="true">Charge ready</span></button>
+      <button type="button" data-station="principles" aria-label="Die recipe 4: operating principles" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">04</span><span class="cr-control-copy"><strong>Principles</strong><small>Operating rules</small></span><span class="cr-control-state" aria-hidden="true">Charge ready</span></button>
+      <button type="button" data-station="outlook" aria-label="Die recipe 5: future outlook" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">05</span><span class="cr-control-copy"><strong>Outlook</strong><small>Horizon insert</small></span><span class="cr-control-state" aria-hidden="true">Charge ready</span></button>
+      <button type="button" data-station="toolbox" aria-label="Die recipe 6: capabilities and credentials" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">06</span><span class="cr-control-copy"><strong>Capabilities</strong><small>Systems / credentials</small></span><span class="cr-control-state" aria-hidden="true">Charge ready</span></button>
+      <button type="button" data-station="contact" aria-label="Die recipe 7: contact Robert McFarlin" aria-controls="cr-plate" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false"><span class="cr-key" aria-hidden="true">07</span><span class="cr-control-copy"><strong>Contact</strong><small>Channel die</small></span><span class="cr-control-state" aria-hidden="true">Charge ready</span></button>
     </div>
+    <span class="cr-dock__shell" aria-hidden="true"></span>
+    <span class="cr-dock__arm cr-dock__arm--left" aria-hidden="true"></span>
+    <span class="cr-dock__arm cr-dock__arm--right" aria-hidden="true"></span>
+    <span class="cr-dock__cable" aria-hidden="true"></span>
   </nav>
   </div>
 
-  <button class="cr-full-resume-trigger" id="cr-full-resume-trigger" type="button" aria-label="Open the full resume instantly, bypassing robot animation" aria-haspopup="dialog" aria-controls="cr-full-resume" aria-expanded="false">
+  <aside class="cr-guard-annunciator" aria-hidden="true" data-mode="hold">
+    <div class="cr-guard-annunciator__identity"><small>Upper guard</small><strong>DCM-01 / A380</strong></div>
+    <div class="cr-guard-annunciator__cell"><small data-guard-cell-label>Cycle stage</small><strong data-guard-cell-status>Charging ladle</strong></div>
+    <div class="cr-guard-annunciator__safety"><small>Safety</small><strong data-guard-safety-status>Guard locked</strong></div>
+    <span class="cr-guard-annunciator__bracket cr-guard-annunciator__bracket--left"></span>
+    <span class="cr-guard-annunciator__bracket cr-guard-annunciator__bracket--right"></span>
+    <span class="cr-guard-annunciator__cable"></span>
+  </aside>
+
+  <button class="cr-full-resume-trigger" id="cr-full-resume-trigger" type="button" aria-label="Open the full resume instantly, bypassing the die-casting cycle" aria-haspopup="dialog" aria-controls="cr-full-resume" aria-expanded="false">
     <span class="cr-full-resume-trigger__lamp" aria-hidden="true"></span>
-    <span class="cr-full-resume-trigger__copy"><small>Direct access</small><strong>Full resume</strong></span>
-    <span class="cr-full-resume-trigger__mode" aria-hidden="true">Bypass cell</span>
+    <span class="cr-full-resume-trigger__copy"><small>The complete story</small><strong>Read my resume <span aria-hidden="true">↗</span></strong></span>
+    <span class="cr-full-resume-trigger__mode" aria-hidden="true">All 7 / No cycle</span>
+    <span class="cr-full-resume-trigger__shell" aria-hidden="true"></span>
+    <span class="cr-full-resume-trigger__post-mount" aria-hidden="true"></span>
+    <span class="cr-full-resume-trigger__conduit" aria-hidden="true"></span>
   </button>
 
   <dialog class="cr-full-resume" id="cr-full-resume" aria-labelledby="cr-full-resume-title" aria-describedby="cr-full-resume-description">
     <div class="cr-full-resume__cabinet">
       <header class="cr-full-resume__header">
         <div class="cr-full-resume__nameplate">
-          <span>Document control &middot; Direct channel</span>
-          <h2 id="cr-full-resume-title">Master resume access</h2>
-          <p id="cr-full-resume-description">Complete seven-record resume. No robot transfer or motion queue required.</p>
+          <span>Robert McFarlin &middot; Professional background</span>
+          <h2 id="cr-full-resume-title">Complete resume</h2>
+          <p id="cr-full-resume-description">Experience, results, and the systems behind the work.</p>
         </div>
         <button class="cr-full-resume__close" id="cr-full-resume-close" type="button" aria-label="Close the full resume">
-          <span>Close / Exit</span><kbd>Esc</kbd>
+          <span>Close</span><kbd>Esc</kbd>
         </button>
       </header>
       <div class="cr-full-resume__signals" aria-hidden="true">
-        <span><i></i><small>Document</small><strong>Master copy</strong></span>
-        <span><i></i><small>Index</small><strong>07 / 07 loaded</strong></span>
-        <span><i></i><small>Motion queue</small><strong>Bypassed</strong></span>
+        <span><i></i><small>Source</small><strong>Master pattern</strong></span>
+        <span><i></i><small>Recipe set</small><strong>07 / 07 available</strong></span>
+        <span><i></i><small>Shot cycle</small><strong>Bypassed</strong></span>
       </div>
       <div class="cr-full-resume__viewport" id="cr-full-resume-viewport" tabindex="0" role="region" aria-label="Complete resume. Scroll to review all seven sections.">
-        <article class="cr-full-resume__paper">
+        <article class="cr-full-resume__paper cr-full-resume__master">
           <header class="cr-full-resume__paper-head">
             <img src="assets/mark.svg" alt="" width="44" height="44" />
-            <div><span>RCM / CONTROLLED DOCUMENT</span><h1>Robert McFarlin, CMA</h1><p>Chief Financial Officer &middot; Industrial manufacturing &middot; Systems builder</p></div>
-            <strong>REV 08.10.26<br />DIRECT ACCESS</strong>
+            <div><span>Finance &middot; Systems &middot; Manufacturing</span><h1>Robert McFarlin, CMA</h1><p>Chief Financial Officer &middot; Industrial manufacturing &middot; Systems builder</p></div>
+            <strong>REV 08.10.26<br />PATTERN 07</strong>
           </header>
           <div class="cr-full-resume__body" id="cr-full-resume-body"></div>
         </article>
       </div>
-      <footer class="cr-full-resume__footer"><span>DOC-MR-07 &middot; CONTROLLED COPY</span><span>ALL RECORDS AVAILABLE &middot; SCROLL TO REVIEW</span></footer>
+      <footer class="cr-full-resume__footer"><span>DCM-MR-07 &middot; MASTER PATTERN</span><span>ALL SECTIONS AVAILABLE &middot; SCROLL TO REVIEW</span></footer>
     </div>
   </dialog>
 
@@ -137,66 +170,69 @@
     <span class="cr-transfer__mount cr-transfer__mount--upper" aria-hidden="true"></span>
     <span class="cr-transfer__mount cr-transfer__mount--lower" aria-hidden="true"></span>
     <div class="cr-transfer__header">
-      <div class="cr-transfer__nameplate" aria-hidden="true"><span>Guarded transfer</span><strong>TB-04 / Operator side</strong></div>
-      <button type="button" class="cr-plate__close" id="cr-close" aria-label="Acknowledge review, close outer transfer access, and return the document to the guarded cell"><span>Close / Ack</span><kbd>Esc</kbd></button>
+      <div class="cr-transfer__nameplate" aria-hidden="true"><span>Robot extraction</span><strong>EX-01 / Handoff nest</strong></div>
+      <button type="button" class="cr-plate__close" id="cr-close" aria-label="Finish review, return the casting, and reset the die-casting cycle"><span>Return / Reset</span><kbd>Esc</kbd></button>
     </div>
     <div class="cr-transfer__signals" id="cr-transfer-status" role="status" aria-live="polite" aria-atomic="true">
-      <span class="cr-transfer__signal is-proven" data-transfer-signal="inner-lock"><small>Inner lock</small><strong id="cr-transfer-inner">Locked</strong></span>
-      <span class="cr-transfer__signal is-access" data-transfer-signal="outer-access"><small>Outer access</small><strong id="cr-transfer-outer">Enabled</strong></span>
+      <span class="cr-transfer__signal is-proven" data-transfer-signal="inner-lock"><small>Die guard</small><strong id="cr-transfer-inner">Proved</strong></span>
+      <span class="cr-transfer__signal is-access" data-transfer-signal="outer-access"><small>Handoff</small><strong id="cr-transfer-outer">Presented</strong></span>
       <span class="cr-transfer__signal is-proven" data-transfer-signal="robot-clear"><small>Robot</small><strong id="cr-transfer-robot">Clear</strong></span>
     </div>
     <div class="cr-transfer__tray">
-      <span class="cr-transfer__door" aria-hidden="true"><span>Outer access</span></span>
+      <span class="cr-transfer__door" aria-hidden="true"><span>Inspection nest</span></span>
       <span class="cr-transfer__rail cr-transfer__rail--left" aria-hidden="true"></span>
       <span class="cr-transfer__rail cr-transfer__rail--right" aria-hidden="true"></span>
+      <span class="cr-transfer__receiver" aria-hidden="true"></span>
       <span class="cr-transfer__hinge cr-transfer__hinge--upper" aria-hidden="true"></span>
       <span class="cr-transfer__hinge cr-transfer__hinge--lower" aria-hidden="true"></span>
       <span class="cr-transfer__latch" aria-hidden="true"><span>O/L</span></span>
       <span class="cr-transfer__stop cr-transfer__stop--upper" aria-hidden="true"></span>
       <span class="cr-transfer__stop cr-transfer__stop--lower" aria-hidden="true"></span>
-      <span class="cr-plate__asset" aria-hidden="true">DOC-04 &middot; OUTER ACCESS TRAY</span>
+      <span class="cr-plate__asset" aria-hidden="true">CAST A380 &middot; ROBOT EXTRACTED</span>
       <div class="cr-plate__sheet">
-        <div class="cr-plate__head"><div class="cr-plate__heading"><p class="cr-plate__tag" id="cr-plate-tag">Transfer copy</p><h2 class="cr-plate__title" id="cr-plate-title">Awaiting interlocked handoff</h2></div></div>
-        <div class="cr-plate__body" id="cr-plate-body" tabindex="0" role="region" aria-label="Selected resume document. Scroll for more."></div>
-        <div class="cr-plate__foot" id="cr-plate-foot" aria-label="Close outer access to return this document and permit the automatic cycle">Review acknowledged &middot; Close outer access &middot; Return to indexed slot</div>
+        <span class="cr-casting-perimeter" aria-hidden="true"></span>
+        <div class="cr-plate__head"><div class="cr-plate__heading"><p class="cr-plate__tag" id="cr-plate-tag">Finished casting</p><h2 class="cr-plate__title" id="cr-plate-title">Awaiting die cycle</h2></div></div>
+        <div class="cr-plate__body" id="cr-plate-body" tabindex="0" role="region" aria-label="Selected die-cast resume section. Scroll for more."></div>
+        <div class="cr-plate__foot" id="cr-plate-foot" aria-label="Return the casting and reset the automatic die-casting cycle">Inspection complete &middot; Return casting &middot; Reset shot cycle</div>
       </div>
     </div>
   </aside>
 
-  <!-- These seven clipboard templates are also the complete GitHub Pages fallback. -->
-  <main id="cr-content" class="cr-content" aria-label="Robert McFarlin resume">
-    <header class="cr-content__intro"><p>Static fence clipboard rack</p><h1>Robert McFarlin</h1><span>Chief Financial Officer &middot; Industrial Manufacturing</span></header>
+  <!-- These seven resume sections are also the complete GitHub Pages fallback. -->
+  <main id="cr-content" class="cr-content" tabindex="-1" aria-label="Robert McFarlin resume">
+    <header class="cr-content__intro"><p>Complete resume &middot; Static access &middot; All seven records below</p><h1>Robert McFarlin</h1><span>Chief Financial Officer &middot; Industrial Manufacturing</span></header>
     <nav class="cr-static-index" aria-label="Resume sections">
-      <a href="#resume-status"><span>01</span> Operator</a>
+      <a href="#resume-status"><span>01</span> Overview</a>
       <a href="#resume-results"><span>02</span> Results</a>
-      <a href="#resume-experience"><span>03</span> History</a>
-      <a href="#resume-principles"><span>04</span> Standards</a>
+      <a href="#resume-experience"><span>03</span> Experience</a>
+      <a href="#resume-principles"><span>04</span> Principles</a>
       <a href="#resume-outlook"><span>05</span> Outlook</a>
-      <a href="#resume-toolbox"><span>06</span> Systems</a>
+      <a href="#resume-toolbox"><span>06</span> Capabilities</a>
       <a href="#resume-contact"><span>07</span> Contact</a>
     </nav>
-    <article id="resume-status" data-station="status" data-title="Operator overview">
+    <article id="resume-status" data-station="status" data-title="Casting 01 · Operator overview">
       <div class="cr-id-card"><img src="assets/headshot.jpeg" alt="Robert McFarlin" width="76" height="76" loading="lazy" decoding="async" /><div><span class="cr-mini-label">Operator 01 &middot; Active</span><h3>Robert McFarlin, CMA</h3><p>Chief Financial Officer, RCM Industries</p></div></div>
       <p class="cr-panel-lede">Creating value in the age of AI by building the capital allocation, data, automation, and control systems that help industrial companies grow faster, govern smarter, and fund long-horizon wins.</p>
       <div class="cr-signal-grid"><section><span>01 &middot; Strategy</span><h3>Choose where to compete</h3><p>Fund the few activities that fit together to create durable competitive advantage.</p></section><section><span>02 &middot; Focus</span><h3>Concentrate the 80/20</h3><p>Find the customers, products, plants, constraints, and workflows driving disproportionate profit, cash, risk, or drag.</p></section><section><span>03 &middot; Infrastructure</span><h3>Make finance intelligent</h3><p>Move finance from a reporting function to an intelligence layer with better data, faster forecasts, cleaner workflows, and stronger controls.</p></section></div>
       <p class="cr-meta-line">Scope &middot; Six entities &middot; Four manufacturing plants &middot; Finance connected to operating reality</p>
     </article>
-    <article id="resume-results" data-station="results" data-title="Enterprise impact">
+    <article id="resume-results" data-station="results" data-title="Casting 02 · Enterprise impact">
       <p class="cr-panel-lede">Manufacturing finance work translated into measurable enterprise value.</p>
       <div class="metric"><div><strong>3&times;</strong><span>Available credit capacity</span><small>Competitive multi-lender process</small></div><div><strong>&minus;50 bps</strong><span>Borrowing cost</span><small>Greater flexibility at lower cost</small></div><div><strong>4</strong><span>Locations on one HRIS</span><small>Unified payroll and HR</small></div><div><strong>0 &rarr; 1</strong><span>Internal audit function</span><small>Governance built from zero</small></div></div>
       <h3>Systems shipped</h3><ul class="cr-checklist"><li>Rebuilt enterprise reporting on a <strong>Microsoft Fabric lakehouse and Direct Lake semantic model</strong>, surfacing production, labor, and financial signals in near real time.</li><li>Reduced workflow debt through automation, returning recurring manual effort to higher-value analysis and decision support.</li><li>Created internal audit from zero, strengthening governance, compliance, and risk visibility as the business scaled.</li><li>Consolidated payroll and HR across four locations into one source-of-truth HRIS environment.</li><li>Built a PE-style capital approval framework with approval gates and portfolio-level FCCR forecasting.</li></ul>
     </article>
-    <article id="resume-experience" data-station="experience" data-title="Career timeline">
+    <article id="resume-experience" data-station="experience" data-title="Casting 03 · Career timeline">
       <p class="cr-panel-lede">A career spent connecting financial integrity to the operating decisions made on the manufacturing floor.</p>
       <div class="cr-timeline"><section class="cr-role"><header><div><span>RCM Industries, Inc. &middot; Manufacturing</span><h3>Chief Financial Officer</h3></div><time>2023 &ndash; Present</time></header><ul><li>Restructured the primary banking relationship through a competitive process, expanding available credit capacity 3&times; while reducing borrowing cost by 50 bps.</li><li>Rebuilt enterprise reporting on Microsoft Fabric for stronger leadership visibility and faster operating decisions.</li><li>Automated recurring finance work, created internal audit from zero, and unified payroll and HR across four locations.</li></ul></section><section class="cr-role"><header><div><span>RCM Industries, Inc.</span><h3>Corporate Controller</h3></div><time>2017 &ndash; 2022</time></header><ul><li>Built the financial data infrastructure from the ground up using Microsoft Power BI and an imported semantic model.</li><li>Led accounting, AP/AR, and payroll teams across four plants while keeping finance connected to operations.</li><li>Built consolidated forecasting models for strategic planning and resource allocation; governed reporting for a six-entity group.</li></ul></section><section class="cr-role"><header><div><span>RCM Industries, Inc.</span><h3>Division Controller</h3></div><time>2016 &ndash; 2017</time></header><ul><li>Owned plant-level P&amp;L accountability, connecting financial outcomes to operating decisions at the source.</li><li>Implemented KPI dashboards for inventory, carrying costs, and operational drivers; partnered directly with operators on efficiency improvements.</li></ul></section><section class="cr-role"><header><div><span>RCM Industries, Inc.</span><h3>Accounting Manager</h3></div><time>2014 &ndash; 2016</time></header><ul><li>Prepared and analyzed financial statements across multiple manufacturing plants.</li><li>Streamlined multi-plant reporting processes, improving the reliability of financial information.</li></ul></section><section class="cr-role"><header><div><span>ScanSource, Inc. &middot; Technology Distribution</span><h3>Staff Accountant</h3></div><time>2011 &ndash; 2014</time></header><ul><li>Managed balance-sheet reconciliations and revenue accounting in a public-company control environment.</li><li>Served as subject-matter expert during SAP implementation, protecting continuity and data integrity through change.</li></ul></section></div>
     </article>
-    <article id="resume-principles" data-station="principles" data-title="Operating principles"><p class="cr-panel-lede">Non-negotiable constraints for how I lead, build systems, and make long-horizon decisions.</p><ol class="cr-principles"><li><span>01</span><div><h3>Relentlessly pursue purposeful progress</h3><p>Motion without direction is noise. Every system, report, or automation must move the business forward in a way that can be measured and defended.</p></div></li><li><span>02</span><div><h3>Give more in value than you receive in compensation</h3><p>Trust compounds faster than capital. Deliver clarity early, surface problems before they become expensive, and serve the whole enterprise.</p></div></li><li><span>03</span><div><h3>Everyone sweeps the floor</h3><p>No task is beneath the person accountable for the outcome. Titles are temporary; standards are not.</p></div></li><li><span>04</span><div><h3>Share good news quickly, and bad news even quicker</h3><p>Surprises are the most expensive input. The earlier the signal reaches those who can act, the smaller the correction required.</p></div></li><li><span>05</span><div><h3>Treat every experience as an opportunity to learn</h3><p>The best operators remain students: what did we see too late, and how do we see it sooner next time?</p></div></li></ol></article>
-    <article id="resume-outlook" data-station="outlook" data-title="Future outlook"><p class="cr-panel-lede">The CFOs who create the most value in the next decade will build the infrastructure that generates the forecast.</p><div class="cr-horizon"><section><span class="cr-horizon__status is-live">In motion</span><h3>Current forces</h3><ul><li>AI agents transforming finance and accounting workflows</li><li>Real-time operational data compressing the monthly close cycle</li><li>Conversational AI agents embedding into operating workflows</li><li>The spreadsheet demoted from system of record to consumption layer</li><li>The CFO evolving from financial steward to infrastructure architect</li></ul></section><section><span class="cr-horizon__status is-build">Building</span><h3>Active bets</h3><ul><li>Agentic financial and operational intelligence</li><li>Direct Lake semantic layers as the new general-ledger interface</li><li>Natural language as the query interface for operations</li><li>Post-ERP modular architecture replacing monolithic financial systems</li></ul></section><section><span class="cr-horizon__status is-watch">Watching</span><h3>Coming disruptors</h3><ul><li>Orbital computing constellations lowering AI infrastructure costs</li><li>Quantum optimization delivering measurable gains in computing power</li><li>Humanoid robotics entering manufacturing at pilot scale and changing the workforce</li></ul></section></div></article>
-    <article id="resume-toolbox" data-station="toolbox" data-title="Systems and credentials"><p class="cr-panel-lede">The practical stack behind the work: enterprise value, data systems, operating control, and execution.</p><div class="cr-capabilities"><section><span>01</span><div><h3>Enterprise value</h3><dl><dt>Strategic capital allocation</dt><dd>PE-style approval gates and portfolio-level FCCR forecasting.</dd><dt>Data-driven operating leverage</dt><dd>Power BI to Fabric lakehouse and Direct Lake, surfacing production, labor, and margin drivers.</dd><dt>Banking architecture</dt><dd>Competitive bank process producing a 3&times; larger revolver and greater flexibility.</dd></dl></div></section><section><span>02</span><div><h3>AI and data systems</h3><dl><dt>Microsoft Fabric &amp; Power BI</dt><dd>Enterprise reporting designed for faster, more visible operating decisions.</dd><dt>Finance automation</dt><dd>Manual workflow returned to analysis, controls, and decision support.</dd><dt>Integrated definitions</dt><dd>One HRIS across four locations so finance and operations share a source of truth.</dd></dl></div></section><section><span>03</span><div><h3>Operating control</h3><dl><dt>Internal audit buildout</dt><dd>Governance, compliance, and risk visibility built from zero.</dd><dt>Statement integrity</dt><dd>Accurate, repeatable reporting across a six-entity manufacturing group.</dd><dt>Plant economics</dt><dd>KPI dashboards connecting production, inventory, and operating drivers to floor decisions.</dd></dl></div></section><section><span>04</span><div><h3>Execution stack</h3><dl><dt>Excel, VBA &amp; Power Query</dt><dd>Multi-plant reporting and forecasting systems built for reliability.</dd><dt>Python &amp; ETL</dt><dd>Automation and scripting that free capacity for higher-value work.</dd><dt>Leadership &amp; change</dt><dd>Teams led across four plants while implementing systems, controls, banks, and faster cadence.</dd></dl></div></section></div><h3>Credentials and education</h3><div class="cr-credentials"><p><strong>Certified Management Accountant (CMA)</strong><span>Institute of Management Accountants</span></p><p><strong>Master of Accountancy</strong><span>Stetson University</span></p><p><strong>B.S. Business Administration (Accounting)</strong><span>University of South Carolina Upstate</span></p><p><strong>Continuous study</strong><span>Advanced financial modeling, data analytics, strategy, and valuation</span></p></div></article>
-    <article id="resume-contact" data-station="contact" data-title="Open channel"><div class="cr-contact"><span class="cr-contact__signal" aria-hidden="true"></span><p class="cr-mini-label">Secure line &middot; Available</p><h3>Building for the same future?</h3><p>I'm open to conversations about manufacturing finance, capital allocation, data infrastructure, automation, and where the CFO seat is headed.</p><a class="cr-contact__link" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span aria-hidden="true">&nearr;</span></a><small>LinkedIn is the fastest way to reach me.</small></div></article>
+    <article id="resume-principles" data-station="principles" data-title="Casting 04 · Operating principles"><p class="cr-panel-lede">Non-negotiable constraints for how I lead, build systems, and make long-horizon decisions.</p><ol class="cr-principles"><li><span>01</span><div><h3>Relentlessly pursue purposeful progress</h3><p>Motion without direction is noise. Every system, report, or automation must move the business forward in a way that can be measured and defended.</p></div></li><li><span>02</span><div><h3>Give more in value than you receive in compensation</h3><p>Trust compounds faster than capital. Deliver clarity early, surface problems before they become expensive, and serve the whole enterprise.</p></div></li><li><span>03</span><div><h3>Everyone sweeps the floor</h3><p>No task is beneath the person accountable for the outcome. Titles are temporary; standards are not.</p></div></li><li><span>04</span><div><h3>Share good news quickly, and bad news even quicker</h3><p>Surprises are the most expensive input. The earlier the signal reaches those who can act, the smaller the correction required.</p></div></li><li><span>05</span><div><h3>Treat every experience as an opportunity to learn</h3><p>The best operators remain students: what did we see too late, and how do we see it sooner next time?</p></div></li></ol></article>
+    <article id="resume-outlook" data-station="outlook" data-title="Casting 05 · Future outlook"><p class="cr-panel-lede">The CFOs who create the most value in the next decade will build the infrastructure that generates the forecast.</p><div class="cr-horizon"><section><span class="cr-horizon__status is-live">In motion</span><h3>Current forces</h3><ul><li>AI agents transforming finance and accounting workflows</li><li>Real-time operational data compressing the monthly close cycle</li><li>Conversational AI agents embedding into operating workflows</li><li>The spreadsheet demoted from system of record to consumption layer</li><li>The CFO evolving from financial steward to infrastructure architect</li></ul></section><section><span class="cr-horizon__status is-build">Building</span><h3>Active bets</h3><ul><li>Agentic financial and operational intelligence</li><li>Direct Lake semantic layers as the new general-ledger interface</li><li>Natural language as the query interface for operations</li><li>Post-ERP modular architecture replacing monolithic financial systems</li></ul></section><section><span class="cr-horizon__status is-watch">Watching</span><h3>Coming disruptors</h3><ul><li>Orbital computing constellations lowering AI infrastructure costs</li><li>Quantum optimization delivering measurable gains in computing power</li><li>Humanoid robotics entering manufacturing at pilot scale and changing the workforce</li></ul></section></div></article>
+    <article id="resume-toolbox" data-station="toolbox" data-title="Casting 06 · Systems and credentials"><p class="cr-panel-lede">The practical stack behind the work: enterprise value, data systems, operating control, and execution.</p><div class="cr-capabilities"><section><span>01</span><div><h3>Enterprise value</h3><dl><dt>Strategic capital allocation</dt><dd>PE-style approval gates and portfolio-level FCCR forecasting.</dd><dt>Data-driven operating leverage</dt><dd>Power BI to Fabric lakehouse and Direct Lake, surfacing production, labor, and margin drivers.</dd><dt>Banking architecture</dt><dd>Competitive bank process producing a 3&times; larger revolver and greater flexibility.</dd></dl></div></section><section><span>02</span><div><h3>AI and data systems</h3><dl><dt>Microsoft Fabric &amp; Power BI</dt><dd>Enterprise reporting designed for faster, more visible operating decisions.</dd><dt>Finance automation</dt><dd>Manual workflow returned to analysis, controls, and decision support.</dd><dt>Integrated definitions</dt><dd>One HRIS across four locations so finance and operations share a source of truth.</dd></dl></div></section><section><span>03</span><div><h3>Operating control</h3><dl><dt>Internal audit buildout</dt><dd>Governance, compliance, and risk visibility built from zero.</dd><dt>Statement integrity</dt><dd>Accurate, repeatable reporting across a six-entity manufacturing group.</dd><dt>Plant economics</dt><dd>KPI dashboards connecting production, inventory, and operating drivers to floor decisions.</dd></dl></div></section><section><span>04</span><div><h3>Execution stack</h3><dl><dt>Excel, VBA &amp; Power Query</dt><dd>Multi-plant reporting and forecasting systems built for reliability.</dd><dt>Python &amp; ETL</dt><dd>Automation and scripting that free capacity for higher-value work.</dd><dt>Leadership &amp; change</dt><dd>Teams led across four plants while implementing systems, controls, banks, and faster cadence.</dd></dl></div></section></div><h3>Credentials and education</h3><div class="cr-credentials"><p><strong>Certified Management Accountant (CMA)</strong><span>Institute of Management Accountants</span></p><p><strong>Master of Accountancy</strong><span>Stetson University</span></p><p><strong>B.S. Business Administration (Accounting)</strong><span>University of South Carolina Upstate</span></p><p><strong>Continuous study</strong><span>Advanced financial modeling, data analytics, strategy, and valuation</span></p></div></article>
+    <article id="resume-contact" data-station="contact" data-title="Casting 07 · Open channel"><div class="cr-contact"><span class="cr-contact__signal" aria-hidden="true"></span><p class="cr-mini-label">Secure line &middot; Available</p><h3>Building for the same future?</h3><p>I'm open to conversations about manufacturing finance, capital allocation, data infrastructure, automation, and where the CFO seat is headed.</p><a class="cr-contact__link" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span aria-hidden="true">&nearr;</span></a><small>LinkedIn is the fastest way to reach me.</small></div></article>
   </main>
   <script src="js/vendor/three.min.js" onerror="window.crUseStaticResume('Three.js could not load. The complete resume is shown below.')"></script>
-  <script src="js/control-room.js?v=20260810-full-resume1" onload="window.__crControlScriptLoaded = true" onerror="window.crUseStaticResume('The CNC-cell script could not load. The complete resume is shown below.')"></script>
+  <script src="js/cinematic.js?v=20260905-12"></script>
+  <script src="js/control-room.js?v=20260905-foundry-13" onload="window.__crControlScriptLoaded = true" onerror="window.crUseStaticResume('The die-casting cell script could not load. The complete resume is shown below.')"></script>
   <script>setTimeout(function(){var boot=document.getElementById("cr-boot");if(boot)boot.classList.add("is-done");if(!window.__crControlScriptLoaded)window.crUseStaticResume("The interactive cell timed out. The complete resume is shown below.");},2400);</script>
 </body>
 </html>
