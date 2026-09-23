@@ -753,15 +753,15 @@
       var sectionHeader = document.createElement("header");
       sectionHeader.className = "cr-full-resume__section-head";
       var record = document.createElement("span");
-      record.textContent = "RECORD " + station.key.padStart(2, "0");
+      record.textContent = station.key.padStart(2, "0");
       var heading = document.createElement("h2");
       heading.id = headingId;
-      heading.textContent = source.getAttribute("data-title") || station.label;
-      var status = document.createElement("strong");
-      status.textContent = "VERIFIED / ACTIVE";
+      // The in-cell plate keeps its "Casting 0N" prefix; the resume reads
+      // as a document, so its headings use the plain section name.
+      heading.textContent = (source.getAttribute("data-title") || station.label)
+        .replace(/^Casting \d+ \u00b7 /, "");
       sectionHeader.appendChild(record);
       sectionHeader.appendChild(heading);
-      sectionHeader.appendChild(status);
 
       var article = source.cloneNode(true);
       article.classList.add("cr-full-resume__record");
@@ -845,7 +845,7 @@
     if (plateTitle) plateTitle.textContent = template.getAttribute("data-title") || meta.label;
     if (plateBody) plateBody.innerHTML = template.innerHTML;
     if (plateFoot) {
-      plateFoot.textContent = "Robot-held behind the proved guard - Close to return this casting to the trim nest";
+      plateFoot.textContent = "Close to return the casting to the trim nest and reset the cell.";
     }
     return true;
   }
