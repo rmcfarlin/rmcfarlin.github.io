@@ -298,6 +298,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .site-footer a { color: var(--ink-tertiary); text-decoration: none; }
 .site-footer a:hover { color: var(--forest); }
 
+/* ---- 404 ---- */
+.notfound { padding: var(--space-12) 0; min-height: 60vh; }
+.notfound .eyebrow { color: var(--moss); }
+.notfound h1 { margin: var(--space-4) 0; font-size: clamp(30px, 3.6vw, 42px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+.notfound p:not(.eyebrow) { max-width: 34em; font-size: 18px; color: var(--ink-secondary); }
+.notfound .btn { margin-top: var(--space-7); }
+
 /* ---- Responsive ---- */
 @media (max-width: 1020px) {
   .site-nav { gap: var(--space-5); }
