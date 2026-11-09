@@ -45,7 +45,6 @@
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
     <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></symbol>
     <symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
     <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></symbol>
@@ -55,7 +54,7 @@
 
   <header class="site-header">
     <div class="container site-header__inner">
-      <a class="brand" href="./" aria-label="Robert McFarlin, home">
+      <a class="brand" href="./">
         <img src="assets/mark.svg" alt="" width="30" height="30" />
         <span><span class="brand__name">Robert McFarlin</span><span class="brand__role">Chief Financial Officer</span></span>
       </a>
@@ -69,6 +68,16 @@
       <div class="site-header__actions">
         <button class="btn btn--secondary btn--sm btn--print" type="button" onclick="window.print()"><svg class="icon" aria-hidden="true"><use href="#i-printer"/></svg>Print resume</button>
         <a class="btn btn--primary btn--sm" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <details class="site-menu">
+          <summary aria-label="Menu"><span class="site-menu__icon" aria-hidden="true"></span></summary>
+          <nav class="site-menu__panel" aria-label="Sections">
+            <a href="#results">Results</a>
+            <a href="#experience">Experience</a>
+            <a href="#capabilities">Capabilities</a>
+            <a href="#principles">Principles</a>
+            <a href="#contact">Contact</a>
+          </nav>
+        </details>
       </div>
     </div>
   </header>
@@ -76,27 +85,30 @@
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="container hero__grid">
-        <div>
-          <p class="eyebrow hero__eyebrow">Chief Financial Officer &middot; Industrial manufacturing</p>
+        <div class="hero__body">
+          <p class="eyebrow hero__eyebrow"><span class="hero__eyebrow-text"><span>Chief Financial Officer</span> <span class="hero__eyebrow-sep">&middot;</span> <span>Industrial manufacturing</span></span></p>
           <h1 id="hero-title">Robert McFarlin, CMA</h1>
           <p class="hero__lede">I&rsquo;m the CFO of RCM Industries, a manufacturer with six entities and four plants. I joined in 2014 as accounting manager. These days most of my work is building the systems finance runs on, from capital approval and reporting to automation and controls.</p>
-          <p class="hero__personal">I am based out of Greenville, SC. In my time away from work, I enjoy watching baseball, racing, and playing disc golf.</p>
+          <ul class="hero__creds" aria-label="Credentials">
+            <li>Certified Management Accountant</li>
+            <li>Master of Accountancy, Stetson University</li>
+          </ul>
           <p class="print-only" style="margin-top:6px;font-size:10pt;color:#333">Greenville, SC &middot; robertmcfarlin.com &middot; linkedin.com/in/rdmcfarlin</p>
           <div class="hero__actions">
             <a class="btn btn--primary" href="#experience">View experience <svg class="icon" aria-hidden="true"><use href="#i-arrow-down"/></svg></a>
             <a class="btn btn--secondary" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg>Connect on LinkedIn</a>
           </div>
           <dl class="facts">
+            <div><dt>3&times;</dt><dd>Available credit since 2023</dd></div>
+            <div><dt>&minus;50&nbsp;bps</dt><dd>Borrowing cost since 2023</dd></div>
             <div><dt>15 yrs</dt><dd>Accounting and finance</dd></div>
             <div><dt>12 yrs</dt><dd>At RCM Industries</dd></div>
-            <div><dt>6</dt><dd>Entities</dd></div>
-            <div><dt>4</dt><dd>Plants</dd></div>
           </dl>
         </div>
         <figure class="portrait">
           <div class="portrait__frame">
             <picture>
-              <source type="image/webp" srcset="assets/headshot-320.webp 320w, assets/headshot-480.webp 480w, assets/headshot-760.webp 760w" sizes="(max-width: 860px) 220px, 373px" />
+              <source type="image/webp" srcset="assets/headshot-320.webp 320w, assets/headshot-480.webp 480w, assets/headshot-760.webp 760w" sizes="(max-width: 560px) 76px, (max-width: 860px) 96px, 373px" />
               <img src="assets/headshot.jpeg" alt="Robert McFarlin" width="1086" height="1448" fetchpriority="high" />
             </picture>
           </div>
@@ -114,25 +126,32 @@
           </div>
           <p>I became CFO in 2023. These are the changes I&rsquo;d point to first.</p>
         </div>
-        <div class="metrics">
-          <div class="metric"><span class="metric__value">3&times;</span><span class="metric__label">Available credit</span><span class="metric__note">After we ran a competitive bank process</span></div>
-          <div class="metric"><span class="metric__value">&minus;50&nbsp;bps</span><span class="metric__label">Borrowing cost</span><span class="metric__note">Same refinancing</span></div>
-          <div class="metric"><span class="metric__value">4</span><span class="metric__label">Locations on one HRIS</span><span class="metric__note">Payroll and HR on one system</span></div>
-          <div class="metric"><span class="metric__value">1st</span><span class="metric__label">Internal audit function</span><span class="metric__note">The company&rsquo;s first</span></div>
-        </div>
-        <div class="shipped">
-          <div>
-            <h3>What we built</h3>
-            <p>The finance team runs on these today.</p>
-          </div>
-          <ul class="checklist">
-            <li><strong>Reporting.</strong> We rebuilt company reporting on a Microsoft Fabric lakehouse with a Direct Lake semantic model. Production, labor, and financial data now update in close to real time instead of once a month.</li>
-            <li><strong>Capital approval.</strong> Big spending requests go through stage gates, the way a private equity firm would run them, and we forecast fixed charge coverage across the whole portfolio before we commit.</li>
-            <li><strong>Automation.</strong> The recurring manual work is automated, so the team spends that time on analysis.</li>
-            <li><strong>Internal audit.</strong> As the company grew it needed someone looking at governance, compliance, and risk. We built that function from nothing.</li>
-            <li><strong>One HR system.</strong> Four locations used to run payroll and HR separately. They now share one HRIS.</li>
-          </ul>
-        </div>
+        <ul class="wins">
+          <li>
+            <h3>Banking</h3>
+            <p>We put our primary banking relationship out to competitive bid. Available credit tripled and borrowing cost fell 50 bps.</p>
+          </li>
+          <li>
+            <h3>Reporting</h3>
+            <p>We rebuilt company reporting on a Microsoft Fabric lakehouse with a Direct Lake semantic model. Production, labor, and financial data now update in close to real time instead of once a month.</p>
+          </li>
+          <li>
+            <h3>Capital approval</h3>
+            <p>Big spending requests go through stage gates, the way a private equity firm would run them, and we forecast fixed charge coverage across the whole portfolio before we commit.</p>
+          </li>
+          <li>
+            <h3>Automation</h3>
+            <p>The recurring manual work is automated, so the team spends that time on analysis.</p>
+          </li>
+          <li>
+            <h3>Internal audit</h3>
+            <p>As the company grew it needed someone looking at governance, compliance, and risk. We built that function from nothing.</p>
+          </li>
+          <li>
+            <h3>One HR system</h3>
+            <p>Four locations used to run payroll and HR separately. They now share one HRIS.</p>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -195,60 +214,64 @@
           </div>
         </figure>
 
-        <div class="roles">
-          <article class="role">
-            <p class="role__when"><strong>RCM Industries, Inc.</strong>2023 &ndash; Present</p>
-            <div>
-              <h3>Chief Financial Officer<span class="role__current">Current</span></h3>
-              <ul>
-                <li>Put our primary banking relationship out to competitive bid. Available credit tripled and borrowing cost fell 50 bps.</li>
-                <li>Rebuilt company reporting on Microsoft Fabric, with production and financial data in near real time.</li>
-                <li>Set up a stage-gate capital approval process, modeled on how private equity firms review investments, with fixed charge coverage forecast across the portfolio.</li>
-                <li>Automated recurring finance work, started internal audit, and moved payroll and HR for four locations onto one system.</li>
-              </ul>
+        <div class="employers">
+          <section class="employer" aria-label="RCM Industries, 2014 to present">
+            <div class="employer__head">
+              <p class="employer__name">RCM Industries, Inc.</p>
+              <p class="employer__when">2014 &ndash; Present</p>
             </div>
-          </article>
-          <article class="role">
-            <p class="role__when"><strong>RCM Industries, Inc.</strong>2017 &ndash; 2022</p>
-            <div>
-              <h3>Corporate Controller</h3>
-              <ul>
-                <li>Built the company&rsquo;s financial reporting from scratch in Power BI, on an imported semantic model.</li>
-                <li>Led the accounting, AP/AR, and payroll teams across four plants.</li>
-                <li>Built consolidated forecasting models for planning and resource allocation, and owned reporting for the six-entity group.</li>
-              </ul>
+            <div class="roles">
+              <article class="role">
+                <div class="role__head">
+                  <h3>Chief Financial Officer<span class="role__current">Current</span></h3>
+                  <p class="role__when">2023 &ndash; Present</p>
+                </div>
+                <p>Capital allocation, banking, reporting systems, automation, and controls for a manufacturer with six entities and four plants. What has changed since 2023 is under <a href="#results">Results</a>.</p>
+              </article>
+              <article class="role">
+                <div class="role__head">
+                  <h3>Corporate Controller</h3>
+                  <p class="role__when">2017 &ndash; 2022</p>
+                </div>
+                <ul>
+                  <li>Built the company&rsquo;s financial reporting from scratch in Power BI, on an imported semantic model.</li>
+                  <li>Led the accounting, AP/AR, and payroll teams across four plants.</li>
+                  <li>Built consolidated forecasting models for planning and resource allocation, and owned reporting for the six-entity group.</li>
+                </ul>
+              </article>
+              <article class="role">
+                <div class="role__head">
+                  <h3>Division Controller</h3>
+                  <p class="role__when">2016 &ndash; 2017</p>
+                </div>
+                <ul>
+                  <li>Owned the plant P&amp;L.</li>
+                  <li>Built KPI dashboards for inventory, carrying costs, and operating drivers, and worked with plant operators on efficiency projects.</li>
+                </ul>
+              </article>
+              <article class="role">
+                <div class="role__head">
+                  <h3>Accounting Manager</h3>
+                  <p class="role__when">2014 &ndash; 2016</p>
+                </div>
+                <p>Prepared and analyzed financial statements for multiple manufacturing plants, and simplified the reporting so people could trust the numbers.</p>
+              </article>
             </div>
-          </article>
-          <article class="role">
-            <p class="role__when"><strong>RCM Industries, Inc.</strong>2016 &ndash; 2017</p>
-            <div>
-              <h3>Division Controller</h3>
-              <ul>
-                <li>Owned the plant P&amp;L.</li>
-                <li>Built KPI dashboards for inventory, carrying costs, and operating drivers, and worked with plant operators on efficiency projects.</li>
-              </ul>
+          </section>
+          <section class="employer" aria-label="ScanSource, 2011 to 2014">
+            <div class="employer__head">
+              <p class="employer__name">ScanSource, Inc.</p>
             </div>
-          </article>
-          <article class="role">
-            <p class="role__when"><strong>RCM Industries, Inc.</strong>2014 &ndash; 2016</p>
-            <div>
-              <h3>Accounting Manager</h3>
-              <ul>
-                <li>Prepared and analyzed financial statements for multiple manufacturing plants.</li>
-                <li>Simplified multi-plant reporting so people could trust the numbers.</li>
-              </ul>
+            <div class="roles">
+              <article class="role">
+                <div class="role__head">
+                  <h3>Staff Accountant</h3>
+                  <p class="role__when">2011 &ndash; 2014</p>
+                </div>
+                <p>Managed balance sheet reconciliations and revenue accounting, and was the finance lead on the SAP implementation.</p>
+              </article>
             </div>
-          </article>
-          <article class="role">
-            <p class="role__when"><strong>ScanSource, Inc.</strong>2011 &ndash; 2014</p>
-            <div>
-              <h3>Staff Accountant</h3>
-              <ul>
-                <li>Managed balance-sheet reconciliations and revenue accounting at a public technology distributor.</li>
-                <li>Was the finance lead on the SAP implementation, responsible for making sure the data came through the cutover intact.</li>
-              </ul>
-            </div>
-          </article>
+          </section>
         </div>
       </div>
     </section>
@@ -258,43 +281,16 @@
         <div class="section-head">
           <div>
             <p class="eyebrow">Capabilities</p>
-            <h2 id="capabilities-title">Skills, and where I&rsquo;ve used them</h2>
+            <h2 id="capabilities-title">Skills and credentials</h2>
           </div>
           <p>Each of these is tied to real work at RCM.</p>
         </div>
-        <div class="capabilities">
-          <article class="capability">
-            <h3>Capital and banking</h3>
-            <dl>
-              <div><dt>Capital allocation</dt><dd>Stage-gate approvals for major spending, with fixed charge coverage forecast across the portfolio.</dd></div>
-              <div><dt>Banking</dt><dd>Ran the process that tripled our revolver and cut borrowing cost 50 bps.</dd></div>
-            </dl>
-          </article>
-          <article class="capability">
-            <h3>Data and automation</h3>
-            <dl>
-              <div><dt>Microsoft Fabric and Power BI</dt><dd>Built company reporting on production, labor, and margin in Power BI, then moved it to a Fabric lakehouse with Direct Lake.</dd></div>
-              <div><dt>Finance automation</dt><dd>Took recurring manual work off the team&rsquo;s plate so they can spend the time on analysis.</dd></div>
-              <div><dt>One HR system</dt><dd>Moved four locations onto one HRIS, so finance and operations count people the same way.</dd></div>
-            </dl>
-          </article>
-          <article class="capability">
-            <h3>Controls and reporting</h3>
-            <dl>
-              <div><dt>Internal audit</dt><dd>Started the function from scratch. It covers governance, compliance, and risk.</dd></div>
-              <div><dt>Group reporting</dt><dd>One consistent set of numbers across a six-entity group.</dd></div>
-              <div><dt>Plant KPIs</dt><dd>Dashboards for production, inventory, and operating drivers that the plant teams actually use.</dd></div>
-            </dl>
-          </article>
-          <article class="capability">
-            <h3>Tools and leadership</h3>
-            <dl>
-              <div><dt>Excel, VBA, and Power Query</dt><dd>The multi-plant reporting and forecasting models I built as controller.</dd></div>
-              <div><dt>Python and ETL</dt><dd>Scripts that move data and automate recurring tasks.</dd></div>
-              <div><dt>Leadership</dt><dd>Took teams at four plants through new systems, new controls, and a change of bank.</dd></div>
-            </dl>
-          </article>
-        </div>
+        <dl class="skills">
+          <div><dt>Capital and banking</dt><dd>Capital allocation&nbsp;&middot; Stage gate approvals&nbsp;&middot; Fixed charge coverage forecasting&nbsp;&middot; Banking</dd></div>
+          <div><dt>Data and automation</dt><dd>Microsoft Fabric&nbsp;&middot; Direct Lake&nbsp;&middot; Power BI&nbsp;&middot; Python and ETL&nbsp;&middot; Excel, VBA, and Power Query&nbsp;&middot; Finance automation</dd></div>
+          <div><dt>Controls and reporting</dt><dd>Internal audit&nbsp;&middot; Group reporting&nbsp;&middot; Plant KPIs&nbsp;&middot; HRIS consolidation</dd></div>
+          <div><dt>Leadership</dt><dd>Took teams at four plants through new systems, new controls, and a change of bank.</dd></div>
+        </dl>
 
         <div class="credentials" aria-label="Credentials and education">
           <div class="credential"><p class="eyebrow">Credential</p><strong>Certified Management Accountant (CMA)</strong><span>Institute of Management Accountants</span></div>
@@ -363,7 +359,7 @@
             <p class="eyebrow">Contact</p>
             <h2 id="contact-title">If you&rsquo;re working on any of this, I&rsquo;d like to hear about it.</h2>
             <p>I&rsquo;m always glad to compare notes with other finance and operations people on capital, banking, data, automation, and where the CFO role is headed. LinkedIn is the fastest way to reach me.</p>
-            <p class="print-only">linkedin.com/in/rdmcfarlin</p>
+            <p class="contact__personal">I am based out of Greenville, SC. In my time away from work, I enjoy watching baseball, racing, and playing disc golf.</p>
           </div>
           <div class="contact__actions">
             <a class="btn btn--light" href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg>Connect on LinkedIn</a>
@@ -376,7 +372,7 @@
 
   <footer class="site-footer">
     <div class="container site-footer__inner">
-      <a class="brand" href="./" aria-label="Robert McFarlin, home"><img src="assets/mark.svg" alt="" width="24" height="24" /><span class="brand__name">Robert McFarlin, CMA</span></a>
+      <a class="brand" href="./"><img src="assets/mark.svg" alt="" width="24" height="24" /><span class="brand__name">Robert McFarlin, CMA</span></a>
       <nav aria-label="Footer">
         <a href="#experience">Experience</a>
         <a href="https://www.linkedin.com/in/rdmcfarlin" target="_blank" rel="noopener noreferrer">LinkedIn</a>
@@ -384,5 +380,17 @@
       <span>&copy; 2026 Robert McFarlin</span>
     </div>
   </footer>
+
+  <script>
+    /* Phone menu: close it after a section is chosen, or on Escape. */
+    (function () {
+      var menu = document.querySelector('.site-menu');
+      if (!menu) return;
+      menu.addEventListener('click', function (e) { if (e.target.closest('a')) menu.open = false; });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && menu.open) { menu.open = false; menu.querySelector('summary').focus(); }
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 /* ============================================================
    Robert McFarlin — site stylesheet
-   Built on the McFarlin design system (design docs/tokens).
+   Built on the McFarlin design system.
    Forest green + warm neutrals, brass used sparingly.
    ============================================================ */
 
@@ -18,7 +18,7 @@
   src: url('../assets/fonts/ibm-plex-mono-500-latin.woff2') format('woff2');
 }
 
-/* ---- Tokens (mirrors design docs/tokens/*.css) ---- */
+/* ---- Tokens (from the McFarlin design system) ---- */
 :root {
   --paper:          #FBFAF7;
   --paper-sunken:   #F4F2EC;
@@ -43,6 +43,9 @@
   --brass:          #B0843A;
   --brass-strong:   #946C2C;
   --brass-wash:     #F5EEDF;
+  /* Brass for small text: the accent itself is too light to read at label sizes. */
+  --brass-ink:       #836024;  /* on paper, white, and brass wash: 5:1 or better */
+  --brass-on-forest: #C9A15A;  /* on forest: 5.2:1 */
 
   --text-on-forest: #F4F1EA;
   --text-on-forest-muted: rgba(244, 241, 234, 0.72);
@@ -60,6 +63,7 @@
   --container-narrow: 720px;
   --gutter: var(--space-6);
   --section-y: var(--space-12);
+  --header-h: 69px;
 
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -69,7 +73,6 @@
   --shadow-sm: 0 1px 2px rgba(28, 27, 23, 0.06), 0 1px 1px rgba(28, 27, 23, 0.04);
   --shadow-md: 0 2px 8px rgba(28, 27, 23, 0.07), 0 1px 2px rgba(28, 27, 23, 0.05);
   --shadow-lg: 0 10px 30px rgba(28, 27, 23, 0.09), 0 2px 6px rgba(28, 27, 23, 0.05);
-  --shadow-focus: 0 0 0 3px rgba(47, 93, 80, 0.28);
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-base: 200ms;
@@ -92,11 +95,12 @@ body {
 img { max-width: 100%; display: block; }
 a { color: var(--moss); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:hover { color: var(--forest); }
-:focus-visible { outline: none; box-shadow: var(--shadow-focus); border-radius: var(--radius-sm); }
+/* A solid ring: the earlier translucent glow was 1.5:1 against the page. */
+:focus-visible { outline: 2px solid var(--moss); outline-offset: 3px; }
+.results :focus-visible, .contact__panel :focus-visible { outline-color: var(--text-on-forest); }
 h1, h2, h3, h4 { margin: 0; color: var(--ink); font-weight: 600; text-wrap: balance; }
 p { margin: 0; text-wrap: pretty; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
-.num { font-variant-numeric: tabular-nums lining-nums; }
 .icon { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 
 .container { width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 var(--gutter); }
@@ -133,45 +137,87 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .btn--sm { min-height: 38px; padding: 0 var(--space-4); font-size: 14px; }
 
 /* ---- Header ---- */
-.site-header {
-  position: sticky; top: 0; z-index: 50;
+.site-header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--line); }
+/* The blur sits on a layer of its own so the phone menu can blur the page too. */
+.site-header::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
   background: rgba(251, 250, 247, 0.9);
   -webkit-backdrop-filter: saturate(1.4) blur(10px);
   backdrop-filter: saturate(1.4) blur(10px);
-  border-bottom: 1px solid var(--line);
 }
 .site-header__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); min-height: 68px; }
 .brand { display: inline-flex; align-items: center; gap: var(--space-3); text-decoration: none; color: var(--ink); }
 .brand:hover { color: var(--ink); }
 .brand img { width: 30px; height: 30px; }
 .brand__name { display: block; font-weight: 700; font-size: 16px; letter-spacing: -0.01em; line-height: 1.2; }
-.brand__role { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-tertiary); line-height: 1.3; }
+.brand__role { display: block; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-tertiary); line-height: 1.3; }
 .site-nav { display: flex; align-items: center; gap: var(--space-7); }
 .site-nav a { color: var(--ink-secondary); text-decoration: none; font-size: 15px; font-weight: 500; }
 .site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--forest); }
 .site-header__actions { display: flex; align-items: center; gap: var(--space-3); }
 
+/* Phone menu: replaces the section links at 860px and below. */
+.site-menu { display: none; }
+.site-menu summary {
+  display: grid; place-items: center; width: 38px; height: 38px; cursor: pointer; list-style: none;
+  background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius-md);
+}
+.site-menu summary::-webkit-details-marker { display: none; }
+.site-menu__icon { position: relative; width: 16px; height: 10px; }
+.site-menu__icon::before, .site-menu__icon::after {
+  content: ""; position: absolute; left: 0; width: 16px; border-top: 1.5px solid var(--ink);
+  transition: transform 320ms var(--ease-out);
+}
+.site-menu__icon::before { top: 1px; }
+.site-menu__icon::after { bottom: 1px; }
+.site-menu[open] .site-menu__icon::before { transform: translateY(3.25px) rotate(45deg); }
+.site-menu[open] .site-menu__icon::after { transform: translateY(-3.25px) rotate(-45deg); }
+.site-menu__panel {
+  position: absolute; top: 100%; left: 0; right: 0;
+  height: calc(100vh - var(--header-h)); height: calc(100dvh - var(--header-h));
+  display: flex; flex-direction: column; padding: var(--space-4) var(--gutter) var(--space-9); overflow-y: auto;
+  background: rgba(251, 250, 247, 0.94);
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+}
+.site-menu__panel a {
+  padding: var(--space-4) 0; border-bottom: 1px solid var(--line);
+  font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+}
+.site-menu[open] .site-menu__panel { animation: menu-fade 200ms var(--ease-out) both; }
+.site-menu[open] .site-menu__panel a { animation: menu-link 320ms var(--ease-out) both; }
+.site-menu__panel a:nth-child(2) { animation-delay: 60ms; }
+.site-menu__panel a:nth-child(3) { animation-delay: 120ms; }
+.site-menu__panel a:nth-child(4) { animation-delay: 180ms; }
+.site-menu__panel a:nth-child(5) { animation-delay: 240ms; }
+@keyframes menu-fade { from { opacity: 0; } }
+@keyframes menu-link { from { opacity: 0; transform: translateY(24px); } }
+@media (prefers-reduced-motion: reduce) {
+  .site-menu[open] .site-menu__panel a { animation-name: menu-fade; }
+  .site-menu__icon::before, .site-menu__icon::after { transition: none; }
+}
+
 /* ---- Hero ---- */
 .hero { padding: var(--space-11) 0 var(--space-12); }
 .hero__grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.8fr); gap: var(--space-11); align-items: center; }
 .hero__eyebrow { display: inline-flex; align-items: center; gap: var(--space-3); color: var(--moss); }
-.hero__eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--brass); }
+.hero__eyebrow::before { content: ""; flex: none; width: 28px; border-top: 1px solid var(--brass); }
 .hero h1 {
   margin: var(--space-5) 0 var(--space-6);
   font-size: clamp(42px, 6vw, 68px); font-weight: 700; line-height: 1.02; letter-spacing: -0.03em;
 }
 .hero__lede { font-size: clamp(19px, 1.9vw, 22px); line-height: 1.55; color: var(--ink-secondary); max-width: 34em; }
-.hero__personal { margin-top: var(--space-5); max-width: 36em; font-size: 17px; line-height: 1.6; color: var(--ink-tertiary); }
+.hero__creds { display: flex; flex-wrap: wrap; gap: var(--space-2) 0; margin-top: var(--space-6); font-size: 16px; font-weight: 500; line-height: 1.4; }
+.hero__creds li + li { margin-left: var(--space-4); padding-left: var(--space-4); border-left: 1px solid var(--line-strong); }
 .hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-8); }
 
 .facts {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-top: var(--space-10); border-top: 1px solid var(--line);
+  margin: var(--space-10) 0 0; border-top: 1px solid var(--line);
 }
 .facts div { padding: var(--space-5) var(--space-5) 0 0; }
 .facts div + div { padding-left: var(--space-5); border-left: 1px solid var(--line); }
 .facts dt { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; color: var(--ink); font-variant-numeric: tabular-nums lining-nums; }
-.facts dd { margin: var(--space-2) 0 0; font-size: 14px; line-height: 1.4; color: var(--ink-tertiary); }
+.facts dd { margin: var(--space-2) 0 0; font-size: 14px; line-height: 1.4; color: var(--ink-tertiary); text-wrap: balance; }
 
 .portrait { margin: 0; }
 .portrait__frame {
@@ -191,32 +237,20 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .section { padding: var(--section-y) 0; }
 .section--sunken { background: var(--surface-muted); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: var(--space-10); align-items: end; margin-bottom: var(--space-10); }
-.section-head--stack { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); max-width: 46em; }
 .section-head h2 { margin-top: var(--space-3); font-size: clamp(30px, 3.6vw, 42px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
-.section-head p { font-size: 18px; color: var(--ink-secondary); max-width: 38em; }
+.section-head p { font-size: 18px; color: var(--ink-secondary); max-width: 36em; }
 .section-head .eyebrow { color: var(--moss); }
 
-/* ---- Results (forest panel) ---- */
+/* ---- Results (forest panel): each change is told once, here ---- */
 .results { background: var(--forest); color: var(--text-on-forest); }
-.results .eyebrow, .results .section-head .eyebrow { color: var(--brass); }
+.results .eyebrow, .results .section-head .eyebrow { color: var(--brass-on-forest); }
 .results h2, .results h3 { color: var(--text-on-forest); }
 .results .section-head p { color: var(--text-on-forest-muted); }
-.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); }
-.metric { padding-top: var(--space-5); border-top: 1px solid var(--line-on-forest); position: relative; }
-.metric::before { content: ""; position: absolute; top: -1px; left: 0; width: 40px; height: 2px; background: var(--brass); }
-.metric__value { display: block; font-size: clamp(44px, 5vw, 60px); font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums lining-nums; }
-.metric__label { display: block; margin-top: var(--space-4); font-size: 17px; font-weight: 600; }
-.metric__note { display: block; margin-top: var(--space-1); font-size: 15px; color: var(--text-on-forest-muted); }
-
-.shipped { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--space-10); margin-top: var(--space-12); padding-top: var(--space-9); border-top: 1px solid var(--line-on-forest); }
-.shipped h3 { font-size: 22px; }
-.shipped > div > p { margin-top: var(--space-3); color: var(--text-on-forest-muted); font-size: 16px; }
-.checklist { display: grid; gap: var(--space-5); }
-.checklist li { position: relative; padding-left: var(--space-7); font-size: 17px; line-height: 1.6; }
-.checklist li::before { content: ""; position: absolute; left: 2px; top: 0.8em; width: 12px; height: 1.5px; background: var(--brass); }
-.checklist strong { font-weight: 600; }
-.results .checklist li { color: var(--text-on-forest-muted); }
-.results .checklist strong { color: var(--text-on-forest); }
+.wins { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-9) var(--space-7); }
+.wins li { position: relative; padding-top: var(--space-6); border-top: 1px solid var(--line-on-forest); }
+.wins li::before { content: ""; position: absolute; top: -1px; left: 0; width: 40px; border-top: 2px solid var(--brass); }
+.wins h3 { font-size: 22px; letter-spacing: -0.01em; }
+.wins p { margin-top: var(--space-3); color: var(--text-on-forest-muted); }
 
 /* ---- Approach ---- */
 .approach { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
@@ -225,7 +259,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
 }
 .approach h3 { margin: var(--space-4) 0 var(--space-3); font-size: 22px; letter-spacing: -0.01em; }
-.approach p { color: var(--ink-secondary); font-size: 16px; }
+.approach p { max-width: 36em; color: var(--ink-secondary); font-size: 16px; }
 
 /* ---- Experience ---- */
 .career-chart { margin: 0 0 var(--space-10); padding: var(--space-7); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
@@ -250,23 +284,30 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .gantt__bar--current { background: var(--brass); }
 .gantt__axis { grid-column: 2; display: flex; justify-content: space-between; margin-top: var(--space-1); font-family: var(--font-mono); font-size: 12px; color: var(--ink-tertiary); font-variant-numeric: tabular-nums; }
 
-.roles { border-top: 1px solid var(--line); }
-.role { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: var(--space-9); padding: var(--space-8) 0; border-bottom: 1px solid var(--line); }
-.role__when { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.04em; color: var(--ink-tertiary); font-variant-numeric: tabular-nums; }
-.role__when strong { display: block; margin-bottom: var(--space-2); color: var(--ink); font-family: var(--font-sans); font-size: 15px; font-weight: 600; letter-spacing: 0; }
-.role h3 { font-size: 24px; letter-spacing: -0.01em; }
-.role__current { display: inline-block; margin-left: var(--space-3); padding: 3px 9px; vertical-align: 4px; border-radius: var(--radius-pill); background: var(--brass-wash); color: var(--brass-strong); font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
-.role ul { margin-top: var(--space-4); display: grid; gap: var(--space-3); }
+/* One block per employer: the name sits in the left rail, its roles in the right.
+   The rails match .section-head, which keeps role text near 75 characters a line. */
+.employers { border-top: 1px solid var(--line); }
+.employer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: var(--space-10); padding: var(--space-9) 0; border-bottom: 1px solid var(--line); }
+.employer__head { position: sticky; top: 100px; align-self: start; }
+.employer__name { font-size: 18px; font-weight: 600; line-height: 1.3; color: var(--ink); }
+.employer__when, .role__when { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.04em; color: var(--ink-tertiary); font-variant-numeric: tabular-nums; }
+.employer__when { margin-top: var(--space-2); }
+.role + .role { margin-top: var(--space-7); padding-top: var(--space-7); border-top: 1px solid var(--line); }
+.role__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-4); }
+.role h3 { font-size: 22px; letter-spacing: -0.01em; }
+.role__current { display: inline-block; margin-left: var(--space-3); padding: 3px 9px; vertical-align: 3px; border-radius: var(--radius-pill); background: var(--brass-wash); color: var(--brass-ink); font: 500 12px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+/* 36em keeps lines under about 78 characters when the rails stack on tablets. */
+.role > p { margin-top: var(--space-3); max-width: 36em; color: var(--ink-secondary); }
+.role ul { margin-top: var(--space-4); max-width: 36em; display: grid; gap: var(--space-3); }
 .role li { position: relative; padding-left: var(--space-6); color: var(--ink-secondary); }
-.role li::before { content: ""; position: absolute; left: 2px; top: 0.72em; width: 8px; height: 1.5px; background: var(--brass); }
+/* A text dash rather than a drawn line: it renders at one weight on every row, and it prints. */
+.role li::before { content: "\2013"; content: "\2013" / ""; position: absolute; left: 0; color: var(--brass); }
 
-/* ---- Capabilities ---- */
-.capabilities { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
-.capability { padding: var(--space-8); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
-.capability h3 { font-size: 22px; }
-.capability dl { margin: var(--space-6) 0 0; display: grid; gap: var(--space-5); }
-.capability dt { font-weight: 600; font-size: 16px; color: var(--ink); }
-.capability dd { margin: var(--space-1) 0 0; font-size: 16px; color: var(--ink-secondary); }
+/* ---- Capabilities: a short skills list, then credentials ---- */
+.skills { margin: 0; border-top: 1px solid var(--line); }
+.skills > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: var(--space-10); align-items: baseline; padding: var(--space-6) 0; border-bottom: 1px solid var(--line); }
+.skills dt { font-size: 18px; font-weight: 600; color: var(--ink); }
+.skills dd { margin: 0; max-width: 36em; color: var(--ink-secondary); }
 
 .credentials { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: var(--space-10); border-top: 1px solid var(--line-strong); }
 .credential { padding: var(--space-6) var(--space-6) 0 0; }
@@ -279,16 +320,16 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .principles-layout .section-head { position: sticky; top: 110px; align-self: start; margin-bottom: 0; grid-template-columns: 1fr; gap: var(--space-4); }
 .principles li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: var(--space-4); padding: var(--space-7) 0; border-bottom: 1px solid var(--line); }
 .principles li:first-child { border-top: 1px solid var(--line); }
-.principles__n { font-family: var(--font-mono); font-size: 14px; color: var(--brass-strong); padding-top: 4px; font-variant-numeric: tabular-nums; }
-.principles h3 { font-size: 21px; letter-spacing: -0.01em; }
-.principles p { margin-top: var(--space-2); color: var(--ink-secondary); }
+.principles__n { font-family: var(--font-mono); font-size: 14px; color: var(--brass-ink); padding-top: 4px; font-variant-numeric: tabular-nums; }
+.principles h3 { font-size: 22px; letter-spacing: -0.01em; }
+.principles p { margin-top: var(--space-2); max-width: 36em; color: var(--ink-secondary); }
 
 /* ---- Outlook ---- */
 .outlook { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
 .outlook article { padding: var(--space-8); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
 .status { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--moss); }
 .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-.status--build { color: var(--brass-strong); }
+.status--build { color: var(--brass-ink); }
 .outlook h3 { margin: var(--space-4) 0 var(--space-5); font-size: 22px; }
 .outlook li { padding: var(--space-3) 0; border-top: 1px solid var(--line); color: var(--ink-secondary); font-size: 16px; }
 
@@ -302,6 +343,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .contact__panel .eyebrow { color: var(--text-on-forest-muted); }
 .contact__panel h2 { margin-top: var(--space-3); color: var(--text-on-forest); font-size: clamp(30px, 3.4vw, 40px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.12; }
 .contact__panel p { margin-top: var(--space-4); color: var(--text-on-forest-muted); font-size: 18px; max-width: 34em; }
+.contact__panel .contact__personal { margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--line-on-forest); font-size: 16px; }
 .contact__actions { display: flex; flex-direction: column; gap: var(--space-3); }
 
 /* ---- Footer ---- */
@@ -320,49 +362,67 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .notfound .btn { margin-top: var(--space-7); }
 
 /* ---- Responsive ---- */
-@media (max-width: 1020px) {
+@media screen and (max-width: 1020px) {
   .site-nav { gap: var(--space-5); }
   .hero__grid { gap: var(--space-9); }
-  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-9); }
+  .wins { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .credentials { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .credential:nth-child(3) { padding-left: 0; border-left: 0; }
   .principles-layout { grid-template-columns: 1fr; gap: var(--space-9); }
   .principles-layout .section-head { position: static; }
 }
 
-@media (max-width: 860px) {
+@media screen and (max-width: 860px) {
   :root { --section-y: var(--space-11); }
   .site-nav { display: none; }
-  .hero { padding: var(--space-9) 0 var(--space-11); }
-  .hero__grid { grid-template-columns: 1fr; }
-  .portrait { order: -1; max-width: 220px; }
+  .site-menu { display: block; }
+  /* Hold the page still behind the open menu. */
+  html:has(.site-menu[open]) { overflow: hidden; }
+
+  /* Hero: a small portrait beside the title line, then the name, lede, and numbers. */
+  .hero { padding: var(--space-8) 0 var(--space-11); }
+  .hero__grid { grid-template-columns: 96px minmax(0, 1fr); gap: 0 var(--space-5); }
+  .hero__body { display: contents; }
+  .hero__body > * { grid-column: 1 / -1; }
+  .hero__body > .hero__eyebrow { grid-column: 2; grid-row: 1; }
+  .hero__eyebrow::before { display: none; }
+  .hero__eyebrow-text > span { display: block; }
+  .hero__eyebrow-text > .hero__eyebrow-sep { display: none; }
+  .portrait { grid-column: 1; grid-row: 1; }
+  .portrait__frame { border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
   .portrait figcaption { display: none; }
-  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--space-9); }
+  .facts { order: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--space-7); }
   .facts div:nth-child(3) { padding-left: 0; border-left: 0; }
   .facts div:nth-child(n+3) { padding-top: var(--space-6); }
+  .hero__creds { order: 2; margin-top: var(--space-7); }
+  .hero__actions { order: 3; margin-top: var(--space-7); }
+
   .section-head { grid-template-columns: 1fr; gap: var(--space-4); margin-bottom: var(--space-9); }
-  .shipped { grid-template-columns: 1fr; gap: var(--space-6); margin-top: var(--space-10); }
-  .approach, .capabilities, .outlook { grid-template-columns: 1fr; }
-  .role { grid-template-columns: 1fr; gap: var(--space-3); padding: var(--space-7) 0; }
+  .approach, .outlook { grid-template-columns: 1fr; }
+  .employer { grid-template-columns: 1fr; gap: var(--space-6); padding: var(--space-8) 0; }
+  .employer__head { position: static; }
+  .skills > div { grid-template-columns: 1fr; gap: var(--space-2); padding: var(--space-5) 0; }
   .contact__panel { grid-template-columns: 1fr; padding: var(--space-9) var(--space-7); }
   .contact__actions { flex-direction: row; flex-wrap: wrap; }
 }
 
-@media (max-width: 560px) {
+@media screen and (max-width: 560px) {
   :root { --gutter: var(--space-4); }
   body { font-size: 16px; }
   .brand__role { display: none; }
   .site-header__actions .btn--print { display: none; }
+  .hero__grid { grid-template-columns: 76px minmax(0, 1fr); column-gap: var(--space-4); }
+  .hero__creds { flex-direction: column; gap: var(--space-1); }
+  .hero__creds li + li { margin-left: 0; padding-left: 0; border-left: 0; }
   .hero__actions .btn { flex: 1 1 auto; }
   .facts dt { font-size: 26px; }
-  .metrics { grid-template-columns: 1fr 1fr; gap: var(--space-5); row-gap: var(--space-8); }
-  .metric__value { font-size: 40px; }
+  .wins { grid-template-columns: 1fr; gap: var(--space-8); }
   .career-chart { padding: var(--space-5); }
   .gantt { grid-template-columns: 112px minmax(0, 1fr); }
   .gantt__label { font-size: 13px; }
   .gantt__label small { display: none; }
   .gantt__axis span:nth-child(even) { visibility: hidden; }
-  .capability, .outlook article, .approach article { padding: var(--space-6); }
+  .outlook article, .approach article { padding: var(--space-6); }
   .credentials { grid-template-columns: 1fr; }
   .credential, .credential + .credential { padding: var(--space-5) 0 0; border-left: 0; }
   .principles li { grid-template-columns: 40px minmax(0, 1fr); }
@@ -370,71 +430,69 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .contact__actions .btn { flex: 1 1 auto; }
 }
 
-/* ---- Print: the homepage prints as a clean resume ---- */
+/* ---- Print: the homepage prints as a two-page resume ---- */
 @media print {
   @page { margin: 14mm 14mm 16mm; }
   :root { --section-y: 18px; }
   html { scroll-behavior: auto; }
   body { background: #fff; font-size: 10.5pt; line-height: 1.45; color: #000; }
-  .site-header, .skip-link, .hero__actions, .portrait, .contact__actions, .site-footer, .career-chart, .no-print { display: none !important; }
+  /* A printed resume keeps the record: no chrome, chart, approach, principles, outlook, or contact pitch. */
+  .site-header, .skip-link, .hero__actions, .portrait, .career-chart, .contact, .site-footer,
+  #approach, #principles, #outlook { display: none !important; }
   .container { max-width: none; padding: 0; }
+
   .hero { padding: 0 0 10px; }
   .hero__grid { display: block; }
+  .hero__eyebrow::before { display: none; }
   .hero h1 { font-size: 26pt; margin: 6px 0 8px; }
-  .hero__lede { font-size: 11.5pt; max-width: none; }
-  .hero__personal { display: none; }
-  .facts { margin-top: 12px; }
-  .facts dt { font-size: 15pt; }
-  .results, .contact__panel { background: none !important; color: #000; padding: 0; }
-  .results h2, .results h3, .contact__panel h2, .results .checklist strong { color: #000; }
-  .results .eyebrow, .results .section-head p, .results .checklist li, .metric__note, .contact__panel p, .contact__panel .eyebrow { color: #333; }
-  .metric { border-top-color: #ccc; }
-  .metric__value { font-size: 20pt; }
-  .metrics { gap: 10px; }
-  .section { padding: 14px 0; border: 0; background: none; }
-  .section-head { display: block; margin-bottom: 10px; }
-  .section-head h2 { font-size: 15pt; margin: 2px 0 4px; }
-  .section-head p { font-size: 10.5pt; }
-  .shipped { margin-top: 14px; padding-top: 10px; border-top-color: #ccc; gap: 12px; }
-  .checklist { gap: 4px; }
-  .checklist li { font-size: 10.5pt; }
-  .approach article, .capability, .outlook article { padding: 10px 0; border: 0; box-shadow: none; }
-  .approach h3, .capability h3, .outlook h3 { font-size: 12pt; margin: 4px 0; }
-  .capability dl { margin-top: 6px; gap: 6px; }
-  .role { padding: 10px 0; gap: 4px; grid-template-columns: 150px 1fr; }
-  .role h3 { font-size: 13pt; }
-  .role ul { margin-top: 4px; gap: 2px; }
-  .principles-layout { display: block; }
-  .principles li { padding: 6px 0; }
-  .principles h3 { font-size: 12pt; }
-  .credentials { margin-top: 12px; }
-  .credential strong { font-size: 11pt; }
-  .contact { padding: 10px 0 0; }
-  .contact__panel { display: block; }
-  .contact__panel h2 { font-size: 13pt; }
-  .contact__panel p { font-size: 10.5pt; margin-top: 4px; }
-  .print-only { display: block !important; }
-  /* A printed resume keeps the record: drop approach, principles, outlook. */
-  #approach, #principles, #outlook { display: none !important; }
-  .facts { grid-template-columns: repeat(4, 1fr); }
+  .hero__lede { font-size: 11.5pt; max-width: none; color: #222; }
+  .hero__creds { margin-top: 6px; font-size: 10.5pt; }
+  .hero__creds li + li { border-left-color: #999; }
+  .facts { margin-top: 12px; grid-template-columns: repeat(4, 1fr); border-top-color: #ccc; }
   .facts div, .facts div + div, .facts div:nth-child(n+3) { padding: 8px 10px 0 0; border-left: 0; }
-  #experience, #capabilities { break-before: page; }
-  .facts dd { font-size: 9pt; margin-top: 2px; }
-  .metrics { grid-template-columns: repeat(4, 1fr); }
-  .metric__label { margin-top: 6px; font-size: 10.5pt; }
-  .metric__note { font-size: 9pt; }
-  .shipped { grid-template-columns: 1fr; }
-  .shipped > div > p { display: none; }
-  .capabilities { grid-template-columns: 1fr 1fr; gap: 0 24px; }
-  .capability dd, .capability dt { font-size: 10pt; }
-  .capability .eyebrow { display: none; }
-  .credentials { grid-template-columns: repeat(4, 1fr); }
+  .facts dt { font-size: 15pt; }
+  .facts dd { font-size: 9pt; margin-top: 2px; color: #333; }
+
+  .section { padding: 14px 0; border: 0; background: none; }
+  .section-head { display: block; margin-bottom: 10px; break-after: avoid; }
+  .section-head h2 { font-size: 15pt; margin: 2px 0 4px; }
+  .section-head p { font-size: 10.5pt; max-width: none; }
+
+  .results { background: none !important; color: #000; }
+  .results h2, .results h3 { color: #000; }
+  .results .section-head .eyebrow { color: var(--moss); }
+  .results .section-head p, .wins p { color: #333; }
+  .wins { grid-template-columns: repeat(3, 1fr); gap: 12px 18px; }
+  .wins li { padding-top: 8px; border-top-color: #ccc; }
+  .wins h3 { font-size: 11.5pt; }
+  .wins p { margin-top: 3px; font-size: 9.5pt; line-height: 1.4; }
+
+  .employers { border-top-color: #ccc; }
+  .employer { grid-template-columns: 150px 1fr; gap: 16px; padding: 10px 0; border-bottom-color: #ccc; }
+  .employer__head { position: static; }
+  .employer__name { font-size: 10.5pt; }
+  .employer__when, .role__when { font-size: 8.5pt; color: #333; }
+  .employer__when { margin-top: 2px; }
+  .role + .role { margin-top: 8px; padding-top: 8px; border-top-color: #ddd; }
+  .role h3 { font-size: 12pt; }
+  .role__current { display: none; }
+  .role > p, .role li { font-size: 10pt; color: #222; }
+  .role > p, .role ul { max-width: 44em; }
+  .role > p { margin-top: 3px; }
+  .role ul { margin-top: 4px; gap: 2px; }
+  .role li { padding-left: 16px; }
+
+  .skills { border-top-color: #ccc; }
+  .skills > div { grid-template-columns: 150px 1fr; gap: 16px; padding: 6px 0; border-bottom-color: #ccc; }
+  .skills dt, .skills dd { font-size: 10pt; }
+  .skills dd { max-width: none; color: #222; }
+  .credentials { margin-top: 12px; grid-template-columns: repeat(4, 1fr); border-top-color: #ccc; }
   .credential, .credential + .credential, .credential:nth-child(3) { padding: 8px 10px 0 0; border-left: 0; }
   .credential strong { margin-top: 2px; font-size: 10pt; }
-  .credential span { font-size: 9pt; }
-  .role li { font-size: 10pt; }
-  .role__current { display: none; }
-  .role, .capability, .principles li, .approach article, .metric, .credential, .outlook article { break-inside: avoid; }
+  .credential span { font-size: 9pt; color: #333; }
+
+  .print-only { display: block !important; }
+  .role, .wins li, .skills > div, .credential { break-inside: avoid; }
   h2, h3 { break-after: avoid; }
   a { color: inherit; text-decoration: none; }
 }
