@@ -3,3 +3,6 @@ PROTECTED/
 
 # Local dev config (preview server)
 .claude/
+
+# Design system source: kept on this machine, not published with the site
+design docs/
