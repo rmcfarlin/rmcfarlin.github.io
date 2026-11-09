@@ -1,0 +1,12 @@
+The font files in this folder are redistributed under the SIL Open Font
+License, Version 1.1 (https://openfontlicense.org).
+
+Hanken Grotesk
+  Copyright 2021 The Hanken Grotesk Project Authors
+  (https://github.com/marcologous/hanken-grotesk)
+
+IBM Plex Mono
+  Copyright 2017 IBM Corp. All rights reserved.
+  (https://github.com/IBM/plex)
+
+These are the Latin subsets served by Google Fonts, unmodified.

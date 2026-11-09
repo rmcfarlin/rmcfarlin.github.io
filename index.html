@@ -20,10 +20,8 @@
   <meta name="twitter:description" content="CFO of a six-entity, four-plant manufacturer. Capital allocation, banking, reporting systems, automation, and controls." />
   <meta name="twitter:image" content="https://robertmcfarlin.com/assets/og-card.png" />
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/site.css?v=20261013" />
+  <link rel="preload" href="assets/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/site.css?v=20261109" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -96,7 +94,12 @@
           </dl>
         </div>
         <figure class="portrait">
-          <div class="portrait__frame"><img src="assets/headshot.jpeg" alt="Robert McFarlin" width="1086" height="1448" fetchpriority="high" /></div>
+          <div class="portrait__frame">
+            <picture>
+              <source type="image/webp" srcset="assets/headshot-320.webp 320w, assets/headshot-480.webp 480w, assets/headshot-760.webp 760w" sizes="(max-width: 860px) 220px, 373px" />
+              <img src="assets/headshot.jpeg" alt="Robert McFarlin" width="1086" height="1448" fetchpriority="high" />
+            </picture>
+          </div>
           <figcaption><strong>Robert McFarlin, CMA</strong><span>Greenville, SC</span></figcaption>
         </figure>
       </div>
